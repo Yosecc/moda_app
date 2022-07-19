@@ -1,0 +1,22 @@
+{
+  "name": "Modatex",
+  "main": "app/app.js",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "~8.2.0",
+    "@nativescript/theme": "~3.0.2",
+    "@nstudio/nativescript-carousel": "^8.0.3",
+    "nativescript-gif": "^5.0.0",
+    "nativescript-ui-listview": "^10.1.1",
+    "nativescript-ui-sidedrawer": "^10.0.2",
+    "nativescript-vue": "~2.9.0",
+    "nativescript-vue-navigator": "^1.2.0",
+    "vuex": "^3.6.2"
+  },
+  "devDependencies": {
+    "@nativescript/android": "8.2.3",
+    "@nativescript/webpack": "~5.0.6",
+    "nativescript-vue-template-compiler": "~2.9.0"
+  }
+}

@@ -1,0 +1,622 @@
+@import '@nativescript/theme/core';
+@import '@nativescript/theme/default';
+@import '@nativescript/theme/scss/variables/index';
+
+$modatexColor: #DA0080;
+
+page {
+    font-size: 16;
+}
+
+.page_home {
+    padding-left: 8;
+    padding-right: 8;
+}
+
+.box-tab {
+    background-color: white;
+    box-shadow: 0px -3px 12px #BCBCBC8C;
+}
+
+.sp {
+    border-radius: 100%;
+    // background-color: red;
+    width: 40px;
+    height: 40px;
+}
+
+
+// Place any CSS rules you want to apply on both iOS and Android here.
+// This is where the vast majority of your CSS code goes.
+// Font icon class
+.fab {
+    font-family: 'Font Awesome 5 Brands', 'fa-brands-400';
+    font-weight: 400;
+}
+
+.fas {
+    font-family: 'Font Awesome 5 Free', 'fa-solid-900';
+    font-weight: 900;
+}
+
+.far {
+    font-family: 'Font Awesome 5 Free', 'fa-regular-400';
+    font-weight: 400;
+}
+
+// Custom tabstrip item class
+.navigation__item {
+    &:active,
+    &:active Label {
+        @include colorize($color: complementary);
+    }
+}
+
+label {
+    font-size: 16;
+
+}
+
+.label_enlace {
+    color: #0080DA;
+    
+}
+.title_product, .title{
+    font-size: 20;
+    font-weight: 600;
+    // color: #4D4D4D;
+
+    &.primary{
+        color: $modatexColor;
+    }
+}
+.subtitle_product{
+    @extend .title_product;
+    font-weight: 200;
+    font-size: 12;
+}
+.price_product{
+    @extend .title_product;
+    font-size: 20;
+}
+// Common page class
+.page__content {
+    &-icon,
+    &-placeholder {
+        color: const(grey);
+        font-size: 20;
+        vertical-align: center;
+        horizontal-align: center;
+    }
+    &-icon {
+        font-size: 72;
+        vertical-align: top;
+        margin-top: 20%;
+    }
+}
+
+.title_page {
+    font-size: 20;
+    font-weight: 900;
+}
+
+.footer_bottom {
+    box-shadow: 0 -3 6 #00000029;
+}
+
+.btn{
+    padding: 0 16;
+    margin: 0;
+    border-radius: 100;
+    font-weight: bold;
+    // @extend .shadow-xs;
+    max-width: content;
+    &.btn-primary{
+        background-color: $modatexColor;
+        color: white;
+    }
+
+    &.btn-info{
+        background-color: #0080DA;
+        color: white;
+    }
+
+    &.btn-secondary{
+        background-color: rgba(#0080DA, .6);
+        color: white;
+    }
+
+    &.disabled{
+        background-color: rgba(#FFFFFF, .8);
+        opacity: .8;
+        color: #4d4d4d;
+    }
+    &.btn-sm{
+        height: 35;
+    }
+    &.btn-shadow-none{
+        z-index: 0 !important;
+        shadow: none !important;
+    }
+}
+
+.btn-icon{
+  height: 32; 
+  width: 32; 
+  border-radius:6;
+  margin:0;
+  padding:0;
+}
+
+Switch#switch[checked=true]{
+    color:$modatexColor ;
+}
+
+Switch#switch[checked=false]{
+    color: silver;
+    
+}
+.box_shadow_card{
+    box-shadow: 1 4 5 #00000029;
+}
+
+.shadow{
+    box-shadow:  1 1 2 rgba(0,0,0,.3);
+}
+
+.shadow-xs{
+    box-shadow:  1 1 4 rgba(0,0,0,.2);
+}
+
+.shadow-n1{
+    box-shadow: 0 -1 4 rgba(0,0,0,.1);
+}
+
+.shadow-lg{
+    box-shadow:  0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.shadow-xg{
+    box-shadow:  0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.inputForm{
+    // border-color: #B1B1B1;
+    border-bottom-width: 0;
+    background: rgba($secondary-dark, .2);
+    font-weight: bold;
+    color:#4D4D4D;
+    font-size: 16;
+    padding-left: 8;
+    // placeholder-color: #A5A5A5;
+    border-radius: 4;
+    margin-left: 0;
+    margin-right: 0;
+    // margin-bottom: 24;
+    height: 40;
+    &:focus{
+      border-width: 1;
+      border-color: rgba($modatexColor, 1);
+    }
+
+    &.inLine-Left{
+        margin-right: 0; 
+    }
+    &.inLine-Rigth{
+        margin-left: 0;
+        padding-right: 8;
+
+        &:focus ~ .inLine-Left{
+            border-color: $modatexColor;
+        }
+
+    }
+    &.inputNumberMax{
+        height: 120;
+        font-weight: 900;
+        text-alignment: center;
+        margin-top: 24;
+        margin-right: 8;
+        margin-left: 8;
+        padding-left: 0;
+        font-size: 50;
+        vertical-alignment: top;
+    }
+
+}
+
+.btn-primary-default{
+    background: $modatexColor;
+    height: 40;
+    width: 200;
+    color: white;
+    font-weight: 900;
+    border-radius: 6;
+}
+
+.btn-primary-layaut{
+    background: $modatexColor;
+    height: 40;
+    border-radius: 6;
+    padding-left: 10;
+    padding-right: 8;
+    Label{
+        color: white;
+        background-color: transparent;
+        font-weight: 900;
+        font-size: 20;
+        vertical-alignment: center;
+        margin-left: 8
+    }
+    Image{
+        vertical-alignment: center;
+    }
+}
+.badge{
+    font-size: white;
+    background-color: #F6842D;
+    padding: 5;
+    border-radius: 4;
+    font-size: 12;
+    margin-left: 8;
+    text-alignment: center;
+    color: white;
+}
+.bg{
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.product_root{
+  &.border{
+    border-width: .5;
+  }
+  // border-color: black;
+  // background-color: red;
+}
+.product_img{
+  // height: 500px;
+}
+.product_text{
+  padding-left: 8;
+  padding-right: 8;
+  margin-top: 6;
+  padding-bottom: 8;
+
+  &-title{
+    font-size: 16;
+    font-weight: 900;
+  }
+  &-subtitle{
+    font-size: 10;
+    font-weight: 200;
+  }
+  &-mount{
+    color: $modatexColor;
+    font-size: 20;
+    font-weight: 900;
+    padding: 0;
+    margin:0;
+  }
+  &.tachado{
+    text-decoration: line-through;
+  }
+}
+
+.card{
+    padding: 8;
+    border-radius: 6;
+    @extend .shadow;
+    width: 100%;
+    &.active{
+        // background-color: $modatexColor;
+        // color: white;
+        label{
+            // color: white;
+        }
+    }
+}
+.category_box{
+    margin-top: 16;
+    margin-bottom: 8;
+    margin-right: 16;
+    width: 60;
+    Label{
+        text-align: center;
+    }
+    FlexboxLayout{
+        // background-color: #ECEFF1;
+        border-width: 3;
+        border-color: rgba(#CFD8DC, .4);
+        border-radius: 100%;
+        width: 56;
+        height: 56;
+    }
+    &.active{
+        FlexboxLayout{
+            border-color: rgba($modatexColor, .4);
+        }
+    }
+}
+.card_product_horizontal{
+    @extend .box_shadow_card;
+    background-color: white;
+    margin-right: 8;
+    margin-bottom: 8;
+    padding: 5;
+    border-radius: 10;
+    .content_product_text{
+        // padding: 10;
+    }
+    Image{
+        margin-right: 8;
+    }
+}
+
+
+
+.idicator{
+    width: 10;
+    height: 10;
+    background-color: white;
+    border-radius: 100%;
+    margin-right: 5;
+    &.active{
+        background-color: $modatexColor;
+    }
+}
+.listItemStore{
+    border-bottom-width: 1;
+    border-color: rgba(#CFD8DC, .4);
+    padding: 8;
+    margin-bottom: 8;
+}
+
+.animation-pulse{
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+}
+
+.label_skeleton{
+    background-color: #EEEEEE;
+    height: 22;
+    width: 180;
+    border-radius: 3;
+    @extend .animation-pulse;
+    &.small{
+        height: 12;
+    }
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+
+.disabled{
+    background-color: rgba(#FFFFFF, .8);
+    opacity: .8;
+    color: #4d4d4d;
+}
+
+
+
+.menu{
+    .label{
+        font-size: 20;
+        font-weight: bold;
+        color: #7b7b7b;
+        text-transform: uppercase;
+        margin-right: 16;
+        &.active{
+            color: #4d4d4d;
+        }
+    }
+}
+.pedidoBox, .direccionBox{
+    .header{
+        border-bottom-width: 1;
+        border-bottom-color: rgba(0,0,0,.05);
+        padding: 8;
+    }
+    label{
+        margin: 0 ;
+        padding: 0 ;
+    }
+}
+
+.shadow-none{
+    box-shadow: none !important;
+}
+
+Button{
+    z-index: 0;
+}
+
+.menuProfile{
+  .label{
+    border-radius: 10;
+    font-size: 14;
+    padding: 4 16;
+    margin: 0;
+    margin-left: 8;
+    &.active{
+      border-color:  rgba($modatexColor, 1); 
+      border-width: 1;
+    }
+  }
+}
+
+.btn-car{
+  // background-color: red;
+  padding: 8;
+  &.active{
+    background-color: #DA0080;
+    .btn_header{
+      color: white;
+    }
+  }
+  Label{
+      color: white;
+  }
+  .btn_header{
+    color: #DA0080;
+  }
+}
+
+.productsCar{
+  .item{
+    border-bottom-width: 1;
+    padding-left: 16;
+
+  }
+}
+
+.storeBox{
+    border-width: .5;
+}
+
+.subcategorias{
+    margin-top: 16;
+    label{
+      margin-right: 16;
+      margin-bottom: 16;
+      padding: 8;
+      padding-left: 16;
+      padding-right: 16;
+      border-width: 1;
+      font-weight: 200;
+      border-radius: 10;
+    }
+}
+
+.ns-light{
+  .header-full-logo{
+    background: $modatexColor; 
+  }
+  .product_root{
+    &.border{
+      border-color: rgba($primary, .05);
+    }
+  }
+  .productsCar{
+    .item{
+      border-color: rgba($primary, .05);
+    }
+  }
+  .card{
+    background:  rgba($grey-background, .1); 
+    .secondary{
+      background:  rgba($primary, .1);
+    }
+  }
+  .menuProfile{
+    .label{
+      background:  rgba($grey-background, .1);
+    }
+  }
+  .direccionBox{
+    &.active{
+      background: $modatexColor;
+      color: white;
+      label{
+        color: white;
+      }
+    }
+  }
+  .btn-icon{
+    background:  rgba($grey-background, .1); 
+  }
+  .storeBox{
+    border-color:  rgba($grey-background, .6)
+  }
+  .subcategorias{
+    label{
+      border-color: rgba($primary, .1);
+    }
+  }
+}
+
+
+.ns-dark{
+  .header-full-logo{
+    // background:  rgba($primary, .05); 
+  }
+  .headertransparent{
+    background: rgba($primary, .4);
+  }
+  .inputForm{
+    border-color: transparent;
+    &:focus{
+      border-width: 1;
+      border-color: $modatexColor;
+    }
+    &.false{
+        color: rgba($secondary-dark, 1);
+        vertical-align: middle;
+    }
+  }
+  .product_root{
+    &.border{
+       border-color: rgba($secondary-dark, .05);
+    }
+  }
+  .productsCar{
+    .item{
+       border-color: rgba($secondary-dark, .05);
+    }
+  }
+  .card{
+    background:  rgba($primary, 1); 
+    .secondary{
+        background:  rgba($charcoal, 1);
+    }
+  }
+  .menuProfile{
+    .label{
+      background:  rgba($primary, 1); 
+    }
+  }
+  .direccionBox{
+    &.active{
+      background: $modatexColor;
+      color: white;
+      label{
+        color: white;
+      }
+    }
+  }
+  .btn-icon{
+    background:  rgba($primary, 1); 
+  }
+  .storeBox{
+    border-color:  rgba($primary, 1);
+  }
+
+  .subcategorias{
+    label{
+      border-color: rgba($secondary-dark, .05);
+      &.active{
+        border-color: $modatexColor;
+        background: $modatexColor;
+        // color: white;
+      }
+    }
+  }
+}
