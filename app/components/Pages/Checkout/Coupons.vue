@@ -7,7 +7,8 @@
     nextPage="/envios"
     :nextStatus="true"
   >
-    <RadListView  :items="coupons" @itemTap="onItemTap">
+  <StackLayout marginTop="8" paddingRight="16" paddingLeft="16">
+    <RadListView ref="listCoupons" :items="coupons" @itemTap="onItemTap">
       <v-template >
         <StackLayout 
           marginBottom="16" 
@@ -94,7 +95,7 @@
       </v-template>
 
     </RadListView>
-
+  </StackLayout>
   </layoutCheckout>
    </Page>
 </template>
@@ -162,6 +163,7 @@
             e.active = false
           }
         })
+        this.$refs.listCoupons.nativeView.refresh()
         // console.log(this.coupons)
       }
       

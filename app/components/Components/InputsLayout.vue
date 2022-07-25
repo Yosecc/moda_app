@@ -1,76 +1,24 @@
 <template lang="html">
  <!-- <MultiDrawer ref="drawerInput"  v-model="drawerInput"> -->
   <StackLayout>
-      <!-- <StackLayout v-if="showDrawer" slot="bottom" >
-        <GridLayout rows="auto, *, auto"   ~drawerContent class="sideStackLayout drawerSelect">
-    
-          <StackLayout  row="0">
-            <StackLayout class="barra"></StackLayout>
-            <Label class="title" marginBottom="8" textAlignment="center" horizontalAlignment="center"  v-if="inputSelect" :text="titleOptions" />
-          </StackLayout>
-
-          <StackLayout row="1">
-            <RadListView 
-              @itemSelected="onItemSelected"
-              @itemSelecting="onItemSelecting"
-              @itemDeselecting="onItemDeselecting"
-              @itemDeselected="onItemDeselected"  
-              v-if="inputSelect"  
-              class="selectList" 
-              :items="selectOptions"
-              selectionBehavior="Press"
-              color="red"
-              itemSelectedBackgroundColor="red">
-      
-              <v-template if="item.active == false">
-                <FlexboxLayout 
-                  justifyContent="space-between"
-                  class="item"
-                >
-                  <Label class="label active" :text="item[inputSelect.campos.name]" />
-
-                </FlexboxLayout>
-              </v-template>
-              <v-template if="item.active == true" >
-                <FlexboxLayout 
-                  justifyContent="space-between"
-                  class="item active"
-                >
-                  <Label class="label" color="#4D4D4D"  :text="item[inputSelect.campos.name]" />
-                  <image src="~/assets/icons/check_grey.png" height="14" width="14" marginRight="8" stretch="aspectFit" />
-                </FlexboxLayout>
-              </v-template>
-           
-            </RadListView>
-          </StackLayout>
-
-          <StackLayout row="2" padding="4 0 8 0">
-            <Button text="Seleccionar" @tap="selectItem" :class="buttonsClass" />
-          </StackLayout>
-        </GridLayout>
-
-      </StackLayout> -->
-
       <ScrollView >
-        <StackLayout  padding="8">
+        <StackLayout padding="16" >
            
           <slot name="top"></slot>
 
           <StackLayout
             class="card"
-            paddingTop="16"
-            marginBottom="16"
+            padding="16"
           >
-
             <StackLayout
               v-for="(e,i) in inputs"
               :key="`inputs-${i}`"
               class="input-group"
               :class="e.typeInput == 'select' ? 'input-group-select':''"
             >
-
+              <Label v-if="e.isLabel == false ? e.isLabel:true" :text="e.label" class="label" />
               <StackLayout
-                v-if="[undefined, 'number','email','phone'].includes(e.typeInput)"
+                v-show="[undefined, 'number','email','phone'].includes(e.typeInput)"
               >
                 <TextField 
                   :text="e.model" 
@@ -78,14 +26,24 @@
                   class="inputForm"
                   :class="e.error ? 'input-control-error':''"
                   :hint="e.hint"
-                 :keyboardType="e.typeInput" />
+                  :keyboardType="e.typeInput" />
+
               </StackLayout>
+
               <StackLayout
                 v-if="e.typeInput == 'select'"
-                class="input-control input-control-select"
+                class="input-control"
                 @tap="openDrawer(e)"
               >
-                <Label class="label" :class="e.model != '' ? 'active':''" :text="e.label" />
+                <FlexboxLayout
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Label class="label" :class="e.model != '' ? 'active':''" :text="e.label" />
+                  <button 
+                    class="btn btn-text btn-sm" 
+                    text="Seleccionar" margin="0"  />
+                </FlexboxLayout>
               </StackLayout>
 
             </StackLayout>
@@ -129,7 +87,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
       
     },
     computed:{
-      
+      ...mapState(['drawerSelect']),
       titleOptions(){
         return this.inputSelect.title
       }
@@ -145,56 +103,28 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
       // console.log(this.$refs.drawerInput)
     },
     methods:{
-      onItemTapMenu({i}){
-        console.log(i)
-      },
-      onItemSelected({ index, object }) {
-        console.log(`Item selected: ${index}`, object);
-      },
-      onItemSelecting({ index, object }) {
-        
-        this.selectOptions.forEach((e,i)=>{
-          if(i == index){ 
-            this.inputSelect.model = e[this.inputSelect.campos.id]
-            this.inputSelect.label = e[this.inputSelect.campos.name]
-            e.active = true 
-
-          }else{ e.active = false }
-        })
-        console.log(`Item selecting: ${index}`, object);
-      },
-      onItemDeselecting({ index, object }) {
-        console.log(`Item deselecting: ${index}`, object);
-      },
-      onItemDeselected({ index, object }) {
-        console.log(`Item deselected ${index}`, object);
-      },
-      onNavigationButtonTap() {
-        Frame.topmost().goBack();
-      },
+      ...mapMutations(['changeDrawerSelect', 'setItemsSelect']),
       openDrawer(e) {
-
+       
         this.inputSelect = e
-
-        let values = JSON.parse(JSON.stringify(e.values))
-        values.forEach((item)=>{
-          item.active = false
-          if(this.inputSelect.model != ''){
-            if(item.id == this.inputSelect.model){
-              item.active = true
-            }
-          }
+        this.changeDrawerSelect(!this.drawerSelect)
+        this.setItemsSelect(e.values)
+        // let values = JSON.parse(JSON.stringify(e.values))
+        // values.forEach((item)=>{
+        //   item.active = false
+        //   if(this.inputSelect.model != ''){
+        //     if(item.id == this.inputSelect.model){
+        //       item.active = true
+        //     }
+        //   }
           
-        })
+        // })
         
-        this.selectOptions = new ObservableArray(values)
+        // this.selectOptions = new ObservableArray(values)
 
 
-        this.$refs.drawerInput.open('bottom')
+        // this.$refs.drawerInput.open('bottom')
       },
-      selectItem(){
-        this.$refs.drawerInput.close('bottom')
-      }
     }
   }
 </script>
@@ -211,32 +141,35 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
       // border-bottom-width: 1;
       // border-bottom-color: rgba(#4D4D4D, .1);
     }
-    .input-control{
-      padding:0;
-      margin: 0;
-      margin-top: 8;
-      padding: 0 6 6 6;
-      color: #4D4D4D;
-      placeholder-color: rgba(#4D4D4D, .4);
-      border-bottom-width: 1;
-      border-bottom-color: rgba(#4D4D4D, .1);
-      font-size: 14;
-      &:focus{
-       border-bottom-color: #DA0080;
-      }
-      &.input-control-select{
-        .label{
-          color: rgba(#4D4D4D, .4);
-          font-size: 14;
-          &.active{
-          color: rgba(#4D4D4D, 1);
+    // .input-control{
+    //   padding:0;
+    //   margin: 0;
+    //   margin-top: 8;
+    //   padding: 0 6 6 6;
+    //   color: #4D4D4D;
+    //   placeholder-color: rgba(#4D4D4D, .4);
+    //   border-bottom-width: 1;
+    //   border-bottom-color: rgba(#4D4D4D, .1);
+    //   font-size: 14;
+    //   &:focus{
+    //    border-bottom-color: #DA0080;
+    //   }
+    //   &.input-control-select{
+    //     .label{
+    //       color: rgba(#4D4D4D, .4);
+    //       font-size: 14;
+    //       &.active{
+    //       color: rgba(#4D4D4D, 1);
 
-          }
-        }
-      }
-    }
+    //       }
+    //     }
+    //   }
+    // }
     .input-control-error{
         border: 1px solid red;
+    }
+    .label{
+      font-size: 12;
     }
   }
   .drawerSelect{

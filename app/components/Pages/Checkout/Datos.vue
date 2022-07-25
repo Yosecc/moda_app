@@ -8,25 +8,38 @@
       :nextStatus="true"
     >
     
-    <ScrollView  >
-      <StackLayout class="" marginBottom="8" marginTop="8">
-          <FlexboxLayout marginBottom="8" justifyContent="space-between">
-            <button width="100%" fontSize="12" class="btn btn-sm" @tap="setTypeFactura(1)" :class="typeFactura == 1 ? 'btn-primary':''" text="DATOS PERSONALES"  />
-            <button width="100%" fontSize="12" class="btn btn-sm" @tap="setTypeFactura(2)" :class="typeFactura == 2 ? 'btn-primary':''" text="SOY EMPRESA"  />
+      <ScrollView  >
+        <StackLayout  class="" paddingBottom="16" marginTop="8">
+          <FlexboxLayout 
+            marginBottom="8" 
+            justifyContent="space-between">
+            <button 
+              width="100%" 
+              fontSize="12" 
+              class="btn btn-sm" 
+              @tap="setTypeFactura(1)" 
+              :class="typeFactura == 1 ? 'btn-primary':''" 
+              text="DATOS PERSONALES"  />
+            <button 
+              width="100%" 
+              fontSize="12" 
+              class="btn btn-sm" 
+              @tap="setTypeFactura(2)" 
+              :class="typeFactura == 2 ? 'btn-primary':''" 
+              text="SOY EMPRESA"  />
           </FlexboxLayout>
 
-        <InputsLayout
-          :inputs="inputsStep"
-        >
-          <template slot="top">
-          </template> 
-          <template slot="bottom">
-           
-          </template> 
-        </InputsLayout>
-        
-      </StackLayout>
-    </ScrollView>
+          <InputsLayout
+            :inputs="inputsStep"
+          >
+            <template slot="top">
+            </template> 
+            <template slot="bottom">
+            </template> 
+          </InputsLayout>
+          
+        </StackLayout>
+      </ScrollView>
     </layoutCheckout>
    </Page>
 </template>

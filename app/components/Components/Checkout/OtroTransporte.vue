@@ -2,19 +2,20 @@
 
 <template lang="html">
   <StackLayout>
-
+    <StackLayout padding="0 8">
     <CardEnvio
     :envio="envioSelected"
+    :altura="70"
   />
+</StackLayout>
 
+    <StackLayout padding="0 16 0 16">
 
     <StackLayout
       padding="8 16"
-
-      backgroundColor="#F9E79F"
       marginBottom="8"
       borderRadius="8"
-
+      class="card card-info"
     >
       <Label textAlignment="center" textWrap text="Este valor incluye el envío hasta el transporte elegido. Luego, el costo del transporte se abona en destino."/>
     </StackLayout>
@@ -26,7 +27,7 @@
         <span text="por traslado."/>
       </FormattedString>
     </label>
-
+</StackLayout>
     <InputsLayout
         :inputs="inputsDireccion"
         :showDrawer="false"
@@ -81,10 +82,16 @@
             typeInput: 'select',
             name: 'transporte',
             model: '',
-            label: 'Seleccione un transporte',
+            label: 'Transporte',
             title: 'Seleccione un transporte',
             hint:'Seleccione un transporte',
-            values: [],
+            isLabel: false,
+            values: [
+              {id: 1, name: 'description'},
+              {id: 2, name: 'description1'},
+              {id: 3, name: 'description2'},
+              {id: 4, name: 'description3'}
+            ],
             campos: {id: 'id', name: 'nombre_completo'},
             required: true,
           },

@@ -1,10 +1,13 @@
 <template lang="html">
   <StackLayout>
-
+    <StackLayout padding="0 8">
     <CardEnvio
     :envio="envioSelected"
+    :altura="70"
   />
+</StackLayout>
 
+    <StackLayout padding="0 16 0 16">
 
     <label textWrap="true">
       <FormattedString>
@@ -13,7 +16,7 @@
 
       </FormattedString>
     </label>
-
+</StackLayout>
     <InputsLayout
         :inputs="inputsDireccion"
         :showDrawer="false"

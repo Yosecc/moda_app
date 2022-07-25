@@ -1,7 +1,10 @@
 <template lang="html">
+  <StackLayout padding="0 8">
   <CardEnvio
     :envio="envioSelected"
+    :altura="70"
   />
+</StackLayout>
 </template>
 
 <script>

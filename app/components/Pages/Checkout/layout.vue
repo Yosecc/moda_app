@@ -5,18 +5,13 @@
     >
       <StackLayout
         row="0"
-        padding="8"
+        padding="16 16 8 16"
       >
-    
         <FlexboxLayout 
-          paddingLeft="8"
-          paddingRight="8"
-          paddingTop="8"
-          paddingBottom="8"
+          padding="8"
           class="card"
           alignItems="center"
         >
-
           <Image
             :src="carCheckout.logo"
             width="32"
@@ -27,7 +22,6 @@
           />
           <StackLayout verticalAlignment="top">
             <Label 
-
               :text="carCheckout.name" 
               fontWeight="900"
               fontSize="16"
@@ -52,10 +46,11 @@
 
       <StackLayout
         row="1"
-        padding="0 8"
       >
-        <Label class="title_product" :text="title" />
-        <Label textWrap :text="subTitle" />
+        <StackLayout paddingLeft="16" paddingRight="16">
+          <Label class="title_product" :text="title" />
+          <Label textWrap :text="subTitle" />
+        </StackLayout>
         <StackLayout>
           <slot/>
         </StackLayout>
@@ -63,6 +58,8 @@
       <StackLayout
         row="2"
         padding="0"
+        paddingBottom="4"
+        paddingTop="4"
         v-if="!total"
       >
         <button 

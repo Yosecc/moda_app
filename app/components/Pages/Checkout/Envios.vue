@@ -7,7 +7,12 @@
     nextPage="/envios_detail"
     :nextStatus="nextStatus"
   >
-    <RadListView marginTop="8" for="item in envios" @itemTap="onItemTap">
+  <StackLayout marginTop="8" paddingRight="8" paddingLeft="8">
+    <RadListView 
+      for="item in envios"
+      layout="grid"
+      itemWidth="50%"
+      @itemTap="onItemTap">
       <v-template if="item.active == false">
         <CardEnvio
           :envio="item"
@@ -19,6 +24,7 @@
         />
       </v-template>
     </RadListView>
+  </StackLayout>
   </layoutCheckout>
 </Page>
 </template>

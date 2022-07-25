@@ -3,7 +3,7 @@
     <HeaderDefault :back="true" />
 
     <GridLayout columns="*" rows="auto,auto,*">
-      <CategoryBox row="0" :isIcon="false" />
+      <!-- <CategoryBox row="0" :isIcon="false" /> -->
 
       <GridLayout row="1" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
         <SearchBar 
@@ -16,6 +16,7 @@
           marginTop="16"
           borderRadius="8"
           v-model="filterName"
+          @submit="onSubmit"
         />
         <!-- <Image 
           col="1"
@@ -29,11 +30,31 @@
       
       <AbsoluteLayout row="2" >
         <RadListView 
+          class="listSelect"
+          ref="listUltimasBusquedas"
+          for="item in ultimasbusquedasComputed"
+          top="0"
+          left="0"
+        >
+          <v-template >
+            <StackLayout class="option">
+              <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                <StackLayout orientation="horizontal">
+                  <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
+                  <label :text="item" />
+                </StackLayout>
+                <!-- <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" /> -->
+
+              </FlexboxLayout>
+            </StackLayout>
+          </v-template>
+        </RadListView>
+        <!-- <RadListView 
           ref="listView"
           for="item in productsComputed"
           layout="grid"
           itemWidth="50%"
-       
+          @scrollEnded="scrollEnd"
           pullToRefresh="true"
           @pullToRefreshInitiated="onPullToRefreshInitiated"
           top="0"
@@ -44,7 +65,7 @@
               :product="item"
             ></ProductBox>
           </v-template>
-        </RadListView>
+        </RadListView> -->
         <StackLayout 
           top="50"
           left="0"
@@ -75,7 +96,7 @@ import Products from "../Components/Products.vue";
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import CategoryBox from '~/components/Components/Boxes/CategoryBox.vue'
-
+import cache from '@/plugins/cache'
 export default {
   components: {
     Filters,
@@ -93,7 +114,9 @@ export default {
       page: 1,
       config:null,
       products: [],
-      filterName: null
+      filterName: null,
+      numero: 1,
+      ultimasbusquedas: []
     };
   },
   watch:{
@@ -125,10 +148,25 @@ export default {
         })
       }
     },
+    ultimasbusquedasComputed(){
+      if(!this.filterName){
+        return this.ultimasbusquedas
+      }else{
+        return this.ultimasbusquedas.filter((item) => {
+          return (item.match(new RegExp(this.filterName, 'i')))
+        })
+      }
+    }
   },
   mounted(){
+    if(cache.get('last_search')){
+      this.ultimasbusquedas = new ObservableArray(JSON.parse(cache.get('last_search'))) 
+
+      console.log(this.ultimasbusquedas)
+    }
+    
     // this.setProducts(new ObservableArray([]))
-    this.onGetProducts()
+    // this.onGetProducts()
   },
   methods:{
     ...mapActions('products',['getProductsRosa']),
@@ -140,33 +178,50 @@ export default {
         this.products = new ObservableArray(response)
       })
     },
-    // async scrollEnd({ object, scrollOffset }){
-    //     let altura = object.getActualSize().height * this.numero
-    //     if(scrollOffset  >= altura){
-    //       this.loading = true
-    //       let plan = this.planes[this.numero]
-    //       if(plan != undefined){
-    //         await this.changeParamsStores({plan: plan  })
-            
-    //         await this.$nextTick( async () => {
-    //           await this.getStoreRosa().then((response)=>{
-    //             response.forEach((e)=>{
-    //               this.storess.push(e)
-    //             })
-    //             this.loading = false
-    //             this.numero = this.numero+1
-    //           })
-    //         });
+    async scrollEnd({ object, scrollOffset }){
 
-    //         this.$refs.listStores.nativeView.refresh();
-    //       }
+      // let altura = object.getActualSize().height * this.numero
+      // if(scrollOffset  >= altura){
+      //   this.loading = true
+      //   let plan = this.planes[this.numero]
+      //   if(plan != undefined){
+      //     await this.changeParamsStores({plan: plan  })
           
-    //     }
-    //   }
+      //     await this.$nextTick( async () => {
+      //       await this.getStoreRosa().then((response)=>{
+      //         response.forEach((e)=>{
+      //           this.storess.push(e)
+      //         })
+      //         this.loading = false
+      //         this.numero = this.numero+1
+      //       })
+      //     });
+
+      //     this.$refs.listStores.nativeView.refresh();
+      //   }
+        
+      // }
+    },
     onScrolled () {
       this.page = this.page+1;
       this.config = {push : true}
       this.onSubmit()
+    },
+    onSubmit(){
+      this.processUltimasBusquedas()
+      console.log('submit')
+    },
+    processUltimasBusquedas(){
+      let object = null
+      if(cache.get('last_search')){
+        object = JSON.parse(cache.get('last_search'))
+        if(!object.includes(this.filterName)){
+          object.unshift(this.filterName)
+        }
+        cache.set('last_search', JSON.stringify(object))
+      }else{
+        cache.set('last_search', JSON.stringify([this.filterName]))
+      }
     },
     async onPullToRefreshInitiated ({ object }) {
         this.isLoading = true

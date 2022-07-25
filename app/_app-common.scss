@@ -107,7 +107,7 @@ label {
 .btn{
     padding: 0 16;
     margin: 0;
-    border-radius: 100;
+    border-radius: 6;
     font-weight: bold;
     // @extend .shadow-xs;
     max-width: content;
@@ -125,6 +125,11 @@ label {
         background-color: rgba(#0080DA, .6);
         color: white;
     }
+    &.btn-text{
+        background-color: rgba(#8e8e8e, .1);
+        border-radius: 30;
+        font-size: 12;
+    }
 
     &.disabled{
         background-color: rgba(#FFFFFF, .8);
@@ -137,6 +142,11 @@ label {
     &.btn-shadow-none{
         z-index: 0 !important;
         shadow: none !important;
+    }
+    &.outline{
+      border-color: $modatexColor;
+      border-width: 2;
+      background-color: transparent; 
     }
 }
 
@@ -181,21 +191,21 @@ Switch#switch[checked=false]{
 }
 
 .inputForm{
-    // border-color: #B1B1B1;
-    border-bottom-width: 0;
+
     background: rgba($secondary-dark, .2);
+    border-color: rgba($secondary-dark, .2);
+    border-width: 1;
     font-weight: bold;
     color:#4D4D4D;
     font-size: 16;
     padding-left: 8;
-    // placeholder-color: #A5A5A5;
+    padding-bottom: 8;
     border-radius: 4;
     margin-left: 0;
     margin-right: 0;
-    // margin-bottom: 24;
-    height: 40;
+    // height: 40;
     &:focus{
-      border-width: 1;
+      // border-width: 1;
       border-color: rgba($modatexColor, 1);
     }
 
@@ -314,6 +324,9 @@ Switch#switch[checked=false]{
         label{
             // color: white;
         }
+    }
+    &.card-info{
+        background-color: #3498DB;
     }
 }
 .category_box{
@@ -506,6 +519,20 @@ Button{
     }
 }
 
+.listSelect{
+  .option{
+    border-bottom-width: 1;
+    padding: 8 8 10 4;
+    margin-bottom: 8;
+  }
+}
+
+.item_ultimasbusquedas{
+    border-bottom-width: 1;
+    padding: 8 8 10 4;
+    margin-bottom: 8;
+}
+
 .ns-light{
   .header-full-logo{
     background: $modatexColor; 
@@ -548,6 +575,11 @@ Button{
   }
   .subcategorias{
     label{
+      border-color: rgba($primary, .1);
+    }
+  }
+  .listSelect{
+    .option{
       border-color: rgba($primary, .1);
     }
   }
@@ -617,6 +649,11 @@ Button{
         background: $modatexColor;
         // color: white;
       }
+    }
+  }
+  .listSelect{
+    .option{
+      border-color: rgba($secondary-dark, .5);
     }
   }
 }

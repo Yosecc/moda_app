@@ -20,6 +20,7 @@ export default new Vuex.Store({
         page: 0,
         drawer:  null,
         drawerCar: null,
+        drawerSelect: false, 
         heightDrawerBottom: '80%',
         menuPage:[
           {
@@ -65,6 +66,7 @@ export default new Vuex.Store({
           'res://eskeleton',
         ],
         isLoadPage: false,
+        itemsSelect: []
     },
     getters: {
         componentActive(state){
@@ -95,6 +97,12 @@ export default new Vuex.Store({
         },
         changeheightDrawerBottom(state, val){
             state.heightDrawerBottom = val
+        },
+        changeDrawerSelect(state, val){
+            state.drawerSelect = val
+        },
+        setItemsSelect(state, val){
+            state.itemsSelect = val
         }
     },
     actions: {

@@ -1,25 +1,28 @@
 <template lang="html">
   <StackLayout>
-
-   <CardEnvio
-    :envio="envioSelected"
-  />
-
-    <label textWrap="true">
-      <FormattedString>
-        <span text="Seleccioná la sucursal más cercana y llená los datos de la persona que retirará el paquete. " />
-        <span text=" Sólo esa persona podrá retirar el paquete. " fontWeight="bold" />
-        <span text="Esta tienda agregará un costo adicional de " />
-        <span text="$40.00 " fontWeight="bold" />
-        <span text="por traslado hasta el transporte." fontWeight="bold" />
-      </FormattedString>
-    </label>
+    <StackLayout padding="0 8">
+      <CardEnvio
+        :envio="envioSelected"
+        :altura="70"
+      />
+    </StackLayout>
+    <StackLayout padding="0 16 0 16">
+      <label textWrap="true">
+        <FormattedString>
+          <span text="Seleccioná la sucursal más cercana y llená los datos de la persona que retirará el paquete. " />
+          <span text=" Sólo esa persona podrá retirar el paquete. " fontWeight="bold" />
+          <span text="Esta tienda agregará un costo adicional de " />
+          <span text="$40.00 " fontWeight="bold" />
+          <span text="por traslado hasta el transporte." fontWeight="bold" />
+        </FormattedString>
+      </label>
+    </StackLayout>
 
     <InputsLayout
         :inputs="sucursalImputs"
       >
         <template slot="top">
-          <Label marginBottom="8" text="Agregar nuerfggva dirección" class="title" />
+          <Label marginBottom="8" text="Agregar nueva dirección" class="title" />
         </template> 
         <template slot="bottom">
         </template> 

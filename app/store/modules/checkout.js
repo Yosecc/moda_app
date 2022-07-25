@@ -64,7 +64,8 @@ const state = {
             precios: ['$ 159,00 / a todo el país'],
             description:'Seleccionando esta opción te enviamos el pedido a la sucursal próxima que elijas en 4 a 7 días.',
             active: false,
-            color: '#239B56'
+            color: '#239B56',
+            icon: 'res://sucursal'
         },
         {
             id: 2,
@@ -72,7 +73,8 @@ const state = {
             precios: ['$ 129,00 / en GBA','$ 690,00 / en CABA','$ 129,00 / en resto del país'],
             description:'Seleccionando esta opción te enviamos el pedido a tu domicilio de 1 a 3 días en CABA y 4 a 9 días en GBA y resto del país.',
             active: false,
-            color: '#CA6F1E'
+            color: '#CA6F1E',
+            icon: 'res://eviocasa'
         },
         {
             id: 3,
@@ -80,7 +82,8 @@ const state = {
             precios: ['NUEVO! Envío Express a todo el país Costo de servicio $ 199,00'],
             description:'Envíos a terminal de omnibus en 48/72hs Busca si llegamos a tu ciudad!',
             active: false,
-            color: '#CDDC39'
+            color: '#CDDC39',
+            icon: 'res://integralpack'
         },
         {
             id: 4,
@@ -88,7 +91,8 @@ const state = {
             precios: ['Costo de traslado $ 100,00'],
             description:'Aquí podrás seleccionar el transporte de preferencia.',
             active: false,
-            color: '#1976D2'
+            color: '#1976D2',
+            icon: 'res://envio'
         },
         {
             id: 5,
@@ -96,7 +100,8 @@ const state = {
             precios: [],
             description:'Retirar compra en la tienda.',
             active: false,
-            color: '#5E35B1'
+            color: '#5E35B1',
+            icon: 'res://enviostore'
         },
     ]),
     direcciones: new ObservableArray([{

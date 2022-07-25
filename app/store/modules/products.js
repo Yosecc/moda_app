@@ -1,6 +1,7 @@
 
 import Api from '~/services'
 import { ObservableArray } from '@nativescript/core/data/observable-array';
+import moment from 'moment'
 /**
  * 
  */
@@ -23,6 +24,15 @@ const state = {
       categories: '',
       search:    "",
       order:     "manually",
+    },
+    parametrosSearch:{
+      menu    : 'get_catalog_products',
+      date    : moment().format('YYYY-MM-DD'),
+      type    : 'search-box-input',
+      sections: [],
+      search  : 'remera',
+      page    : 1,
+      offset  : 15
     }
 };
 
@@ -69,6 +79,11 @@ const mutations = {
         state.parametros[i] = val[i]
       }
     }
+    changeParamsProductsSearch(state, val){
+      for(var i in val){
+        state.parametrosSearch[i] = val[i]
+      }
+    }
 };
 
 const actions = {
@@ -94,7 +109,6 @@ const actions = {
         })
         return response
     },
-    
     async getProductsRosa(context){
       const qs = Object.keys(context.state.parametros)
       .map(key => `${key}=${context.state.parametros[key]}`)
@@ -109,14 +123,26 @@ const actions = {
       const response = await Api.get(`rosa/products?${qs}`)
       return response
     },
-    async getUltimosproductos(context, params = { product_page: 1, is_store: true }){
-      const qs = Object.keys(context.state.parametros)
-      .map(key => `${key}=${context.state.parametros[key]}`)
+    async getUltimosproductos(context){
+
+      context.commit('changeParamsProductsSearch',{menu: 'get_last_products'})
+
+      const qs = Object.keys(context.state.parametrosSearch)
+      .map(key => `${key}=${context.state.parametrosSearch[key]}`)
       .join('&');
       
       const response = await Api.get(`rosa/products?${qs}`)
       return response
     },
+    async getSearch(context){
+      const qs = Object.keys(context.state.parametrosSearch)
+      .map(key => `${key}=${context.state.parametrosSearch[key]}`)
+      .join('&');
+      
+      const response = await Api.get(`rosa/search?${qs}`)
+      return response
+    },
+    
     async getProductVisits(context)
     {
       const response = await Api.get('productsVisitados?is_store=false')
