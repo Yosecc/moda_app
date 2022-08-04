@@ -15,7 +15,7 @@
 			:value="car.id"
 		></CheckBox>
 		<StackLayout
-			padding="16"
+			padding="8"
 			:opacity="multienvio && !isOrderMinMultienvio ? '.2' : '1'"
 			:translateX="multienvio && isOrderMinMultienvio ? '20':'0'"
 		>
@@ -33,7 +33,18 @@
 					justifyContent="space-between" >
 
 					<StackLayout orientation="horizontal">
-						<Image 
+						<ImageCache 
+		              stretch="aspectFill" 
+		              width="40" 
+									height="40"
+		              placeholderStretch="aspectFill"
+		              placeholder="res://eskeleton"
+		              :src="car.logo" 
+		              marginRight="10"
+		              class="img_tienda"
+		              horizontalAlignment="left"
+		            />
+						<!-- <Image 
 							:src="car.logo" 
 							width="40" 
 							height="40"
@@ -41,7 +52,7 @@
 							class="img_tienda"
 							horizontalAlignment="left"
 							marginRight="10"
-						/>
+						/> -->
 						<StackLayout >
 							<label 
 							 	:text="car.name" 
@@ -72,28 +83,60 @@
 		     	for="item in car.products"
 		     	marginTop="16"
 		     	marginBottom="16"
+		     	backgroundColor=""
 		     	@itemTap="onItemTap">
 		     	
 		      <v-template>
 		        <StackLayout orientation="horizontal" class="item" >
-		        	<image
-							  :src="`${url_image}/${item.images[0].lg}`" 
-							  stretch="aspectFill"
-							  width="70"
-							/>
-							<StackLayout>
-			          <Label :text="item.descripcion" class=""></Label>
-			          <FlexboxLayout justifyContent="space-between" width="100%">
-				          <StackLayout backgroundColor="" padding="0" orientation="horizontal">
-				          	<GridLayout @tap="onminusCountProduct(item.id)"	class="btn-icon" >
+		        	<StackLayout backgroundColor="">
+		        		<ImageCache 
+		              stretch="aspectFill" 
+		              width="50"
+		              height="60"
+		              placeholderStretch="aspectFill"
+		              placeholder="res://eskeleton"
+		              :src="`${item.images[0]}`"
+		              rounded="true"
+		            />
+			        	<!-- <image
+								  :src="`${item.images[0]}`" 
+								  stretch="aspectFill"
+								  width="50"
+								/> -->
+							</StackLayout>
+							<StackLayout backgroundColor="">
+			          <Label :text="item.descripcion" fontWeight="800" padding="0" marginBottom="8" class=""></Label>
+			          <Label :text="item.precio | moneda" fontWeight="800" padding="0" marginBottom="8" class=""></Label>
+			          <FlexboxLayout  borderBottomWidth="1" borderColor="rgba(255,255,255,.05)" padding="0"  justifyContent="space-between" width="100%" marginBottom="8">
+			          	<StackLayout padding="0">
+			          		<Label text="Cant." fontSize="12" padding="0" />
+			          	</StackLayout>
+			          	<StackLayout padding="0">
+			          		<Label text="Talle/Color" fontSize="12" padding="0" />
+			          	</StackLayout>
+			          </FlexboxLayout>
+			          <FlexboxLayout 
+			          	v-if="item.combinacion.length" 
+			          	v-for="(i,k) in item.combinacion" 
+			          	:key="`combi_${k}`" 
+			          	padding="8 0 8 0" 
+			          	borderBottomWidth="1" 
+			          	borderColor="#8e8e8e" 
+			          	justifyContent="space-between" 
+			          	width="100%"
+			          	marginBottom="8"
+			          >
+			          	<!-- Cantidad -->
+				          <StackLayout  padding="0" orientation="horizontal">
+				          	<GridLayout @tap="onminusCountProduct(item.id, k)"	class="btn-icon"  >
 											<Image 
 												src="~/assets/icons/minus.png" 
 												width="20" 
 												height="15" 
 											/>
 										</GridLayout>
-					          <Label :text="item.count" class=""></Label>
-					          <GridLayout @tap="onplusCountProduct(item.id)"	class="btn-icon" >
+					          <Label :text="i.count" class=""></Label>
+					          <GridLayout @tap="onplusCountProduct(item.id, k)"	class="btn-icon" >
 											<Image 
 												src="~/assets/icons/plus.png" 
 												width="20" 
@@ -101,47 +144,58 @@
 											/>
 										</GridLayout>
 					        </StackLayout>
-					        <StackLayout horizontalAlignment="right">
-					        	<AbsoluteLayout>
 
-				              <label
-				                left="0"
-				                top="0"
-				                width="30"
-				                height="30"
-				                :backgroundColor="item.colorActive"
-				                opacity=".5"
-				                borderRadius="100%"
-				              />
+					        <StackLayout @tap="editProductCar(item.id, k)" padding="0" orientation="horizontal">
+					        	<!-- TALLE -->
+						        <StackLayout padding="0" marginRight="8">
+							        <FlexboxLayout	class="talleSelect" >
+							        	<Label :text="i.talleActive" horizontalAlignment="center" fontSize="14" fontWeight="600" padding="0" margin="0" />
+							        </FlexboxLayout>
+						        </StackLayout>
 
-				              <label
-				                left="5"
-				                top="5"
-				                width="20"
-				                height="20"
-				                :backgroundColor="item.colorActive"
-				                borderRadius="100%"
-				              />
+						        <!-- COLOR -->
+						        <StackLayout padding="0" horizontalAlignment="right">
+						        	<AbsoluteLayout>
+					              <label
+					                left="0"
+					                top="0"
+					                width="30"
+					                height="30"
+					                :backgroundColor="i.colorActive"
+					                opacity=".5"
+					                borderRadius="100%"
+					              />
 
-
-				              <Image
-				                
-				                left="11"
-				                top="5"
-				                src="~/assets/icons/check_white.png" 
-				                width="8" 
-				                height="auto" 
-				              />
-
-				            </AbsoluteLayout>
-
-					        </StackLayout>
+					              <label
+					                left="5"
+					                top="5"
+					                width="20"
+					                height="20"
+					                :backgroundColor="i.colorActive"
+					                borderRadius="100%"
+					              />
+					              <Image
+					                left="11"
+					                top="5"
+					                src="~/assets/icons/check_white.png" 
+					                width="8" 
+					                height="auto" 
+					              />
+					            </AbsoluteLayout>
+						        </StackLayout>
+						      </StackLayout>
 				        </FlexboxLayout >
+
+				        <!-- AGREGAR -->
+				        <StackLayout @tap="onPrepareCombinacion(item.id)" >
+				        	<label text="Agregar combinación" class="label_enlace" fontSize="12" horizontalAlignment="right"/>
+				        </StackLayout>
+
 							</StackLayout>
 		        </StackLayout>
 		      </v-template>
 		    </RadListView>
-
+		    
 		    <StackLayout paddingRight="16" paddingBottom="16">
 		    	<label
 						fontSize="20"
@@ -206,6 +260,19 @@
 				this.$forceUpdate()
 			}
 		},
+		filters: {
+	    moneda: function (value) {
+	      value += '';
+	      var x = value.split('.');
+	      var x1 = x[0];
+	      var x2 = x.length > 1 ? '.' + x[1] : '';
+	      var rgx = /(\d+)(\d{3})/;
+	      while (rgx.test(x1)) {
+	        x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	      }
+	      return '$'+ x1 + x2;
+	    }
+	  },
 		mounted(){
 
 		},
@@ -220,7 +287,9 @@
 			precioCar(){
 				let precio = 0
 				this.car.products.forEach((element)=>{
-					precio = ( precio + parseFloat(element.precio) ) * element.count
+					element.combinacion.forEach((e)=>{
+						precio = ( precio + parseFloat(element.precio) ) * e.count
+					})
 				})
 				return precio
 			},
@@ -263,21 +332,20 @@
 		methods:{
 			...mapMutations(['changeDrawer']),
 			...mapMutations('stores',['setStoreActive','setStore']),
-			...mapMutations('car',['setStoreActiveCar','minusCountProduct','plusCountProduct','removeCardAbsolute']),
+			...mapMutations('car',['setStoreActiveCar','minusCountProduct','plusCountProduct','removeCardAbsolute','addCombinacion','setProductId']),
 			...mapMutations('checkout',['setcarCheckout']),
 			// ...mapActions('car',['openCar']),
-			onminusCountProduct(id){
+			onminusCountProduct(id,key){
 				this.$refs.productsCar.nativeView.refresh();
-				this.minusCountProduct(id)
+				this.minusCountProduct({id, key})
 				this.$forceUpdate()
 			},
-			onplusCountProduct(id){
+			onplusCountProduct(id, key){
 				this.$refs.productsCar.nativeView.refresh();
-				this.plusCountProduct(id)
+				this.plusCountProduct({id, key})
 				this.$forceUpdate()
 			},
 			onTrashStore(){
-
 				this.removeCardAbsolute(this.car)
 				this.$refs.productsCar.nativeView.refresh();
 				this.$forceUpdate()
@@ -288,7 +356,14 @@
 	      this.setStore(this.car)
 	      this.changeDrawer('right')
 				this.$forceUpdate()
-				// this.changeDrawerCar('right')
+			},
+			onPrepareCombinacion(id){
+				this.setProductId({id: id, combinacion_key:null})
+				this.$emit('openDropBottom')
+			},
+			editProductCar(id, combinacion_key){
+				this.setProductId({id, combinacion_key})
+				this.$emit('openDropBottom')
 			},
 			even(option){
 				this.act = false

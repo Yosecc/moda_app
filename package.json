@@ -7,6 +7,8 @@
     "@nativescript/core": "~8.2.0",
     "@nativescript/theme": "~3.0.2",
     "@nstudio/nativescript-carousel": "^8.0.3",
+    "@ticnat/nativescript-image-cache": "^1.0.7",
+    "moment": "^2.29.4",
     "nativescript-gif": "^5.0.0",
     "nativescript-ui-listview": "^10.1.1",
     "nativescript-ui-sidedrawer": "^10.0.2",

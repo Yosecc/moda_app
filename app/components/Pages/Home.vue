@@ -29,14 +29,14 @@
         </StackLayout>  
        
         <StackLayout marginBottom="16">
-          <Promotions/>
+          <Promotions/>s
         </StackLayout>
 
        <!--  <StackLayout v-if="productsRecentlySeen[0]" padding="16">
           <recentlySeen :product="productsRecentlySeen[0]"/>
         </StackLayout> -->
 
-        <StackLayout z>
+        <StackLayout>
           <Label 
             text="Marcas Populares" 
             marginBottom="8" 
@@ -56,7 +56,7 @@
             marginRight="16"
             fontWeight="900"
           />
-          <RadListView 
+          <!-- <RadListView 
             ref="listView"
             for="item in ultimosProductos"
             layout="grid"
@@ -71,7 +71,19 @@
               ></ProductBox>
             </v-template>
 
-          </RadListView>
+          </RadListView> -->
+
+          <WrapLayout v-if="ultimosProductos.length">
+            <StackLayout
+              v-for="(item,key) in ultimosProductos"
+              :key="`product-home-${key}`"
+              width="50%">
+
+              <ProductBox
+                :product="item"
+              ></ProductBox>
+            </StackLayout>
+          </WrapLayout>
         </StackLayout>
        
       </StackLayout>
@@ -134,6 +146,7 @@
     methods:{
       ...mapActions('products',['getProductsRosa','getUltimosproductos']),
       ...mapMutations(['changeisLoadPage']),
+      ...mapMutations('products',['changeParamsProductsSearch']),
       async onPullToRefreshInitiated ({ object }) {
         console.log('Pulling...');
         await this.$nextTick( async () => {
@@ -149,9 +162,17 @@
         // console.log('scroll', args  )
       },
       onGetProducts(){
-        this.getProductsRosa()
+        this.changeParamsProductsSearch({
+          menu: 'get_new_entry_products',
+          sections:[],
+          search:'',
+          page:1,
+          offset:16,
+        })
+        this.getUltimosproductos()
         .then((response)=>{
-          this.ultimosProductos = new ObservableArray(response)
+          // console.log('response', response)
+          this.ultimosProductos = response
         })
       },
       onItemTap({ item }) {

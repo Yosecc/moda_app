@@ -49,14 +49,25 @@
             class="card"
             alignItems="center"
           >
-            <Image
+            <!-- <Image
               :src="store.logo"
               width="80"
               height="80"
               borderRadius="8"
               verticalAlignment="top"
               marginRight="8"
-            />
+            /> -->
+
+            <ImageCache 
+                  stretch="aspectFill" 
+                  width="80" 
+                  height="80"
+                  placeholderStretch="aspectFill"
+                  placeholder="res://eskeleton"
+                  :src="store.logo"
+                  marginRight="8"
+                  verticalAlignment="top"
+                />
       
             <StackLayout verticalAlignment="top">
               

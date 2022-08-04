@@ -147,6 +147,7 @@ label {
       border-color: $modatexColor;
       border-width: 2;
       background-color: transparent; 
+      color: $modatexColor;
     }
 }
 
@@ -496,9 +497,15 @@ Button{
 .productsCar{
   .item{
     border-bottom-width: 1;
-    padding-left: 16;
-
+    padding-left: 0;
   }
+  .talleSelect{
+        height:30;
+        padding:0 8 0 8;
+        justify-content:center;
+        align-items:center;
+        border-radius:6;
+    }
 }
 
 .storeBox{
@@ -533,6 +540,13 @@ Button{
     margin-bottom: 8;
 }
 
+.drop{
+    // background: blue;
+    border-top-left-radius: 20;
+    border-top-right-radius: 20;
+    box-shadow: 0 -8 10 rgba(#17202A,.2);
+}
+
 .ns-light{
   .header-full-logo{
     background: $modatexColor; 
@@ -545,6 +559,9 @@ Button{
   .productsCar{
     .item{
       border-color: rgba($primary, .05);
+    }
+    .talleSelect{
+        background-color:rgba(#8e8e8e, .2);
     }
   }
   .card{
@@ -613,6 +630,9 @@ Button{
     .item{
        border-color: rgba($secondary-dark, .05);
     }
+    .talleSelect{
+       background-color:rgba(#8e8e8e, .7);
+    }
   }
   .card{
     background:  rgba($primary, 1); 
@@ -655,5 +675,8 @@ Button{
     .option{
       border-color: rgba($secondary-dark, .5);
     }
+  }
+  .drop{
+    background:  rgba($primary, 1); 
   }
 }

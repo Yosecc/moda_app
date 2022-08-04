@@ -22,7 +22,7 @@
         padding="0"
       />
       <Label 
-        :text="`$${product.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.')}`" 
+        :text="`$${product.price}`" 
         fontSize="24" 
         fontWeight="900" 
         color="#DA0080"
@@ -97,6 +97,7 @@
       ...mapMutations(['changeDrawerCar','changeDrawer']),
       processDataCar(){
         if (this.validateData()) {
+          console.log('product',this.product)
           let obj = {
             images      : this.product.images,
             precio      : this.product.price,
@@ -109,13 +110,20 @@
               limit_price: this.product.store_data.min,
               logo: this.product.store_data.logo,
             },
-            // logo        : this.product.logo,
-            talleActive : this.product.talleActive,
-            colorActive : this.product.colorActive,
-            count       : this.product.count,
+            sizes        : this.product.sizes,
+            colors       : this.product.colors,
+            combinacion: [
+              {
+                talleActive : this.product.talleActive,
+                colorActive : this.product.colorActive,
+                count       : this.product.count,
+              }
+            ]
           }
-          console.log('obj',obj)
           this.addCar(obj)
+
+          
+
           this.$navigator.navigate('/shopping_center',{
             transition: {
               name: 'slideLeft',

@@ -1,7 +1,8 @@
 <template lang="html">
   <Page 
-  xmlns="http://schemas.nativescript.org/tns.xsd"
-      xmlns:Gif="nativescript-gif">
+    xmlns="http://schemas.nativescript.org/tns.xsd"
+    androidStatusBarBackground="#DA0080"
+  >
       <HeaderDefault
         :componentActive="componentActive"
       /> 

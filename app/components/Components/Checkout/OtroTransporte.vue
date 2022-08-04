@@ -11,23 +11,23 @@
 
     <StackLayout padding="0 16 0 16">
 
-    <StackLayout
-      padding="8 16"
-      marginBottom="8"
-      borderRadius="8"
-      class="card card-info"
-    >
-      <Label textAlignment="center" textWrap text="Este valor incluye el envío hasta el transporte elegido. Luego, el costo del transporte se abona en destino."/>
-    </StackLayout>
+        <StackLayout
+          padding="8 16"
+          marginBottom="8"
+          borderRadius="8"
+          class="card card-info"
+        >
+          <Label textAlignment="center" textWrap text="Este valor incluye el envío hasta el transporte elegido. Luego, el costo del transporte se abona en destino."/>
+        </StackLayout>
 
-    <label textWrap="true">
-      <FormattedString>
-        <span text="Elije uno de los transportes del siguiente listado. La tienda agregará un costo adicional de " />
-        <span text="$100.00 " fontWeight="bold" />
-        <span text="por traslado."/>
-      </FormattedString>
-    </label>
-</StackLayout>
+        <label textWrap="true">
+          <FormattedString>
+            <span text="Elije uno de los transportes del siguiente listado. La tienda agregará un costo adicional de " />
+            <span text="$100.00 " fontWeight="bold" />
+            <span text="por traslado."/>
+          </FormattedString>
+        </label>
+    </StackLayout>
     <InputsLayout
         :inputs="inputsDireccion"
         :showDrawer="false"

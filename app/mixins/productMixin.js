@@ -79,7 +79,7 @@ export default {
       }
       this.$forceUpdate()
 
-      console.log('hasta aqui todo bien')
+      
       this.$navigator.navigate('/product',this.options)
      
     },

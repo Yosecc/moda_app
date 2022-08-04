@@ -6,7 +6,19 @@
       orientation="horizontal" 
       ref="ofertasCont"
       >
-      <Image
+      <ImageCache 
+        v-for="(item, key) in ofertasComputed"
+        :key="`ofert-${key}`"
+        stretch="aspectFill"
+        placeholderStretch="aspectFill"
+        borderRadius="10"
+        placeholder="res://eskeleton"
+        :src="item.img"
+        width="170"
+        height="80"
+        marginRight="8"
+      /> 
+      <!-- <Image
         v-for="(item, key) in ofertasComputed"
         :key="`ofert-${key}`"
         :src="item.img"
@@ -15,7 +27,7 @@
         stretch="aspectFill"
         height="80"
         @tap="webview(item)"
-      />
+      /> -->
     </StackLayout>
   </ScrollView>
 

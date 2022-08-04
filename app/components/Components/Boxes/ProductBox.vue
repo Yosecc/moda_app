@@ -11,22 +11,35 @@
           borderRadius="10"
           v-if="product.images && product.images.length"
           top="0"
-          left="0">
-
-          <image
+          left="0"
+          padding="8 0 8 0"
+        >
+         
+          <ImageCache 
             horizontalAlignment="center"
             verticalAlignment="top"
             v-if="product.images && product.images.length"
-            :src="`${url_image}/${product.images[0].lg}`" 
             stretch="aspectFit" 
             :height="imageHeight"
-            class="product_img" />
+            width="100%"
+            class="product_img"
+            placeholderStretch="aspectFill"
+            placeholder="res://eskeleton"
+            :src="`${product.images[0]}`" />
+          <!-- <image
+            horizontalAlignment="center"
+            verticalAlignment="top"
+            v-if="product.images && product.images.length"
+            :src="`${product.images[0]}`" 
+            stretch="aspectFit" 
+            :height="imageHeight"
+            class="product_img" /> -->
         </StackLayout>
 
         
         <!--  -->
         <!-- <StackLayout 
-          top="0"
+          top="0"ss
           left="0"
           v-else-if="isOffert && product.images && product.images.length"
           borderRadius="8"
@@ -54,8 +67,8 @@
 
       <StackLayout class="product_text" >
         <price
-          :price="product.price | moneda"
-          :priceOffert="null"
+          :price="product.price"
+          :priceOffert="product.is_desc ? product.is_desc:false"
         />
         <label 
           :text="product.name" 
@@ -73,7 +86,6 @@
 <script>
   import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
 
-  const Cache = require("@nativescript/core/ui/image-cache").Cache;
   import { Http, ImageSource } from '@nativescript/core'
   import { mapState,mapMutations } from 'vuex'
   import productMixin from '~/mixins/productMixin.js'
@@ -106,56 +118,12 @@
     },
     data() {
       return {
-        url_image: URL_IMAGE
+        url_image: URL_IMAGE, 
       };
     },
     mounted(){
-      const cache = new Cache();
-      // if(this.product.images.length){
-        // 
-        // const url = this.product.images[0];
-        // const image = cache.get(url);
 
-        // if(image){
-        //   // this.getImage(url)
-        // }else{
-        //   // cache.set(url, url)
-          
-        // }
-      // }
-      
-      
-      // // console.log('cache', cache)
-      // // cache.placeholder = fromFile("~/images/logo.png");
-      // cache.maxRequests = 5;
-      // let cachedImageSource;
-      
-      // cache.enableDownload();
-      // // console.log(ImageSource.fromUrl(url))
 
-      
-
-      // // console.log('image',image)
-      // if(image){
-      //   // cachedImageSource = ImageSource.fromUrl(image);
-      //   // console.log('cachedImageSource 1', image)
-      // }else{
-      //   cache.push({
-      //     key: url,
-      //     url: url,
-      //     completed: (image, key) => {
-      //       // console.log(`${key} cache`, image)
-      //       cache.set(key, image)
-      //       // ImageSource.fromFileSync(image)
-      //         // if (url === key) {
-      //         //     cachedImageSource = ImageSource.fromNativeSource(image);
-      //         //     console.log('cachedImageSource', cachedImageSource)
-      //         //     // viewModel.set("imageSource", cachedImageSource); // set the downloaded image
-      //         // }
-      //     }
-      //   });
-      // }
-      // cache.disableDownload();
     },
     computed:{
       ...mapState(['isLoadPage']),

@@ -1,6 +1,11 @@
 // You can add your native dependencies here
+repositories {
+  mavenCentral()
+}
+
 dependencies {
 //  implementation 'androidx.multidex:multidex:2.0.1'
+ // implementation 'jp.co.cyberagent.android:gpuimage:2.x.x'
 }
 
 android {

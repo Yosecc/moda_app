@@ -55,7 +55,7 @@ const mutations = {
 const actions = {
   async Login(context){
     const response = await Api.post('auth/login',context.state.user)
-    console.log('login',response)
+    // console.log('login',response)
       if (response.status) {
         context.commit('SetUser', response.client)
         cache.set('token', response.client.api_token)

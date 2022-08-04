@@ -12,7 +12,7 @@
         :store="store"
         v-if="isLoadPage"
       />
-      <StackLayout
+      <!-- <StackLayout
         v-if="!isLoadPage"
         v-for="i in 4"
         :key="`storebox-${i}`"
@@ -22,7 +22,7 @@
         backgroundImage="res://eskeleton"
         width="100"
         height="100"
-      />
+      /> -->
 
     </StackLayout>
   </ScrollView>

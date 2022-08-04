@@ -27,7 +27,7 @@
   import templateProductDrawer from '~/components/Components/templateProductDrawer.vue'
   import templateProduct from '~/components/Pages/Product/templateProduct.vue'
   import Car from '~/components/Pages/Car/index.vue'
-  // import listSubcategories from './Components/partials/listSubcategories.vue'
+  import cache from '@/plugins/cache'
  
   export default {
     mixins:[ homeMixin ],
@@ -63,12 +63,13 @@
       }
 		},
     mounted(){
-      // if(this.isLogged){
-      //   this.defineHome()
-      // }
+      console.log(cache.get('carsStores'))
+      console.log(cache.get('carsProducts'))
+      
     },
 		methods:{
       ...mapMutations(['changeisLoadPage','changeDrawer']),
+      ...mapMutations('car',['setCarsProducts']),
       onDrawerClosed(){
         this.changeDrawer('close')
       }

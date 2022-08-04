@@ -1,8 +1,9 @@
 <template lang="html">
 <Page>
 	<HeaderDefault :back="true" />
-	<GridLayout rows="*,auto" >
+	<GridLayout rows="*,auto,auto" >
 		<ScrollView
+			ref="scrollCarros"
 			row="0"
 		>
 			<StackLayout class="page_home"  >
@@ -61,6 +62,7 @@
 					:key="key"
 					:multienvio="multienvio"
 					:car="i"
+					@openDropBottom="openDropBottom"
 				></CarBox>
 			</StackLayout>
 			
@@ -72,6 +74,52 @@
 			:cars="carts"
 			v-show="multienvio"
 		/>
+		<StackLayout 
+			ref="dropBottom" 
+			@swipe="onSwipe" 
+			class="drop" 
+			height="0" 
+			width="100%" 
+			row="2" 
+		>
+			<GridLayout padding="0 16 8 16" rows="auto,*, auto">
+			  <StackLayout
+			  	row="0"
+					marginTop="16"
+	        backgroundColor="#8e8e8e" 
+	        width="60" 
+	        height="4" 
+	        borderRadius="40" 
+	        marginBottom="8"
+	      />
+
+	      <StackLayout  row="1" marginTop="16">
+	      	<label v-if="combinacion" :text="combinacion.descripcion" margin="0 0 8 0" fontSize="14" fontWeight="900" />
+
+	      	<label text="Talle" margin="8 0 8 0" fontSize="12" fontWeight="900" />
+		      <Talles
+		      	row="1"
+		      	v-if="combinacion.sizes.length"
+	          :talles="combinacion.sizes"
+	          v-model="combinacion.talleActive"
+	        />
+	        <label text="Color" margin="8 0 8 0" fontSize="12" fontWeight="900" />
+	        <Colores
+	         	row="2"
+	         	v-if="combinacion.colors.length"
+	          :colores="combinacion.colors"
+	          v-model="combinacion.colorActive"
+	        />
+        </StackLayout>
+
+        <StackLayout row="2">
+        	<button v-if="combinacion.key == null" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
+        	<button v-if="combinacion.key != null" @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
+        </StackLayout>
+			</GridLayout>
+			
+
+		</StackLayout>
 
 	</GridLayout>
 </Page>
@@ -82,26 +130,33 @@
 	import CarBox from '../Components/Boxes/CarBox.vue'
 	import BtnCar from '../Components/BtnActions/BtnCar.vue'
 	import { mapState, mapMutations, mapGetters } from 'vuex'
+	import Talles from '~/components/Pages/Product/Talles'
+  import Colores from '~/components/Pages/Product/Colores'
   export default {
     components:{
 			HeaderDefault,
 	    CarBox,
-		  BtnCar
+		  BtnCar,
+		  Talles,
+      Colores,
 	  },
 	  data() {
       return {
-        isload: true
+        isload: true,
+        heightDrop: 350,
+        openDrop: false
       };
 	  },
 	  watch:{
 	  	shoppingCar(to){
-	  		console.log('shoppingCar', to)
+	  		// console.log('shoppingCar', to)
 	  		this.shoppingCenter()
-	  	}
+	  	},
+	  	
 	  },
 	  computed:{
 	  	...mapState('shoping_center',['multienvio','carts']),
-	  	...mapState('car',['carsProducts']),
+	  	...mapState('car',['carsProducts','combinacion_key','combinacion']),
 	  	...mapGetters('car',['shoppingCar']),
 	  },
 	  mounted(){
@@ -110,12 +165,59 @@
 	  },
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
+			...mapMutations('car',['clearCombinacion','addCombinacion','editCombinacion']),
 			shoppingCenter(){
 	  		this.isload = false
 	  		setTimeout(()=>{
 	  			this.isload = true
 	  		}, 500)
 	  		this.$forceUpdate()
+			},
+			onSwipe({view, object, type, direction}){
+				if(direction == 4){
+					this.openDropBottom()
+				}
+				if(direction == 8){
+					this.closeDropBottom()
+				}
+			},
+			openDropBottom(){
+				this.openDrop = true
+				let height = this.heightDrop
+				let opacity = .2
+				this.$refs.dropBottom.nativeView.animate({
+				  height: height,
+				  duration: 250
+				})
+				this.$refs.scrollCarros.nativeView.animate({
+				  opacity: opacity,
+				  duration: 250
+				})
+			},
+			closeDropBottom(){
+				this.openDrop = false
+				this.$refs.dropBottom.nativeView.animate({
+				  height: 0,
+				  duration: 250
+				})
+				this.$refs.scrollCarros.nativeView.animate({
+				  opacity: 1,
+				  duration: 250
+				})
+				this.clearCombinacion()
+			}, 
+			onAddCombinacion(){
+				if(this.combinacion.talleActive != '' && 
+					 this.combinacion.colorActive != ''){
+					this.addCombinacion()
+					this.closeDropBottom()
+				}else{
+					alert('Talle y color son requeridos')
+				}
+			},
+			onEditCombinacion(){
+				this.editCombinacion()
+				this.closeDropBottom()
 			}
 		}
   }
@@ -127,5 +229,9 @@
     // End custom common variables
 		
     // Custom styles
-
+    .drop{
+    	// background: blue;
+    	border-top-left-radius: 20;
+    	border-top-right-radius: 20;
+    }
 </style>

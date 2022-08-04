@@ -16,9 +16,17 @@
           verticalAlignment="middle"
            >
             <GridLayout>
-              <Image 
-                :src="`${url_image}/${image.lg}`" 
-                stretch="aspectFit" />
+              <ImageCache 
+                stretch="aspectFit" 
+                height="100%"
+                width="100%"
+                placeholderStretch="aspectFill"
+                placeholder="res://eskeleton"
+                :src="`${image}`" 
+              />
+              <!-- <Image 
+                :src="`${image}`" 
+                stretch="aspectFit" /> -->
 
                 <!-- <ImageZoom 
                 @tap="onFullScreenImage(image)"

@@ -30,7 +30,7 @@ const state = {
       date    : moment().format('YYYY-MM-DD'),
       type    : 'search-box-input',
       sections: [],
-      search  : 'remera',
+      search  : '',
       page    : 1,
       offset  : 15
     }
@@ -78,7 +78,7 @@ const mutations = {
       for(var i in val){
         state.parametros[i] = val[i]
       }
-    }
+    },
     changeParamsProductsSearch(state, val){
       for(var i in val){
         state.parametrosSearch[i] = val[i]
@@ -124,14 +124,11 @@ const actions = {
       return response
     },
     async getUltimosproductos(context){
-
-      context.commit('changeParamsProductsSearch',{menu: 'get_last_products'})
-
       const qs = Object.keys(context.state.parametrosSearch)
       .map(key => `${key}=${context.state.parametrosSearch[key]}`)
       .join('&');
       
-      const response = await Api.get(`rosa/products?${qs}`)
+      const response = await Api.get(`rosa/search?${qs}`)
       return response
     },
     async getSearch(context){

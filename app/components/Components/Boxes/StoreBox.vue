@@ -1,6 +1,18 @@
 <template lang="html">
-
-    <Image
+      <ImageCache 
+        placeholderStretch="aspectFill"
+        placeholder="res://eskeleton"
+        :src="store.logo"
+        width="100"
+        height="100"
+        stretch="aspectFill"
+        marginRight="16"
+        marginBottom="8"
+        marginTop="8"
+        class="storeBox"
+        @tap="onTap"
+      /> 
+   <!--  <Image
       :src="store.logo"
       width="100"
       height="100"
@@ -11,7 +23,7 @@
       borderRadius="10"
       class="storeBox"
       @tap="onTap"
-    />
+    /> -->
 
 </template>
 
