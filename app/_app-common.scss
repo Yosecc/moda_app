@@ -114,6 +114,7 @@ label {
     &.btn-primary{
         background-color: $modatexColor;
         color: white;
+        border-color: $modatexColor;
     }
 
     &.btn-info{
@@ -127,14 +128,15 @@ label {
     }
     &.btn-text{
         background-color: rgba(#8e8e8e, .1);
-        border-radius: 30;
         font-size: 12;
+        border-color: rgba(#8e8e8e, .7);
+        color: rgba(#8e8e8e, .7);
     }
 
     &.disabled{
-        background-color: rgba(#FFFFFF, .8);
-        opacity: .8;
-        color: #4d4d4d;
+        border-color: rgba(#8e8e8e, 1);
+        opacity: .3;
+        color: #8e8e8e !important;
     }
     &.btn-sm{
         height: 35;
@@ -144,10 +146,13 @@ label {
         shadow: none !important;
     }
     &.outline{
-      border-color: $modatexColor;
+      // border-color: $modatexColor;
       border-width: 2;
       background-color: transparent; 
-      color: $modatexColor;
+      // color: $modatexColor;
+        &.btn-primary{
+            color: $modatexColor;
+        }
     }
 }
 
@@ -328,6 +333,9 @@ Switch#switch[checked=false]{
     }
     &.card-info{
         background-color: #3498DB;
+    }
+    &.shadoLg{
+        box-shadow:  0 2 10 rgba(0,0,0,.1);
     }
 }
 .category_box{
@@ -542,9 +550,13 @@ Button{
 
 .drop{
     // background: blue;
-    border-top-left-radius: 20;
-    border-top-right-radius: 20;
-    box-shadow: 0 -8 10 rgba(#17202A,.2);
+    border-top-left-radius: 6;
+    border-top-right-radius: 6;
+    // box-shadow: 0 -8 10 rgba(#17202A,.2);
+}
+
+.combinaciones{
+    border-color: rgba(#8e8e8e, .3);
 }
 
 .ns-light{
@@ -567,7 +579,7 @@ Button{
   .card{
     background:  rgba($grey-background, .1); 
     .secondary{
-      background:  rgba($primary, .1);
+      background:  #F4F6F6;
     }
   }
   .menuProfile{
@@ -592,13 +604,16 @@ Button{
   }
   .subcategorias{
     label{
-      border-color: rgba($primary, .1);
+      border-color: #F4F6F6;
     }
   }
   .listSelect{
     .option{
-      border-color: rgba($primary, .1);
+      border-color: #F4F6F6;
     }
+  }
+  .drop{
+    background:  white; 
   }
 }
 

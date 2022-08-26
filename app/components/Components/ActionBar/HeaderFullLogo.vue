@@ -1,5 +1,5 @@
 <template lang="html">
-
+    <!-- Se utiliza en el proceso de registros -->
     <ActionBar  
       paddingTop="16"
       paddingBottom="16"

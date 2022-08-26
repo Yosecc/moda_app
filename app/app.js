@@ -29,6 +29,7 @@ Vue.registerElement('CarouselItem', () => require('@nstudio/nativescript-carouse
 import { Gif } from 'nativescript-gif';
 Vue.registerElement('Gif', () => Gif);
 
+
 new Vue({
     render: h => h(App),
     // render: (h) => h("Navigator", { attrs: { defaultRoute: initialRoute }} ),

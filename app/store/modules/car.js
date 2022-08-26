@@ -18,6 +18,7 @@ const state = {
       colorActive: '',
       talleActive: '',
       product_id: null,
+      cantidad:1,
       combinacion_key: null,
       descripcion: ''
     }
@@ -57,8 +58,8 @@ const getters = {
         shopingCar.push(element)
       })
       // console.log('shopingCar',shopingCar)
-      cache.set('carsStores',JSON.stringify(state.carsStores))
-      cache.set('carsProducts',JSON.stringify(state.carsProducts))
+      // cache.set('carsStores',JSON.stringify(state.carsStores))
+      // cache.set('carsProducts',JSON.stringify(state.carsProducts))
       return shopingCar
     },
     countProductsCarActive(state, getters){
@@ -70,6 +71,11 @@ const getters = {
 };
 
 const mutations = {
+    setCombinacion(state, val){
+      for(var i in val){
+        state.combinacion[i] = val[i]
+      }
+    },
     addCarStore(state, val){ //Store
       let index = state.carsStores.findIndex((element)=> element.id == val.id)
       if(index == '-1' || index == -1){
@@ -77,26 +83,31 @@ const mutations = {
       }
     },
     addCombinacion(state, val){
-      let index = state.carsProducts.findIndex((element)=> element.id == state.combinacion.product_id)
+      let index = state.carsProducts.findIndex((element)=> element.id == val.product_id)
       if(index != '-1' || index != -1){
 
-        let indexTC = state.carsProducts[index].combinacion.findIndex((e)=> (e.talleActive == state.combinacion.talleActive) && (e.colorActive == state.combinacion.colorActive))
-        // let indexC = state.carsProducts[index].combinacion.findIndex((e)=> e.colorActive == state.combinacion.colorActive)
-
-        if(indexTC == -1){ //Si no existe
-          state.carsProducts[index].combinacion.push({
-            talleActive : state.combinacion.talleActive,
-            colorActive : state.combinacion.colorActive,
-            count       : 1,
-            descripcion: state.carsProducts[index].descripcion
-          })
-        }else{
-          state.carsProducts[index].combinacion[indexTC].count++
-        }
-
+        let indexTC = state.carsProducts[index].combinacion.findIndex((e)=> (e.talleActive == val.talleActive) && (e.colorActive == val.colorActive))
         
-        // state.combinacion_key = state.carsProducts[index].combinacion.length-1
+        if(indexTC == -1){ //Si no existe
+
+          if(val.combinacion_key == null){
+            state.carsProducts[index].combinacion.push(val)
+          }else{
+            state.carsProducts[index].combinacion[val.combinacion_key].cantidad =  val.cantidad
+            state.carsProducts[index].combinacion[val.combinacion_key].talleActive =  val.talleActive
+            state.carsProducts[index].combinacion[val.combinacion_key].colorActive =  val.colorActive
+          }
+          
+        }else{
+          state.carsProducts[index].combinacion[indexTC].cantidad =  val.cantidad
+          state.carsProducts[index].combinacion[indexTC].talleActive =  val.talleActive
+          state.carsProducts[index].combinacion[indexTC].colorActive =  val.colorActive
+        }
       }
+    },
+    removeCombinacion(state, val){
+      let index = state.carsProducts.findIndex((element)=> element.id == val.product_id)
+      state.carsProducts[index].combinacion.splice(val.combinacion_key,1)
     },
     setProductId(state, val){
       state.productId = val.id
@@ -137,7 +148,8 @@ const mutations = {
         talleActive: '',
         product_id: null,
         combinacion_key:null,
-        descripcion: ''
+        descripcion: '',
+        cantidad: 1
       }
     },
     setCarsProducts(state, val){
@@ -199,7 +211,7 @@ const mutations = {
 };
 
 const actions = {
-     addCar(context, val){
+    addCar(context, val){
       context.commit('addCarStore',val.store)
       context.commit('carsProductsPush', val)
     },

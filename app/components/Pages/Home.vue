@@ -20,23 +20,23 @@
             borderRadius="8" 
           />
         </StackLayout>
-        <StackLayout  marginTop="16" marginLeft="8" marginRight="8">
-           <SlideCategories :categories="[]" />
+        <StackLayout  marginTop="24" marginBottom="16" marginLeft="8" marginRight="8">
+           <SlideCategories  :categories="[]" />
         </StackLayout>
 
         <StackLayout marginBottom="16">
           <SliderComponent :sliders="sliders._array"/>
         </StackLayout>  
        
-        <StackLayout marginBottom="16">
-          <Promotions/>s
+        <StackLayout marginBottom="24"  marginTop="8">
+          <Promotions/>
         </StackLayout>
 
        <!--  <StackLayout v-if="productsRecentlySeen[0]" padding="16">
           <recentlySeen :product="productsRecentlySeen[0]"/>
         </StackLayout> -->
 
-        <StackLayout>
+        <StackLayout >
           <Label 
             text="Marcas Populares" 
             marginBottom="8" 

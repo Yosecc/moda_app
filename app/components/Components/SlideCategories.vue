@@ -1,52 +1,107 @@
 <template lang="html">
-
-  <GridLayout v-if="categoriesComputed" :columns="columns" :rows="rows">
-    <StackLayout 
-      @tap="onTap(item)"
-      v-for="(item,key) in categoriesComputed" 
-      :key="`category${key}`"
-      paddingRight="8"
-      paddingLeft="8"
-      :marginBottom="item.marginBottom ? item.marginBottom:''"
-      :colSpan="item.colSpan" 
-      :row="item.row" 
-      :col="item.col"
-    >
-      <AbsoluteLayout  
-        marginBottom="16" 
-        v-if="key < 6" 
-        :background="item.color" 
-        class="card h-100" 
-        paddingLeft="0" 
-        paddingRight="0" 
-        paddingBottom="0"
-      >
+  <StackLayout>
+    <GridLayout v-if="categoriesComputed && !isStore" :columns="columns" :rows="rows">
       <StackLayout 
-        top="0"
-        left="0" 
-        width="100%" 
-        paddingLeft="10"
+        @tap="onTap(item)"
+        v-for="(item,key) in categoriesComputed" 
+        :key="`category${key}`"
+        padding="4 8 4 8"
+        :marginBottom="item.marginBottom ? item.marginBottom:''"
+        :colSpan="item.colSpan" 
+        :row="item.row" 
+        :col="item.col"
+        v-if="item.show ? item.show:true"
       >
-        <Label 
-          textWrap
-          :text="item.name" 
-          fontWeight="200" 
-          fontSize="18" 
-        />
-        </StackLayout>
-        <Image 
-          top="10"
-          :left="item.left"
-          opacity=".2"
-          :src="item.icon"
-          width="120"
-          :loaded="onImageLoaded"
-          horizontalAlignment="right"
-        />
-      </AbsoluteLayout>
-    </StackLayout>
+        <AbsoluteLayout  
+          marginBottom="4" 
+          v-if="key < 6" 
+          :background="item.color" 
+          class="card h-100 shadoLg" 
+          paddingLeft="0" 
+          paddingRight="0" 
+          paddingBottom="0"
+          :borderWidth="categorieActiveMethod(item.id) ? '3':'1'"
+          :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#ededed'"
+        >
 
-  </GridLayout>
+          <Image 
+            :top="item.top ? item.top:10"
+            :left="item.left"
+            :src="item.icon"
+            width="120"
+            :loaded="onImageLoaded"
+            horizontalAlignment="right"
+          />
+          <StackLayout 
+            top="0"
+            left="0" 
+            width="100%" 
+            paddingLeft="10"
+          >
+            <Label 
+              textWrap
+              :text="item.name" 
+              fontWeight="800" 
+              fontSize="18" 
+            />
+          </StackLayout>
+        </AbsoluteLayout>
+      </StackLayout>
+
+    </GridLayout>
+  
+
+     <ScrollView v-if="isStore" orientation="horizontal" :scrollBarIndicatorVisible="false">
+       <StackLayout orientation="horizontal">
+        <StackLayout 
+          @tap="onTap(item)"
+          v-for="(item,key) in categoriesComputed" 
+          :key="`category${key}`"
+          padding="4 8 4 8"
+          :marginBottom="item.marginBottom ? item.marginBottom:''"
+          :colSpan="item.colSpan" 
+          :row="item.row" 
+          :col="item.col"
+          v-if="item.show ? item.show:true"
+        >
+          <AbsoluteLayout  
+            marginBottom="4" 
+            v-if="key < 6" 
+            :background="item.color" 
+            class="card h-100 shadoLg" 
+            paddingLeft="0" 
+            paddingRight="0" 
+            paddingBottom="0"
+            :borderWidth="categorieActiveMethod(item.id) ? '3':'1'"
+            :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#ededed'"
+          >
+
+            <Image 
+              :top="item.top ? item.top:10"
+              :left="item.left"
+              :src="item.icon"
+              width="120"
+              :loaded="onImageLoaded"
+              horizontalAlignment="right"
+            />
+            <StackLayout 
+              top="0"
+              left="0" 
+              width="100%" 
+              paddingLeft="10"
+            >
+              <Label 
+                textWrap
+                :text="item.name" 
+                fontWeight="800" 
+                fontSize="18" 
+              />
+            </StackLayout>
+          </AbsoluteLayout>
+        </StackLayout>
+       </StackLayout>
+     </ScrollView>
+  </StackLayout>
 
 </template>
 
@@ -87,6 +142,15 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
         type: Boolean,
         default: true
       },
+      isViewActive:{
+        type: Boolean,
+        default: false
+      },
+      isStore:{
+        type: Boolean,
+        default: false
+      },
+      
       ontapCategorie:{},
     },
     data() {
@@ -103,40 +167,63 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
     computed:{
       ...mapState(['isLoadPage']),
       ...mapState('products',['count']),
+      ...mapState('stores',['storeCategorieActive']),
       ...mapState('categories',['isLoadCategories','categorieActive','categoriesBase']),
-       ...mapGetters('categories',['categorieActiveGetters']),
+      ...mapGetters('categories',['categorieActiveGetters']),
       categoriesComputed(){
         if(this.categories.length){
           return this.categories
         }
         return this.categoriesBase
-      }
+      },
+
     },
     methods:{
       ...mapActions('products',['getHome']),
       ...mapMutations('categories',['setCategorieActive']),
       ...mapMutations(['changeDrawer','changePage']),
-      ...mapMutations('stores',['changeParamsStores']),
-      ...mapMutations('products',['changeParamsProducts']),
+      ...mapMutations('stores',['changeParamsStores','setStoreCategorieActive']),
+      ...mapMutations('products',['changeParamsProducts','changeParamsProductsSearch']),
       onTap(item){
-        this.setCategorieActive(item.id)
-        this.changeParamsStores({categorie: this.categorieActiveGetters.key })
-        this.changeParamsProducts({categorie: this.categorieActiveGetters.key, sections: this.categorieActiveGetters.key })
-        this.$emit('ontapCategorie')
-        if(this.navigate){
-          this.$navigator.navigate('/search',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-          })
+
+        if(!this.isStore){
+          this.setCategorieActive(item.id)
+
+          this.changeParamsProductsSearch({sections:[this.categorieActive],page:1})
+
+          if(this.navigate){
+            this.$navigator.navigate('/search',{
+              transition: {
+                name: 'slideLeft',
+                duration: 300,
+                curve: 'easeIn'
+              },
+            })
+          }
+        }else{
+          this.changeParamsStores({categorie: this.categorieActiveGetters.key })
+          this.setStoreCategorieActive(item.id)
         }
+        // this.changeParamsProducts({categorie: this.categorieActiveGetters.key, sections: this.categorieActiveGetters.key })
+
+        this.$emit('ontapCategorie')
         
       },
       onImageLoaded(arg){
-        // console.log(arg)
+        console.log('ase',arg)
       },
+      categorieActiveMethod(id){
+        if(!this.isStore){
+          if(this.isViewActive && this.categorieActive == id ){
+            return true
+          }
+        }else{
+          if(this.isViewActive && this.storeCategorieActive == id){
+            return true
+          }
+        }
+        return false
+      }
       
     }
   }

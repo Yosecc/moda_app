@@ -1,11 +1,28 @@
 // You can add your native dependencies here
+
+buildscript {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+
 repositories {
+   google()
   mavenCentral()
 }
 
 dependencies {
 //  implementation 'androidx.multidex:multidex:2.0.1'
  // implementation 'jp.co.cyberagent.android:gpuimage:2.x.x'
+    //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    //implementation 'jp.wasabeef:picasso-transformations:2.4.0'
+
 }
 
 android {
@@ -14,7 +31,7 @@ android {
   // ndkVersion ""
 
   defaultConfig {
-    minSdkVersion 17
+    minSdkVersion 21
     // targetSdkVersion 32
 
     // Version Information

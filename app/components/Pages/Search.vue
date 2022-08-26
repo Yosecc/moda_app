@@ -9,9 +9,8 @@
       <GridLayout row="1" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
         <SearchBar 
           col="0"
-          colSpan="2"
           class="inputForm" 
-          hint="Buscar tienda o productos"
+          hint="Buscar productos"
           width="100%"
           height="40"
           marginTop="16"
@@ -19,14 +18,15 @@
           v-model="filterName"
           @submit="onSubmit"
         />
-        <!-- <Image 
+        <Image 
           col="1"
           src="~/assets/icons/filter.png"
           horizontalAlignment="right"
           width="40"
           height="40"
           marginTop="16"
-        /> -->
+          @tap="openFilter"
+        />
       </GridLayout>
       
       <AbsoluteLayout row="2" >
@@ -45,7 +45,7 @@
                   <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
                   <label :text="item" />
                 </StackLayout>
-                <!-- <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" /> -->remera
+                <!-- <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" /> -->
               </FlexboxLayout>
             </StackLayout>
           </v-template>
@@ -90,7 +90,7 @@
 
 <script>
 import Filters from "../Components/Filters.vue";
-import HeaderSearch from "../Components/ActionBar/HeaderSearch.vue";
+
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
 
@@ -103,9 +103,14 @@ import cache from '@/plugins/cache'
 import * as utils from "@nativescript/core/utils/utils";
 
 export default {
+  props:{
+    params:{
+      type: Object,
+      default: {}
+    }
+  },
   components: {
     Filters,
-    HeaderSearch,
     HeaderDefault,
     SlideCategories,
     Products,
@@ -173,8 +178,29 @@ export default {
   },
   mounted(){
     if(cache.get('last_search')){
-      this.ultimasbusquedas = new ObservableArray(JSON.parse(cache.get('last_search'))) 
+      let data = JSON.parse(cache.get('last_search'))
+      this.ultimasbusquedas = new ObservableArray() 
+      data.forEach((e)=>{
+        if(e != ''){
+          this.ultimasbusquedas.push(e)
+        }
+      })
     }
+
+    if(Object.keys(this.params).length > 0){
+      this.filterName = ''
+      this.search = true
+      this.changeParamsProductsSearch({
+        menu: 'get_catalog_products',
+        search:this.params.search,
+        page:this.page,
+        offset: this.offset,
+        sections: [this.params.section]
+      })
+      this.search = true
+      this.onGetProducts()
+    }
+
   },
   methods:{
     ...mapActions('products',['getProductsRosa','getSearch']),
@@ -183,7 +209,10 @@ export default {
       this.isLoading = true
       await this.getSearch().then((response)=>{
         this.isLoading = false
+        // console.log('response',response)s
         this.products = new ObservableArray(response)
+
+        this.search = true
       })
     },
     async scrollEnd({ object, scrollOffset }){
@@ -212,7 +241,6 @@ export default {
       this.page = this.page+1;
       this.config = {push : true}
       this.onSubmit()
-
     },
     onSubmit(){
       this.search = true
@@ -255,6 +283,12 @@ export default {
         offset: this.offset,
       })
       this.onGetProducts()
+    },
+    async openFilter(){
+      const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isSubcategorias: false } })
+      this.page = 1
+      this.onSubmit()
+
     }
     
   }

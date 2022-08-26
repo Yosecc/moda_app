@@ -3,7 +3,7 @@
     <ActionBar>
       
       <GridLayout
-        columns="auto,*,auto" 
+        columns="auto,auto,*" 
         rows="*" 
         marginTop="10"
         marginBottom="5"
@@ -24,33 +24,59 @@
           :marginLeft="-8"
         ></BtnBack>
 
+
+
         <FlexboxLayout 
-          v-if="logoCenter"
           col="1"
           alignItems="center"
           justifyContent="center"
         >
-          <Image 
-            src="~/assets/logo.png"
-            padding="0"
-            width="100"
-            height="32"
-            marginTop="4"
-          />
-        </FlexboxLayout >
 
-        <slot  />
+          <ImageCache 
+            placeholderStretch="aspectFill"
+            placeholder="res://eskeleton"
+            :src="categorie.icon"
+            width="30"
+            height="30"
+            stretch="aspectFill"
+            marginRight="8"
+            marginBottom="8"
+            marginTop="8"
+            class=""
+            rounded="true"
+          /> 
+
+          <StackLayout orientation="horizontal">
+            <Label  horizontalAlignment="left" margin="0" padding="0" text="Tiendas / " textTransform="capitalize" fontWeight="900" fontSize="14" />
+            <Label  horizontalAlignment="left" margin="0" padding="0" :text="categorie.name" textTransform="capitalize" fontWeight="900" fontSize="14" />
+            <!-- <label
+             margin="0" padding="0"
+         
+            marginBottom="0" 
+              horizontalAlignment="left" 
+                fontWeight="300"
+                fontSize="10">
+                <FormattedString>
+                  <span  text="Compra mínima en la tienda: "></span>
+                  <span :text="store.min | moneda " style="color: #DA0080"></span>
+                </FormattedString>
+              </label> -->
+          </StackLayout>
+
+        </FlexboxLayout >
         
         <StackLayout
           orientation="horizontal"
           col="2" 
         >
       
-          <BtnCar
-            row="0"
-            col="2"
-            horizontalAlignment="right"
-          ></BtnCar>
+        <BtnCar
+          row="0"
+          col="2"
+          horizontalAlignment="right"
+        ></BtnCar>
+
+
           
           <!-- <Image 
             src="~/assets/icons/bell.png" 
@@ -72,6 +98,7 @@
 import BtnBack from './BtnBack.vue'
 import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
+import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
   export default {
@@ -80,19 +107,29 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean,
         default: false
       },
-      componentActive:{
-        type: String,
-        default: null
-      },
-      logoCenter:{
-        type: Boolean, 
-        default: true
+      categorie:{
+        type: Object,
+        default: {}
       }
     },
     components:{
       BtnMenu,
       BtnBack,
-      BtnCar
+      BtnCar,
+      StoreBox
+    },
+    filters: {
+      moneda: function (value) {
+        value += '';
+        var x = value.split('.');
+        var x1 = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + '.' + '$2');
+        }
+        return '$'+ x1 + x2;
+      }
     },
     data() {
       return {
@@ -105,7 +142,7 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       ...mapGetters('authentication',['token'])
     },
     mounted(){
-      // console.log('token',this.token)
+      console.log('categorie',this.categorie)
       if (global.isIOS) {
         // frame.topmost().nativeView.endEditing(true); 
       } 

@@ -48,9 +48,10 @@
 </template>
 
 <script>
-    import { Http, ImageSource } from '@nativescript/core'
+  import { Http, ImageSource } from '@nativescript/core'
   import { screen } from "@nativescript/core/platform"
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
+
   export default {
     props:{
       sliders:{
@@ -104,8 +105,9 @@
       // console.log('width',screen.mainScreen.widthDIPs )
     },
     methods:{
+      ...mapMutations('products',['changeParamsProductsSearch']),
       isLoading(args){
-        console.log(args)
+        // console.log(args)
       },
       myTapPageEvent(args) {
         // console.log('Tapped page index: ' + this.$refs.myCarousel.nativeView.selectedPage);
@@ -114,24 +116,41 @@
         // console.log('Page changed to index: ' + args.index);
       },
       onTap(item){
-        this.$navigator.navigate('/web_view',{
-          transition: {
-            name: 'slideLeft',
-            duration: 300,
-            curve: 'easeIn'
-          },
-          props: {
-            link: 'https://www.modatex.com.ar'+item.url
-          }
-        })
+        
+        let enlace = item.url
+        if(enlace.includes('/catalog')){
+
+          this.$navigator.navigate('/search',{
+            transition: {
+              name: 'slideLeft',
+              duration: 300,
+              curve: 'easeIn'
+            },
+            props:{
+              params: item.query
+            }
+          })
+
+        }else{
+          this.$navigator.navigate('/web_view',{
+            transition: {
+              name: 'slideLeft',
+              duration: 300,
+              curve: 'easeIn'
+            },
+            props: {
+              link: 'https://www.modatex.com.ar'+item.url
+            }
+          })
+        }
       },
       getImage(img){
-        Http.getImage(img).then(
-          (response) => {
-            // console.log(response)
-          },
-          e => {}
-        )
+        // Http.getImage(img).then(
+        //   (response) => {
+        //     // console.log(response)
+        //   },
+        //   e => {}
+        // )
       }
     },
     data() {

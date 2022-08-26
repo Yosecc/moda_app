@@ -8,7 +8,6 @@
     >
 
         <StackLayout
-          background="white"
           borderRadius="4"
           width="24"
           height="24"
@@ -31,10 +30,9 @@
           paddingRight="8"
           marginLeft="8"
           marginRight="8"
-        />
 
+        />
         <StackLayout
-          background="white"
           borderRadius="4"
           width="24"
           height="24"
@@ -68,6 +66,11 @@
       return {
           count: this.num
       };
+    },
+    watch:{
+      num(){
+        this.$forceUpdate()
+      }
     },
     mounted(){
 

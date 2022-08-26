@@ -22,7 +22,8 @@
                 width="100%"
                 placeholderStretch="aspectFill"
                 placeholder="res://eskeleton"
-                :src="`${image}`" 
+                :src="`${image}`"
+                @tap="onFullScreenImage(image, i)"
               />
               <!-- <Image 
                 :src="`${image}`" 
@@ -45,12 +46,12 @@
 <script>
   import { URL_IMAGE } from '~/services'
 
-  import fullScreenImage from '../../Components/fullScreenImage'
+  import fullScreenImage from '~/components/Components/fullScreenImage.vue'
   export default {
     props:{
       images: {
         type: Array,
-        default: '~/assets/loading.gif'
+        default: ['~/assets/loading.gif']
       }
     },
     watch: {
@@ -76,8 +77,11 @@
 
     },
     methods:{
-      onFullScreenImage(image){
-        this.$showModal(fullScreenImage, { fullscreen: true, props: { image:image }});
+      onFullScreenImage(image, key){
+        this.$showModal(fullScreenImage, { fullscreen: true, props: { 
+          image:image, 
+          images:this.images, 
+          keySelected: key }});
       },
       myTapPageEvent(args) {
           // console.log('Tapped page index: ' + this.$refs.carouselProduct.nativeView.selectedPage);

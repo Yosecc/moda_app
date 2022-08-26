@@ -1,8 +1,10 @@
 <template lang="html">
   <Page>
-    <HeaderDefault :back="true" />
+    <!-- <HeaderDefault :back="true" /> -->
+    <HeaderStore :store="store" :back="true" />
+
     <StackLayout>
-      <StackLayout padding="16" paddingTop="8" paddingBottom="8">
+      <!-- <StackLayout padding="16" paddingTop="8" paddingBottom="8">
         <FlexboxLayout 
           padding="8"
           class="card"
@@ -40,8 +42,8 @@
             </label>
           </StackLayout>
         </FlexboxLayout >
-      </StackLayout>
-      <StackLayout 
+      </StackLayout> -->
+      <!-- <StackLayout 
         paddingLeft="16" 
         paddingRight="16" 
         orientation="horizontal" 
@@ -56,12 +58,38 @@
           borderRadius="8"
           width="100%"
         />
-        <!-- <image
+        <Image 
+          col="1"
           src="~/assets/icons/filter.png"
-          height="40"
+          horizontalAlignment="right"
           width="40"
-        /> -->
-      </StackLayout>
+          height="40"
+          marginTop="16"
+          @tap="openFilter"
+        />
+      </StackLayout> -->
+      <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+        <SearchBar 
+          col="0"
+          class="inputForm" 
+          hint="Buscar tienda o productos"
+          width="100%"
+          height="40"
+          marginTop="16"
+          borderRadius="8"
+          v-model="filterName"
+          @submit="onSubmit"
+        />
+        <Image 
+          col="1"
+          src="~/assets/icons/filter.png"
+          horizontalAlignment="right"
+          width="40"
+          height="40"
+          marginTop="16"
+          @tap="openFilter"
+        />
+      </GridLayout>
       
       <StackLayout>
         <AbsoluteLayout  >
@@ -79,6 +107,7 @@
             <v-template >
               <ProductBox
                 :product="item"
+                :isStore="true"
               ></ProductBox>
             </v-template>
           </RadListView>
@@ -106,14 +135,15 @@
 
 <script>
 import Filters from "../Components/Filters.vue";
-import HeaderSearch from "../Components/ActionBar/HeaderSearch.vue";
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
+  import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
 
 import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
+import * as utils from "@nativescript/core/utils/utils";
 export default {
   props: {
     store:{
@@ -135,8 +165,8 @@ export default {
   },
   components: {
     Filters,
-    HeaderSearch,
     HeaderDefault,
+    HeaderStore,
     SlideCategories,
     Products,
     ProductBox
@@ -150,11 +180,13 @@ export default {
       config:null,
       products: [],
       filterName: '',
+      statusSearch: false
     };
   },
   watch:{
     productsComputed(to){
       if(to.length == 0 && this.filterName != ''){
+        this.statusSearch = false
         this.page = 0
         this.changeParamsProducts({ search: this.filterName , start: 0})
         this.onGetProducts()
@@ -173,17 +205,19 @@ export default {
     },
     filterName(to){
       if(to == ''){
+        this.statusSearch = false
         this.changeParamsProducts({ search: '' , start: 0})
         this.onGetProducts()
       }
     }
   },
   computed:{
-    // ...mapState('categories',['categorieActive']),
-    // ...mapGetters('categories',['categorieActiveGetters']),
+    ...mapState('categories',['categoriesBase']),
+    ...mapGetters('categories',['categorieActiveGetters']),
     ...mapState('products',['parametros']),
+    ...mapState('stores',['storeCategorieActive','storeSubcategorieActive']),
     productsComputed(){
-      if(!this.filterName){
+      if(!this.filterName || this.statusSearch){
         return this.products
       }else{
         return this.products.filter((item) => {
@@ -193,17 +227,38 @@ export default {
     },
   },
   mounted(){
-    this.changeParamsProducts({store: this.store.local_cd, categorie: '', sections: '', start: 0, search: "" })
+    this.setStoreCategorieActive(this.categorieActiveGetters.id)
+    this.setStoreSubcategorieActive('')
+    this.statusSearch = false
+    this.changeParamsProducts({
+      store: this.store.local_cd,
+      categories: '', 
+      sections: '', 
+      start: 0, 
+      length: 16,
+      search: "",
+    })
     this.onGetProducts()
+    this.getCategoriesStore(this.store.local_cd).then((response)=>{
+      this.setCategoriesStore(response)
+      // this.setSubcategoriesStore(response.subcategorias)
+    })
   },
   methods:{
     ...mapActions('products',['getProductsStoreRosa']),
-    // ...mapActions('stores',['getStoreRosa']),
-    ...mapMutations('products',['changeParamsProducts']), 
+    ...mapActions('stores',['getCategoriesStore']),
+    ...mapMutations('products',['changeParamsProducts']),
+    ...mapMutations('stores',['setCategoriesStore','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
     async onScrolled () {
       this.page = this.page + 1
-      this.parametros.length
-      let proxima = this.parametros.length * this.page
+      // this.parametros.length
+      let proxima = this.parametros.start
+      if(this.parametros.start == 0){
+        proxima = this.parametros.length+1
+      }else{
+        proxima = this.parametros.start + (this.parametros.length+1)
+      }
+      
       this.changeParamsProducts({start: proxima })
       await this.getProductsStoreRosa().then((response)=>{
         response.forEach((e)=>{
@@ -227,6 +282,25 @@ export default {
         this.products = new ObservableArray(response)
       })
     },
+    async openFilter(){
+
+      const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: true ,isSubcategorias: true } })
+      this.changeParamsProducts({
+        start:     0,
+        length:    15,
+        sections:  this.categoriesBase.find((e) => e.id == this.storeCategorieActive ).key,
+        categories: this.storeSubcategorieActive,
+        // search:    "",
+      })
+      this.page = 1
+      this.onGetProducts()
+    }, 
+    onSubmit(){
+      this.statusSearch = true
+      this.changeParamsProducts({start: 0, search:this.filterName, categories: '' })
+      this.onGetProducts()
+      utils.ad.dismissSoftInput();
+    }
   }
 };
 </script>

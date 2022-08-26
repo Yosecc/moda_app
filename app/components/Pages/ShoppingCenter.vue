@@ -74,52 +74,17 @@
 			:cars="carts"
 			v-show="multienvio"
 		/>
-		<StackLayout 
-			ref="dropBottom" 
-			@swipe="onSwipe" 
-			class="drop" 
-			height="0" 
-			width="100%" 
-			row="2" 
-		>
-			<GridLayout padding="0 16 8 16" rows="auto,*, auto">
-			  <StackLayout
-			  	row="0"
-					marginTop="16"
-	        backgroundColor="#8e8e8e" 
-	        width="60" 
-	        height="4" 
-	        borderRadius="40" 
-	        marginBottom="8"
-	      />
-
-	      <StackLayout  row="1" marginTop="16">
-	      	<label v-if="combinacion" :text="combinacion.descripcion" margin="0 0 8 0" fontSize="14" fontWeight="900" />
-
-	      	<label text="Talle" margin="8 0 8 0" fontSize="12" fontWeight="900" />
-		      <Talles
-		      	row="1"
-		      	v-if="combinacion.sizes.length"
-	          :talles="combinacion.sizes"
-	          v-model="combinacion.talleActive"
-	        />
-	        <label text="Color" margin="8 0 8 0" fontSize="12" fontWeight="900" />
-	        <Colores
-	         	row="2"
-	         	v-if="combinacion.colors.length"
-	          :colores="combinacion.colors"
-	          v-model="combinacion.colorActive"
-	        />
-        </StackLayout>
-
-        <StackLayout row="2">
-        	<button v-if="combinacion.key == null" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
-        	<button v-if="combinacion.key != null" @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
-        </StackLayout>
-			</GridLayout>
-			
-
-		</StackLayout>
+		<SwipeCombinacion
+      top="0"
+      left="0"
+      row="2"
+      :show="openDrop"
+      :isProduct="false"
+      @close="onshowDrop"
+      @addCombinacion="onAddCombinacion"
+      @deleteCombinacion="deleteCombinacion"
+    />
+		
 
 	</GridLayout>
 </Page>
@@ -132,6 +97,7 @@
 	import { mapState, mapMutations, mapGetters } from 'vuex'
 	import Talles from '~/components/Pages/Product/Talles'
   import Colores from '~/components/Pages/Product/Colores'
+  import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
   export default {
     components:{
 			HeaderDefault,
@@ -139,6 +105,7 @@
 		  BtnCar,
 		  Talles,
       Colores,
+      SwipeCombinacion
 	  },
 	  data() {
       return {
@@ -165,7 +132,10 @@
 	  },
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
-			...mapMutations('car',['clearCombinacion','addCombinacion','editCombinacion']),
+			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
+			onshowDrop(to){
+        this.openDrop = to
+      },
 			shoppingCenter(){
 	  		this.isload = false
 	  		setTimeout(()=>{
@@ -173,52 +143,15 @@
 	  		}, 500)
 	  		this.$forceUpdate()
 			},
-			onSwipe({view, object, type, direction}){
-				if(direction == 4){
-					this.openDropBottom()
-				}
-				if(direction == 8){
-					this.closeDropBottom()
-				}
-			},
-			openDropBottom(){
+			openDropBottom(data){
 				this.openDrop = true
-				let height = this.heightDrop
-				let opacity = .2
-				this.$refs.dropBottom.nativeView.animate({
-				  height: height,
-				  duration: 250
-				})
-				this.$refs.scrollCarros.nativeView.animate({
-				  opacity: opacity,
-				  duration: 250
-				})
 			},
-			closeDropBottom(){
-				this.openDrop = false
-				this.$refs.dropBottom.nativeView.animate({
-				  height: 0,
-				  duration: 250
-				})
-				this.$refs.scrollCarros.nativeView.animate({
-				  opacity: 1,
-				  duration: 250
-				})
-				this.clearCombinacion()
-			}, 
-			onAddCombinacion(){
-				if(this.combinacion.talleActive != '' && 
-					 this.combinacion.colorActive != ''){
-					this.addCombinacion()
-					this.closeDropBottom()
-				}else{
-					alert('Talle y color son requeridos')
-				}
+			onAddCombinacion(combinacion){
+				this.addCombinacion(combinacion)
 			},
-			onEditCombinacion(){
-				this.editCombinacion()
-				this.closeDropBottom()
-			}
+			deleteCombinacion(combinacion){
+				this.removeCombinacion(combinacion)
+			},
 		}
   }
 </script>

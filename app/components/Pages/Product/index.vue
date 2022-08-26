@@ -1,171 +1,162 @@
 <template lang="html">
-  <Page actionBarHidden="true" >
-    
-    <StackLayout>
-      <GridLayout 
-        columns="*" 
-        rows="auto,auto,*,auto" 
-      >
-        <HeaderTransparent
-          row="0"
-          col="0"
-          paddingRight="8"
-          paddingTop="8"
-          paddingBottom="8"
-          btnHeart="true"
-        />
-        <StackLayout
-          col="0"
-          row="1"
-          paddingLeft="16"
-          paddingRight="16"
-          marginBottom="16"
-          marginTop="8"
-        >
-          <StackLayout
-            padding="8"
-            class="card "
-            orientation="horizontal"
-            width="100%"
-            height="70"
-          >
-            <Image 
-              :src="product.store_data.logo"
-              stretch="aspectFill"
-              width="40"
-              height="40"
-              borderRadius="8"
-              class="shadow"
-              marginRight="16"
-            />
-            <StackLayout>
-              <Label 
-                :text="product.store_data.name"
-                fontSize="20"
-                fontWeight="600"
-                 textTransform="capitalize"
-              />
-              <label fontSize="12">
-                <FormattedString>
-                  <span text="Precio mínimo de compra: "></span>
-                  <span :text="product.store_data.min | moneda "></span>
-                </FormattedString>
-              </label>
-              
-            </StackLayout>
+  <Page @loaded="pageLoaded" @navigatedTo="navigated" >
+    <HeaderStore :store="product.store_data" :back="true" />
+
+    <GridLayout 
+      columns="*" 
+      rows="*, auto" 
+      ref="Gridlayout"
+    >
+      <StackLayout row="0" >
+        <ScrollView  >
+          <StackLayout >
+            <GridLayout 
+              columns="*" 
+              rows="auto,*, auto" 
+            >
+              <StackLayout row="0" >
+                <StackLayout
+                  col="0"
+                  row="0"
+                  height="380"
+                >
+                  <CarouselProduct 
+                    :images="producto.images"
+                  />
+                </StackLayout>
+              </StackLayout>
+              <StackLayout 
+               
+                row="1" 
+                class="shadow-n1 card" 
+                borderTopLeftRadius="16"
+                borderTopRightRadius="16"
+                marginTop="8"
+                padding="0"
+              >
+                <StackLayout
+                  class=""
+                  borderBottomLeftRadius="0"
+                  borderBottomRightRadius="0"
+                  borderTopLeftRadius="0"
+                  borderTopRightRadius="0"
+                  padding="16"
+                >
+                  <Label 
+                    @loaded="onLoaded"
+                    v-if="producto.category"
+                    :text="producto.category"
+                    fontWeight="200"
+                    marginLeft="0"
+                    marginBottom="0"
+                    marginRight="16"
+                    fontSize="12"
+                    padding="0"
+                  />
+
+                  <Label 
+                    ref="nameProduct"
+                    :text="producto.name"
+                    fontWeight="800"
+                    marginLeft="0"
+                    marginTop=""
+                    marginBottom="16"
+                    marginRight="16"
+                    fontSize="18"
+                    @tap="textWrap = !textWrap"
+                    :textWrap="textWrap"
+                    padding="0"
+                  />
+
+                  <price
+                    :price="producto.price"
+                    :prev_price="producto.prev_price"
+                    :priceOffert="producto.is_desc ? producto.is_desc:false"
+                    :isProduct="false"
+                  />
             
+                  
+                </StackLayout>
+                
+                <CombinacionesProduct
+                  padding="0 16 32 12"
+                  v-if="change"
+                  v-model="combinaciones"
+                  :product="producto"
+                  @openDropBottom="openDropBottomEvent"
+                />
+
+                
+                
+              </StackLayout>
+              <StackLayout v-show="productRelacionados.length" class="card shadow-n1" marginTop="16" paddingTop="16" row="2">
+                <label 
+                    text="Más productos de esta tienda"  
+                    margin="8 0 16 16" 
+                    fontSize="14" 
+                    fontWeight="900" />
+                <RadListView 
+                  ref="listView"
+                  for="item in productRelacionados"
+                  layout="grid"
+                  itemWidth="50%"
+                >
+                  <v-template >
+                    <ProductBox
+                      :product="item"
+                      :isStore="true"
+                    ></ProductBox>
+                  </v-template>
+                </RadListView>
+              </StackLayout>
+            </GridLayout>
           </StackLayout>
-        </StackLayout>
-
-        <StackLayout
-          col="0"
-          row="2"
-        >
-          <CarouselProduct 
-            :images="producto.images"
-          />
-          
-        </StackLayout>
-
-        <StackLayout
-          col="0"
-          row="3"
-          class="card"
-          borderBottomLeftRadius="0"
-          borderBottomRightRadius="0"
-          borderTopLeftRadius="20"
-          borderTopRightRadius="20"
-          marginTop="16"
-          padding="0"
-        >
-          <!-- <Label 
-            :text="producto.subcategoria.name"
-            fontWeight="200"
-            fontSize="12"
-            marginTop="16"
-            marginLeft="16"
-            padding="0"
-          /> -->
-          <Label 
-            :text="producto.name"
-            fontWeight="400"
-            marginLeft="16"
-            marginTop="16"
-            marginRight="16"
-            fontSize="20"
-            @tap="textWrap = !textWrap"
-            :textWrap="textWrap"
-            padding="0"
-          />
-            
-          
-          <!-- TALLES -->
-          <label text="Talle"  marginTop="16" marginLeft="16" fontSize="12" fontWeight="900" />
-          <ScrollView
-            scrollBarIndicatorVisible="true"
-            marginRight="8"
-            marginBottom="8"
-            orientation="horizontal"      
-          >
-            <StackLayout paddingLeft="16">
-              
-              <Talles
-                v-model="producto.talleActive"
-                :talles="producto.sizes"
-                v-show="producto.sizes.length > 0" 
-              />
-              <Label 
-                text="Sin Stock"
-                class="badge"
-                width="100"
-                v-show="!producto.has_stock" />
-            </StackLayout>
-          </ScrollView>
-          <!-- COLORES -->
-
-          <label text="Color" marginLeft="16" fontSize="12" fontWeight="900" />
-          <ScrollView
-            orientation="horizontal"
-            scrollBarIndicatorVisible="false"
-            marginBottom="8"
-          >
-            <StackLayout paddingLeft="16">
-              
-              <Colores
-                v-show="producto.colors.length > 0"
-                v-model="producto.colorActive"
-                @change="evento"
-                :colores="producto.colors"
-              />
-            </StackLayout>
-          </ScrollView>
-
-          <StackLayout
-            marginBottom="16"
-            marginTop="16"
-          >
-            <BtnAddCar 
-              :product="producto"
-              paddingLeft="16"
-            />
-          </StackLayout>
-        </StackLayout>
+        </ScrollView>
         
-      </GridLayout>
-    </StackLayout>
+      </StackLayout>
+      <StackLayout row="1" background=""  class="">
+        
+        <AbsoluteLayout padding="4 0 0 0" class="card secondary" borderRadius="10">
+          <BtnAddCar 
+            top="0"
+            left="0"
+            v-if="change"
+            :product="producto"
+            :combinaciones="combinaciones"
+            padding="8 0 8 16"
+            class="shadow-n1"
+
+          />
+          <SwipeCombinacion
+            top="0"
+            left="0"
+            :show="showDrop"
+            :isProduct="true"
+            
+            v-if="change"
+            @close="onshowDrop"
+            @addCombinacion="addCombinacion"
+            @deleteCombinacion="deleteCombinacion"
+          />
+        </AbsoluteLayout>
+        
+      </StackLayout>
+    </GridLayout>
+    
   </Page>
 </template>
 
 <script>
-  import { mapState,mapMutations } from 'vuex'
-  import HeaderTransparent from '../../Components/ActionBar/HeaderTransparent'
-  import HeaderDefault from '../../Components/ActionBar/HeaderDefault.vue'
+  import { ObservableArray } from '@nativescript/core/data/observable-array';
+  import { mapState,mapMutations, mapActions } from 'vuex'
   import CarouselProduct from './CarouselProduct'
-  import Talles from './Talles'
-  import Colores from './Colores'
   import BtnAddCar from './BtnAddCar'
-  import Car from '../Car'
   import productMixin from '~/mixins/productMixin.js'
+  import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
+  import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
+  import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
+  import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
+  import price from '~/components/Components/modules/price'
 
   export default {
     mixins: [productMixin],
@@ -175,46 +166,110 @@
       }
     },
     components: {
-      HeaderTransparent,
-      HeaderDefault,
       CarouselProduct,
-      Talles,
-      Colores,
       BtnAddCar,
-      Car
+      HeaderStore,
+      ProductBox,
+      SwipeCombinacion,
+      CombinacionesProduct,
+      price
     },
     filters: {
-      
+      moneda: function (value) {
+        value += '';
+        var x = value.split('.');
+        var x1 = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + '.' + '$2');
+        }
+        return '$'+ x1 + x2;
+      }
     },
     data() {
       return {
         producto: this.product,
-        colorActive: '',
-        textWrap: false
+        textWrap: true,
+        productRelacionados: [],
+        showDrop: false,
+        change: true,
+        combinaciones: [
+          { 
+            product_id: this.product.id,
+            talleActive: '',
+            colorActive: '',
+            cantidad: 1,
+            combinacion_key: 0,
+          }
+        ],
+        heightDrop: 0,
       };
     },
     computed:{
-      ...mapState(['drawerCar']),
-      computedDrawerCar: {
-        get: function () {
-          return this.drawerCar
-        },
-        set: function (v) {
-          this.changeDrawerCar(v)
-        }
-      },    
-     
     },
     mounted(){
-      // console.log(this.product.store)
+      this.changeParamsProducts({
+        store: this.product.store, 
+        // categories: this.product.category_id, 
+        sections: '',
+        plan: '',
+        start: 0, 
+        length: 4, 
+        search: "",
+        no_product_id: this.product.id,
+      })
+
+      this.getProductsStoreRosa().then((response)=>{
+        this.productRelacionados = new ObservableArray(response) 
+      })
       this.$forceUpdate()
     },
     methods:{
-      ...mapMutations(['changeDrawerCar']),
-      ...mapMutations('products',['setProduct']),
-      evento(val){
-        this.colorActive = val
-        this.$forceUpdate()
+      ...mapMutations('products',['changeParamsProducts']),
+      ...mapActions('products',['getProductsStoreRosa']),
+      ...mapMutations('car',['setCombinacion']),
+      pageLoaded(arg){
+        // this.heightDrop = this.$refs.Gridlayout.nativeView.getActualSize().height 
+      },
+      navigated(arg){
+        // this.heightDrop = this.$refs.Gridlayout.nativeView.getActualSize().height
+      },
+      onLoaded(arg){
+        // arg.object.android.setMinLines(2)
+      },
+      openDropBottomEvent(data){
+        this.setCombinacion(data)
+        this.showDrop = true
+      },
+      onshowDrop(to){
+        this.showDrop = to
+      },
+      addCombinacion(data){
+        if(data.combinacion_key != null){
+          this.combinaciones[data.combinacion_key] = data
+        }else{
+          let index = this.combinaciones.findIndex((e)=> e.colorActive == data.colorActive && e.talleActive == data.talleActive )
+          if(index != -1){
+            this.combinaciones[index].cantidad = this.combinaciones[index].cantidad + data.cantidad
+          }else{
+            this.combinaciones.push(data) 
+          }
+          
+        }
+        this.change = false
+        setTimeout(()=>{
+          this.change = true
+          this.$forceUpdate()
+        },1)
+      },
+      deleteCombinacion(key){
+        this.combinaciones.splice(key, 1)
+        this.change = false
+        setTimeout(()=>{
+          this.change = true
+          this.$forceUpdate()
+        },100)
       }
     }
     

@@ -7,7 +7,7 @@
 
 <script>
   import { mapState,mapMutations, mapActions } from 'vuex'
-  import HeaderTransparent from '~/components/Components/ActionBar/HeaderTransparent.vue'
+  
   import SlideCategories from '~/components/Components/SlideCategories.vue'
   import storeMixin from '~/mixins/storeMixin.js'
   import ProductBox from '~/components/Components/Boxes/ProductBox'
@@ -20,7 +20,6 @@
       }
     },
     components: {
-      HeaderTransparent,
       SlideCategories,
       ProductBox,
       HeaderDefault

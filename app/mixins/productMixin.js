@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('products',['setProduct']),
+    ...mapMutations('products',['setProduct','changeParamsProducts']),
     ...mapMutations('stores',['setStoreActive','setStore']),
     ...mapMutations('car',['setStoreActiveCar']),
     ...mapActions('products',['productVisits']),
@@ -73,6 +73,11 @@ export default {
       product.talleActive = ''
       product.colorActive = ''
       product.count = 1
+
+      // productos relacionados 
+      // product.store
+      // this.products
+      
 
       this.options.props = {
         product: product,

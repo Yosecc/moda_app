@@ -8,12 +8,31 @@ const state = {
     storesPopular:[],
     store:{},
     storeActive: null,
-    paramsStores:{ categorie: 'woman', plan: "black" },
+    paramsStores:{ categorie: 'woman', plan: "black", search: '' },
     categories: ['woman','man','xl','kids','accessories'],
-    planes: ['black','platinum','gold','blue']
+    planes: ['black','platinum','gold','blue'],
+    categoriesStore: [],
+    storeCategorieActive: 1,
+    storeSubcategorieActive: null,
 };
 
 const getters = {
+  categoriesStoreGetters(state){
+    let data = []
+    state.categoriesStore.forEach((e)=>{
+      data.push(e.categoria)
+    })
+    return data
+  },
+  subcategoriesStoreGetters(state){
+    let data = []
+    state.categoriesStore.forEach((e)=>{
+      if(state.storeCategorieActive == e.categoria.id){
+        data = e.subcategorias
+      }
+    })
+    return data
+  }
     // storeActive(state){
     //     return state.stores.find((element) => element.id == state.storeActive)
     // }
@@ -37,6 +56,18 @@ const mutations = {
       for(var i in val){
         state.paramsStores[i] = val[i]
       }
+    },
+    setCategoriesStore(state, val){
+      state.categoriesStore = val
+    },
+    setSubcategoriesStore(state, val){
+      state.subcategoriesStore = val
+    },
+    setStoreCategorieActive(state, val){
+      state.storeCategorieActive = val
+    },
+    setStoreSubcategorieActive(state, val){
+      state.storeSubcategorieActive = val
     }
 };
 
@@ -50,6 +81,10 @@ const actions = {
       .map(key => `${key}=${context.state.paramsStores[key]}`)
       .join('&');
       const response = await Api.get(`rosa/stores?${qs}`)
+      return response
+    }, 
+    async getCategoriesStore(context, local_cd){
+      const response = await Api.get(`store/get_categories?local_cd=${local_cd}`)
       return response
     }
     // onStoreView(context, val){}

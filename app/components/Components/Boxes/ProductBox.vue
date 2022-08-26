@@ -3,6 +3,7 @@
       class="product_root border"
       @tap="onTap()"
       v-if="product"
+      paddingBottom="16"
     >
 
       <AbsoluteLayout >
@@ -39,7 +40,7 @@
         
         <!--  -->
         <!-- <StackLayout 
-          top="0"ss
+          top="0"
           left="0"
           v-else-if="isOffert && product.images && product.images.length"
           borderRadius="8"
@@ -49,18 +50,33 @@
           :backgroundImage="product.images[0]"
           :class="!isLoadPage ? 'animation-pulse':''"
           class="bg"
-        > -->
+        >
           
-        <!-- </StackLayout> -->
+        </StackLayout> -->
           
-          <!-- <StoreBox
+          <StoreBox
             top="8"
             left="8"
             width="40"
             height="40"
-            v-if="product.store && product.store.logo"
-            :store="product.store"
-          /> -->
+            v-if="product.store_data && product.store_data.logo && !isStore"
+            :store="product.store_data"
+          />
+
+          <!-- <ImageCache 
+            v-if="!isStore"
+            placeholderStretch="aspectFill"
+            placeholder="res://eskeleton"
+            :src="product.store_data"
+            width="100"
+            height="100"
+            stretch="aspectFill"
+            marginRight="16"
+            marginBottom="8"
+            marginTop="8"
+            class="storeBox"
+          />  -->
+           
           
 
       </AbsoluteLayout>
@@ -68,6 +84,7 @@
       <StackLayout class="product_text" >
         <price
           :price="product.price"
+          :prev_price="product.prev_price"
           :priceOffert="product.is_desc ? product.is_desc:false"
         />
         <label 
