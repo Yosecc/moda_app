@@ -111,7 +111,7 @@ import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
     },
     watch:{
       ofertas(to){
-        console.log('ofertas', to)
+        // console.log('ofertas', to)
       },
       sliders(to){
         // setTimeout(()=>{

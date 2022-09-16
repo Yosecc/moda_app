@@ -145,7 +145,7 @@
       // 
     },
     mounted(){
-      console.log('cupones',this.coupons)
+      // console.log('cupones',this.coupons)
       // setTimeout(()=>{
       //   this.montado = true
       // },3000)

@@ -28,12 +28,10 @@
               src="~/assets/icons/trash_red.png" 
               width="15" 
               height="10" 
-              
             />
           </FlexboxLayout>
         </GridLayout>
         
-
         <label text="Elegí un talle" margin="8 0 8 0" fontSize="12" fontWeight="900" />
         <Talles
           row="1"
@@ -45,7 +43,7 @@
         <Colores
           row="2"
           v-if="combinacion.colors.length"
-          :colores="combinacion.colors"
+          :colores="colores"
           v-model="combinacion.colorActive"
         />
         <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
@@ -56,6 +54,8 @@
       <StackLayout row="2">
         <button v-if="combinacion.combinacion_key == null" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
         <button v-if="combinacion.combinacion_key != null" @tap="onAddCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
+
+
       </StackLayout>
     </GridLayout>
     
@@ -83,6 +83,10 @@
       isProduct:{
         type: Boolean,
         default: false
+      },
+      models:{
+        type: Array,
+        default: []
       }
     },
     components:{
@@ -113,16 +117,38 @@
           // this.toggleSwitchMenu(v);
         },
       },
-      // heightDrop(){
-      //   return ( screen.mainScreen.heightDIPs - 120 )
-      // }
+      colores(){
+        
+        if(this.combinacion.talleActive!=''){
+
+          let models = this.models.find((e)=>e.size == this.combinacion.talleActive)
+          
+          let colors = []
+          models.properties.forEach((x)=>{
+            colors.push(this.combinacion.colors.find((e)=> e.id == x.color_id))
+          })
+
+          let colorIndex = colors.findIndex((e)=>e.code == this.combinacion.colorActive)
+
+          if(colorIndex == -1 && this.isProduct){
+            this.combinacion.colorActive = ''
+            this.$forceUpdate()
+          }
+
+          return colors
+        }
+
+        return this.combinacion.colors
+      }
     },
     mounted(){
       // alert(screen.mainScreen.heightDIPs)
     },
     methods:{
       ...mapMutations('car',['clearCombinacion','addCombinacion']),
+      ...mapActions('car',['deleteModelo']),
       openDropBottom(){
+        console.log('SwipeCombinacion.vue',this.combinacion)
         this.openDrop = true
         let height = this.heightDrop
         this.$refs.dropBottom.nativeView.animate({
@@ -162,9 +188,10 @@
           alert('Talle y color son requeridos')
         }
       },
-      deleteCombinacion(){
-        this.$emit('deleteCombinacion',this.combinacion)
-        this.closeDropBottom()
+      async deleteCombinacion(){
+        await this.deleteModelo(this.combinacion.cart_id)
+          this.$emit('deleteCombinacion',this.combinacion)
+          this.closeDropBottom()
       },
     }
   }

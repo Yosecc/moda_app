@@ -154,7 +154,7 @@
 <script>
 // import { Frame } from '@nativescript/core';
 	import CheckBox from '../modules/checkbox'
-	import { mapState, mapMutations } from 'vuex'
+	import { mapState, mapMutations, mapActions } from 'vuex'
   import { URL_IMAGE } from '~/services'
   import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
 
@@ -259,7 +259,12 @@
 		methods:{
 			...mapMutations('car',['removeCardAbsolute','addCombinacion','setProductId','setCombinacion']),
 			...mapMutations('checkout',['setcarCheckout']),
+			...mapActions('car',['deleteProduct']),
 			onTrashStore(){
+				console.log('this.car', this.car)
+				this.car.products.forEach((e)=>{
+					this.deleteProduct(e.id)
+				})
 				this.removeCardAbsolute(this.car)
 				this.$refs.productsCar.nativeView.refresh();
 				this.$forceUpdate()
@@ -270,9 +275,10 @@
 					this.act = true
 				});
 			},
-			openDropBottomEvent(data){
+			openDropBottomEvent({data, models}){
+				// console.log('this.car', )
 				this.setCombinacion(data)
-				this.$emit('openDropBottom', data)
+				this.$emit('openDropBottom', {data, models})
 			},
 			onProcessCheckout(){
 				this.setcarCheckout({

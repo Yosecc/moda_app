@@ -26,7 +26,6 @@ export default {
     }
   },
   computed:{
-
     talles(){
       if(Object.keys(this.product.sizes).length > 0){
         let talles = []
@@ -74,19 +73,13 @@ export default {
       product.colorActive = ''
       product.count = 1
 
-      // productos relacionados 
-      // product.store
-      // this.products
-      
-
       this.options.props = {
         product: product,
       }
-      this.$forceUpdate()
 
-      
+      console.log('product',product)
+      this.$forceUpdate()
       this.$navigator.navigate('/product',this.options)
-     
     },
   }
 };

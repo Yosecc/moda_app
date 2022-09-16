@@ -16,13 +16,6 @@
       paddingBottom="6"
       
     >
-        <!-- <price
-          v-if="combinaciones.length"
-          :price="product.price"
-          :prev_price="product.prev_price"
-          :priceOffert="product.is_desc ? product.is_desc:false"
-          :isProduct="true"
-        /> -->
         <Label :text="`${calculoPrendas} ${ calculoPrendas > 1 ? 'prendas' : 'prenda'} `" v-if="calculoPrendas " fontSize="10" fontWeight="300" />
         <Label 
           width="400"
@@ -39,7 +32,7 @@
     <FlexboxLayout justifyContent="center"
       alignItems="center"
       padding="0 16 0 0"
-       @tap="processDataCar"
+      @tap="onProcessDataCar"
     >
       <button 
         text="Agregar al carro" 
@@ -56,34 +49,6 @@
       />
     </FlexboxLayout>
 
-    <!-- <FlexboxLayout  
-      background="#DA0080"
-      justifyContent="center"
-      alignItems="center"
-      paddingLeft="30"
-      paddingRight="30"
-      @tap="processDataCar"
-    >
-
-      <Image
-        src="~/assets/icons/car_white.png"
-        width="20"
-        marginRight="8"
-      />
-      <Label 
-        text="AGREGAR" 
-        color="white"
-        fontWeight="900"
-        fontSize="18" 
-        horizontalAlignment="center"
-        verticalAlignment="center"
-        margin="0"
-        padding="0"
-
-      />
-
-    </FlexboxLayout > -->
-
   </FlexboxLayout >
 
 </template>
@@ -91,7 +56,9 @@
 <script>
   import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
   import price from '~/components/Components/modules/price'
+  import carMixin from '~/mixins/carMixin.js'
   export default {
+    mixins: [carMixin],
     props:{
       product:{
         type: Object
@@ -104,34 +71,13 @@
         default: false
       }
     },
-    filters: {
-    moneda: function (value) {
-      value += '';
-      var x = value.split('.');
-      var x1 = x[0];
-      var x2 = x.length > 1 ? '.' + x[1] : '';
-      var rgx = /(\d+)(\d{3})/;
-      while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + '.' + '$2');
-      }
-      return '$'+ x1 + x2;
-    }
-  },
     components:{
       price
     },
-    data() {
-      return {
-        
-        
-      };
-    },
     computed:{
-      // ...mapGetters('stores',['countProductsCar']),
       ...mapState('stores',['storeActive']),
       total(){
         let total = 0
-        // console.log('combinaciones', this.combinaciones)
         this.combinaciones.forEach((e)=>{
           total += this.product.price * e.cantidad
         })
@@ -142,43 +88,15 @@
         this.combinaciones.forEach((e)=>{
           numero += e.cantidad
         })
-
         return numero
       }
     },
     methods:{
       ...mapActions('car',['addCar']),
       ...mapMutations(['changeDrawerCar','changeDrawer']),
-      processDataCar(){
+      onProcessDataCar(){
         if (this.validateData()) {
-          // console.log('product',this.product)
-          let obj = {
-            images      : this.product.images,
-            precio      : this.product.price,
-            id          : this.product.id,
-            descripcion : this.product.name,
-            // categoria   : this.product.categoria,
-            store: {
-              id   : this.product.store_data.id,
-              name : this.product.store_data.name,
-              limit_price: this.product.store_data.min,
-              logo: this.product.store_data.logo,
-            },
-            sizes        : this.product.sizes,
-            colors       : this.product.colors,
-            combinacion: this.combinaciones
-          }
-          this.addCar(obj)
-
-          this.$navigator.navigate('/shopping_center',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-          })
-        
-          this.$forceUpdate()
+          this.processDataCar(this.product,this.combinaciones)
         }
       },
       validateData(){

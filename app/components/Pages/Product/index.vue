@@ -112,7 +112,6 @@
             </GridLayout>
           </StackLayout>
         </ScrollView>
-        
       </StackLayout>
       <StackLayout row="1" background=""  class="">
         
@@ -125,14 +124,13 @@
             :combinaciones="combinaciones"
             padding="8 0 8 16"
             class="shadow-n1"
-
           />
           <SwipeCombinacion
             top="0"
             left="0"
             :show="showDrop"
             :isProduct="true"
-            
+            :models="producto.models"
             v-if="change"
             @close="onshowDrop"
             @addCombinacion="addCombinacion"
@@ -173,19 +171,6 @@
       SwipeCombinacion,
       CombinacionesProduct,
       price
-    },
-    filters: {
-      moneda: function (value) {
-        value += '';
-        var x = value.split('.');
-        var x1 = x[0];
-        var x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1)) {
-          x1 = x1.replace(rgx, '$1' + '.' + '$2');
-        }
-        return '$'+ x1 + x2;
-      }
     },
     data() {
       return {
@@ -239,7 +224,7 @@
         // arg.object.android.setMinLines(2)
       },
       openDropBottomEvent(data){
-        this.setCombinacion(data)
+        this.setCombinacion(data.data)
         this.showDrop = true
       },
       onshowDrop(to){

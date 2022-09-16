@@ -233,7 +233,7 @@
         inputs.forEach((input)=>{
           this.validate(input, false)
         })
-          console.log(this.errors)
+          // console.log(this.errors)
         if(this.errors.length){
           return false
         }

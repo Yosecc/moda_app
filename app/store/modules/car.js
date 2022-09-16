@@ -20,8 +20,10 @@ const state = {
       product_id: null,
       cantidad:1,
       combinacion_key: null,
-      descripcion: ''
-    }
+      descripcion: '',
+      cart_id: null
+    },
+    carDB:[]
 };
 
 const getters = {
@@ -102,6 +104,7 @@ const mutations = {
           state.carsProducts[index].combinacion[indexTC].cantidad =  val.cantidad
           state.carsProducts[index].combinacion[indexTC].talleActive =  val.talleActive
           state.carsProducts[index].combinacion[indexTC].colorActive =  val.colorActive
+          state.carsProducts[index].combinacion[indexTC].cart_id = val.cart_id ? val.cart_id : null 
         }
       }
     },
@@ -120,12 +123,14 @@ const mutations = {
         colorActive: '',
         talleActive: '',
         product_id: state.productId,
-        key: state.combinacion_key
+        key: state.combinacion_key,
+        
       }
 
       if(state.combinacion_key != null){
         state.combinacion.colorActive =  product.combinacion[state.combinacion_key].colorActive
         state.combinacion.talleActive = product.combinacion[state.combinacion_key].talleActive
+        state.combinacion.cart_id = product.combinacion[state.combinacion_key].cart_id ? product.combinacion[state.combinacion_key].cart_id : null 
       }
 
     },
@@ -207,16 +212,56 @@ const mutations = {
     },
     setcarCheckout(state, val){
         state.carCheckout = val
+    }, 
+    setCarDB(state, val){
+      state.carDB = val
     }
 };
 
 const actions = {
-    addCar(context, val){
+    async addCar(context, val){
+       
+       console.log('vuex addCar', val)
+      let cardb = []
+
+      val.combinacion.forEach((e)=>{
+        let color_id = val.colors.find( (i) => e.colorActive == i.code ).id
+        let size_id  = val.models.find( (x) => x.size == e.talleActive ).size_id
+        let modelo   = val.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
+        cardb.push({
+          group_cd    : val.store.company,
+          local_cd    : val.store.id,
+          product_id  : val.id,
+          models_id   : modelo.id,
+          size_id     : size_id,
+          color_id    : color_id,
+          price       : val.precio,
+          cantidad    : e.cantidad,
+          total_price : val.precio*e.cantidad
+        })
+      })
+
+      let response = await Api.post('car/addCar', cardb)
       context.commit('addCarStore',val.store)
       context.commit('carsProductsPush', val)
     },
-    async getCar(context, val){
-      let response = await Api.get('getProductsCar',{ params:{ id: val } })
+    async getCar(context){
+      let response = await Api.get('car/getCar')
+      console.log('getCar',response)
+      response.stores.forEach((e)=>{
+        context.commit('addCarStore',e)
+      })
+      response.products.forEach((e)=>{
+        context.commit('carsProductsPush', e)
+      })
+      return response
+    },
+    async deleteModelo(context, val){
+      const response = await Api.post('car/deleteModelo', { cart_id: val })
+      return response
+    },
+    async deleteProduct(context, val){
+      const response = await Api.post('car/deleteProduct', { product_id: val })
       return response
     },
     openCar(context){

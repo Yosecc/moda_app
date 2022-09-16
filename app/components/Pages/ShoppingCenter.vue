@@ -80,6 +80,7 @@
       row="2"
       :show="openDrop"
       :isProduct="false"
+      :models="models"
       @close="onshowDrop"
       @addCombinacion="onAddCombinacion"
       @deleteCombinacion="deleteCombinacion"
@@ -94,11 +95,14 @@
 	import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
 	import CarBox from '../Components/Boxes/CarBox.vue'
 	import BtnCar from '../Components/BtnActions/BtnCar.vue'
-	import { mapState, mapMutations, mapGetters } from 'vuex'
+	import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 	import Talles from '~/components/Pages/Product/Talles'
   import Colores from '~/components/Pages/Product/Colores'
   import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
+  import carMixin from '~/mixins/carMixin.js'
+
   export default {
+  	mixins: [carMixin],
     components:{
 			HeaderDefault,
 	    CarBox,
@@ -111,7 +115,8 @@
       return {
         isload: true,
         heightDrop: 350,
-        openDrop: false
+        openDrop: false,
+        models: null
       };
 	  },
 	  watch:{
@@ -126,6 +131,11 @@
 	  	...mapState('car',['carsProducts','combinacion_key','combinacion']),
 	  	...mapGetters('car',['shoppingCar']),
 	  },
+	  created(){
+	  	this.getCar().then((e)=>{
+	  		this.$forceUpdate()
+	  	})
+	  },
 	  mounted(){
 	  	console.log('se monta shoping ', this.shoppingCar)
 	  	// console.log(this.carsStoresProducts)
@@ -133,6 +143,7 @@
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
 			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
+			...mapActions('car',['getCar']),
 			onshowDrop(to){
         this.openDrop = to
       },
@@ -143,11 +154,15 @@
 	  		}, 500)
 	  		this.$forceUpdate()
 			},
-			openDropBottom(data){
+			openDropBottom({data, models}){
+				console.log('ShoppingCenter.vue data',data)
+				this.models = models
 				this.openDrop = true
 			},
 			onAddCombinacion(combinacion){
+				console.log('ShoppingCenter.vue',combinacion)
 				this.addCombinacion(combinacion)
+				this.addCombinacionCart(combinacion.product_id)
 			},
 			deleteCombinacion(combinacion){
 				this.removeCombinacion(combinacion)

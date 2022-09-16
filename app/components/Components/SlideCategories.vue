@@ -210,7 +210,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
         
       },
       onImageLoaded(arg){
-        console.log('ase',arg)
+        // console.log('ase',arg)
       },
       categorieActiveMethod(id){
         if(!this.isStore){

@@ -148,7 +148,7 @@
       ...mapMutations(['changeisLoadPage']),
       ...mapMutations('products',['changeParamsProductsSearch']),
       async onPullToRefreshInitiated ({ object }) {
-        console.log('Pulling...');
+        // console.log('Pulling...');
         await this.$nextTick( async () => {
           await this.defineHome()
           await this.onGetProducts()

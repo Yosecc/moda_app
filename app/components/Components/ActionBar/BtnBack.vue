@@ -22,9 +22,19 @@
 <script>
 
   export default {
+    props:{
+      isModal:{
+        type: Boolean, 
+        default: false
+      },
+    },
     methods:{
       onTap(){
-        this.$navigator.back()
+        if(!this.isModal){
+          this.$navigator.back()
+        }else{
+          this.$modal.close()
+        }
       }
     }
   }

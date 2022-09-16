@@ -6,56 +6,8 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
  */
 
 const state = {
-    pedidos: new ObservableArray([
-        {
-          store:{
-            logo: 'https://netivooregon.s3.amazonaws.com/modatexrosa2/img/modatexrosa2/pinkbanana.gif',
-            name: '',
-          },
-          monto: 3500,
-          id: 9876,
-          fecha: '2022-12-02',
-          tipo_envio: 'Sucursal',
-          status: 'Recibido',
-          actions: ['detalle']
-        },
-        {
-          store:{
-            logo: 'https://netivooregon.s3.amazonaws.com/modatexrosa2/img/modatexrosa2/pinkbanana.gif',
-            name: '',
-          },
-          monto: 3500,
-          id: 9876,
-          fecha: '2022-12-02',
-          tipo_envio: 'Sucursal',
-          status: 'Verificado',
-          actions: ['detalle','comprobante']
-        },
-        {
-          store:{
-            logo: 'https://netivooregon.s3.amazonaws.com/modatexrosa2/img/modatexrosa2/pinkbanana.gif',
-            name: '',
-          },
-          monto: 3500,
-          id: 9876,
-          fecha: '2022-12-02',
-          tipo_envio: 'Sucursal',
-          status: 'A Pagar',
-          actions: ['detalle','pagar']
-        },
-        {
-          store:{
-            logo: 'https://netivooregon.s3.amazonaws.com/modatexrosa2/img/modatexrosa2/pinkbanana.gif',
-            name: '',
-          },
-          monto: 3500,
-          id: 9876,
-          fecha: '2022-12-02',
-          tipo_envio: 'Sucursal',
-          status: 'Envio Generado',
-          actions: ['detalle']
-        },
-    ]),
+    pedidos: [],
+    pedidosRosa: [],
     direcciones: new ObservableArray([
       {
         id:1,
@@ -175,9 +127,30 @@ const state = {
 };
 
 const getters = {
+  pedidosUnidos(state){
+    let data = state.pedidos
+     // console.log('data111',data) 
+     // state.pedidosRosa.forEach((e)=>{
+       // console.log('e',e)
+       // let index = data.findIndex((i)=> i.num == e.num)
+
+       // if(index != -1){
+       //   data[index].otros = e
+       // }
+     // })
+    // console.log('pedidos',state.pedidos)
+    // console.log('pedidosRosa',state.pedidosRosa)
+    return new ObservableArray(state.pedidos)
+  }
 };
 
 const mutations = {
+  setPedidos(state, val){
+    state.pedidos = val
+  },
+  setPedidosRosa(state, val){
+    state.pedidosRosa = val
+  },
   addDireccion(state, val){
     state.direcciones.push(val)
   },
@@ -193,8 +166,18 @@ const mutations = {
 };
 
 const actions = {
+  async getPedidos(context){
+    const response = await Api.get('ventas')
+    context.commit('setPedidos', response)
+    return response
+  },
+  async getPedidosRosa(context){
+    const response = await Api.rosaGet('document/calification_ajax.php?ajax=true&page_hidden=1&jsonReturn=1&filter=')
+    console.log('getPedidosRosa',response)
+    context.commit('setPedidosRosa', response)
+    return response
+  },
   addDireccion(context, val){
-    console.log(val)
     context.commit('addDireccion', val)
   },
   setDireccionDefault(context, val){

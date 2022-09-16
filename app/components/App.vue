@@ -63,8 +63,8 @@
       }
 		},
     mounted(){
-      console.log(cache.get('carsStores'))
-      console.log(cache.get('carsProducts'))
+      // console.log(cache.get('carsStores'))
+      // console.log(cache.get('carsProducts'))
       
     },
 		methods:{

@@ -153,7 +153,7 @@
     },
     methods:{
      onTap(){
-      console.log('onTap',this.product)
+      // console.log('onTap',this.product)
       this.onViewProduct(this.product, !this.isStore)
      },
      getImage(img){

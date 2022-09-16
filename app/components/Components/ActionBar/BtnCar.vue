@@ -72,10 +72,10 @@
     },
     watch:{
       carsProducts(to){
-        console.log('watch carsProducts',to)
+        // console.log('watch carsProducts',to)
       },
       countProductsCarActive(to){
-        console.log('to',to)
+        // console.log('to',to)
       }
     },
     methods:{

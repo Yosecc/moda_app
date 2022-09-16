@@ -90,7 +90,7 @@
     methods:{
       ...mapActions('profile',['setDireccionDefault']),
       onItemTap({item}){
-        console.log(item)
+        // console.log(item)
         this.setDireccionDefault(item)
         this.$refs.listDirecciones.nativeView.refresh();
       },

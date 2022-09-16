@@ -1,11 +1,65 @@
-import { mapMutations, mapActions }
+import { mapMutations, mapActions, mapState } from 'vuex'
 
 export default {
+  filters: {
+    moneda: function (value) {
+      value += '';
+      var x = value.split('.');
+      var x1 = x[0];
+      var x2 = x.length > 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + '.' + '$2');
+      }
+      return '$'+ x1 + x2;
+    }
+  },
+  computed:{
+    ...mapState('car',['carsProducts'])
+  },
   methods: {
-    ...mapMutations('',['']),
-    ...mapActions('',['']),
-    addCar(store, product){
+    ...mapActions('car',['addCar']),
+    dataCart(product,combinaciones){
+      console.log('product', product)
+      let obj = {
+        images      : product.images,
+        precio      : product.price ? product.price : product.precio,
+        id          : product.id,
+        descripcion : product.name,
+        // categoria   : product.categoria,
+        store: {
+          id   : product.store_data ? product.store_data.id : product.store.id,
+          company: product.company ? product.company : product.store.company,
+          name : product.store_data ? product.store_data.name : product.store.name,
+          limit_price: product.store_data ? product.store_data.min : product.store.min,
+          logo: product.store_data ? product.store_data.logo : product.store.logo,
+        },
+        sizes        : product.sizes,
+        colors       : product.colors,
+        combinacion: combinaciones,
+        models: product.models
+      }
+      console.log('obj carjs', obj)
+      this.addCar(obj)
+    },
+    processDataCar(product,combinaciones){
+      this.dataCart(product,combinaciones)
 
+      this.$navigator.navigate('/shopping_center',{
+        transition: {
+          name: 'slideLeft',
+          duration: 300,
+          curve: 'easeIn'
+        },
+      })
+      
+      this.$forceUpdate()
+    },
+    addCombinacionCart(product_id){
+      let product = this.carsProducts.find((e)=> e.id == product_id)
+      console.log('mixin addCombinacionCart', product )
+      this.dataCart(product, product.combinacion)
+      // alert('Agregada combinacion')
     }
   }
 };

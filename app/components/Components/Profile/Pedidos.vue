@@ -1,5 +1,5 @@
 <template lang="html">
-  <RadListView for="item in pedidos" >
+  <RadListView for="item in pedidosUnidos._array" >
     <v-template >
       <PedidoBox :item="item" />
     </v-template>
@@ -8,16 +8,17 @@
 
 <script>
   import profileMixin from '~/mixins/profileMixin.js'
-   import CardEnvio from '~/components/Components/Checkout/CardEnvio.vue'
-   import PedidoBox from '~/components/Components/Boxes/PedidoBox.vue'
-  import { mapState, mapMutations, mapGetters } from 'vuex'
+  // import CardEnvio from '~/components/Components/Checkout/CardEnvio.vue'
+  import PedidoBox from '~/components/Components/Boxes/PedidoBox.vue'
+  import { ObservableArray } from '@nativescript/core/data/observable-array';
+  import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   export default {
     mixins: [profileMixin],
     props: {
 
     },
     components: {
-      CardEnvio,
+      // CardEnvio,
       PedidoBox
     },
     filters: {
@@ -25,37 +26,46 @@
     },
     data() {
       return {
-        
+        conteo: 0
       };
     },
     watch:{
-      // async product (val){
-      //   await this.$nextTick()
-      //   this.$refs.contentproduct.nativeView.refresh();
-      // },
     },
     computed:{
-      ...mapState('profile',['pedidos']),
-      // ...mapGetters('checkout',['envioSelected']),
-      // ...mapState('car',['carCheckout']),
-      // 
+      ...mapState('profile',['pedidos','pedidosRosa']),
+      // ...mapGetters('profile',['pedidosUnidos']),
+      pedidosUnidos(){
+        let data = this.pedidos
+        if(this.pedidosRosa.items && this.pedidosRosa.items.length){
+          this.pedidosRosa.items.forEach((e)=>{
+             let index = data.findIndex((i)=> i.num == e.NUM)
+             if(index != -1){
+               data[index].otros = e
+             }
+          })
+        }else{
+          if(this.conteo < 1){
+            setTimeout(()=>{
+              this.getPedidosRosa()
+              this.conteo++ 
+            }, 3000)
+            
+          }
+        }
+        return new ObservableArray(data)
+      }
     },
-    mounted(){
-      // console.log(this.carCheckout)
+     mounted(){
+      this.getPedidosRosa()
+      this.getPedidos()
+      
+       
+
+      // console.log('mounted', this.pedidosUnidos)
     },
     methods:{
-      // ...mapMutations(['changeDrawerCar']),
-      // ...mapMutations('checkout',['setDireccion']),
-      // onItemTap({item}){
-      //   this.setDireccion(item.id)
-      //   this.direcciones.forEach((e)=>{
-      //     if(e.id == item.id){
-      //       e.active = true
-      //     }else{
-      //       e.active = false
-      //     }
-      //   })
-      // }
+      ...mapActions('profile',['getPedidos','getPedidosRosa']),
+      ...mapMutations('profile',['setPedidos'])
     }
     
   };

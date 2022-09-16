@@ -75,6 +75,14 @@
     components:{
 
     },
+    watch:{
+      colorActive(to){
+        if(to == ''){
+          this.colorChecked = to
+          this.$forceUpdate()
+        }
+      }
+    },
     data() {
       return {
         colorChecked: this.colorActive
@@ -85,7 +93,7 @@
 
     },
     mounted(){
-      console.log('se monto los colores')
+      // console.log('se monto los colores')
       this.$forceUpdate()
     },
     methods:{

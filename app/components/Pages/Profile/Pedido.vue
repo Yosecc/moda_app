@@ -1,19 +1,20 @@
 <template lang="html">
-  
-    
-  <Page backgroundColor="#F6F6F6">
-    <HeaderDefault backgroundColor="white" :back="true" />
+  <Page id="pedido" actionBarHidden="true">
+    <GridLayout rows="auto, *">
+      <HeaderCustom row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
+        <Label col="1" marginTop="6" fontWeight="900" fontSize="16"text="Resumen de compra" />
+      </HeaderCustom>
 
-    
-
+      <StackLayout row="1">
+        
+      </StackLayout>
+      
+    </GridLayout>
    </Page>
-
-
-
 </template>
 
 <script>
-  import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
+  import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
   import InputsLayout from '~/components/Components/InputsLayout.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import helpersMixin from '~/mixins/helpersMixin.js'
@@ -25,7 +26,7 @@
 
     },
     components: {
-      HeaderDefault,
+      HeaderCustom,
       InputsLayout
     },
     filters: {

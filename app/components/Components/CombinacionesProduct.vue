@@ -1,3 +1,4 @@
+
 <template lang="html">
   <StackLayout >
     <Label text="Agregá combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
@@ -173,16 +174,18 @@
     methods:{
       ...mapMutations('car',['setCombinacion']),
       openDropBottom(keyy){
-        // console.log('product',this.product)
+        // console.log('CombinacionesProduct.vue product',this.product)
         let data = {
           sizes: this.product.sizes,
           colors: this.product.colors,
           product_id: this.product.id,
           descripcion: this.product.name ? this.product.name : this.product.descripcion,
+         // models: this.product.models,
           combinacion_key:keyy,
           cantidad: 1,
           colorActive: '',
           talleActive: '',
+
         }
         
         if(keyy != undefined){
@@ -191,11 +194,13 @@
               data.colorActive = e.colorActive
               data.talleActive = e.talleActive
               data.cantidad = e.cantidad
+              data.cart_id = e.cart_id
+
             }
           })
         }
         // console.log('paso 1', data)
-        this.$emit('openDropBottom', data)
+        this.$emit('openDropBottom', {data:data, models:this.product.models})
       },
     }
   }

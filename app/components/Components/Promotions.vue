@@ -66,7 +66,7 @@ import { mapMutations, mapState, mapActions } from 'vuex'
     },
     methods:{
       webview(item){
-        console.log(item)
+        // console.log(item)
         this.$navigator.navigate('/web_view',{
           transition: {
             name: 'slideLeft',

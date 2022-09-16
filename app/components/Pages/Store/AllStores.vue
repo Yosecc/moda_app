@@ -258,7 +258,7 @@
         });
       },
       onloadied(event){
-        console.log('event',event.object )
+        //console.log('event',event.object )
       },
       async scrollEnd({ object, scrollOffset }){
         let altura = object.getActualSize().height * this.numero
