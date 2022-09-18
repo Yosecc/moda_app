@@ -337,6 +337,12 @@ Switch#switch[checked=false]{
     &.shadoLg{
         box-shadow:  0 2 10 rgba(0,0,0,.1);
     }
+    &.shadow-none{
+        box-shadow: none;
+    }
+    &.border{
+        border-width: 1;
+    }
 }
 .category_box{
     margin-top: 16;
@@ -450,6 +456,9 @@ Switch#switch[checked=false]{
             color: #4d4d4d;
         }
     }
+}
+.bordercolor{
+    border-bottom-color: rgba(0,0,0,.05);
 }
 .pedidoBox, .direccionBox{
     .header{

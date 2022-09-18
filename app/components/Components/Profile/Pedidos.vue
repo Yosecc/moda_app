@@ -1,5 +1,8 @@
 <template lang="html">
-  <RadListView for="item in pedidosUnidos._array" >
+  <StackLayout v-if="pedidosUnidos._array.length == 0" marginTop="24">
+    <ActivityIndicator busy="true" color="#DA0080" />
+  </StackLayout>
+  <RadListView v-else for="item in pedidosUnidos._array" >
     <v-template >
       <PedidoBox :item="item" />
     </v-template>

@@ -3,12 +3,12 @@
     paddingLeft="16"
     paddingRight="16"
   >
-      <GridLayout v-if="item" class="card pedidoBox" padding="0" columns="auto,*" rows="*,*,*">
+      <GridLayout v-if="item" class="card pedidoBox" padding="0" rows="*,*,*">
         <FlexboxLayout  
           justifyContent="space-between"
           class="header"
           col="0" 
-          colSpan="2" 
+           
           row="0"
         >
 
@@ -16,22 +16,35 @@
           <Label horizontalAlignment="right" text="Ver detalle" fontSize="12" class="label_enlace" @tap="onViewTap" />
 
         </FlexboxLayout >
-        <StackLayout col="0" row="1">
+        <StackLayout orientation="horizontal" borderBottomWidth="1" class="bordercolor" paddingBottom="16" col="0" row="1">
           <image 
             width="60"  
             borderRadius="8" 
-            :src="item.store.logo"  />
+            :src="item.store.logo"
+            marginRight="16"  />
+          <StackLayout>
+            <Label 
+              textWrap
+              :text="item.store.name" 
+              textTransform="uppercase" 
+              class="title " 
+              fontSize="14"
+             />
+            <Label 
+              v-if="info"
+              textWrap
+              :text="estado.estado" 
+              textTransform="uppercase" 
+              class="title primary" 
+              fontSize="14"
+             />
+          </StackLayout>
         </StackLayout>
-        <StackLayout col="1" row="1">
+        <StackLayout col="0" row="2">
      
-              <!-- <Label 
-                :text="item.status" 
-                textTransform="uppercase" 
-                class="title primary" 
-                fontSize="14"
-                /> -->
-              <Label fontSize="14" :text="item.delivery_price.DATOS_VENTA.TOTAL | moneda" class="title" />
-              <Label fontSize="12" :text="`Pedido: #${item.num}`" marginBottom="8"/>
+              <Label fontSize="12" :text="`Pedido: #${item.num}`" />
+              <Label fontSize="16" :text="item.delivery_price.DATOS_VENTA.TOTAL | moneda" class="title" marginBottom="8"/>
+              
               <label fontSize="14" textWrap="true" v-if="info">
                 <FormattedString>
                   <span :text="`${info.ENTREGADO} - `" />
@@ -39,12 +52,17 @@
                   <span v-else :text="enviotypecomputed" />
                 </FormattedString>
               </label>
-              <label fontSize="14" v-if="this.info" :text="direccion" />
-              <label fontSize="14" v-if="this.info" :text="metodopago" marginTop="8" />
+              <label fontSize="14" v-if="info && direccion" :text="direccion" />
+              <label fontSize="14" v-if="info" :text="metodopago" marginTop="8" />
 
+              <label fontSize="14" textWrap v-if="info && estado.descripcion" :text="estado.descripcion" marginTop="16" />
+              <label fontSize="14" textWrap v-if="info && estado.descripcion2" :text="estado.descripcion2" marginTop="16" />
+
+
+              <ActivityIndicator :busy="!info" v-if="!info" color="#DA0080" />
         </StackLayout>
 
-        <StackLayout col="0" padding="0 0 8 0" colSpan="2" row="2">
+        <StackLayout col="0" padding="0 0 8 0" row="2">
           <FlexboxLayout
             justifyContent="center"
             padding="0"
@@ -155,6 +173,158 @@
           }
         }
         return ''
+      },
+      btnPagar(){
+        if(this.info){
+          const _ = this.info
+
+          if(_.LINK2 == 0 || _.APPROVAL_TYPE=='B'){
+            return false
+          }
+
+          if(_.STATE_NAME == "Pagado" || _.STATE_NAME == "En Transito" || _.STATE_NAME == "Concretada"){
+            return false
+          }
+        }
+
+        return true
+      },
+      estado(){
+        if(this.info){
+          const _ = this.info
+          let obj = {estado: '', descripcion: ''}
+
+          if(_.STATE_NAME == "Recibido"){
+            obj = {
+              estado: 'Recibido',
+              descripcion: 'La marca no ha verificado el pedido.'
+            }
+          }
+
+          if(_.STATE_NAME == "Cancelado por la tienda"){
+            obj = {
+              estado: 'Cancelado por la tienda',
+              descripcion: 'La marca ha cancelado la compra.'
+            }
+          }
+
+          if(_.STATE_NAME == "Verificado"){
+            obj = {
+              estado: 'Verificado',
+              descripcion: 'La marca ha verificado el pedido, esperá el cupon de pago.'
+            }
+          }
+
+          if(_.STATE_NAME == "A pagar"){
+            obj = {
+              estado: 'A pagar',
+              descripcion: 'El pedido está listo para ser abonado.'
+            }
+
+            if(_.LINK2 == 0 && _.APPROVAL_TYPE != 'B'){
+              obj.descripcion2 = 'Esperá el link de pago'
+            }
+
+            if(_.APPROVAL_TYPE=='B'){
+              obj.descripcion2 = 'Deposito Bancario confirmará el pago al ser enviado el pedido'
+            }
+          }
+
+          if(_.STATE_NAME == "Pagado"){
+            obj = {
+              estado: 'Pagado',
+              descripcion: 'La marca ha recibido el pago, tu compra está siendo preparada para su envío.'
+            }
+          }
+
+          if(_.STATE_NAME == "En Transito"){
+
+            if(_.ENVIO_TYPE == 'R' && _.STAT_CD_DELIV == 11){
+              let name = _.NAME_RETIRA ? _.NAME_RETIRA : ''
+              obj = {
+                estado: 'Retirado',
+                descripcion: `El paquete fue retirado por ${name}`
+              }
+            }
+
+            if(_.STAT_CD){
+              if(_.STAT_CD == 2){
+                obj = {
+                  estado: 'En tránsito',
+                  descripcion: `El paquete llegó a nuestro depósito`
+                }
+              }else{
+                if(_.STAT_CD==1 || _.STAT_CD==0){
+                  obj = {
+                    estado: 'El envio esta siendo generado.',
+                    descripcion: `En las proximas 24 a 48hs hábiles se estará actualizando el estado del envio`
+                  }
+                }else{
+                  if(_.STAT_CD==3 || _.STAT_CD==4 || _.STAT_CD==7 || _.STAT_CD==8 || _.STAT_CD==9 || _.STAT_CD==10){
+                    obj = {
+                      estado: 'Número de guía asignado.',
+                      descripcion: ``
+                    }
+
+                    if(_.STAT_CD==8){
+                      obj.link = {
+                        url: `http://www5.oca.com.ar/ocaepakNet/Views/ConsultaTracking/TrackingConsult.aspx?numberTracking=${_.REFERENCE}`,
+                        name: _.REFERENCE
+                      }
+                    }else{
+                      if(_.ENTREGADO == 'CA'){
+                        if(_.NUMTYT !== undefined){
+                          obj.link = {
+                            url: `https://www.correoargentino.com.ar/formularios/ondnc`,
+                            name: _.NUMTYT
+                          }
+                        }else{
+                          if(_.TN !== undefined && _.NUMTYT === undefined){
+                            obj.descripcion = 'Generando Nro de envio'
+                          }else{
+                            obj.descripcion = `SD/CP ${_.REFERENCE}  `
+                          }
+                        }
+                      }else{
+                        if(_.ENTREGADO == 'IP'){
+                          obj.link = {
+                            url: `https://trackingonline.integralexpress.com/tracking_corpo.php?cod=8693&valor=${_.NUM}-001`,
+                            name: `${_.REFERENCE}-001`
+                          }
+                        }else{
+                          obj.descripcion = _.REFERENCE
+                        }
+                      }
+                    }
+
+                    obj.descripcion2 = `${_.ENTREGADO} - ${_.ENTREGADO2} - Salió el ${_.DATE_UPDATE}`
+                  }
+                }
+              }
+            }
+            
+          }
+
+          if(_.STATE_NAME == "Concretada" || _.STATE_NAME == "Sin calificar"){
+            obj.estado = _.ESTADO_VENTA
+          }
+
+          if(_.STATE_NAME == "Ya calificada"){
+            obj = {
+              estado: 'Ya calificada',
+              descripcion: 'Ya calificaste esta compra. ¡Que tengas felices compras!'
+            }
+          }
+
+
+          return obj
+
+
+        }
+        return {
+          estado: '',
+          descripcion: ''
+        }
       }
 		},
     data() {
@@ -164,7 +334,15 @@
 		methods:{
 		  onViewTap(){
         // item.id
-        this.$navigator.modal('/pedido', { fullscreen: true, id: 'pedido' })
+        this.$navigator.modal('/pedido', { 
+          fullscreen: true, 
+          id: 'pedido', 
+          props:{
+            productos: this.item.productos,
+            precios: this.item.delivery_price.DATOS_VENTA,
+            store: this.item.store
+          } 
+        })
         // this.$navigator.navigate('/pedido')
       }, 
       fecha(value){
