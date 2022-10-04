@@ -61,10 +61,6 @@
      mounted(){
       this.getPedidosRosa()
       this.getPedidos()
-      
-       
-
-      // console.log('mounted', this.pedidosUnidos)
     },
     methods:{
       ...mapActions('profile',['getPedidos','getPedidosRosa']),

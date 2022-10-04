@@ -16,7 +16,7 @@
           marginBottom="4" 
           v-if="key < 6" 
           :background="item.color" 
-          class="card h-100 shadoLg" 
+          class="card h-100 shadow-none" 
           paddingLeft="0" 
           paddingRight="0" 
           paddingBottom="0"

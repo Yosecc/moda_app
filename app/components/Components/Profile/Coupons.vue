@@ -13,8 +13,8 @@
 <script>
   import profileMixin from '~/mixins/profileMixin.js'
   import CuponBox from '~/components/Components/Boxes/CuponBox.vue'
-
-  import { mapState, mapMutations, mapGetters } from 'vuex'
+  import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
+  
   export default {
     mixins: [profileMixin],
     props: {
@@ -38,9 +38,10 @@
       ...mapState('profile',['coupons']),
     },
     mounted(){
-      // console.log(this.carCheckout)
+      this.getCoupons()
     },
     methods:{
+      ...mapActions('profile',['getCoupons']),
       onItemTap({item}){
         // this.setCoupon(item.id)
         this.coupons.forEach((e)=>{

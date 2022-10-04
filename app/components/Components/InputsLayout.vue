@@ -8,6 +8,7 @@
 
           <StackLayout
             class="card"
+            :class="clases"
             padding="16"
           >
             <StackLayout
@@ -66,6 +67,10 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
   export default {
     mixins:[  ],
     props:{
+      clases:{
+        type: String,
+        default: ''
+      },
       inputs: {
         type: Array,
         required: true

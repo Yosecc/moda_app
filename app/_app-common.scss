@@ -13,6 +13,10 @@ page {
     padding-right: 8;
 }
 
+.colorActive{
+    color: $modatexColor !important;
+}
+
 .box-tab {
     background-color: white;
     box-shadow: 0px -3px 12px #BCBCBC8C;
@@ -125,6 +129,11 @@ label {
     &.btn-secondary{
         background-color: rgba(#0080DA, .6);
         color: white;
+    }
+    &.btn-simple{
+        background-color: rgba(#CCD1D1, .6);
+        color: black;
+        width: 100%;
     }
     &.btn-text{
         background-color: rgba(#8e8e8e, .1);
@@ -598,10 +607,12 @@ Button{
   }
   .direccionBox{
     &.active{
-      background: $modatexColor;
-      color: white;
+      // background: $modatexColor;
+      // color: white;
+      border-color: $modatexColor;
+      border-width: 2;
       label{
-        color: white;
+        // color: white;
       }
     }
   }

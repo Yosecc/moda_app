@@ -8,83 +8,38 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
 const state = {
     pedidos: [],
     pedidosRosa: [],
-    direcciones: new ObservableArray([
-      {
-        id:1,
-        direccion: 'Joaquin V. Gonzalez 675' ,
-        localidad: 'Boulogne - San Isidro',
-        provincia: 'Provincia de Buenos Aires',
-        codigo_postal: 1609,
-        default: true
-      },
-      {
-        id:2,
-        direccion: 'Joaquin V. Gonzalez 675' ,
-        localidad: 'Boulogne - San Isidro',
-        provincia: 'Provincia de Buenos Aires',
-        codigo_postal: 1609,
-        default: false
-      }
-    ]),
+    direcciones: [],
     coupons: new ObservableArray([
-      {
-        id: 1,
-        span:'Descuento por bienvenida',
-        monto: 250,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $250.00 en esta compra.',
-        color:"#0080DA",
-        active: false,
-      },
-      {
-        id: 2,
-        span:'Descuento por bienvenida',
-        monto: 150,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $150.00 en esta compra.',
-        color:"#DA0080",
-        active: false,
-      },
-      {
-        id: 3,
-        span:'Descuento por bienvenida',
-        monto: 50,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $50.00 en esta compra.',
-        color:"#467700",
-        active: false,
-      },
-      {
-        id: 4,
-        span:'Descuento por bienvenida',
-        monto: 150,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $150.00 en esta compra.',
-        color:"#DA0080",
-        active: false,
-      },
-      {
-        id: 5,
-        span:'Descuento por bienvenida',
-        monto: 50,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $50.00 en esta compra.',
-        color:"#467700",
-        active: false,
-      }
+      // {
+      //   id: 1,
+      //   span:'Descuento por bienvenida',
+      //   monto: 250,
+      //   vencimiento:'Vencimiento 07/11/2021',
+      //   description: 'Seleccionando este cupón podrás acceder a un descuento por $250.00 en esta compra.',
+      //   color:"#0080DA",
+      //   active: false,
+      // },
     ]),
     infoPersonal: [
       {
         typeInput: undefined,
-        name: 'name',
+        name: 'first_name',
         model: '',
         label: 'Nombre',
         hint:'Nombre',
         required: true,
       },
       {
+        typeInput: undefined,
+        name: 'last_name',
+        model: '',
+        label: 'Apellido',
+        hint:'Apellido',
+        required: true,
+      },
+      {
         typeInput: 'number',
-        name: 'documento',
+        name: 'cuit_dni',
         model: '',
         label: 'Documento',
         hint:'Documento',
@@ -94,13 +49,14 @@ const state = {
         typeInput: 'email',
         name: 'email',
         model: '',
+        disabled: true,
         label: 'Email',
         hint:'Email',
         required: true,
       },
       {
         typeInput: undefined,
-        name: 'sexo',
+        name: 'sex',
         model: '',
         label: 'Sexo',
         hint:'Sexo',
@@ -108,7 +64,7 @@ const state = {
       },
       {
         typeInput: 'number',
-        name: 'celular',
+        name: 'mobile',
         model: '',
         label: 'Celular',
         hint:'Celular',
@@ -116,7 +72,7 @@ const state = {
       },
       {
         typeInput: 'number',
-        name: 'telefono',
+        name: 'phone_company',
         model: '',
         label: 'Teléfono',
         hint:'Teléfono',
@@ -152,7 +108,16 @@ const mutations = {
     state.pedidosRosa = val
   },
   addDireccion(state, val){
-    state.direcciones.push(val)
+    state.direcciones._array.push(val)
+  },
+  setDirecciones(state, val){
+    state.direcciones = new ObservableArray(val)
+  },
+  updateDireccion(state,val){
+      let index = state.direcciones.findIndex((e) => e.id == val.id)
+      if(index != -1){
+        state.direcciones._array[index] = val
+      }
   },
   setDireccionDefault(state, val){
     state.direcciones.forEach((item)=>{
@@ -162,7 +127,19 @@ const mutations = {
         item.default = false
       }
     })
+  },
+  setCoupons(state,val){
+    state.coupons = new ObservableArray(val)
+  },
+  setInfoPersonal(state, val){
+    for (var i in val) {
+      let index = state.infoPersonal.findIndex((e) => e.name == i)
+      if(index != -1){
+        state.infoPersonal[index].model = val[i]
+      }
+    }
   }
+  
 };
 
 const actions = {
@@ -173,12 +150,37 @@ const actions = {
   },
   async getPedidosRosa(context){
     const response = await Api.rosaGet('document/calification_ajax.php?ajax=true&page_hidden=1&jsonReturn=1&filter=')
-    console.log('getPedidosRosa',response)
+    // console.log('getPedidosRosa',response)
     context.commit('setPedidosRosa', response)
     return response
   },
-  addDireccion(context, val){
-    context.commit('addDireccion', val)
+  async getDirecciones(context){
+    const response = await Api.get('profile/direcciones')
+    context.commit('setDirecciones', response)
+    return response
+  },
+  async updateDireccion(context, val){
+     const response = await Api.post(`profile/direcciones/update/${val.id}`,val.data)
+     console.log('response', response)
+     context.commit('updateDireccion', response)
+     return response
+  },
+  async addDireccion(context, val){
+     const response = await Api.post(`profile/direcciones/create`,val)
+     context.commit('addDireccion', response)
+     return response
+    // 
+  },
+  async getCoupons(context){
+    const response = await Api.get('profile/coupons')
+    context.commit('setCoupons', response)
+    return response
+  },
+  async getClient(context){
+    const response = await Api.get('profile/client')
+    console.log('response',response)
+    context.commit('setInfoPersonal', response)
+    return response
   },
   setDireccionDefault(context, val){
     context.commit('setDireccionDefault', val)

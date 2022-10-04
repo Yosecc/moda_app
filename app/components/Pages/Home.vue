@@ -103,6 +103,7 @@
   import Promotions from '~/components/Components/Promotions.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
+  import Api from '~/services'
   export default {
     mixins:[ homeMixin, productMixin ],
     components:{
@@ -139,6 +140,7 @@
 
     },
     mounted(){
+      // Api.rosaPost()
       this.onGetProducts()
       this.defineHome()
       this.$forceUpdate()

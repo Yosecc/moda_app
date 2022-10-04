@@ -4,6 +4,8 @@
     rows="*"
     padding="8"
     marginTop="16"
+    class="card h-100 shadow-none" 
+    
     @tap="onViewProfile()"
   >
    <!--  <image 
@@ -24,7 +26,6 @@
       <label 
         fontWeight="900"
         fontSize="16"
-
         textWrap
         :text="client.first_name ?  client.first_name:'undefined' "
         margin="0"

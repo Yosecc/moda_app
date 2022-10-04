@@ -1,18 +1,19 @@
 <template lang="html">
 
   <InputsLayout
+    :clases="'shadow-none'"
     :inputs="infoPersonal"
   >
-    <template slot="top">
-       <!-- <Label marginBottom="8" text="Agregar nueva dirección" class="title" /> -->
-    </template> 
-    <template slot="bottom">
+   <!--  <template slot="top">
+       <Label marginBottom="8" text="Agregar nueva dirección" class="title" />
+    </template>  -->
+    <!-- <template slot="bottom">
       <Button 
           class="btn btn-sm btn-info" 
           text="Guardar"
 
         />
-    </template> 
+    </template>  -->
   </InputsLayout> 
        
 </template>
@@ -22,7 +23,7 @@
   import InputsLayout from '~/components/Components/InputsLayout.vue'
 
 import { ObservableArray } from '@nativescript/core/data/observable-array';
-  import { mapState, mapMutations, mapGetters } from 'vuex'
+  import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   export default {
     mixins: [profileMixin],
     props: {
@@ -46,9 +47,10 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
       ...mapState('profile',['infoPersonal']),
     },
     mounted(){
-      // console.log(this.carCheckout)
+      this.getClient()
     },
     methods:{
+      ...mapActions('profile',['getClient']),
       onTapSave(){
 
       },

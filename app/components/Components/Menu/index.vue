@@ -7,7 +7,7 @@
     padding="8" 
     col="0"
     row="0">
-    <UserInfoBox/>
+    <UserInfoBox height="80" />
   </StackLayout>
 
     

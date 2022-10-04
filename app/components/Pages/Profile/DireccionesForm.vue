@@ -4,17 +4,20 @@
   <Page backgroundColor="#F6F6F6">
     <HeaderDefault backgroundColor="white" :back="true" />
 
-   <InputsLayout
+    <InputsLayout
+      :clases="'shadow-none'"
       :inputs="inputs"
-
     >
-      <template slot="top">
+      <!-- <template slot="top">
         <Label marginBottom="8" text="Agregar nueva dirección" class="title" />
-      </template> 
+      </template>  -->
       <template slot="bottom">
+        <ActivityIndicator v-if="loading" marginTop="8" color="#DA0080" busy="true"  />
         <Button 
+          v-else
           class="btn btn-sm btn-info" 
           text="Guardar"
+          marginTop="8"
           @tap="onTapSave"
         />
       </template> 
@@ -36,7 +39,14 @@
   export default {
     mixins: [helpersMixin],
     props: {
-
+      item:{
+        type: Object,
+        default: {}
+      },
+      type:{
+        type: String, 
+        default: ''
+      }
     },
     components: {
       HeaderDefault,
@@ -50,7 +60,7 @@
         inputs:[
           {
             typeInput: undefined,
-            name: 'calle',
+            name: 'CALLE_NAME',
             model: '',
             label: 'Calle',
             hint:'Calle',
@@ -58,7 +68,7 @@
           },
           {
             typeInput: undefined,
-            name: 'altura',
+            name: 'CALLE_NUM',
             model: '',
             label: 'Altura',
             hint:'Altura',
@@ -66,7 +76,7 @@
           },
           {
             typeInput: undefined,
-            name: 'piso',
+            name: 'CALLE_PISO',
             model: '',
             label: 'Piso',
             hint:'Piso',
@@ -74,26 +84,26 @@
           },
           {
             typeInput: undefined,
-            name: 'departamento',
+            name: 'CALLE_DTO',
             model: '',
             label: 'Departamento',
             hint:'Departamento',
             required: false,
           },
-          {
-            typeInput: 'select',
-            name: 'provincia',
-            model: '',
-            label: 'Provincia',
-            title: 'Seleccione su provincia',
-            hint:'Provincia',
-            values: provincias,
-            campos: {id: 'id', name: 'nombre_completo'},
-            required: true,
-          },
+          // {
+          //   typeInput: 'select',
+          //   name: 'provincia',
+          //   model: '',
+          //   label: 'Provincia',
+          //   title: 'Seleccione su provincia',
+          //   hint:'Provincia',
+          //   values: provincias,
+          //   campos: {id: 'id', name: 'nombre_completo'},
+          //   required: true,
+          // },
           {
             typeInput: 'number',
-            name: 'code_postal',
+            name: 'ADDRESS_ZIP',
             model: '',
             label: 'Código Postal',
             hint:'Código Postal',
@@ -101,7 +111,7 @@
           },
           {
             typeInput: undefined,
-            name: 'horario',
+            name: 'DELIVERY_HOUR',
             model: '',
             label: 'Horario de entrega',
             hint:'Horario de entrega',
@@ -109,13 +119,14 @@
           },
           {
             typeInput: undefined,
-            name: 'notes',
+            name: 'COMMENTS',
             model: '',
             label: 'Algún dato más para encontrar tu casa (Opcional)',
             hint:'Algún dato más para encontrar tu casa (Opcional)',
             required: false,
           },
-        ]
+        ],
+        loading: false,
       }
     },
     watch:{
@@ -125,23 +136,31 @@
       // ...mapState('checkout',['coupon','coupons']),
     },
     mounted(){
-      // console.log('provincias',provincias)
-      
+      const data = this.item.detalle
+      for (var i in data) {
+        let index = this.inputs.findIndex( (e) =>  e.name == i  )
+        if(index != -1){
+          this.inputs[index].model = data[i]
+        }
+      }
     },
     methods:{
       // ...mapMutations(['changeDrawerCar','changeDrawer']),
-      ...mapActions('profile',['addDireccion']),
-      onTapSave(){
+      ...mapActions('profile',['addDireccion','updateDireccion','getDirecciones']),
+     async onTapSave(){
         const data = this.prepareData(this.inputs)
+        console.log(data)
+
         if(!this.errors.length){
-          this.addDireccion({
-            id:3,
-            direccion: `${data.calle} ${data.altura} ${data.piso}` ,
-            localidad: data.departamento,
-            provincia: data.provincia,
-            codigo_postal: data.code_postal,
-            default: false
-          })
+          this.loading = true
+          if(this.type == "edit"){
+            await this.updateDireccion({ data: data, id: this.item.id })
+          }else{
+            await this.addDireccion(data)
+          }
+          await this.getDirecciones()
+          this.loading = false
+          this.$navigator.back()
         }
         
       }
