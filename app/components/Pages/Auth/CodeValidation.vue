@@ -13,9 +13,38 @@
         />
 
 
-        <label 
-          text="Ingresa el código que ha sido enviado a su email." 
+       <!--  <label 
+          :text="`Ingresa el código que ha sido enviado a su email: ${client.email} `" 
           fontSize="16"
+          fontWeight="400"
+          color="#4D4D4D"
+          marginBottom="24"
+          horizontalAlignment="center"
+          width="70%"
+          textWrap="true"
+          textAlignment="center"
+        /> -->
+
+        <label 
+          fontSize="16"
+          fontWeight="400"
+          color="#4D4D4D"
+          marginBottom="24"
+          horizontalAlignment="center"
+          width="70%"
+          textWrap="true"
+          textAlignment="center" 
+        >
+          <FormattedString>
+            <span text="Ingresa el código que ha sido enviado a su email:" />
+          
+            <span v-if="client" :text="client.email" fontWeight="bold" />
+          </FormattedString>
+        </label>
+
+        <label 
+          text="No olvide verificar su span o bandeja de correos no deseados." 
+          fontSize="14"
           fontWeight="400"
           color="#4D4D4D"
           marginBottom="24"
@@ -76,7 +105,7 @@
               @textChange="pressText"
               class="inputForm inputNumberMax"
             />
-            <Label
+            <!-- <Label
               col="0"
               colSpan="4"
               row="1"
@@ -87,7 +116,7 @@
               marginTop="16"
               horizontalAlignment="center"
               :marginTop="-20"
-            />
+            /> -->
         </GridLayout>
 
       </StackLayout>
@@ -121,7 +150,7 @@
 </template>
 
 <script>
-  import { mapActions, mapState, mapMutations } from 'vuex'
+  import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
   import HeaderFullLogo from '../../Components/ActionBar/HeaderFullLogo'
   import { Utils, Device } from '@nativescript/core'
   export default {
@@ -140,6 +169,7 @@
     computed:{
       ...mapState('authentication',['code']),
       ...mapState(['isLoading']),
+      ...mapGetters('authentication',['client']),
       codeInsert(){
         return this.num_cero + '' +  this.num_uno + '' + this.num_dos + '' + this.num_tres
       }
@@ -202,7 +232,8 @@
           
             this.CodeValidation(this.codeInsert)
               .then((response) => {
-                this.$navigator.navigate('/set_categories',{
+                console.log('response', response)
+                this.$navigator.navigate('/home',{
                   transition: {
                     name: 'slideLeft',
                     duration: 300,
@@ -210,6 +241,8 @@
                   },
                   clearHistory: true
                 })
+                this.changeisLoading(false)
+              }).catch((error)=>{
                 this.changeisLoading(false)
               });
             

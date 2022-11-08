@@ -100,7 +100,16 @@
               
             </FormattedString>
           </label>
+
         </StackLayout>
+       <!--  <Label 
+            text="Poseo un código de activación" 
+            class="label_enlace"
+            textAlignment="center"
+            fontSize="14"
+            fontWeight="bold"
+            marginTop="16" 
+            @tap="$navigator.navigate('/code_validation')" /> -->
         
       </StackLayout>
       <StackLayout row="1" >
@@ -146,13 +155,13 @@
     data() {
       return {
         dataRegister:{
-          first_name: "User",
-          last_name:"name",
-          email: "p_user_prueba@gmail.com",
-          cod_area: 247,
-          phone: 3468850,
-          password: 'puesto',
-          recoverPassword: 'puesto',
+          first_name: "",
+          last_name:"",
+          email: "",
+          cod_area: '',
+          phone: '',
+          password: '',
+          recoverPassword: '',
           termsAndConditions: false
         },
       };
@@ -166,14 +175,18 @@
       focusInputInline(event){
         // console.log('f',event.object)
       },
-      sendRegister(){
+       sendRegister(){
         this.changeisLoading(true)
         if(this.dataRegister.termsAndConditions){
           if(this.dataRegister.password == this.dataRegister.recoverPassword){
-            this.Register(this.dataRegister).then((response)=>{
+            // console.log('this.dataRegister', this.dataRegister)
+             this.Register(this.dataRegister)
+            .then((response)=>{
+              console.log('response2', response)
               this.$navigator.navigate('/code_validation')
               this.changeisLoading(false)
             }).catch((error)=>{
+              // console.log('y aqui?', error)
                this.changeisLoading(false)
             })
           }else{

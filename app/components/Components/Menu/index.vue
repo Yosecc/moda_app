@@ -6,7 +6,9 @@
   <StackLayout 
     padding="8" 
     col="0"
-    row="0">
+    row="0"
+    class="bg"  backgroundImage="~/assets/patron.png"
+  >
     <UserInfoBox height="80" />
   </StackLayout>
 
@@ -80,7 +82,7 @@
             icon: 'icon_menu_2',
             name: 'Envíos a todo el país',
             route: '/shipping',
-            disabled: true
+            disabled: false
           },
           {
             icon: 'icon_menu_3',

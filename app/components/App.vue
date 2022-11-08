@@ -3,6 +3,7 @@
    <RadSideDrawer 
       ref="drawerMenu"
       @drawerClosed="onDrawerClosed()"
+      :gesturesEnabled="false"
     >
       <StackLayout ~drawerContent class="sideStackLayout">
         <Menu/>

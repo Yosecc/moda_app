@@ -8,8 +8,8 @@ import cache from '@/plugins/cache'
 
 const state = {
     user: {
-      email: "p_user_prueba3@gmail.com",
-      password: "puesto",
+      email: "",
+      password: "",
       first_name: '',
     },
     code: 6754,
@@ -32,7 +32,9 @@ const getters = {
     state.code = val
   },
   client(state){
+    console.log('cuando pasa por aqui?')
     if(cache.get('client')){
+      // state.user = JSON.parse(cache.get('client'))
       return JSON.parse(cache.get('client'))
     }else{
       return state.user
@@ -42,6 +44,7 @@ const getters = {
 
 const mutations = {
     SetUser(state, val){
+      cache.set('token',response.api_token)
       state.user = val
     },
     changeisLogged(state, val){
@@ -55,80 +58,78 @@ const mutations = {
 const actions = {
   async Login(context){
     const response = await Api.post('auth/login',context.state.user)
-    // console.log('login',response)
+    // console.log('response', response)
       if (response.status) {
-        context.commit('SetUser', response.client)
+        context.state.user =  response.client
+        // console.log('aqui')
         cache.set('token', response.client.api_token)
         cache.set('client', JSON.stringify(response.client))
-        context.commit('setToken', response.client.api_token)
+        context.state.token = response.client.api_token
+        // context.commit('setToken', response.client.api_token)
       }
-      return response    
+      // return response    
   },
-  async Register(context, values){
-    await Api.post('auth/register',values)
-      .then((response)=>{
-        if(response.data.status){
-          context.commit('SetUser',response.data.client)
+   Register(context, values){
+    // console.log('values', values)
+    const response = Api.post('auth/register',values)
+      response.then((response)=>{
+        console.log('response', response, response.status)
+        console.log('algo pasa aqui?')
+        if(response.status){
+          cache.set('client', JSON.stringify(response.client))
+          // cache.set('token', response.client.api_token)
         }
-        return response
       }).catch((error)=>{
-        if (error.response.data.phone.length > 0) {
-          error.response.data.phone.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-        if (error.response.data.email.length > 0) {
-          error.response.data.email.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-        if (error.response.data.last_name.length > 0) {
-          error.response.data.last_name.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-        if (error.response.data.first_name.length > 0) {
-          error.response.data.first_name.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-         if (error.response.data.cod_area.length > 0) {
-          error.response.data.cod_area.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-        if (error.response.data.password.length > 0) {
-          error.response.data.password.forEach((element)=>{
-            alert(element)
-          }) 
-        }
-
+          error = JSON.parse(error)
+          for (var i in error) {
+            error[i].forEach((e)=>{
+              alert( `${e}`)
+            })
+          }
+        // reject(error)
       })
+      
+      return response
+      
   },
-  async CodeValidation(context, code){
-    await Api.post('auth/code_validation',{
-      code: code,
-      email: context.state.user.email
-    }).then((response)=>{
-      if(response.data.status){
-        cache.set('token',response.data.token)
+   CodeValidation(context, code){
+      if(cache.get('client')){
+        const client = JSON.parse(cache.get('client'))
+        
+        const response = Api.post('auth/code_validation',{
+                          code: code,
+                          email: client.email
+                        })
+
+        response.then((response)=>{
+          if(response.status){
+            cache.set('token',response.token)
+            return response
+          }
+        }).catch((error)=>{
+
+          error = JSON.parse(error)
+          console.log('error2', error)
+          for (var i in error) {
+            console.log('BI' ,i, error, error[i])
+
+            if(typeof error[i] == 'string'){
+              alert(error[i])
+            }else{
+              error[i].forEach((e)=>{
+                console.log('BE',e)
+                alert(`${e}`)
+              })
+            }
+            
+          }
+        })
+
         return response
       }
-    }).catch((error)=>{
-      if(error.response.data.message){
-        alert(error.response.data.message)
+      else{
+        alert('Ha ocurrido un error. Estamos trabajando en ello.')
       }
-      if (error.response.data.code.length > 0) {
-        error.response.data.code.forEach((element)=>{
-          alert(element)
-        }) 
-      }
-      if (error.response.data.email.length > 0) {
-        error.response.data.email.forEach((element)=>{
-          alert(element)
-        }) 
-      }
-    })
   },
   getClient(context, email){
 

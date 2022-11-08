@@ -1,54 +1,75 @@
 <template>
 	<StackLayout
-            paddingLeft="8"
-            paddingRight="8"
-          >
-	<StackLayout 
-
-    orientation="horizontal" 
-    class="card">
-
+    paddingLeft="16"
+    paddingRight="16"
+  >
     <StackLayout 
-      borderRadius="8"
-      padding="2 4" 
-      :backgroundColor="item.color"
-      class="bg"
-      backgroundImage="~/assets/cupon_bg.png" >
-      <Label 
-        color="white"
-        fontSize="11"
-        :text="item.span" />
-      <Label 
-        class="title"
-        fontSize="25"
-        color="#f5f5f5"
-        :text="item.monto | moneda" />
-      <Label 
-        color="white"
-        fontSize="10"
-        :text="item.vencimiento" />
-    </StackLayout>
-    <StackLayout
-      padding="0"
+      class="card bg active"
+      borderWidth="2"
+      borderColor="#DA0080"
+      backgroundImage="~/assets/cupon_bg.png" 
     >
-      <Label 
-        textWrap
-        color="#4D4D4D"
-        fontSize="14"
-        :text="item.description" />
-      <Label 
-        class="label_enlace"
-        fontSize="12"
-        text="Marcas sin este beneficio" />
+      	<FlexboxLayout  
+          justifyContent="space-between"
+          orientation="horizontal" 
+        >
+
+          <StackLayout 
+            padding="0" 
+          >
+            <Label 
+              fontSize="20"
+              fontWeight="600"
+              padding="0"
+              margin="0"
+              :text="typeCupon" 
+            />
+            <Label 
+              fontSize="14"
+              text="Cupón de descuento" 
+            />
+            <Label 
+              class="title"
+              fontSize="24"
+              fontWeight="900"
+              :text="item.coupon_price | moneda" 
+            />
+          </StackLayout>
+
+          <StackLayout  padding="0"  >
+            <Label 
+              fontSize="12"
+              horizontalAlignment="right"
+              :text="`Expira: ${fecha(item.expire_date)}`" 
+            />
+            
+            <Label 
+              class="label_enlace"
+              fontSize="12"
+              textAlignment="right"
+              text="Ver tiendas"
+              @tap="openModal()"
+            />
+
+          </StackLayout>
+
+        </FlexboxLayout >
+        
+        <Label 
+          textWrap
+          fontSize="12"
+          text="Para usar este cupón, armá tu carrito de compras y aplicalo al final de la compra"
+        />
+
     </StackLayout>
   </StackLayout>
-</StackLayout>
 
 </template>
 
 <script>
 
 	import { mapState, mapMutations } from 'vuex'
+  import moment from 'moment'
 
 	export default {
 		props:{
@@ -80,13 +101,71 @@
 
     },
 		computed:{
+
+      typeCupon(){
+        let type = ''
+        if( this.item && this.item.coupon_type){
+          switch (this.item.coupon_type) {
+              case 'qualify':
+
+                  type = 'calificacion';
+
+                  break;
+
+              case 'welcome':
+
+                  type = 'bienvenida';
+
+                  break;
+
+              case 'modapago':
+
+                  type = 'modapago';
+          
+                  break;
+
+              case 'pinkdays':
+
+                  type = 'pinkdays';
+              
+                  break;
+
+              case 'free-shipping':
+
+                  type = 'envio gratis';
+                  
+                  break;
+                  
+              case 'REGALO500':
+
+                  type = 'REGALO500';
+                  
+                  break;
+              default:
+                  type = 'Descuentos'; 
+
+                 
+          }
+        }
+
+        return type
+      }
 		},
     data() {
       return {
       };
     },
 		methods:{
-		
+		  fecha(value){
+        return moment(value).lang("es").format('LL')
+      },
+      async openModal(){
+        const data = await this.$navigator.modal('/tiendas_modal', { 
+          fullscreen: true, 
+          id: 'tiendasModal', 
+          props: { stores: this.item.tiendas } 
+        })
+      }
 		}
 	}
 </script>

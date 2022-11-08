@@ -2,11 +2,10 @@
   <GridLayout 
     columns="*,auto" 
     rows="*"
-    padding="8"
     marginTop="16"
-    class="card h-100 shadow-none" 
-    
+    class="h-100 shadow-none" 
     @tap="onViewProfile()"
+    background=""
   >
    <!--  <image 
       src="~/assets/icons/avatar.png"
@@ -21,29 +20,33 @@
       col="0"
       row="0"
       verticalAlignment="center"
-
+      background=""
     >
-      <label 
-        fontWeight="900"
-        fontSize="16"
-        textWrap
-        :text="client.first_name ?  client.first_name:'undefined' "
-        margin="0"
-        padding="0"
-      />
+    <StackLayout orientation="horizontal" background="">
+      <image src="~/assets/avatar.png" stretch="aspectFill" :marginLeft="-6" width="45" height="45" />
+        <StackLayout >
+          <label 
+            fontWeight="900"
+            fontSize="16"
+            textWrap
+            :text="client.first_name ?  client.first_name:'undefined' "
+            margin="0"
+            padding="0"
+          />
 
-      <label
-        fontWeight="300"
-        fontSize="14"
-
-        :text="user.email"
-        margin="0"
-        padding="0"
-      />
+          <label
+            fontWeight="300"
+            fontSize="12"
+            :text="client.email"
+            margin="0"
+            padding="0"
+          />
+        </StackLayout>
+      </StackLayout>
     </StackLayout>
 
     <image 
-      src="~/assets/icons/arrow_right.png"
+      src="~/assets/arrow_right.png"
       col="1"
       row="0"
       verticalAlignment="center"
@@ -75,7 +78,7 @@
       ...mapGetters('authentication',['client'])
     },
     mounted(){
-      // console.log('client', this.client)
+      console.log('client', this.client)
     }
   };
 </script>

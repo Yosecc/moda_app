@@ -17,12 +17,36 @@ const Api = {
             'x-api-key': cache.get('token') ?? null
         },
         content: JSON.stringify(data)
-      }).then((res) => {
-        resolve(res.content.toJSON())
-      }).catch((e) => {
-        console.log('error post',e)
-        reject(new Error(e))
-      });
+      }).then(
+        (response) => {
+          // Argument (response) is HttpResponse
+          if(response.statusCode == 200){
+            resolve(response.content.toJSON())
+          }else{
+            reject(response.content)
+          }
+        },
+        (e) => {
+          console.log('ul',e)
+        }
+      ).catch((e)=>{
+        console.log('ij', e)
+      })
+
+
+
+      // .then((res) => {
+      //   console.log('res', res)
+      //   if(res.statusCode > 400){
+      //     reject(res.content)
+      //   }else{
+      //     resolve(res.content.toJSON())
+      //   }
+        
+      // }).catch((e) => {
+      //   console.log('error post',e)
+      //   reject(new Error(e))
+      // });
     });
   },
   get: function (url){

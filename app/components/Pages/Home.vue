@@ -6,7 +6,7 @@
         <StackLayout  marginTop="16" marginLeft="16" marginRight="16">
           <label 
             @tap="onNavigateSearch"
-            text="Buscar tienda o productos" 
+            text="Buscar productos" 
             class="inputForm false" 
             horizontalAlignment="left"
             width="100%"
@@ -29,7 +29,7 @@
         </StackLayout>  
        
         <StackLayout marginBottom="24"  marginTop="8">
-          <Promotions/>
+          <!-- <Promotions/> -->
         </StackLayout>
 
        <!--  <StackLayout v-if="productsRecentlySeen[0]" padding="16">
@@ -50,6 +50,7 @@
 
         <StackLayout  marginTop="16" >
           <Label 
+          v-if="storesPopular && storesPopular.length"
             text="Ingresos de Hoy" 
             marginBottom="16" 
             marginLeft="16" 

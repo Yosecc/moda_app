@@ -30,7 +30,8 @@
           </FlexboxLayout>
 
           <InputsLayout
-            :inputs="inputsStep"
+            :clases="'shadow-none'"
+            :inputs="infoPersonal"
           >
             <template slot="top">
             </template> 
@@ -51,7 +52,7 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import helpersMixin from '~/mixins/helpersMixin.js'
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
   export default {
     mixins: [helpersMixin],
     props: {
@@ -213,7 +214,7 @@
     },
     computed:{
       ...mapState('checkout',['coupon','coupons','typeFactura']),
-      // ...mapState('car',['carCheckout']),
+      ...mapState('profile',['infoPersonal']),
       inputsStep (){
         if(this.typeFactura == 1){
           return this.inputsDatosPersonales
@@ -241,11 +242,11 @@
       }
     },
     mounted(){
-      // console.log(this.carCheckout)
+      this.getClient()
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
-
+      ...mapActions('profile',['getClient']),
       ...mapMutations('checkout',['setCoupon','setTypeFactura']),
       onItemTap({item}){
         this.setCoupon(item.id)

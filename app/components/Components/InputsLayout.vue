@@ -25,6 +25,7 @@
                   :text="e.model" 
                   v-model="e.model"
                   class="inputForm"
+                  :secure="e.secure ? e.secure : false"
                   :class="e.error ? 'input-control-error':''"
                   :hint="e.hint"
                   :keyboardType="e.typeInput" />
@@ -33,19 +34,34 @@
 
               <StackLayout
                 v-if="e.typeInput == 'select'"
-                class="input-control"
-                @tap="openDrawer(e)"
+                class="selectForm"
+                @tap="e.onTap(e)"
               >
                 <FlexboxLayout
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Label class="label" :class="e.model != '' ? 'active':''" :text="e.label" />
+                  <Label class="label" :class="e.model != '' ? 'active':''" :text="e.title" />
                   <button 
-                    class="btn btn-text btn-sm" 
-                    text="Seleccionar" margin="0"  />
+                    class="btn btn-text btn-sm"
+                    background="#C7C7C7"
+                    text="Seleccionar" 
+                    margin="0" 
+                    color="#DA0080"
+                  />
                 </FlexboxLayout>
               </StackLayout>
+
+              <FlexboxLayout 
+                v-if="e.typeInput == 'switch'"
+                class="switchFrom"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Label :text="e.hint" class="label" />
+                <Switch class="switch"  :checked="e.model == 2000 ? true:false" @checkedChange="e.change" />
+              </FlexboxLayout >
+                
 
             </StackLayout>
           </StackLayout>
@@ -130,6 +146,9 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
 
         // this.$refs.drawerInput.open('bottom')
       },
+      checkedChange({value}){
+        console.log(value)
+      }
     }
   }
 </script>
@@ -141,7 +160,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
 
   .input-group{
     // padding-bottom: 16;
-    margin-bottom: 8;
+    margin-bottom: 16;
     &.input-group-select{
       // border-bottom-width: 1;
       // border-bottom-color: rgba(#4D4D4D, .1);

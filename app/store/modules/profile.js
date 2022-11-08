@@ -78,6 +78,35 @@ const state = {
         hint:'Teléfono',
         required: true,
       },
+    ],
+    changePassword:[
+      {
+        typeInput: undefined,
+        name: 'oldpass',
+        secure: true,
+        model: '',
+        label: 'Contraseña actual',
+        hint:'Contraseña actual',
+        required: true,
+      },
+      {
+        typeInput: undefined,
+        name: 'newpass',
+        secure: true,
+        model: '',
+        label: 'Contraseña nueva',
+        hint:'Contraseña nueva',
+        required: true,
+      },
+      {
+        typeInput: undefined,
+        name: 'newpass_repeat',
+        secure: true,
+        model: '',
+        label: 'Repetir nueva contraseña',
+        hint:'Repetir nueva contraseña',
+        required: true,
+      },
     ]
     
 };
@@ -173,13 +202,24 @@ const actions = {
   },
   async getCoupons(context){
     const response = await Api.get('profile/coupons')
+    // console.log('cupon',response)
     context.commit('setCoupons', response)
     return response
   },
   async getClient(context){
     const response = await Api.get('profile/client')
-    console.log('response',response)
+    // console.log('response',response)
     context.commit('setInfoPersonal', response)
+    return response
+  },
+  async changePrincipalAddress(context, id){
+    const response = await Api.post('profile/direcciones/change_principal_address',{id})
+    // console.log('response',response)
+    // context.commit('setInfoPersonal', response)
+    return response
+  },
+  async eventChangePassword(context, obj){
+    const response = await Api.post('profile/client/change_password',obj)
     return response
   },
   setDireccionDefault(context, val){

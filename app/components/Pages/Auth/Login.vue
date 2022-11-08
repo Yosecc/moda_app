@@ -97,11 +97,28 @@
       onLogin(){
         this.changeisLoading(true)
         this.Login().then((response)=>{       
+          
           this.defineHome().then((response)=>{
             this.options.clearHistory = true
             this.changeisLoading(false)
             this.$navigator.navigate('/home',this.options)
           })
+        }).catch((e)=>{
+          this.changeisLoading(false)
+          console.log('e',e)
+          if(e){
+            e = JSON.parse(e)
+            if(typeof e == 'object'){
+              // console.log('mmm')
+              for(var i in e){
+                // console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
+                e[i].forEach((i)=>{
+                  alert(`${i}`)
+                })
+              }
+            } 
+            
+          }
         })
       },
       onBusyChanged(args){

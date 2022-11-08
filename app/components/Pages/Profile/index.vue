@@ -1,5 +1,5 @@
 <template lang="html">
-  <Page>
+  <Page >
     <HeaderDefault :back="true" />
     <!-- <ScrollView> -->
       <GridLayout
@@ -13,36 +13,50 @@
           paddingBottom="8"
           paddingLeft="16"
           paddingRight="16"
+
         >
-          <StackLayout class="card">
-            <Label :text="client.first_name" fontSize="14" class="title"/>
-            <Label :text="client.email" fontSize="12" class=""/>
-            <Label text="Cliente STD" fontSize="12"/>
+          <StackLayout padding="24 24 24 0" class="card  bg"  backgroundImage="~/assets/patron.png">
+            <StackLayout orientation="horizontal">
+              <image src="~/assets/avatar.png" stretch="aspectFill" width="100" height="100" />
+              <StackLayout marginTop="14">
+                <Label :text="`${client.first_name} ${client.last_name}`" fontSize="20" class="title"/>
+                <!-- <Label :text="" fontSize="14" class="title"/> -->
+                <Label :text="client.email" fontSize="16" class=""/>
+                <Label text="Cliente STD" fontSize="12"/>
+              </StackLayout>
+            </StackLayout>
           </StackLayout>
         </StackLayout>
 
-        <StackLayout padding="0" margin="0" row="1">
-          <StackLayout paddingLeft="8" height="40">
+        <StackLayout padding="0" margin="0 0 0 0" row="1">
+          <StackLayout padding="0"  height="40">
             <RadListView  
               @itemTap="onItemTapMenu" 
               class="menuProfile"  
               orientation="horizontal" 
-              for="item in menu"
+              for="(item, key) in menu"
               ref="listMenuProfile" >
               <v-template if="item.active == true">
-                <Label class="label active" :text="item.label" />
+                <Label :marginLeft="key == 0 ? '16':''" :marginRight="key == (menu.length - 1) ? '16':''" class="label active" :text="item.label" />
               </v-template>
               <v-template if="item.active == false">
-                <Label class="label" :text="item.label" />
+                <Label :marginLeft="key == 0 ? '16':''" :marginRight="key == (menu.length - 1) ? '16':''" class="label" :text="item.label" />
               </v-template>
             </RadListView>
           </StackLayout>
         </StackLayout>
-        <StackLayout  padding="0" margin="0" row="2">
-          <Pedidos v-show="menuActive == 'Pedidos'"/>
-          <Direcciones v-show="menuActive == 'Direcciones'"/>
-          <Coupons v-show="menuActive == 'Coupons'"/>
-          <infoPersonal v-show="menuActive == 'infoPersonal'"/> 
+
+        <StackLayout  padding="0" margin="0" row="2" >
+          <StackLayout
+            borderTopWidth="1" 
+            borderColor="#E6E6E6"
+            margin="16"
+          />
+          <Pedidos        v-show="menuActive == 'Pedidos'"/>
+          <Direcciones    v-show="menuActive == 'Direcciones'"/>
+          <Coupons        v-show="menuActive == 'Coupons'"/>
+          <infoPersonal   v-show="menuActive == 'infoPersonal'"/> 
+          <changePassword v-show="menuActive == 'changePassword'"/> 
         </StackLayout>
         
       </GridLayout>
@@ -57,6 +71,7 @@
   import Coupons             from '~/components/Components/Profile/Coupons.vue'
   import Direcciones         from '~/components/Components/Profile/Direcciones.vue'
   import infoPersonal        from '~/components/Components/Profile/infoPersonal.vue'
+  import changePassword        from '~/components/Components/Profile/changePassword.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
 
   import { mapState, mapMutations, mapGetters } from 'vuex'
@@ -71,7 +86,8 @@
       Pedidos,
       Direcciones,
       Coupons,
-      infoPersonal
+      infoPersonal,
+      changePassword
     },
     filters: {
      
@@ -97,6 +113,11 @@
           {
             label: 'Informacion Personal',
             component: 'infoPersonal',
+            active: false
+          },
+          {
+            label: 'Cambiar contraseña',
+            component: 'changePassword',
             active: false
           }
         ]),

@@ -4,41 +4,30 @@
         <InputsLayout
           row="0"
           :clases="'shadow-none'"
-          :inputs="infoPersonal"
+          :inputs="changePassword"
         >
-          <!-- <template slot="top">
-             <Label marginBottom="8" text="Datos personales" class="title" />
-          </template> --> 
           <template slot="bottom">
-            <Button 
+              <Button 
                 class="btn btn-sm btn-info" 
                 text="Guardar"
                 marginTop="16"
+                @tap="onChangePassword"
               />
           </template> 
         </InputsLayout> 
-        <!-- <Label row="1" marginBottom="8" text="Cambiar contraseña" class="title" /> -->
         
-
-    <!-- <InputsLayout
-      :clases="'shadow-none'"
-      :inputs="infoPersonal"
-    >
-      <template slot="top">
-         <Label marginBottom="8" text="Cambiar contraseña" class="title" />
-      </template> 
-    </InputsLayout> --> 
   </GridLayout>      
 </template>
 
 <script>
   import profileMixin from '~/mixins/profileMixin.js'
+  import helpersMixin from '~/mixins/helpersMixin.js'
   import InputsLayout from '~/components/Components/InputsLayout.vue'
 
 import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   export default {
-    mixins: [profileMixin],
+    mixins: [profileMixin, helpersMixin],
     props: {
 
     },
@@ -56,13 +45,29 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
 
     },
     computed:{
-      ...mapState('profile',['infoPersonal']),
+      ...mapState('profile',['changePassword']),
     },
     mounted(){
-      this.getClient()
+      
     },
     methods:{
-      ...mapActions('profile',['getClient']),
+      ...mapActions('profile',['eventChangePassword']),
+      onChangePassword(){
+        const data = this.prepareData(this.changePassword)
+        if(data.newpass != data.newpass_repeat){
+          alert('Las contraseñas no coinciden')
+          return
+        }
+          this.eventChangePassword(data).then((response)=>{
+            console.log('response', response)
+          }).catch((error)=>{
+            console.log('error', error, typeof error)
+            if(typeof error == 'object'){
+              error = JSON.parse(error)
+              alert(error.message)
+            }
+          })
+      },
       onTapSave(){
 
       },

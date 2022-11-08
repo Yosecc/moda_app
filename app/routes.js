@@ -16,6 +16,8 @@ import Store from './components/Pages/Store.vue'
 import AllStores from './components/Pages/Store/AllStores.vue'
 
 import HowToBuy from './components/Pages/SubPages/HowToBuy.vue' 
+import Shipping from './components/Pages/SubPages/Shipping.vue' 
+
 
 import webView from './components/Pages/WebViews/offerts.vue'
 
@@ -34,9 +36,16 @@ import Pedido from './components/Pages/Profile/Pedido.vue'
 
 
 import filterCategorias from './components/Components/Modales/filterCategorias.vue'
+import tiendasModal from './components/Components/Modales/tiendas.vue'
 
 
 export const routes = {
+  '/shipping':{
+    component: Shipping
+  },
+  '/tiendas_modal':{
+    component: tiendasModal
+  },
   '/register': {
     component: Register,
   },
