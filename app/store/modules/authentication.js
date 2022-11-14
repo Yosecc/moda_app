@@ -32,7 +32,7 @@ const getters = {
     state.code = val
   },
   client(state){
-    console.log('cuando pasa por aqui?')
+    // console.log('cuando pasa por aqui?')
     if(cache.get('client')){
       // state.user = JSON.parse(cache.get('client'))
       return JSON.parse(cache.get('client'))

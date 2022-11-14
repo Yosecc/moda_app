@@ -1,7 +1,7 @@
 
 <template lang="html">
   <StackLayout >
-    <Label text="Agregá combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
+    <Label text="Combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
     <WrapLayout 
       v-for="(combinacion, key) in combination" 
       v-if="combinaciones.length" 
@@ -12,7 +12,7 @@
       paddingBottom="8" 
       marginBottom="8" 
     >
-      <StackLayout background="" padding="4 4 4 4" width="37.5%">
+      <StackLayout v-if="combinacion.talleActive" background="" padding="4 4 4 4" width="37.5%">
         <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary"  width="100%">
           <FlexboxLayout width="100%" alignItems="center" justifyContent="space-between">
             <label 
@@ -37,7 +37,7 @@
           />
         </StackLayout>
       </StackLayout>
-      <StackLayout background="" padding="4 4 4 4" width="37.5%">
+      <StackLayout v-if="combinacion.colorActive" background="" padding="4 4 4 4" width="37.5%">
         <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary"  width="100%">
           <FlexboxLayout width="100%" backgroundColor="" alignItems="center" justifyContent="space-between">
             <label 
@@ -88,7 +88,7 @@
           />
         </StackLayout>
       </StackLayout>
-      <StackLayout background="" padding="4 4 4 4" width="25%">
+      <StackLayout v-if="combinacion.talleActive" background="" padding="4 4 4 4" width="25%">
         <StackLayout padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '100%':'46'" class="card secondary"  width="100%">
           <FlexboxLayout justifyContent="space-between"  alignItems="center" >
             <label 
@@ -114,7 +114,7 @@
             fontWeight="500" 
           />
         </StackLayout>
-      </StackLayout>
+      </StackLayout> 
     </WrapLayout>
     <Button 
       text="Agregá más prendas"
@@ -122,7 +122,7 @@
       marginLeft="0"
       horizontalAlignment="left"
       fontSize="12"
-      v-if="isButtom && combinaciones[0].talleActive != ''"
+      v-if="isButtom && combinaciones.length && combinaciones[0].talleActive != ''"
       :isEnabled="combinaciones[0].talleActive != ''"
       @tap="openDropBottom(null)"
     />

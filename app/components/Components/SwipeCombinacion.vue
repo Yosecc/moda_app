@@ -1,13 +1,13 @@
 <template lang="html">
 
-  <StackLayout 
+  <!-- <StackLayout 
     ref="dropBottom" 
     @swipe="onSwipe" 
     class="drop" 
     height="0" 
     width="100%" 
     row="2" 
-  >
+  > -->
     <GridLayout padding="0 16 8 16" rows="auto,*, auto">
       <StackLayout
         row="0"
@@ -38,6 +38,7 @@
           v-if="combinacion.sizes.length"
           :talles="combinacion.sizes"
           v-model="combinacion.talleActive"
+          ref="talles"
         />
         <label text="Elegí un color" margin="8 0 8 0" fontSize="12" fontWeight="900" />
         <Colores
@@ -47,6 +48,7 @@
           v-model="combinacion.colorActive"
         />
         <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
+        
         <Count v-if="reset" v-model="combinacion.cantidad" />
 
       </StackLayout>
@@ -54,13 +56,11 @@
       <StackLayout row="2">
         <button v-if="combinacion.combinacion_key == null" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
         <button v-if="combinacion.combinacion_key != null" @tap="onAddCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
-
-
       </StackLayout>
     </GridLayout>
     
 
-  </StackLayout>
+  <!-- </StackLayout> -->
 
 </template>
 <script>
@@ -95,9 +95,19 @@
       Count
     },
     watch:{
+      models(to){
+        //console.log('cambio models')
+      },
+      combinacion(to){
+        //console.log('cambio combinacion')
+      },
       show(to){
+        //console.log('cambio show')
+        this.$forceUpdate()
         if(to){
           this.openDropBottom()
+        }else{
+           this.clearCombinacion()
         }
       }
     },
@@ -119,7 +129,7 @@
       },
       colores(){
         
-        if(this.combinacion.talleActive!=''){
+        if(this.models && this.combinacion.talleActive!=''){
 
           let models = this.models.find((e)=>e.size == this.combinacion.talleActive)
           
@@ -151,10 +161,10 @@
         console.log('SwipeCombinacion.vue',this.combinacion)
         this.openDrop = true
         let height = this.heightDrop
-        this.$refs.dropBottom.nativeView.animate({
-          height: height,
-          duration: 250
-        })
+        // this.$refs.dropBottom.nativeView.animate({
+        //   height: height,
+        //   duration: 250
+        // })
         this.reset = false
         setTimeout(()=>{
           this.reset = true
@@ -163,10 +173,10 @@
       },
       closeDropBottom(){
         this.openDrop = false
-        this.$refs.dropBottom.nativeView.animate({
-          height: 0,
-          duration: 250
-        })
+        // this.$refs.dropBottom.nativeView.animate({
+        //   height: 0,
+        //   duration: 250
+        // })
         this.$emit('close', false)
         this.clearCombinacion()
       }, 
@@ -178,6 +188,7 @@
           this.closeDropBottom()
         }
       },
+      
       onAddCombinacion(){
         if(this.combinacion.talleActive != '' && 
            this.combinacion.colorActive != ''){

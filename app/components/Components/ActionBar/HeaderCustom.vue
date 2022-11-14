@@ -5,9 +5,7 @@
       <GridLayout
         columns="auto,*,auto" 
         rows="*" 
-
         class="shadow"
-        
       >
         <BtnMenu
           v-show="!back" 

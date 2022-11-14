@@ -1,19 +1,21 @@
 <template lang="html">
 <Page>
-	<HeaderDefault :back="true" />
+	<HeaderDefault :logoCenter="false" :back="true" :isCar="false" >
+		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carros abiertos" />
+	</HeaderDefault>
 	<GridLayout rows="*,auto,auto" >
 		<ScrollView
 			ref="scrollCarros"
 			row="0"
 		>
-			<StackLayout class="page_home"  >
-			<label 
-				text="Centro de compras"
-				class="title_page"
-				fontSize="20"
-				fontWeight="900"
-				marginTop="10"
-			/>
+			<!-- <StackLayout class="" padding="16"  > -->
+				<!-- <label 
+					text="Carros abiertos"
+					class=""
+					fontSize="20"
+					fontWeight="900"
+					marginTop="10"
+				/> -->
 
 			<!-- <StackLayout 
 				orientation="horizontal" 
@@ -45,17 +47,19 @@
 
 			</StackLayout> -->	
 
-			<label 
+			<!-- <label 
 				text="Carros abiertos"
 				class="title_page-sub"
 				fontSize="16"
 				fontWeight="900"
 				marginTop="10"
-			/>
+			/> -->
 			
 			<StackLayout 
-				marginTop="25"
+				marginTop=""
+				padding="8"
 			>
+
 				<CarBox
 					v-if="isload"
 					v-for="(i,key) in shoppingCar" 
@@ -66,7 +70,7 @@
 				></CarBox>
 			</StackLayout>
 			
-		</StackLayout>
+		<!-- </StackLayout> -->
 		</ScrollView>
 		<!--  -->
 		<BtnCar
@@ -74,7 +78,7 @@
 			:cars="carts"
 			v-show="multienvio"
 		/>
-		<SwipeCombinacion
+		<!-- <SwipeCombinacion
       top="0"
       left="0"
       row="2"
@@ -84,7 +88,7 @@
       @close="onshowDrop"
       @addCombinacion="onAddCombinacion"
       @deleteCombinacion="deleteCombinacion"
-    />
+    /> -->
 		
 
 	</GridLayout>
@@ -121,7 +125,7 @@
 	  },
 	  watch:{
 	  	shoppingCar(to){
-	  		// console.log('shoppingCar', to)
+	  		console.log('shoppingCar', to)
 	  		this.shoppingCenter()
 	  	},
 	  	
@@ -134,10 +138,15 @@
 	  created(){
 	  	this.getCar().then((e)=>{
 	  		this.$forceUpdate()
+	  		this.isload = false
+	  		setTimeout(()=>{
+	  			this.isload = true
+	  		},100)
+	  		
 	  	})
 	  },
 	  mounted(){
-	  	console.log('se monta shoping ', this.shoppingCar)
+	  	// console.log('se monta shoping ', this.shoppingCar)
 	  	// console.log(this.carsStoresProducts)
 	  },
 		methods:{

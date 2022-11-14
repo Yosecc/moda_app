@@ -47,10 +47,13 @@
         >
       
           <BtnCar
+            v-if="isCar"
             row="0"
             col="2"
             horizontalAlignment="right"
           ></BtnCar>
+
+          <StackLayout v-else width="40"> </StackLayout>
           
           <!-- <Image 
             src="~/assets/icons/bell.png" 
@@ -86,6 +89,10 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       },
       logoCenter:{
         type: Boolean, 
+        default: true
+      },
+      isCar:{
+        type: Boolean,
         default: true
       }
     },

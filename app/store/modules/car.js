@@ -6,7 +6,7 @@ import Api from '~/services'
 
 const state = {
     carsProducts: [],
-    carsStores:[],
+    carsStores: [],
     carsProductsIds:[],
     storeActiveCar: null,
     carCheckout: {},
@@ -83,6 +83,8 @@ const mutations = {
       if(index == '-1' || index == -1){
         state.carsStores.push(val)
       }
+     
+      // cache.set('carsStores', JSON.stringify(state.carsStores))
     },
     addCombinacion(state, val){
       let index = state.carsProducts.findIndex((element)=> element.id == val.product_id)
@@ -167,6 +169,9 @@ const mutations = {
       }else{
         state.carsProducts.find((element) => element.id == val.id).count++
       }
+
+      
+      // cache.set('carsProducts', JSON.stringify(state.carsProducts))
     },
     minusCountProduct(state, val){
       let index = state.carsProducts.findIndex((element) => element.id == val.id)
@@ -246,15 +251,31 @@ const actions = {
       context.commit('carsProductsPush', val)
     },
     async getCar(context){
+      // console.log('aja', cache.get('carsProducts'))
+        
+       cache.delete('carsStores')
+       // cache.delete('carsProducts')
+      // console.log('aje', cache.get('carsProducts'))
+       
       let response = await Api.get('car/getCar')
-      console.log('getCar',response)
+
       response.stores.forEach((e)=>{
         context.commit('addCarStore',e)
       })
-      response.products.forEach((e)=>{
-        context.commit('carsProductsPush', e)
-      })
+      // response.products.forEach((e)=>{
+      //   context.commit('carsProductsPush', e)
+      // })
+
+      cache.set('carsStores', JSON.stringify(context.state.carsStores))
+      // cache.set('carsProducts', JSON.stringify(context.state.carsProducts))
+
+      // console.log('aji', cache.get('carsProducts'))
       return response
+    },
+    async getProductsCart(context, val){
+      const response = await Api.get('car/getProductsCart/'+val)
+      
+      return  response
     },
     async deleteModelo(context, val){
       const response = await Api.post('car/deleteModelo', { cart_id: val })
@@ -262,6 +283,12 @@ const actions = {
     },
     async deleteProduct(context, val){
       const response = await Api.post('car/deleteProduct', { product_id: val })
+      return response
+    },
+    async processCart(context, id)
+    {
+      const response = await Api.post('car/process_cart',{local_cd:id})
+
       return response
     },
     openCar(context){

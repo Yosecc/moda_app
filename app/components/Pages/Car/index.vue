@@ -17,7 +17,7 @@
           fontWeight="900"
         />
         <StackLayout  v-if="computedStoresCarsProducts.length != undefined">
-          <StackLayout
+          <!-- <StackLayout
             background="white"
             width="95%"
             class=""
@@ -25,8 +25,8 @@
             marginBottom="16"
             v-for="(item , key) in computedStoresCarsProducts"
             :key="`car-${key}`"
-          >
-            <TitleStoreBox
+          > -->
+            <!-- <TitleStoreBox
               padding="8"
               marginBottom="16"
               borderTopLeftRadius="8"
@@ -36,17 +36,17 @@
               :limit_price="item.limit_price"
               :shadow="true"
               :fontSizeName="13"
-            />
+            /> -->
 
-            <StackLayout
+            <!-- <StackLayout
               paddingLeft="8"
               paddingRight="8"
               marginBottom="16"
               v-for="(product, i) in item.products"
               :key="`product-${key}-${i}`"
-            >
+            > -->
 
-              <ProductBoxHorizontal
+              <!-- <ProductBoxHorizontal
                 width="100%"
                 marginLeft="16"
                 marginBottom="16"
@@ -58,18 +58,18 @@
                 :nameFontWeight="'600'"
                 verticalAlignment="left"
                 @removidoProducto="onremovidoProducto"
-              />
+              /> -->
               
-            </StackLayout>
+            <!-- </StackLayout> -->
 
-            <ActionsCar
+            <!-- <ActionsCar
               :preciocar="preciocar(item.products)"
               :minimo="item.limit_price"
               :car="item"
-            />
+            /> -->
 
 
-          </StackLayout>
+          <!-- </StackLayout> -->
         </StackLayout>
 
       </StackLayout>
@@ -110,7 +110,7 @@ export default {
     // console.log('se monto el carro')
   },
   updated(){
-    console.log('se actualizo el carro')
+    // console.log('se actualizo el carro')
   },
   computed:{
     ...mapGetters('car',['carActiveProducts','storesCarsProducts']),
@@ -130,6 +130,7 @@ export default {
         }
 
       }
+      // console.log(storesCarsProductsB);
       return storesCarsProductsB
     }
     

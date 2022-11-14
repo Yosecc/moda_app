@@ -7,6 +7,7 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
  */
 
 const state = {
+    group_id: null,
     carCheckout: {},
     coupon: null,
     coupons: new ObservableArray([
@@ -187,6 +188,9 @@ const mutations = {
     },
     setTypeFactura(state, val){
       state.typeFactura = val
+    },
+    setGroupId(state, val){
+        state.group_id = val;
     }
 };
 

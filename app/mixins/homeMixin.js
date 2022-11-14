@@ -70,8 +70,9 @@ export default {
             },
       ]
       
-      this.setOfertas(imageens)
+      // this.setOfertas(imageens)
      
+     this.getCar()
       this.changeisLoadPage(true)
       
       return await true

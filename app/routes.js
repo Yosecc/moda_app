@@ -35,11 +35,21 @@ import DireccionesForm from './components/Pages/Profile/DireccionesForm.vue'
 import Pedido from './components/Pages/Profile/Pedido.vue'
 
 
+import detailCar from './components/Pages/Car/detailCar.vue'
+
+
 import filterCategorias from './components/Components/Modales/filterCategorias.vue'
 import tiendasModal from './components/Components/Modales/tiendas.vue'
+import methodsPaymentsModal from './components/Components/Modales/methodsPayments.vue'
 
 
 export const routes = {
+  '/methods_payments':{
+    component: methodsPaymentsModal
+  },
+  '/detail_car':{
+    component: detailCar
+  },
   '/shipping':{
     component: Shipping
   },

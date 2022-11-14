@@ -10,7 +10,10 @@
 
     <AbsoluteLayout 
       top="5"
-      class="btn-icon">
+      class="btn-icon"
+      borderWidth=".5"
+      borderColor="#DA0080"
+    >
 
       <Image 
         top="8"
@@ -22,19 +25,21 @@
         height="16" />
 
     </AbsoluteLayout>
-    <StackLayout
+    <FlexboxLayout
         top="0"
         left="25"
         width="15"
         height="15"
         backgroundColor="#DA0080"
         borderRadius="100%"
-        v-show="count > 0"
+        v-show="countCar > 0"
+        justifyContent="center"
+        alignItems="center"
       >
 
         <Label 
-          :text="count"
-          fontSize="10"
+          :text="countCar"
+          fontSize="9"
           color="white"
           padding="0"
           margin="0"
@@ -44,7 +49,7 @@
           horizontalAlignment="center"
          />   
 
-      </StackLayout>
+      </FlexboxLayout>
 
   </AbsoluteLayout>
 
@@ -61,13 +66,17 @@
     }, 
     computed:{
       ...mapGetters('car',['countProductsCarActive']),
-      ...mapState('car',['carsProducts']),
+      ...mapState('car',['carsProducts', 'carsStores']),
       count(){
         let num = 0
         this.carsProducts.forEach((e)=>{
           num += e.count
         })
         return num
+      },
+      countCar(){
+   
+        return this.carsStores.length 
       }
     },
     watch:{
@@ -82,7 +91,7 @@
       ...mapMutations(['changeDrawerCar']),
       ...mapActions('car',['openCar']),
       onTap(){
-        console.log('tap')
+        // console.log('tap')
         // this.openCar()
         this.$navigator.navigate('/shopping_center')
       }
