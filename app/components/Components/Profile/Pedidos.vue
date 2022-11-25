@@ -1,8 +1,8 @@
 <template lang="html">
   <StackLayout>
    <StackLayout v-if="loading" marginTop="24">
-    <ActivityIndicator busy="true" color="#DA0080" />
-  </StackLayout>
+      <ActivityIndicator busy="true" color="#DA0080" />
+    </StackLayout>
   <StackLayout v-if="pedidosUnidos._array.length == 0 && !loading" padding="24">
 
     <Label 

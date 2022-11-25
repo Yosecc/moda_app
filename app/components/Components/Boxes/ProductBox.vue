@@ -77,7 +77,28 @@
             class="storeBox"
           />  -->
            
-          
+          <StackLayout
+            top="8"
+            left="0"
+            width="92%"
+            margin="8"
+            padding="8"
+            background="rgba(218,0,128,0.7)" 
+            orientation="horizontal"
+            borderRadius="4"
+            v-if="product.isCart"
+          >
+            <image marginRight="8" src="~/assets/icons/check_white.png" width="12"  stretch="aspectFit" />
+            <Label 
+              text="Agregado al carrito" 
+              color="white" 
+              fontSize="12"
+              padding="0"
+              margin="0"
+              fontWeight="600"
+            />
+          </StackLayout> 
+         
 
       </AbsoluteLayout>
 

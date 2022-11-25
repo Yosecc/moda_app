@@ -1,46 +1,23 @@
 <template lang="html">
-  <Page >
-    <HeaderDefault :back="true" />
+  <Page actionBarHidden="true">apellido
     <layoutCheckout
-      title="Conpleta tus datos"
-      subTitle="Completa tus datos."
+      title="Datos personales"
+      subTitle="Nos faltan algunos datos. A continuación podés llenarlos."
       nextPage="/coupons"
       :nextStatus="true"
+      @onAction="oneditClient"
     >
-    
-      <ScrollView  >
-        <StackLayout  class="" paddingBottom="16" marginTop="8">
-          <FlexboxLayout 
-            marginBottom="8" 
-            justifyContent="space-between">
-            <button 
-              width="100%" 
-              fontSize="12" 
-              class="btn btn-sm" 
-              @tap="setTypeFactura(1)" 
-              :class="typeFactura == 1 ? 'btn-primary':''" 
-              text="DATOS PERSONALES"  />
-            <button 
-              width="100%" 
-              fontSize="12" 
-              class="btn btn-sm" 
-              @tap="setTypeFactura(2)" 
-              :class="typeFactura == 2 ? 'btn-primary':''" 
-              text="SOY EMPRESA"  />
-          </FlexboxLayout>
-
-          <InputsLayout
-            :clases="'shadow-none'"
-            :inputs="infoPersonal"
-          >
-            <template slot="top">
-            </template> 
-            <template slot="bottom">
-            </template> 
-          </InputsLayout>
-          
-        </StackLayout>
-      </ScrollView>
+      <StackLayout  class="" paddingBottom="16" marginTop="0">
+        <InputsLayout
+          :clases="'shadow-none'"
+          :inputs="infoPersonal"
+        >
+          <template slot="top">
+          </template> 
+          <template slot="bottom">
+          </template> 
+        </InputsLayout>
+      </StackLayout>
     </layoutCheckout>
    </Page>
 </template>
@@ -242,11 +219,20 @@
       }
     },
     mounted(){
+
+      const quitar_campos = ['email','sex','mobile','phone_company'];
+
+      quitar_campos.forEach((c)=>{
+        let index = this.infoPersonal.findIndex((e)=> e.name == c)
+        this.infoPersonal.splice(index, 1)
+      })
+      
       this.getClient()
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
       ...mapActions('profile',['getClient']),
+      ...mapActions('checkout',['editClient']),
       ...mapMutations('checkout',['setCoupon','setTypeFactura']),
       onItemTap({item}){
         this.setCoupon(item.id)
@@ -276,6 +262,18 @@
         })
 
         return errors.length > 0 ? false:true
+      },
+      async oneditClient(){
+        const obj = this.prepareData(this.infoPersonal)
+        await this.editClient(obj)
+          this.$navigator.navigate('/envios',{
+                  transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+                  // clearHistory: true
+                })
       }
       
     }

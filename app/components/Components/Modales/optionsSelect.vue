@@ -14,20 +14,28 @@
     </StackLayout>
     <RadListView v-else class="optionsSelect" ref="optionsSelect" :items="datos" >
       <v-template if="item.active == false" >
-        <FlexboxLayout @tap="onItemTap(item)" justifyContent="space-between" class="item">
-          <Label :text="item[select.campos.name]" />
+        <GridLayout columns="*,auto" @tap="onItemTap(item)" class="item">
+           <Label col="0" textWrap :text="item[selectActual.campos.name]" />
+           <StackLayout col="1" class="circle" />
+        </GridLayout>
+        <!-- <FlexboxLayout  justifyContent="space-between" class="item">
+         
           <StackLayout>
-            <StackLayout class="circle" />
+            
           </StackLayout>
-        </FlexboxLayout >
+        </FlexboxLayout > -->
       </v-template>
       <v-template if="item.active == true" >
-        <FlexboxLayout @tap="onItemTap(item)" justifyContent="space-between" class="item">
-          <Label :text="item[select.campos.name]" />
+        <GridLayout columns="*,auto" @tap="onItemTap(item)" class="item">
+           <Label col="0" textWrap :text="item[selectActual.campos.name]" />
+           <StackLayout col="1" class="circle active" />
+        </GridLayout>
+        <!-- <FlexboxLayout @tap="onItemTap(item)" justifyContent="space-between" class="item">
+          <Label :text="item[selectActual.campos.name]" />
           <StackLayout>
             <StackLayout class="circle active" />
           </StackLayout>
-        </FlexboxLayout >
+        </FlexboxLayout > -->
       </v-template>
     </RadListView>
   </StackLayout>  
@@ -67,8 +75,9 @@
       datos(){
         if(this.select){
           let values = this.select.values
+
           values.forEach((value)=>{
-            if(this.select.model == value[this.select.campos.id]){
+            if(this.select.model == value[this.selectActual.campos.id]){
               value.active = true
             }else{
               value.active = false
@@ -86,8 +95,8 @@
     methods:{
       onItemTap(item){
         this.selectActual = this.select
-        this.selectActual.model = item[this.select.campos.id]
-        this.selectActual.title = item[this.select.campos.name]
+        this.selectActual.model = item[this.selectActual.campos.id]
+        this.selectActual.title = item[this.selectActual.campos.name]
         this.$refs.optionsSelect.nativeView.refresh();
         this.$forceUpdate()
         this.$emit('change',this.selectActual)   

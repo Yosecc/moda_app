@@ -57,8 +57,9 @@
   import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
   import price from '~/components/Components/modules/price'
   import carMixin from '~/mixins/carMixin.js'
+  import storeMixin from '~/mixins/storeMixin.js'
   export default {
-    mixins: [carMixin],
+    mixins: [carMixin, storeMixin],
     props:{
       product:{
         type: Object
@@ -69,7 +70,12 @@
       notStore:{
         type:Boolean,
         default: false
-      }
+      },
+    },
+    data() {
+      return {
+        car: null
+      };
     },
     components:{
       price
@@ -92,11 +98,16 @@
       }
     },
     methods:{
-      ...mapActions('car',['addCar']),
+      ...mapActions('car',['addCar','getCart']),
       ...mapMutations(['changeDrawerCar','changeDrawer']),
-      onProcessDataCar(){
+      async onProcessDataCar(){
         if (this.validateData()) {
-          this.processDataCar(this.product,this.combinaciones)
+          console.log('this.product',this.product)
+          await this.processDataCar(this.product,this.combinaciones)
+          await this.getCart(this.product.store).then((response)=>{
+            this.car = response
+          })
+          this.onRedirectCart()
         }
       },
       validateData(){

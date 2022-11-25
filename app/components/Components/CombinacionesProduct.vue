@@ -4,7 +4,7 @@
     <Label text="Combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
     <WrapLayout 
       v-for="(combinacion, key) in combination" 
-      v-if="combinaciones.length" 
+      v-if="combinaciones.length"
       :key="key" 
       @tap="openDropBottom(key)" 
       borderBottomWidth="1" 
@@ -12,7 +12,7 @@
       paddingBottom="8" 
       marginBottom="8" 
     >
-      <StackLayout v-if="combinacion.talleActive" background="" padding="4 4 4 4" width="37.5%">
+      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
         <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary"  width="100%">
           <FlexboxLayout width="100%" alignItems="center" justifyContent="space-between">
             <label 
@@ -37,7 +37,7 @@
           />
         </StackLayout>
       </StackLayout>
-      <StackLayout v-if="combinacion.colorActive" background="" padding="4 4 4 4" width="37.5%">
+      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
         <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary"  width="100%">
           <FlexboxLayout width="100%" backgroundColor="" alignItems="center" justifyContent="space-between">
             <label 
@@ -88,7 +88,7 @@
           />
         </StackLayout>
       </StackLayout>
-      <StackLayout v-if="combinacion.talleActive" background="" padding="4 4 4 4" width="25%">
+      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="25%">
         <StackLayout padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '100%':'46'" class="card secondary"  width="100%">
           <FlexboxLayout justifyContent="space-between"  alignItems="center" >
             <label 
@@ -114,18 +114,36 @@
             fontWeight="500" 
           />
         </StackLayout>
-      </StackLayout> 
+      </StackLayout>
+
+      <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
+        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+      </StackLayout>
+
+      <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
+        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+      </StackLayout>
+
+      <StackLayout v-show="!isEnabled" padding="4" width="25%" >
+        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+      </StackLayout>
+
     </WrapLayout>
-    <Button 
-      text="Agregá más prendas"
-      class="btn btn-primary btn-sm outline disable"
-      marginLeft="0"
-      horizontalAlignment="left"
-      fontSize="12"
-      v-if="isButtom && combinaciones.length && combinaciones[0].talleActive != ''"
-      :isEnabled="combinaciones[0].talleActive != ''"
-      @tap="openDropBottom(null)"
-    />
+
+    <StackLayout orientation="horizontal">
+      <Button 
+        text="Agregá más prendas"
+        class="btn btn-primary btn-sm outline "
+        marginLeft="0"
+        horizontalAlignment="left"
+        fontSize="12"
+        v-if="isButtom && combinaciones.length && combinaciones[0].talleActive != ''"
+        v-show="isEnabled"
+        :isEnabled="combinaciones[0].talleActive != ''"
+        @tap="openDropBottom(null)"
+      />
+      <ActivityIndicator v-if="!isEnabled" busy="true" color="DA0080"/>
+    </StackLayout>
   </StackLayout>
 </template>
 <script>
@@ -153,6 +171,10 @@
         type: Boolean,
         default: true
       },
+      isEnabled:{
+        type: Boolean,
+        default: true
+      }
     },
     components:{
       
@@ -169,12 +191,13 @@
       };
     },
     mounted(){
-      
+      // console.log('combination', this.combination, this.combinaciones.length)
     },
     methods:{
       ...mapMutations('car',['setCombinacion']),
       openDropBottom(keyy){
-        // console.log('CombinacionesProduct.vue product',this.product)
+
+        // console.log('CombinacionesProduct.vue product',keyy, this.combination)
         let data = {
           sizes: this.product.sizes,
           colors: this.product.colors,
@@ -185,7 +208,6 @@
           cantidad: 1,
           colorActive: '',
           talleActive: '',
-
         }
         
         if(keyy != undefined){
@@ -195,12 +217,12 @@
               data.talleActive = e.talleActive
               data.cantidad = e.cantidad
               data.cart_id = e.cart_id
-
+              data.modelo = e.modelo
             }
           })
         }
         // console.log('paso 1', data)
-        this.$emit('openDropBottom', {data:data, models:this.product.models})
+        this.$emit('openDropBottom', {data:data, models:this.product.models, isNew: keyy})
       },
     }
   }

@@ -19,14 +19,13 @@ export default {
   },
   methods: {
     ...mapActions('car',['addCar']),
-    dataCart(product,combinaciones){
-      console.log('product', product)
+    async dataCart(product,combinaciones){
+
       let obj = {
         images      : product.images,
         precio      : product.price ? product.price : product.precio,
         id          : product.id,
         descripcion : product.name,
-        // categoria   : product.categoria,
         store: {
           id   : product.store_data ? product.store_data.id : product.store.id,
           company: product.company ? product.company : product.store.company,
@@ -39,26 +38,19 @@ export default {
         combinacion: combinaciones,
         models: product.models
       }
-      console.log('obj carjs', obj)
-      this.addCar(obj)
+      await this.addCar(obj)
     },
     processDataCar(product,combinaciones){
+      // console.log(product,combinaciones)
       this.dataCart(product,combinaciones)
-
-      this.$navigator.navigate('/shopping_center',{
-        transition: {
-          name: 'slideLeft',
-          duration: 300,
-          curve: 'easeIn'
-        },
-      })
-      
       this.$forceUpdate()
     },
     addCombinacionCart(product_id){
+
+      console.log('mixin',product_id)
       let product = this.carsProducts.find((e)=> e.id == product_id)
       console.log('mixin addCombinacionCart', product )
-      this.dataCart(product, product.combinacion)
+      // this.dataCart(product, product.combinacion)
       // alert('Agregada combinacion')
     }
   }

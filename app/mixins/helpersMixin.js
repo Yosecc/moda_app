@@ -24,28 +24,75 @@ export default {
    
   },
   methods: {
-   prepareData(inputs){
+   prepareData(inputs, isAlert = true){
      let data = {}
      inputs.forEach((input)=>{
-       this.validate(input, true)
+       this.validate(input, isAlert)
        data[input.name] = input.model
      })
      return data
    },
-   validate(input, isAlert){
-
+    validate(input, isAlert){
+     this.errors = []
      if(input.required){
        if([undefined, '' , null].includes(input.model)){
         this.errors.push({name: input.name, mensaje: `${input.hint} es requerido`})
         if(isAlert){
           alert(`${input.hint} es requerido`)
         }
+       
        }else{
+
+        let errores = this.errors.filter((e)=> e.name == input.name)
         if(this.errors.findIndex((e)=>e.name == input.name) != -1){
          this.errors.splice(this.errors.findIndex((e)=>e.name == input.name), 1)
         }
+        
        }
      }
-   }
+    
+     if(this.errors.length){
+       return false
+     }
+
+     return true
+   },
+    validadores(inputs){
+      let validator = []
+      inputs.forEach((input)=>{
+        if(input.required){
+          if(input.model == '' || input.model == null || input.model == undefined){
+            validator.push(false)
+          }else{
+            validator.push(true)
+          }
+        }else{
+          validator.push(true)
+        }
+      })
+      return !validator.includes(false)
+    },
+    setModelsInputs(inputs, data)
+    {
+      if(typeof data == 'object'){
+        for(var i in data){
+          if(inputs.find((e)=> e.name == i) != undefined){
+            inputs.find((e)=> e.name == i).model = data[i]
+
+            if(inputs.find((e)=> e.name == i).typeInput == 'select'){
+              // console.log('de',inputs.find((e)=> e.name == i))
+              let model = inputs.find((e)=> e.name == i).model
+              let values = inputs.find((e)=> e.name == i).values
+              console.log(values)
+              if(values != undefined && values.length){
+                inputs.find((e)=> e.name == i).title = values.find((e)=> e.id == model).name
+              }
+
+            }
+
+          }
+        }
+      }
+    }
   }
 };

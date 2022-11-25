@@ -126,7 +126,6 @@
             required: false,
             change: ({value})=>{
               this.principalAddress.model = value ? 2000:1000;
-              console.log('this.principalAddress',this.principalAddress)
               if(value){
                 this.cambiarDireccionPrincipal()
               }

@@ -1,6 +1,6 @@
 <template lang="html">
   <Page>
-    <!-- <HeaderDefault :back="true" /> -->
+
     <HeaderStore :store="store" :back="true" />
 
     <StackLayout>
@@ -137,7 +137,7 @@
 import Filters from "../Components/Filters.vue";
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
-  import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
+import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
 
 import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
@@ -227,6 +227,7 @@ export default {
     },
   },
   mounted(){
+    console.log('this.store', this.store)
     this.setStoreCategorieActive(this.categorieActiveGetters.id)
     this.setStoreSubcategorieActive('')
     this.statusSearch = false

@@ -9,6 +9,7 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
 const state = {
     group_id: null,
     carCheckout: {},
+    costoEnvio:[],
     coupon: null,
     coupons: new ObservableArray([
       {
@@ -62,47 +63,90 @@ const state = {
         {
             id: 1,
             title:'Envío a sucursal',
-            precios: ['$ 159,00 / a todo el país'],
+            precios: ['Desde $740 a todo el país'],
             description:'Seleccionando esta opción te enviamos el pedido a la sucursal próxima que elijas en 4 a 7 días.',
+            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
             active: false,
             color: '#239B56',
-            icon: 'res://sucursal'
+            icon: 'res://sucursal',
+            agregados:[
+                {
+                    concepto: 'Costo de traslado',
+                    value: 70
+                }
+            ],
+            method: 'post_office'
         },
         {
             id: 2,
             title:'Envío a domicilio',
-            precios: ['$ 129,00 / en GBA','$ 690,00 / en CABA','$ 129,00 / en resto del país'],
-            description:'Seleccionando esta opción te enviamos el pedido a tu domicilio de 1 a 3 días en CABA y 4 a 9 días en GBA y resto del país.',
+            precios: ['$380 en CABA','$480 en GBA','Desde $1140 al resto del país'],
+            description:'Te enviamos el pedido a tu domicilio por moto de 48 a 72 horas, de 8:00hs a 20:00hs y, por Correo Argentino y OCA de 5 a 9 días hábiles.',
+            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
             active: false,
             color: '#CA6F1E',
-            icon: 'res://eviocasa'
+            icon: 'res://enviocasa',
+            agregados:[
+                {
+                    concepto: 'Costo de traslado',
+                    value: 70
+                }
+            ],
+            method:'home_delivery'
         },
         {
             id: 3,
-            title:'INTEGRALPACK',
-            precios: ['NUEVO! Envío Express a todo el país Costo de servicio $ 199,00'],
-            description:'Envíos a terminal de omnibus en 48/72hs Busca si llegamos a tu ciudad!',
+            title:'Transporte tradicional',
+            precios: ['$150 por costo de traslado hasta el transporte elegido. Luego pagás el resto en destino.'],
+            description: 'Elegí el transporte que llega a tu ciudad.',
+            description2:'Esta tienda agregará un costo adicional de $70 por manipulación y embalaje.',
             active: false,
-            color: '#CDDC39',
-            icon: 'res://integralpack'
+            color: '#1976D2',
+            icon: 'res://envio',
+            agregados:[
+                {
+                    concepto: 'Envío',
+                    value: 150
+                },
+                {
+                    concepto: 'Manipulación y embalaje',
+                    value: 70
+                },
+            ],
+            method: 'transport'
         },
         {
             id: 4,
-            title:'Otro transporte',
-            precios: ['Costo de traslado $ 100,00'],
-            description:'Aquí podrás seleccionar el transporte de preferencia.',
+            title:'INTEGRALPACK',
+            precios: ['$850 por costo de servicio.'],
+            description:'Envíos a terminal de omnibus en 48 a 72 horas. Buscá si llegamos a tu ciudad!',
+            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
             active: false,
-            color: '#1976D2',
-            icon: 'res://envio'
+            color: '#CDDC39',
+            icon: 'res://integralpack',
+            agregados:[
+                {
+                    concepto: 'Envío',
+                    value: 850
+                },
+                {
+                    concepto: 'Costo de traslado',
+                    value: 70
+                },
+            ],
+            method: 'integral_pack'
         },
         {
             id: 5,
-            title:'Retiro por tienda',
+            title:'Retiro por depósito',
             precios: [],
-            description:'Retirar compra en la tienda.',
+            description:'Retira la compra en el depósito.',
+            description2: 'El horario de atención para el retiro de los paquetes en el depósito de Flores, CABA es de Lunes a Viernes de 8:00hs a 15:00hs.',
             active: false,
             color: '#5E35B1',
-            icon: 'res://enviostore'
+            icon: 'res://enviostore',
+            agregados: [],
+            method: 'store_pickup'
         },
     ]),
     direcciones: new ObservableArray([{
@@ -119,31 +163,36 @@ const state = {
             name: 'Tarjeta de Crédito / Débito',
             modapago: true,
             descripcion: 'Selecciona esta opción si deseas abonar con tarjeta de crédito. Fácil, seguro y rápido.',
-            logos: ['argencard.png','visa.png','master.png','naranja.png','american.png','shopping.png','cencosud.png'],
+            logos: ['~/assets/visa.jpg','~/assets/master.jpg','~/assets/naranja.jpg','~/assets/american.jpg','~/assets/shopping.jpg','~/assets/cencosud.jpg','~/assets/argencard.jpg'],
             active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra con tu tarjeta.'
+            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra con tu tarjeta.',
+            method: 'card'
         },
         {
             id: 2,
             name: 'Efectivo',
             modapago: true,
             descripcion: 'Si quieres obtener un cupón de pago para abonar en efectivo, selecciona esta opción.',
-            logos: ['pagofacil.png','rapipagos.png','cobroex.png'],
+            logos: ['~/assets/pagofacil.jpg','~/assets/rapipagos.jpg','~/assets/cobroex.jpg'],
             active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra en los puntos de Pago Fácil, Rapipagos o Cobro Express.'
+            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra en los puntos de Pago Fácil, Rapipagos o Cobro Express.',
+            method: 'cash'
         },
         {
             id: 3,
             name: 'Transferencia o depósito bancario',
             modapago: false,
             descripcion: 'Seleccionando aquí, podrás realizar una transferencia o depósito bancario.',
-            logos: ['bancocomafi.png','santanderrio.png'],
+            logos: ['~/assets/santanderrio.png','~/assets/bancocomafi.jpg'],
             active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, los datos bancarios.'
+            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, los datos bancarios.',
+            method: 'bank'
         },
     ]),
     metodopago: null,
     typeFactura: 1,
+    comboDirecciones: {states:[], gba:[], caba:[]},
+    numeroPedido: null
 };
 
 const getters = {
@@ -171,8 +220,14 @@ const getters = {
 };
 
 const mutations = {
+    setnumeroPedido(state, val){
+        state.numeroPedido = val
+    },
     setcarCheckout(state, val){
         state.carCheckout = val
+    },
+    addCostoEnvio(state, val){
+        state.costoEnvio = val
     },
     setCoupon(state, val){
         state.coupon = val
@@ -191,13 +246,78 @@ const mutations = {
     },
     setGroupId(state, val){
         state.group_id = val;
+    },
+    setcomboDirecciones(state, val){
+        state.comboDirecciones = val
     }
 };
 
 const actions = {
-    setCarCheckout(context, val){
-        context.commit('setcarCheckout',val)
-    }
+  setCarCheckout(context, val){
+      context.commit('setcarCheckout',val)
+  },
+  async editClient(context, val){
+    const response = await Api.post('checkout/editClient',val)
+    return response
+  },
+  async selectMethodEnvio(context, val){
+      const response = await Api.post('checkout/selectMethodEnvio',val)
+      return response
+  },
+  async searchSucursales(context, val){
+      const response = await Api.post('checkout/searchSucursales', val)
+      return response
+  },
+  async datosEnvio(context, val){
+      const response = await Api.post('checkout/datosEnvio', val)
+      return response
+  },
+  async envioDetail(context, val){
+      const response = await Api.post('checkout/envioDetail', val)
+      return response
+  },
+  async deleteShipping(context, val){
+      const response = await Api.post('checkout/deleteShipping', val)
+      return response
+  },
+  
+  async getComboDirecciones(context, obj){
+      const str = '?' + Object.keys(obj).map(key => {
+        return `${key}=${encodeURIComponent(obj[key])}`;
+      }).join('&');
+
+      const response = await Api.get(`getComboDirecciones${str}`)
+      context.commit('setcomboDirecciones', response)
+      return response
+  },
+  async homeDeliveryProviders(context, val){
+      const response = await Api.post('checkout/homeDeliveryProviders', val)
+      return response
+  },
+  async editServiceProvider(context, val){
+      const response = await Api.post('checkout/editServiceProvider', val)
+      return response
+  },
+  async datosFacturacion(context, val){
+      const response = await Api.post('checkout/datosFacturacion', val)
+      return response
+  },
+  async selectMethodPayment(context, val){
+      const response = await Api.post('checkout/selectMethodPayment', val)
+      return response
+  },
+  async getResumen(context, val){
+      const response = await Api.post('checkout/getResumen', val)
+      return response
+  },
+  async confirmarCompra(context, val){
+      const response = await Api.post('checkout/confirmarCompra', val)
+      return response
+  },
+  
+  
+  
+  
 };
 
 export const checkout = {

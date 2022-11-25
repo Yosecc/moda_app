@@ -1,63 +1,125 @@
 <template lang="html">
   <StackLayout>
-    <StackLayout padding="0 8">
-    <CardEnvio
-    :envio="envioSelected"
-    :altura="70"
-  />
-</StackLayout>
-
-    <StackLayout padding="0 16 0 16">
-
-    <label textWrap="true">
-      <FormattedString>
-        <span text="SERVICIO EXPRESS" fontWeight="bold"/>
-        <span text=" Llegamos a muchos puntos del país, buscá si tu localidad este en este listado. Una vez que la marca nos entrega el paquete en 48/72hs te entregamos en la terminal de tu localidad. " />
-
-      </FormattedString>
-    </label>
-</StackLayout>
-    <InputsLayout
-        :inputs="inputsDireccion"
-        :showDrawer="false"
-      >
-        <template slot="top">
-          <Label marginBottom="8" text="Dirección" fontSiza="14" class="title" />
-        </template> 
-        <template slot="bottom">
-
-        </template> 
-    </InputsLayout>
 
     <InputsLayout
-        :inputs="inputsPersona"
-        :showDrawer="false"
-      >
-        <template slot="top">
-          <Label marginBottom="8" text="Datos de quién retire el paquete" fontSiza="14" class="title" />
-        </template> 
-        <template slot="bottom">
-        </template> 
+      :inputs="direccionInput"
+      v-if="!dataDirecciones.length && !loading"
+    >
+      
     </InputsLayout>
 
+    <StackLayout row="0" v-if="loading" padding="16" width="100%" >
+      <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
+      <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
+      <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
+      <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
+    </StackLayout>
 
+    <RadListView 
+      ref="dataDirecciones"
+      class="dataDirecciones"
+      for="item in dataDirecciones"
+      row="0" 
+      padding="0"
+      margin="0"
+      v-show="dataDirecciones.length && !loading"
+      @itemTap="onItemSelected"
+    >
+      <v-template>
+        <StackLayout padding="8 16 8 16">
+
+          <StackLayout 
+            class="card" 
+            :borderWidth="item.status ? 2:0"
+            :borderColor="item.status ? '#DA0080':''"
+          >
+            <GridLayout columns="*, auto">  
+            
+              <!-- <FlexboxLayout justifyContent="space-between" alignItems="flex-start"> -->
+                <StackLayout col="0" >
+                  <Label fontSize="20" margin="0 4 0 0" textWrap padding="0" fontWeight="900" :text="item.label" />
+                  <Label fontSize="20" margin="0 4 0 0" padding="0" fontWeight="900" :text="item.price | moneda" />
+                </StackLayout>
+                <StackLayout col="1" >
+                  
+                  <FlexboxLayout 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    width="40" 
+                    height="40" 
+                    margin="0" 
+                    class="btn btn-icon"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                    @tap="onEditSucursal(item)"
+                  >
+                    <Image 
+                      src="~/assets/icons/pencil.png" 
+                      width="25" 
+                      height="25" 
+                    />
+                  </FlexboxLayout>
+                  <FlexboxLayout 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    width="40" 
+                    height="40" 
+                    margin="8 0 0 0" 
+                    class="btn btn-icon"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                    @tap="ondeleteSucursal(item)"
+                  >
+                    <Image 
+                      src="~/assets/icons/trash.png" 
+                      width="25" 
+                      height="25" 
+                    />
+                  </FlexboxLayout>
+                </StackLayout>
+              <!-- </FlexboxLayout> -->
+            </GridLayout>
+
+            <StackLayout>
+                <StackLayout margin="0" padding="0" orientation="horizontal">
+                  <Label  margin="0 4 0 0" padding="0" fontWeight="700" fontSize="16" :text="item.first_name" />
+                  <Label  margin="0" padding="0" fontWeight="700" fontSize="16" :text="item.last_name" />
+                </StackLayout>
+                <Label margin="0" padding="0" fontWeight="700" fontSize="16" :text="`DNI: ${item.dni}`" />
+            </StackLayout>
+
+          </StackLayout>
+
+        </StackLayout>
+      </v-template>
+    </RadListView>
 
        
   </StackLayout>
 </template>
 
 <script>
-import InputsLayout from '~/components/Components/InputsLayout.vue'
- import CardEnvio from '~/components/Components/Checkout/CardEnvio.vue'
- import {provincias} from '~/data/provinciasData.js'
-  import { mapState, mapMutations, mapGetters } from 'vuex'
+  import InputsLayout from '~/components/Components/InputsLayout.vue'
+  import helpersMixin from '~/mixins/helpersMixin.js'
+  import { ObservableArray } from '@nativescript/core/data/observable-array';
+  import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   export default {
-    mixins: [],
+    mixins: [helpersMixin],
+    model: {
+      prop: 'destinatario',
+      event: 'change'
+    },
     props: {
-
+      select:{
+        type: Object,
+        default: null
+      },
+      direcciones:{
+        type: Array,
+        default: []
+      }
     },
     components: {
-      CardEnvio,
       InputsLayout
     },
     filters: {
@@ -65,43 +127,22 @@ import InputsLayout from '~/components/Components/InputsLayout.vue'
     },
     data() {
       return {
-        inputsDireccion:[          
+        direccionInput:[
           {
-            typeInput: 'select',
-            name: 'provincia',
+            typeInput: undefined,
+            name: 'first_name',
             model: '',
-            label: 'Provincia',
-            title: 'Seleccione su provincia',
-            hint:'Provincia',
-            values: provincias,
-            campos: {id: 'id', name: 'nombre_completo'},
+            label: 'Nombre',
+            hint:'Nombre',
             required: true,
           },
           {
             typeInput: undefined,
-            name: 'localidad',
-            model: '',
-            label: 'Localidad',
-            hint:'Localidad',
-            required: false,
-          },
-        ],
-        inputsPersona:[          
-          {
-            typeInput: undefined,
-            name: 'name',
-            model: '',
-            label: 'Name',
-            hint:'Name',
-            required: false,
-          },
-          {
-            typeInput: undefined,
-            name: 'apellido',
+            name: 'last_name',
             model: '',
             label: 'Apellido',
             hint:'Apellido',
-            required: false,
+            required: true,
           },
           {
             typeInput: 'number',
@@ -109,30 +150,162 @@ import InputsLayout from '~/components/Components/InputsLayout.vue'
             model: '',
             label: 'DNI',
             hint:'DNI',
-            required: false,
+            required: true,
+          },
+          {
+            typeInput: 'select',
+            name: 'state',
+            model: '',
+            label: 'Provincia',
+            title: 'Seleccione su provincia',
+            hint: 'Seleccion su provincia',
+            campos: {id: 'id', name: 'name'},
+            required: true,
+            onTap: (input)=>{
+              this.opendDrwer(input)
+            }
+          },
+          {
+            typeInput: 'select',
+            name: 'location',
+            model: '',
+            label: 'Localidad',
+            title: 'Seleccione su Localidad',
+            hint: 'Ingrese su Localidad',
+            campos: {id: 'id', name: 'name'},
+            required: true,
+            onTap: (input)=>{
+              if(input.values!= undefined){
+                this.opendDrwer(input)
+              }else{
+                alert('Seleccione una provincia')
+              }
+            }
           },
         ],
+        id: '',
+        dataDirecciones: new ObservableArray(this.direcciones),
+        loading: false,
+        locationsIntegral: []
       };
     },
     watch:{
-      // async product (val){
-      //   await this.$nextTick()
-      //   this.$refs.contentproduct.nativeView.refresh();
-      // },
+      stateSelect(to){
+          if(this.id == ''){
+            console.log(to, this.id)
+            this.changeSelect(to)
+          }
+      },
+      datosInputs(to){
+        if(to){
+          this.$emit('statusData', true)
+          let data = this.prepareData(this.direccionInput, false)
+          data.id = this.id
+          this.$emit('change', data)
+        }
+      },
+      dataDirecciones(to){
+        if(this.dataDirecciones.length){
+          this.onItemSelected({item : to._array[0]})
+        }
+      },
+      dataInput(to){
+        if(!this.dataDirecciones.length){
+          to.id = this.id
+          this.$emit('change', to)
+        }
+      }
     },
     computed:{
-      // ...mapState('checkout',['envio','envios']),
-      ...mapGetters('checkout',['envioSelected']),
-      // ...mapState('car',['carCheckout']),
-      // 
+      ...mapState('checkout',['group_id','comboDirecciones','envios']),
+      stateSelect(){
+        return this.direccionInput.find((e)=> e.name == 'state').model
+      },
+
+      datosInputs(){
+        return this.validadores(this.direccionInput)
+      },
+      dataInput(){
+        return this.prepareData(this.direccionInput, false)
+      }
     },
     mounted(){
-      // console.log(this.carCheckout)
+      this.getComboDirecciones({group_id: this.group_id}).then((response)=>{
+        this.direccionInput.find((e)=> e.name == 'state').values = this.comboDirecciones.integral.states
+        this.locationsIntegral = this.comboDirecciones.integral.branches
+      })
+      this.mountedData()
     },
     methods:{
-      // ...mapMutations(['changeDrawerCar']),
-      // ...mapMutations('checkout',['setEnvio']),
-
+      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping']),
+      mountedData(){
+        this.loading = true
+        this.datosEnvio({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method
+        }).then((response)=>{
+          this.loading = false
+          response.forEach((e,i)=>{
+            if(i == 0){
+              e.status = true
+            }else{
+              e.status = false
+            }
+          })
+          this.dataDirecciones = new ObservableArray(response)
+        }).catch((error)=>{
+          this.loading = false
+          this.dataDirecciones = []
+        })
+      },
+      onItemSelected({item}){
+        this.dataDirecciones._array.forEach((e)=>{
+          if(e.id == item.id){
+            e.status = true
+          }else{  
+             e.status = false
+          }
+        })
+        this.$refs.dataDirecciones.refresh()
+        
+        this.setData(item)
+      },
+      setData(item){
+        this.$emit('statusData', true)
+        let data = item
+        this.id = item.id
+        data.id = this.id
+        this.$emit('change', data)
+      },
+      ondeleteSucursal(item){
+        this.loading = true
+        this.dataDirecciones = []
+        this.deleteShipping({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method,
+          id: item.id
+        }).then((response)=>{
+          this.mountedData()
+        })
+      },
+      onEditSucursal(item){
+        this.dataDirecciones = []
+        this.id = item.id
+        this.setModelsInputs(this.direccionInput, item)
+        this.changeSelect(this.direccionInput.find((e)=> e.name == 'state').model)
+        this.setModelsInputs(this.direccionInput, item)
+      },
+      changeSelect(to){
+        if(this.direccionInput.find((e)=> e.name == 'location').model != ''){
+          this.direccionInput.find((e)=> e.name == 'location').model = ''
+          this.direccionInput.find((e)=> e.name == 'location').title = 'Seleccione su Localidad'
+        }
+        let values = this.locationsIntegral.filter((e)=> e.provincia_id == to)
+        this.direccionInput.find((e)=> e.name == 'location').values = values
+      },
+      opendDrwer(item){
+        this.$emit('openDrawer',{type: 'select', data: item})
+      }
     }
     
   };

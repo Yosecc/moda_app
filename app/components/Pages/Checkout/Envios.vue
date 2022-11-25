@@ -1,18 +1,26 @@
 <template lang="html">
-  <Page >
-  <HeaderDefault :back="true" />
+  <Page actionBarHidden="true">
+  
   <layoutCheckout
-    title="Tipos de envío"
-    subTitle="Seleccioná el tipo de envío que más te conviene."
+    title=""
+    subTitle=""
     nextPage="/envios_detail"
     :nextStatus="nextStatus"
+    :loading="buttonLoading"
+    @onAction="onselectMethodEnvio"
   >
-  <StackLayout marginTop="8" paddingRight="8" paddingLeft="8">
+  <StackLayout  paddingRight="8" paddingLeft="8">
     <RadListView 
       for="item in envios"
-      layout="grid"
-      itemWidth="50%"
-      @itemTap="onItemTap">
+      ref="listEnvios"
+      @itemTap="onItemTap"
+    >
+      <v-template name="header">
+        <StackLayout paddingLeft="16" paddingRight="16">
+          <Label class="title_product" text="Tipos de envío" />
+          <Label textWrap text="A continuación podés seleccionar el tipo de envío con el cual querés recibir tu paquete." />
+        </StackLayout>
+      </v-template>
       <v-template if="item.active == false">
         <CardEnvio
           :envio="item"
@@ -32,17 +40,17 @@
 <script>
    import CardEnvio from '~/components/Components/Checkout/CardEnvio.vue'
 
-  import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
+  import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
   export default {
     mixins: [],
     props: {
 
     },
     components: {
-      HeaderDefault,
+      HeaderCustom,
       layoutCheckout,
       CardEnvio
     },
@@ -51,14 +59,14 @@
     },
     data() {
       return {
-
+        buttonLoading: false
       };
     },
     watch:{
 
     },
     computed:{
-      ...mapState('checkout',['envio','envios']),
+      ...mapState('checkout',['envio','envios','group_id']),
       nextStatus(){
         if(this.envio){
           return true
@@ -69,21 +77,37 @@
       // 
     },
     mounted(){
-      // console.log(this.carCheckout)
+      this.addCostoEnvio([])
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
-      ...mapMutations('checkout',['setEnvio']),
+      ...mapMutations('checkout',['setEnvio','addCostoEnvio',]),
+      ...mapActions('checkout',['selectMethodEnvio']),
       onItemTap({item}){
         this.setEnvio(item.id)
+        this.addCostoEnvio([])
         this.envios.forEach((e)=>{
           if(e.id == item.id){
             e.active = true
+
           }else{
             e.active = false
           }
         })
-
+        this.addCostoEnvio(this.envios._array.find((e)=> e.active == true).agregados)
+        this.$refs.listEnvios.refresh()
+      },
+      onselectMethodEnvio(){
+        this.buttonLoading = true
+        this.selectMethodEnvio({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method
+        }).then((e)=>{
+          this.buttonLoading = false
+          this.$navigator.navigate('/envios_detail')
+        }).catch((error)=>{
+          this.buttonLoading = false
+        })
       }
     }
     

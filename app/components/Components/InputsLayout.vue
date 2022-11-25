@@ -11,59 +11,80 @@
             :class="clases"
             padding="16"
           >
-            <StackLayout
-              v-for="(e,i) in inputs"
-              :key="`inputs-${i}`"
-              class="input-group"
-              :class="e.typeInput == 'select' ? 'input-group-select':''"
-            >
-              <Label v-if="e.isLabel == false ? e.isLabel:true" :text="e.label" class="label" />
+            <WrapLayout>
               <StackLayout
-                v-show="[undefined, 'number','email','phone'].includes(e.typeInput)"
+                v-for="(e,i) in inputs"
+                :key="`inputs-${i}`"
+                class="input-group"
+                :width="e.width ? e.width :'100%'"
+                :paddingRight="e.paddingRight ? e.paddingRight :''"
+                :class="e.typeInput == 'select' ? 'input-group-select':''"
               >
-                <TextField 
-                  :text="e.model" 
-                  v-model="e.model"
-                  class="inputForm"
-                  :secure="e.secure ? e.secure : false"
-                  :class="e.error ? 'input-control-error':''"
-                  :hint="e.hint"
-                  :keyboardType="e.typeInput" />
+              <StackLayout margin="0" padding="0" v-if="e.isLabel == false ? e.isLabel:true" orientation="horizontal">
+                
+                <Label  :text="e.label" class="label" margin="0" padding="0" />
+                <Label  v-if="e.required" text="*" :color="e.label != '' ? 'red':'transparent'" margin="0 0 0 2" padding="0" />
 
               </StackLayout>
 
-              <StackLayout
-                v-if="e.typeInput == 'select'"
-                class="selectForm"
-                @tap="e.onTap(e)"
-              >
-                <FlexboxLayout
+                <StackLayout
+                  v-show="[undefined, 'number','email','phone'].includes(e.typeInput)"
+                >
+                  <TextField 
+                    :text="e.model" 
+                    v-model="e.model"
+                    class="inputForm"
+                    :secure="e.secure ? e.secure : false"
+                    :class="e.error ? 'input-control-error':''"
+                    :hint="e.hint"
+                    :keyboardType="e.typeInput" />
+
+                  <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="10" fontWeight="300" />
+
+                </StackLayout>
+
+                <StackLayout  v-if="e.typeInput == 'select'" margin="0" padding="0">
+                  <StackLayout
+                    class="selectForm"
+                    @tap="e.onTap(e)"
+                  >
+                    <GridLayout columns="*, auto">
+                        <Label col="0" class="label" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
+                        <button 
+                          col="1"
+                          class="btn btn-text btn-sm"
+                          background="#C7C7C7"
+                          text="Seleccionar" 
+                          margin="0" 
+                          color="#DA0080"
+                        />
+                    </GridLayout>
+                  </StackLayout>
+                  <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="13" fontWeight="300" />
+                </StackLayout>
+
+                <FlexboxLayout 
+                  v-if="e.typeInput == 'switch'"
+                  class="switchFrom"
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Label class="label" :class="e.model != '' ? 'active':''" :text="e.title" />
-                  <button 
-                    class="btn btn-text btn-sm"
-                    background="#C7C7C7"
-                    text="Seleccionar" 
-                    margin="0" 
-                    color="#DA0080"
+                  <Label :text="e.hint" class="label" />
+                  <Switch class="switch"  :checked="e.model == 2000 ? true:false" @checkedChange="e.change" />
+                </FlexboxLayout >
+
+                <StackLayout  v-if="e.typeInput == 'textarea'">
+                  <TextView 
+                    v-model="e.model" 
+                    class="inputForm" 
+                    :class="e.error ? 'input-control-error':''" 
+                    :hint="e.hint" 
                   />
-                </FlexboxLayout>
+                </StackLayout>
+                  
+
               </StackLayout>
-
-              <FlexboxLayout 
-                v-if="e.typeInput == 'switch'"
-                class="switchFrom"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Label :text="e.hint" class="label" />
-                <Switch class="switch"  :checked="e.model == 2000 ? true:false" @checkedChange="e.change" />
-              </FlexboxLayout >
-                
-
-            </StackLayout>
+            </WrapLayout>
           </StackLayout>
 
            <slot name="bottom"></slot>

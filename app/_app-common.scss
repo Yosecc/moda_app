@@ -444,6 +444,7 @@ Switch.switch[checked=false]{
     height: 22;
     width: 180;
     border-radius: 3;
+    
     @extend .animation-pulse;
     &.small{
         height: 12;

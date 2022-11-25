@@ -29,6 +29,8 @@ import MetodoPago from './components/Pages/Checkout/MetodoPago.vue'
 import MetodoPagoDetail from './components/Pages/Checkout/MetodoPagoDetail.vue'
 import Resumen from './components/Pages/Checkout/Resumen.vue'
 import Success from './components/Pages/Checkout/Success.vue'
+import Facturacion from './components/Pages/Checkout/Facturacion.vue'
+
 
 import Profile from './components/Pages/Profile/index.vue'
 import DireccionesForm from './components/Pages/Profile/DireccionesForm.vue'
@@ -41,9 +43,16 @@ import detailCar from './components/Pages/Car/detailCar.vue'
 import filterCategorias from './components/Components/Modales/filterCategorias.vue'
 import tiendasModal from './components/Components/Modales/tiendas.vue'
 import methodsPaymentsModal from './components/Components/Modales/methodsPayments.vue'
+import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue'
 
 
 export const routes = {
+  '/facturacion':{
+    component: Facturacion
+  },
+  '/detalle_checkout':{
+    component: detalleCheckout
+  },
   '/methods_payments':{
     component: methodsPaymentsModal
   },

@@ -1,38 +1,29 @@
 <template lang="html">
-
+  <StackLayout padding="8 16">
     <StackLayout
-          marginBottom="16"
-          padding="0"
-          class="card"
-        >
+      class="card"
+      :borderWidth="metodo.active ? 2:0"
+      :borderColor="metodo.active ? '#DA0080':''"
+    >
+      
+        <!--  -->
+        <Label  class="title" :text="metodo.name" />
 
-          <FlexboxLayout 
-            justifyContent="space-between"
-            alignItems="center"
-            :backgroundColor="backgroundCard"
-            padding="16"
-            borderTopLeftRadius="8"
-            borderTopRightRadius="8"
-            orientation="horizontal"
-          >
-            <image horizontalAlignment="left" v-if="metodo.modapago"   width="100" :src="`~/assets/modapago.png`" stretch="aspectFill" />
-            <Label horizontalAlignment="right" class="title" color="white" :text="metodo.name" />
-          </FlexboxLayout >
-          <StackLayout
-            backgroundColor="transparent"
-          >
-            <StackLayout orientation="horizontal">
-              <image 
-                v-for="(i,k) in metodo.logos" 
-                :key="`${metodo.id}-logo-${k}`" 
-                marginRight="8" 
-                width="40"
-                :src="`~/assets/${i}`" 
-                stretch="aspectFill" />
-            </StackLayout>
-            <!-- <Label textWrap :text="metodo.descripcion" /> -->
-          </StackLayout>
+      <StackLayout marginTop="16">
+        <image horizontalAlignment="left" v-if="metodo.modapago"  marginBottom="8" width="100" :src="`~/assets/modapago.png`" stretch="aspectFill" />
+        <StackLayout orientation="horizontal">
+          <image 
+            v-for="(i,k) in metodo.logos" 
+            :key="`${metodo.id}-logo-${k}`" 
+            marginRight="8" 
+            width="40"
+            :src="i" 
+            stretch="aspectFill" />
         </StackLayout>
+        <Label textWrap :text="metodo.descripcion" />
+      </StackLayout>
+    </StackLayout>
+  </StackLayout>
 
 </template>
 

@@ -19,7 +19,8 @@
           top="2"
           left="0"
           :text="price | moneda"
-          fontSize="20"
+          fontSize="24"
+          fontWeight="800"
           :class="priceOffert ? 'product_text-mount':''"
           class="price"   
         />

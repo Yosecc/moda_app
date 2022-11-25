@@ -1,67 +1,110 @@
 <template lang="html">
+  <GridLayout padding="0 16 8 16" rows="auto,*, auto">
+    <StackLayout
+      row="0"
+      marginTop="16"
+      backgroundColor="#8e8e8e" 
+      width="60" 
+      height="4" 
+      borderRadius="40" 
+      marginBottom="8"
+    />
 
-  <!-- <StackLayout 
-    ref="dropBottom" 
-    @swipe="onSwipe" 
-    class="drop" 
-    height="0" 
-    width="100%" 
-    row="2" 
-  > -->
-    <GridLayout padding="0 16 8 16" rows="auto,*, auto">
-      <StackLayout
-        row="0"
-        marginTop="16"
-        backgroundColor="#8e8e8e" 
-        width="60" 
-        height="4" 
-        borderRadius="40" 
-        marginBottom="8"
-      />
+    <StackLayout  row="1" marginTop="8" >
+      <GridLayout columns="*,auto" height="50" backgroundColor="" >
+        <label col="0" backgroundColor="" v-if="combinacion" :text="combinacion.descripcion" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
+        <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
 
-      <StackLayout  row="1" marginTop="8" >
-        <GridLayout columns="*,auto" height="50" backgroundColor="" >
-          <label col="0" backgroundColor="" v-if="combinacion" :text="combinacion.descripcion" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
-
-          <FlexboxLayout v-if="combinacion.combinacion_key != null && combinacion.combinacion_key > 0" @tap="deleteCombinacion" backgroundColor="" col="1" alignItems="center" justifyContent="center" width="40" height="40" margin="0 0 0 0" class="btn btn-icon">
-            <Image 
-              src="~/assets/icons/trash_red.png" 
-              width="15" 
-              height="10" 
-            />
-          </FlexboxLayout>
-        </GridLayout>
-        
+        <FlexboxLayout 
+          v-if="combinacion.combinacion_key != null && !isProduct" 
+          @tap="deleteCombinacion" 
+          col="1" 
+          alignItems="center" 
+          justifyContent="center" 
+          width="40" 
+          height="40" 
+          margin="0" 
+          class="btn btn-icon"
+          borderWidth=".5"
+          borderColor="#4D4D4D"
+        >
+          <Image 
+            src="~/assets/icons/trash.png" 
+            width="25" 
+            height="25" 
+          />
+        </FlexboxLayout>
+      </GridLayout>
+      
+      <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
         <label text="Elegí un talle" margin="8 0 8 0" fontSize="12" fontWeight="900" />
         <Talles
-          row="1"
-          v-if="combinacion.sizes.length"
           :talles="combinacion.sizes"
           v-model="combinacion.talleActive"
           ref="talles"
         />
+      </StackLayout>
+
+        <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="0">
+          <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
+          <StackLayout orientation="horizontal">
+            <StackLayout
+              v-for="i in 4"
+              :key="`c${i}`"
+              class="label_skeleton" 
+              
+              height="40"
+              width="40"
+              marginRight="16"
+              borderRadius="5"
+            />
+          </StackLayout>
+        </StackLayout>
+
+      <StackLayout padding="0" margin="0" v-if="combinacion.colors.length">
         <label text="Elegí un color" margin="8 0 8 0" fontSize="12" fontWeight="900" />
         <Colores
           row="2"
-          v-if="combinacion.colors.length"
           :colores="colores"
           v-model="combinacion.colorActive"
         />
+      </StackLayout>
+
+        <StackLayout v-if="!combinacion.colors.length" width="100%"  marginTop="24">
+          <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
+          <StackLayout orientation="horizontal">
+            <StackLayout
+              v-for="i in 5"
+              :key="`c${i}`"
+              class="label_skeleton" 
+              
+              height="40"
+              width="40"
+              marginRight="16"
+              borderRadius="100%"
+            />
+          </StackLayout>
+        </StackLayout>
+
+      <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
         <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
-        
         <Count v-if="reset" v-model="combinacion.cantidad" />
-
       </StackLayout>
 
-      <StackLayout row="2">
-        <button v-if="combinacion.combinacion_key == null" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
-        <button v-if="combinacion.combinacion_key != null" @tap="onAddCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
-      </StackLayout>
-    </GridLayout>
-    
+        <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="24">
+          <StackLayout class="label_skeleton"  width="30%" height="20" marginBottom="8" horizontalAlignment="left" />
+          <StackLayout class="label_skeleton"  width="40%" height="40" horizontalAlignment="left" />
+        </StackLayout>
 
-  <!-- </StackLayout> -->
+    </StackLayout>
 
+    <StackLayout  row="2">
+      <button v-if="isNew == null"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
+      <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
+    </StackLayout>
+    <StackLayout row="2" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
+
+  </GridLayout>
 </template>
 <script>
 
@@ -83,6 +126,10 @@
       isProduct:{
         type: Boolean,
         default: false
+      },
+      isNew:{
+        type: Number,
+        default: null
       },
       models:{
         type: Array,
@@ -114,7 +161,7 @@
     data() {
       return {
         openDrop: false,
-        reset: false
+        reset: true
       };
     },
     computed:{
@@ -149,22 +196,21 @@
         }
 
         return this.combinacion.colors
-      }
+      },
+      // boton(){
+      //   if(this.isProduct){
+
+      //   }
+      // }
     },
     mounted(){
       // alert(screen.mainScreen.heightDIPs)
     },
     methods:{
       ...mapMutations('car',['clearCombinacion','addCombinacion']),
-      ...mapActions('car',['deleteModelo']),
       openDropBottom(){
-        console.log('SwipeCombinacion.vue',this.combinacion)
         this.openDrop = true
         let height = this.heightDrop
-        // this.$refs.dropBottom.nativeView.animate({
-        //   height: height,
-        //   duration: 250
-        // })
         this.reset = false
         setTimeout(()=>{
           this.reset = true
@@ -173,10 +219,6 @@
       },
       closeDropBottom(){
         this.openDrop = false
-        // this.$refs.dropBottom.nativeView.animate({
-        //   height: 0,
-        //   duration: 250
-        // })
         this.$emit('close', false)
         this.clearCombinacion()
       }, 
@@ -188,11 +230,14 @@
           this.closeDropBottom()
         }
       },
-      
+      onEditCombinacion(){
+        this.$emit('editCombinacion',this.combinacion)
+        this.closeDropBottom()
+      },
       onAddCombinacion(){
         if(this.combinacion.talleActive != '' && 
            this.combinacion.colorActive != ''){
-
+          // console.log('this.combinacion', this.combinacion)
           this.$emit('addCombinacion',this.combinacion)
           this.closeDropBottom()
         }else{
@@ -200,7 +245,8 @@
         }
       },
       async deleteCombinacion(){
-        await this.deleteModelo(this.combinacion.cart_id)
+        // console.log('delete',this.combinacion)
+        // await this.deleteModelo(this.combinacion.cart_id)
           this.$emit('deleteCombinacion',this.combinacion)
           this.closeDropBottom()
       },

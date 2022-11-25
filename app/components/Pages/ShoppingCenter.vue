@@ -3,94 +3,46 @@
 	<HeaderDefault :logoCenter="false" :back="true" :isCar="false" >
 		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carros abiertos" />
 	</HeaderDefault>
-	<GridLayout rows="*,auto,auto" >
-		<ScrollView
-			ref="scrollCarros"
+	<GridLayout rows="*"  >
+		<RadListView
+			v-show="isload"
 			row="0"
+			ref="carrosabiertos"
+			for="item in carsStores"
+			pullToRefresh="true"
+			@pullToRefreshInitiated="onPullToRefreshInitiated"
 		>
-			<!-- <StackLayout class="" padding="16"  > -->
-				<!-- <label 
-					text="Carros abiertos"
-					class=""
-					fontSize="20"
-					fontWeight="900"
-					marginTop="10"
-				/> -->
+			<v-template>
+				<StackLayout padding="0 8 0 8">
+					<CarBox
+						:car="item"
+					></CarBox>
+				</StackLayout>
+			</v-template>
+		</RadListView>
 
-			<!-- <StackLayout 
-				orientation="horizontal" 
-				marginTop="10"
-			>
-			
-				<Switch 
-					id="switch"
-					@tap="changeMultienvio"
-				/>
-	
-				<GridLayout columns="*" rows="*,*" marginTop="5">
-					<label 
-						text="Seleccionar Multienvío" 
-						fontSize="16"
-						verticalAlignment="center"
-						row="0" 
-						col="0"
-						
-					/>
-					<label 
-						text="Más Información" 
-						row="1" 
-						col="0" 
-						fontSize="10"
-						color="#0080DA"
-					/>
-				</GridLayout>
-
-			</StackLayout> -->	
-
-			<!-- <label 
-				text="Carros abiertos"
-				class="title_page-sub"
-				fontSize="16"
-				fontWeight="900"
-				marginTop="10"
-			/> -->
-			
+		<StackLayout padding="16 16 0 16"	row="0" v-if="!isload">
 			<StackLayout 
-				marginTop=""
-				padding="8"
+				v-for="i in 6"
+	      :key="`eskeletonshopping-${i}`"
+	      width="100%"
+	      height="140"
+	      class="label_skeleton"
+	      marginBottom="16"
+	      padding="16"
 			>
+				
+				<StackLayout orientation="horizontal">
+	        <StackLayout horizontalAlignment="left" width="60" height="60" borderRadius="6" backgroundColor="#DDDDDD" />
+	        <StackLayout>
+	          <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
+	          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
+	        </StackLayout>
+	      </StackLayout>
 
-				<CarBox
-					v-if="isload"
-					v-for="(i,key) in shoppingCar" 
-					:key="key"
-					:multienvio="multienvio"
-					:car="i"
-					@openDropBottom="openDropBottom"
-				></CarBox>
+	      <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" backgroundColor="#DDDDDD"  marginTop="20" />
 			</StackLayout>
-			
-		<!-- </StackLayout> -->
-		</ScrollView>
-		<!--  -->
-		<BtnCar
-			row="1"
-			:cars="carts"
-			v-show="multienvio"
-		/>
-		<!-- <SwipeCombinacion
-      top="0"
-      left="0"
-      row="2"
-      :show="openDrop"
-      :isProduct="false"
-      :models="models"
-      @close="onshowDrop"
-      @addCombinacion="onAddCombinacion"
-      @deleteCombinacion="deleteCombinacion"
-    /> -->
-		
-
+		</StackLayout>
 	</GridLayout>
 </Page>
 </template>
@@ -104,7 +56,7 @@
   import Colores from '~/components/Pages/Product/Colores'
   import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
   import carMixin from '~/mixins/carMixin.js'
-
+	import { ObservableArray } from '@nativescript/core/data/observable-array';
   export default {
   	mixins: [carMixin],
     components:{
@@ -120,39 +72,50 @@
         isload: true,
         heightDrop: 350,
         openDrop: false,
-        models: null
+        models: null,
       };
 	  },
 	  watch:{
-	  	shoppingCar(to){
-	  		console.log('shoppingCar', to)
-	  		this.shoppingCenter()
+	  	ruta(to){
+	  		this.$refs.carrosabiertos.refresh()
+	  	},carsStores(){
+	  		this.$refs.carrosabiertos.refresh()
 	  	},
-	  	
 	  },
 	  computed:{
 	  	...mapState('shoping_center',['multienvio','carts']),
-	  	...mapState('car',['carsProducts','combinacion_key','combinacion']),
+	  	...mapState('car',['carsProducts','combinacion_key','combinacion','carsStores']),
 	  	...mapGetters('car',['shoppingCar']),
+
+	  	ruta(){
+	  		return this.$navigator.path
+	  	}
 	  },
 	  created(){
+	  	this.isload = false
 	  	this.getCar().then((e)=>{
+	  		this.isload = true
 	  		this.$forceUpdate()
-	  		this.isload = false
-	  		setTimeout(()=>{
-	  			this.isload = true
-	  		},100)
-	  		
 	  	})
 	  },
 	  mounted(){
-	  	// console.log('se monta shoping ', this.shoppingCar)
-	  	// console.log(this.carsStoresProducts)
+
 	  },
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
 			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
 			...mapActions('car',['getCar']),
+			async onPullToRefreshInitiated({ object }){
+				 
+				this.isload = false
+		  	await this.getCar().then((e)=>{
+		  		this.isload = true
+		  		object.notifyPullToRefreshFinished();
+		  		this.$forceUpdate()
+		  	})
+		  	
+		  
+			},
 			onshowDrop(to){
         this.openDrop = to
       },
@@ -160,16 +123,10 @@
 	  		this.isload = false
 	  		setTimeout(()=>{
 	  			this.isload = true
-	  		}, 500)
+	  		}, 1000)
 	  		this.$forceUpdate()
 			},
-			openDropBottom({data, models}){
-				console.log('ShoppingCenter.vue data',data)
-				this.models = models
-				this.openDrop = true
-			},
 			onAddCombinacion(combinacion){
-				console.log('ShoppingCenter.vue',combinacion)
 				this.addCombinacion(combinacion)
 				this.addCombinacionCart(combinacion.product_id)
 			},

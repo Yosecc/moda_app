@@ -1,35 +1,38 @@
 <template lang="html">
-  <Page >
-  <HeaderDefault :back="true" />
- 
-  <layoutCheckout
-    title="Métodos de pago"
-    subTitle="Seleccioná el método de pago para realizar tu compra."
-    nextPage="/metodo_pago_detail"
-    :nextStatus="nextStatus"
-  >
-    <RadListView marginTop="8" for="item in metodospagos" @itemTap="onItemTap">
-      <v-template if="item.active == false">
-        <CardMetodoPago
-          :metodo="item"
-        />
-      </v-template>
-      <v-template if="item.active == true" >
-        <CardMetodoPago
-          :metodo="item"
-        />
-      </v-template>
-    </RadListView>
-  </layoutCheckout>
-
-</Page>
+  <Page  actionBarHidden="true">
+    <layoutCheckout
+      title="Método de pago"
+      subTitle="Seleccioná el método de pago que utilizarás para realizar tu compra."
+      :nextStatus="nextStatus"
+      :loading="buttonLoading"
+      @onAction="onselectMethodPayment"
+    >
+      <RadListView 
+        padding="8 0 16 0" 
+        for="item in metodospagos" 
+        ref="metodospagos" 
+        @itemTap="onItemTap"
+      >
+        <v-template if="item.active == false">
+          <CardMetodoPago
+            :metodo="item"
+          />
+        </v-template>
+        <v-template if="item.active == true" >
+          <CardMetodoPago
+            :metodo="item"
+          />
+        </v-template>
+      </RadListView>
+    </layoutCheckout>
+  </Page>
 </template>
 
 <script>
   import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import CardMetodoPago from '~/components/Components/Checkout/CardMetodoPago.vue'
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
   export default {
     mixins: [],
     props: {
@@ -45,39 +48,47 @@
     },
     data() {
       return {
+        buttonLoading: false
       };
     },
     watch:{
-      // async product (val){
-      //   await this.$nextTick()
-      //   this.$refs.contentproduct.nativeView.refresh();
-      // },
     },
     computed:{
-      ...mapState('checkout',['metodopago','metodospagos']),
+      ...mapState('checkout',['metodopago','metodospagos','group_id']),
       nextStatus(){
         if(this.metodopago){
           return true
         }
         return false
       }
-      // ...mapState('car',['carCheckout']),
-      // 
     },
     mounted(){
-      // console.log(this.carCheckout)
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
       ...mapMutations('checkout',['setMetodopago']),
+      ...mapActions('checkout',['selectMethodPayment']),
       onItemTap({item}){
         this.setMetodopago(item.id)
-        this.metodospagos.forEach((e)=>{
+        this.metodospagos._array.forEach((e)=>{
           if(e.id == item.id){
             e.active = true
           }else{
             e.active = false
           }
+        })
+        this.$refs.metodospagos.refresh()
+      },
+      onselectMethodPayment(){
+        this.buttonLoading = true
+        this.selectMethodPayment({
+          group_id:   this.group_id,
+          method: this.metodospagos._array.find((e)=> e.id == this.metodopago).method
+        }).then((response)=>{
+          this.buttonLoading = false
+          this.$navigator.navigate('/resumen')
+        }).catch((error)=>{
+          this.buttonLoading = false
         })
       }
     }

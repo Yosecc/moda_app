@@ -47,7 +47,7 @@
           v-for="(item, key) in modaPago.efectivo"
           :key="`logot-${key}`"
         >
-          <image width="60" :src="item" stretch="aspectFit" />
+          <image height="30" :src="item" stretch="aspectFit" />
         </StackLayout>
       </StackLayout>
       <Label 
@@ -61,7 +61,7 @@
           v-for="(item, key) in modaPago.tarjeta"
           :key="`logoe-${key}`"
         >
-          <image width="60" :src="item" stretch="aspectFit" />
+          <image height="30" :src="item" stretch="aspectFit" />
         </StackLayout>
       </StackLayout>
       <Label 

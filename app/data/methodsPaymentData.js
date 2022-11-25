@@ -1,19 +1,19 @@
 
 export const modapago =  {
 	efectivo:[
-		'~/assets/pagofacil.png',
-		'~/assets/rapipagos.png',
-		'~/assets/cobroex.png',
+		'~/assets/pagofacil.jpg',
+		'~/assets/rapipagos.jpg',
+		'~/assets/cobroex.jpg',
 	],
 	tarjeta:[
-		'~/assets/visa.png',
-		'~/assets/master.png',
-		'~/assets/naranja.png',
-		'~/assets/american.png',
-		'~/assets/shopping.png',
-		'~/assets/cencosud.png',
-		'~/assets/argencard.png',
+		'~/assets/visa.jpg',
+		'~/assets/master.jpg',
+		'~/assets/naranja.jpg',
+		'~/assets/american.jpg',
+		'~/assets/shopping.jpg',
+		'~/assets/cencosud.jpg',
+		'~/assets/argencard.jpg',
 	],
 }
 
-export const tranferencias = ['~/assets/santanderrio.png','~/assets/bancocomafi.png']
+export const tranferencias = ['~/assets/santanderrio.png','~/assets/bancocomafi.jpg']

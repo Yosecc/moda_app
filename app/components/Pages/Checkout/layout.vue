@@ -3,51 +3,41 @@
     <GridLayout
       rows="auto,*,auto"
     >
-      <StackLayout
-        row="0"
-        padding="16 16 8 16"
-      >
-        <FlexboxLayout 
-          padding="8"
-          class="card"
-          alignItems="center"
-        >
-          <Image
-            :src="carCheckout.logo"
-            width="32"
-            height="32"
-            borderRadius="8"
-            verticalAlignment="top"
-            marginRight="8"
-          />
-          <StackLayout verticalAlignment="top">
-            <Label 
-              :text="carCheckout.name" 
-              fontWeight="900"
-              fontSize="16"
-              lineHeight="0"
-              horizontalAlignment="left"
-              textWrap="true"
-              margin="0"
-              padding="0"
-            />
-            <label 
-              textWrap="true" 
-              fontWeight="300"
-              fontSize="12">
-              <FormattedString>
-                <span text="Precio mínimo de compra: "></span>
-                <span :text="carCheckout.limit_price | moneda " style="color: #DA0080"></span>
-              </FormattedString>
-            </label>
-          </StackLayout>
-        </FlexboxLayout >
-      </StackLayout>
+    <HeaderCustom marginBottom="8" row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="false" >
+      <FlexboxLayout background="" col="1" alignItems="center" justifyContent="flex-start">
+        <ImageCache 
+          placeholderStretch="aspectFill"
+          placeholder="res://eskeleton"
+          :src="carCheckout.logo"
+          width="40"
+          height="40"
+          stretch="aspectFill"
+          marginRight="8"
+        /> 
+        <StackLayout>
+          <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="carCheckout.name" />
+          <label
+            margin="0" 
+            padding="0"
+            marginBottom="0" 
+            horizontalAlignment="left" 
+            fontWeight="300"
+            fontSize="10"
+          >
+            <FormattedString>
+              <span  text="Compra mínima en la tienda: "></span>
+              <span :text="carCheckout.min | moneda " style="color: #DA0080"></span>
+            </FormattedString>
+          </label>
+        </StackLayout>
+      </FlexboxLayout>
+    </HeaderCustom>
+
 
       <StackLayout
         row="1"
       >
-        <StackLayout paddingLeft="16" paddingRight="16">
+        <StackLayout paddingLeft="16" v-if="title" paddingRight="16">
           <Label class="title_product" :text="title" />
           <Label textWrap :text="subTitle" />
         </StackLayout>
@@ -55,48 +45,78 @@
           <slot/>
         </StackLayout>
       </StackLayout>
+
       <StackLayout
+        backgroundColor="white"
+        class="shadow-n1"
         row="2"
-        padding="0"
-        paddingBottom="4"
-        paddingTop="4"
-        v-if="!total"
+        v-if="nextStatus"
       >
-        <button 
-          v-if="nextStatus"
-          @tap="onNext"
-          height="40" 
-          fontSize="18"
-          class="btn btn-primary" 
-          text="CONTINUAR"  />
-      </StackLayout>
-      <FlexboxLayout 
-        @tap="onNext"
-        borderTopLeftRadius="8"
-        borderTopRightRadius="8" 
-        v-if="total" 
-        padding="8 4"
-        background="#DA0080" 
-        row="2" 
-        justifyContent="space-between"
-        alignItems="center">
-        <StackLayout>
-          <Label class="title" color="white" :text="price | moneda" />
-          <Label text="Precios sin IVA" color="white"  fontSize="12"/>
+        <StackLayout v-if="viewBottomDetail" padding="8 16">
+          <Label text="Ver detalle" @tap="viewDetalle" fontWeight="300" fontSize="14" class="label_enlace" />
         </StackLayout>
-        <Label 
-          boxShadow="none"
-          class="title"
-          color="white"
-          text="COMPRAR"
-          marginRight="8"  />
-      </FlexboxLayout>
+        
+        <FlexboxLayout 
+          justifyContent="space-between" 
+          alignItems="center" 
+          padding="16" 
+          backgroundColor="#DA0080"
+          height="80"
+          @tap="onNext"
+        >
+            <StackLayout>
+
+              <label
+                fontSize="14"
+                fontWeight="300"
+                color="white"
+                :text="carCheckout.prendas"
+              /> 
+
+              <StackLayout orientation="horizontal">
+                
+              <label
+                fontSize="20"
+                fontWeight="900"
+                color="white"
+                margin="0"
+                padding="0"
+                :text="totalCheckout | moneda"
+              /> 
+              <!-- <label
+                fontSize="12"
+                fontWeight="100"
+                margin="6 0 0 8"
+                padding="0"
+                class="label_enlace"
+                text="Ver detalle"
+              />  -->
+              </StackLayout>
+                
+            </StackLayout>
+
+            <Label 
+              :text="nameButtom" 
+              class=""
+              textTransform="uppercase"
+              borderRadius="1"
+              margin="0"
+              padding="0"
+              fontSize="18"
+              fontWeight="900"
+              color="white"
+              v-if="!loading"
+            />
+            <ActivityIndicator v-else busy="true" color="white" />
+        </FlexboxLayout>
+      </StackLayout>
+
     </GridLayout>
  
 </template>
 
 <script>
-  import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
+  import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapState, mapMutations } from 'vuex'
   export default {
@@ -125,10 +145,22 @@
       price:{
         type: String|Number,
         default: 0
+      },
+      loading:{
+        type: Boolean,
+        default: false
+      },
+      nameButtom:{
+        type: String,
+        default: 'Continuar'
+      },
+      viewBottomDetail:{
+        type: Boolean,
+        default: true
       }
     },
     components: {
-      HeaderDefault
+      HeaderCustom
     },
     filters: {
       moneda: function (value) {
@@ -145,31 +177,33 @@
     },
     data() {
       return {
-        
       };
     },
     watch:{
-      // async product (val){
-      //   await this.$nextTick()
-      //   this.$refs.contentproduct.nativeView.refresh();
-      // },
     },
     computed:{
-      ...mapState('checkout',['coupon','carCheckout']),
-      // ...mapState('car',['carCheckout']),
-      // 
+      ...mapState('checkout',['coupon','carCheckout','costoEnvio']),
+      totalCheckout(){
+        let total = this.carCheckout.total
+
+        if(this.costoEnvio.length){
+          console.log('thiscostoEnvio',this.costoEnvio)
+          this.costoEnvio.forEach((e)=>{
+            total += e.value
+          })
+        }
+        return total
+      }
     },
     mounted(){
-      // console.log('cmdifhrin')
       this.$forceUpdate()
     },
     methods:{
-      // ...mapMutations(['changeDrawerCar']),
-      // ...mapMutations('checkout',['setCoupon']),
       onNext(){
-        // console.log(this.nextPage)
-        // this.$navigator.navigate(this.nextPage)
-        this.$navigator.navigate(this.nextPage)
+        this.$emit('onAction')
+      },
+      viewDetalle(){
+        this.$navigator.modal('/detalle_checkout', {fullscreen: true,id:'detalleCheckout'})
       }
       
     }

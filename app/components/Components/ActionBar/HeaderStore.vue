@@ -36,25 +36,22 @@
             placeholderStretch="aspectFill"
             placeholder="res://eskeleton"
             :src="store.logo"
-            width="30"
-            height="30"
+            width="40"
+            height="40"
             stretch="aspectFill"
             marginRight="8"
-            marginBottom="8"
-            marginTop="8"
             class="storeBox"
-            
           /> 
 
           <StackLayout >
-            <Label  horizontalAlignment="left" margin="0" padding="0" :text="store.name" textTransform="capitalize" fontWeight="900" fontSize="14" />
+            <Label  horizontalAlignment="left" margin="0" padding="0" :text="store.name" textTransform="capitalize" fontWeight="900" fontSize="18" />
             <label
-             margin="0" padding="0"
-         
-            marginBottom="0" 
+              margin="0" 
+              padding="0" 
               horizontalAlignment="left" 
-                fontWeight="300"
-                fontSize="10">
+              fontWeight="300"
+              fontSize="10"
+            >
                 <FormattedString>
                   <span  text="Compra mínima en la tienda: "></span>
                   <span :text="store.min | moneda " style="color: #DA0080"></span>
