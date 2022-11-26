@@ -61,6 +61,12 @@
       return {
         itemsMenu:[
           {
+            icon: 'home',
+            name: 'Inicio',
+            route: '/home',
+            disabled: false
+          },
+          {
             icon: 'icon_menu_0',
             name: 'Marcas',
             route: '/all_stores',
@@ -120,7 +126,7 @@
             icon: '',
             name: 'Salir',
             route: '/login',
-            disabled: true,
+            disabled: false,
             event: function(){
               // cache.clear()
             }

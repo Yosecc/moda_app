@@ -5,11 +5,12 @@
         <image  src="~/assets/iconsuccess.png" width="128" stretch="aspectFill" />
       </StackLayout>
       <StackLayout row="1">
-        <Label  horizontalAlignment="center" color="white" fontSize="28" text="Pedido recibido" class="title" />
-        <Label  textAlignment="center" horizontalAlignment="center" color="white" textWrap text="La tienda se pondrá en contacto con vos vía mail o teléfono dentro de las 48:00hs hábiles." fontSize="14" class="title" />
+        <Label  horizontalAlignment="center" color="white" fontSize="28" text="La tienda ya recibió tu pedido" class="title" />
+        <Label  textAlignment="center" horizontalAlignment="center" color="white" textWrap text="La tienda se pondrá en contacto con vos vía mail o teléfono
+dentro de las 48 horas hábiles." fontSize="14" class="title" />
       </StackLayout>
       <StackLayout row="2">
-        <Label  textAlignment="center" horizontalAlignment="center" marginBottom="16" color="white" textWrap text="Número de pedido #760350" fontSize="14" class="title" />
+        <Label  textAlignment="center" horizontalAlignment="center" marginBottom="16" color="white" textWrap :text="`Número de pedido #${numeroPedido}`" fontWeight="900" fontSize="14" class="title" />
         <button width="60%" @tap="onTapMisPedidos" text="MIS PEDIDOS" class="btn" />
       </StackLayout>
        <StackLayout row="3">
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
   export default {
     mixins: [],
     props: {
@@ -39,10 +40,13 @@
     watch:{
     },
     computed:{
+      ...mapState('checkout',['numeroPedido']),
     },
     mounted(){
+      this.getCar()
     },
     methods:{
+      ...mapActions('car',['getCar']),
       home(){
         this.$navigator.navigate('/home')
       },

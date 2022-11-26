@@ -44,9 +44,12 @@ import filterCategorias from './components/Components/Modales/filterCategorias.v
 import tiendasModal from './components/Components/Modales/tiendas.vue'
 import methodsPaymentsModal from './components/Components/Modales/methodsPayments.vue'
 import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue'
-
+import confirmCart from '~/components/Components/Modales/confirmCart.vue'
 
 export const routes = {
+  '/confirm_cart':{
+    component: confirmCart
+  },
   '/facturacion':{
     component: Facturacion
   },

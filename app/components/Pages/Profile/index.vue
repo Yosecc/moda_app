@@ -1,6 +1,6 @@
 <template lang="html">
   <Page >
-    <HeaderDefault :back="true" />
+    <HeaderDefault :back="false" />
     <!-- <ScrollView> -->
       <GridLayout
         rows="auto,auto,*"
@@ -100,11 +100,11 @@
             component: 'Pedidos',
             active: true
           },
-          {
-            label: 'Direcciones',
-            component: 'Direcciones',
-            active: false
-          },
+          // {
+          //   label: 'Direcciones',
+          //   component: 'Direcciones',
+          //   active: false
+          // },
           {
             label: 'Cupones',
             component: 'Coupons',

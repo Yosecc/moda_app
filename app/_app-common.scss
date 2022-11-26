@@ -375,6 +375,9 @@ Switch.switch[checked=false]{
     &.border{
         border-width: 1;
     }
+    &.border-light{
+        border-width: .5;
+    }
 }
 .category_box{
     margin-top: 16;
@@ -741,4 +744,8 @@ Button{
   .drop{
     background:  rgba($primary, 1); 
   }
+}
+
+.ns-modal{
+    border-radius: 20;
 }

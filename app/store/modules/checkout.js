@@ -253,9 +253,9 @@ const mutations = {
 };
 
 const actions = {
-  setCarCheckout(context, val){
-      context.commit('setcarCheckout',val)
-  },
+  // setCarCheckout(context, val){
+  //     context.commit('setcarCheckout',val)
+  // },
   async editClient(context, val){
     const response = await Api.post('checkout/editClient',val)
     return response

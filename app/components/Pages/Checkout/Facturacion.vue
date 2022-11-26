@@ -383,7 +383,13 @@
         this.buttonLoading = true
         this.datosFacturacion(data).then((response)=>{
           this.buttonLoading = false
-          this.$navigator.navigate('/metodo_pago')
+          this.$navigator.navigate('/metodo_pago',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
         }).catch((error)=>{
           this.buttonLoading = false
 

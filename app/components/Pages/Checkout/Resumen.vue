@@ -43,6 +43,7 @@
               :text="tipoEnvio.title" 
             />
           </StackLayout>
+          <Label textWrap text="Una vez realizada la compra, no se podrá cambiar el tipo de envío."  fontSize="12" fontWeight="100" />
         </StackLayout>
 
         <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 1 || tipoEnvio.id == 4)">

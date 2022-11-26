@@ -82,7 +82,8 @@
               <!--  -->
 
             </StackLayout>
-            <StackLayout v-show="productRelacionados.length" class="card shadow-n1" borderRadius="0" marginTop="0" paddingTop="16" row="2">
+            <StackLayout  class="card shadow-n1" borderRadius="0" marginTop="0" paddingTop="16" row="2" :minHeight="!productRelacionados.length ? 500:''">
+              <StackLayout v-show="productRelacionados.length">
               <label 
                   text="Más productos de esta tienda"  
                   margin="8 0 16 16" 
@@ -101,6 +102,7 @@
                   ></ProductBox>
                 </v-template>
               </RadListView>
+              </StackLayout>
             </StackLayout> 
           </StackLayout>
         </ScrollView>

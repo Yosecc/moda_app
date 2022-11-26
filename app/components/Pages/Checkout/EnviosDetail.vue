@@ -254,7 +254,13 @@
         })
       },
       nextFacturacion(){
-        this.$navigator.navigate('/facturacion')
+        this.$navigator.navigate('/facturacion',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
       },
       onEnvioDetail(){
         if(this.buttonLoading){
@@ -329,7 +335,13 @@
             obj[i] = data[i]
           }
           if(obj.id){
-             this.$navigator.navigate('/resumen')
+             this.$navigator.navigate('/resumen',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
             return
           }
         }

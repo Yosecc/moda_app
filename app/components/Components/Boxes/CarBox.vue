@@ -65,6 +65,14 @@
 						:backgroundColor="!isOrderMinStatus ? '#CECECE':'#DA0080'"
 						:opacity="!isOrderMinStatus ? '.2' : '1'"
 						@tap="onProcessCheckout"
+						v-if="!buttomLoading"
+					/>
+					<ActivityIndicator
+						horizontalAlignment="center"
+						verticalAlignment="middle"
+						busy="true" 
+						v-else
+						color="#DA0080"
 					/>
 				</FlexboxLayout>
 				<!-- <FlexboxLayout 
@@ -130,6 +138,10 @@
 			car:{
 				type: Object,
 				required: true 
+			},
+			buttonStatus:{
+				type: Object,
+				default: { id: null, loading: false}
 			}
 		},
 		watch:{
@@ -143,16 +155,24 @@
 			CombinacionesProduct
     },
 		computed:{
+			buttomLoading(){
+				if(this.buttonStatus.id){
+					if(this.carro.id == this.buttonStatus.id){
+						return  this.buttonStatus.loading
+					}
+				}
+				return false
+			}
 		},
     data() {
       return {
-      	carro: this.car
+      	carro: this.car,
       };
     },
 		methods:{
-			...mapMutations('car',['removeCardAbsolute']),
-			...mapMutations('checkout',['setcarCheckout','setGroupId']),
-			...mapActions('car',['deleteProduct','processCart']),
+			// ...mapMutations('checkout',['setGroupId']),
+			// ...mapMutations('car',['removeCardAbsolute']),
+			// ...mapActions('car',['deleteProduct','processCart']),
 			// onTrashStore(){
 			// 	this.car.products.forEach((e)=>{
 			// 		this.deleteProduct(e.id)
@@ -161,26 +181,20 @@
 			// 	// this.$refs.productsCar.nativeView.refresh();
 			// 	this.$forceUpdate()
 			// },
-			onProcessCheckout(){
-				this.setcarCheckout({
-					logo:        this.car.logo,
-          name:        this.car.name,
-          limit_price: this.car.limit_price,
-				})
 
-				this.processCart(this.car.id).then((response)=>{
-					if(response.cart.status == 'success'){
-						this.setGroupId(response.cart.data.group_id)
-						if(response.is_missing_data.status == 'missing_data'){
-							this.$navigator.navigate('/datos')
-						}else{
-							this.$navigator.navigate('/envios')
-						}
-					}else{
-						alert(response.cart.status)
-					}
-				})
-			},
+			onProcessCheckout(){
+        if(!this.isOrderMinStatus){
+          alert(this.textMinOrden)
+          return
+        }
+
+        this.$emit('processCheckout',{
+        	carro: 			this.carro,
+          total:       this.precioCar,
+          prendas:     this.textPrendasLabel,
+          // products:    this.carro.products
+        })
+      },
 			onTapViewStore(){
 				this.onViewStore({
           logo:     this.car.logo,

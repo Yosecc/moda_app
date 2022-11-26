@@ -29,7 +29,7 @@
             fontWeight="900"
             fontSize="16"
             textWrap
-            :text="client.first_name ?  client.first_name:'undefined' "
+            :text="`${client.first_name} ${client.last_name}`"
             margin="0"
             padding="0"
           />

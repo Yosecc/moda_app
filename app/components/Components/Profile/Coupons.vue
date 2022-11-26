@@ -3,11 +3,11 @@
   <GridLayout rows="auto, *">
     <StackLayout row="0" padding="8 16 8 16">
       <!-- <ActivityIndicator busy="true" color="#DA0080" /> -->
-      <StackLayout class="card">
+      <!-- <StackLayout class="card">
         <label text="Canjeá cupones acá" textAlignment="center" marginBottom="8" fontWeight="900" />
         <TextField textAlignment="center"  class="inputForm" hint="Ingrese el código del cupón" />
         <button text="Enviar" marginTop="8" class="btn btn-primary btn-sm" />
-      </StackLayout>
+      </StackLayout> -->
 
       <Label text="Tus cupones" fontWeight="900" fontSize="18" margin="16 0 8 0" />
     </StackLayout>

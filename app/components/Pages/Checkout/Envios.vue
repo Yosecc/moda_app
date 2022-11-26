@@ -104,7 +104,13 @@
           method: this.envios._array.find((e)=> e.active == true).method
         }).then((e)=>{
           this.buttonLoading = false
-          this.$navigator.navigate('/envios_detail')
+          this.$navigator.navigate('/envios_detail',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
         }).catch((error)=>{
           this.buttonLoading = false
         })

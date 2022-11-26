@@ -16,6 +16,8 @@
 				<StackLayout padding="0 8 0 8">
 					<CarBox
 						:car="item"
+						:buttonStatus="buttonStatus"
+						@processCheckout="onprocessCheckout"
 					></CarBox>
 				</StackLayout>
 			</v-template>
@@ -73,6 +75,7 @@
         heightDrop: 350,
         openDrop: false,
         models: null,
+        buttonStatus: { id: null, loading: false}
       };
 	  },
 	  watch:{
@@ -92,29 +95,30 @@
 	  	}
 	  },
 	  created(){
-	  	this.isload = false
-	  	this.getCar().then((e)=>{
-	  		this.isload = true
-	  		this.$forceUpdate()
-	  	})
+	  	
 	  },
 	  mounted(){
-
+	  	this.mountedCars()
 	  },
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
 			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
-			...mapActions('car',['getCar']),
+			...mapActions('car',['getCar','getProductsCart','processCart']),
+			...mapMutations('checkout',['setcarCheckout','setGroupId']),
+			mountedCars(){
+				this.isload = false
+		  	this.getCar().then((e)=>{
+		  		this.isload = true
+		  		this.$forceUpdate()
+		  	})
+			},
 			async onPullToRefreshInitiated({ object }){
-				 
 				this.isload = false
 		  	await this.getCar().then((e)=>{
 		  		this.isload = true
 		  		object.notifyPullToRefreshFinished();
 		  		this.$forceUpdate()
 		  	})
-		  	
-		  
 			},
 			onshowDrop(to){
         this.openDrop = to
@@ -133,6 +137,65 @@
 			deleteCombinacion(combinacion){
 				this.removeCombinacion(combinacion)
 			},
+			async onprocessCheckout(data){
+
+				let products = []
+				this.buttonStatus = { id: data.carro.id, loading: true }
+				this.$refs.carrosabiertos.refresh()
+				
+				await this.getProductsCart(data.carro.id).then((response)=>{
+          if(response.products.length == 0){
+            this.mountedCars()
+            return 
+          }
+          products = new ObservableArray(response.products) 
+          products._array.forEach((e)=>{
+            e.isEnabledCombinaciones = true
+          })
+        }).catch((error)=>{
+          this.buttonStatus.loading = false
+        })
+
+				await this.setcarCheckout({
+          logo:        data.carro.logo,
+          name:        data.carro.name,
+          min:         data.carro.limit_price,
+          total:       data.total,
+          prendas:     data.prendas,
+          products:    products
+        })
+						
+				await this.processCart(data.carro.id).then((response)=>{
+          if(response.cart.status == 'success'){
+            this.setGroupId(response.cart.data.group_id)
+            this.buttonStatus.loading = false
+        		this.$refs.carrosabiertos.refresh()
+            if(response.is_missing_data.status == 'missing_data'){
+              this.$navigator.navigate('/datos',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
+            }else{
+              this.$navigator.navigate('/envios',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
+            }
+          }else{
+            alert(response.cart.status)
+          }
+
+        }).catch((error)=>{
+          this.buttonStatus.loading = false
+        })
+        this.$refs.carrosabiertos.refresh()
+			}
 		}
   }
 </script>

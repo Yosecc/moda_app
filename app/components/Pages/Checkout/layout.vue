@@ -116,6 +116,8 @@
 </template>
 
 <script>
+  import * as utils from "@nativescript/core/utils/utils";
+
   import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapState, mapMutations } from 'vuex'
@@ -200,6 +202,7 @@
     },
     methods:{
       onNext(){
+        utils.ad.dismissSoftInput();
         this.$emit('onAction')
       },
       viewDetalle(){

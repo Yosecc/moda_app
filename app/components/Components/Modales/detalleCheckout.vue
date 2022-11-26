@@ -110,6 +110,7 @@
                   :isProduct="false"
                   :isEnabled="true"
                   :isButtom="false"
+                  :buttonDisabled="true"
                 />
 
               </StackLayout>
@@ -217,7 +218,7 @@
       
     },
     mounted(){
-      console.log('carCheckout', this.carCheckout)
+      // console.log('carCheckout', this.carCheckout)
     },
     methods:{
       calculoPrendas(combinacion){

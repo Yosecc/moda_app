@@ -1,55 +1,50 @@
 <template lang="html">
     
-  <FlexboxLayout 
-    width="100%"
-    justifyContent="space-between"
+  <GridLayout
     class="card secondary"
-    background=""
-    borderBottomLeftRadius="0"
-    borderBottomRightRadius="0"
-    padding="0"
-  >
+    columns="*, auto"
+  > 
+      <StackLayout
+        col="0"
+        horizontalAlignment="left"
+        paddingTop="6"
+        paddingBottom="6"
+      >
+          <Label :text="`${calculoPrendas} ${ calculoPrendas > 1 ? 'prendas' : 'prenda' } `" v-if="calculoPrendas" fontSize="10" fontWeight="300" />
+          <Label 
+            width="400"
+            :text="total | moneda"
+            fontSize="24" 
+            fontWeight="900" 
+            color="#DA0080"
+            margin="0"
+            padding="0"
+          />
 
-    <StackLayout
-      horizontalAlignment="left"
-      paddingTop="6"
-      paddingBottom="6"
-      
-    >
-        <Label :text="`${calculoPrendas} ${ calculoPrendas > 1 ? 'prendas' : 'prenda'} `" v-if="calculoPrendas " fontSize="10" fontWeight="300" />
-        <Label 
-          width="400"
-          :text="total | moneda"
-          fontSize="24" 
-          fontWeight="900" 
-          color="#DA0080"
-          margin="0"
-          padding="0"
+      </StackLayout>
+
+
+        <button 
+          col="1"
+          text="Agregar al carro" 
+          color="white"
+          fontWeight="900"
+          fontSize="18" 
+          horizontalAlignment="center"
+          verticalAlignment="center"
+          margin="0 16 0 0"
+          padding="0 16"
+          height="40"
+          class="btn-primary shadow btn"
+          @tap="onProcessDataCar"
+          v-if="!loadingButton"
         />
 
-    </StackLayout>
+      <FlexboxLayout col="1" v-else alignItems="center" justifyContent="center" width="160" padding="16 16 0 0">
+        <ActivityIndicator  busy="true" color="#DA0080" verticalAlignment="center" />
+      </FlexboxLayout>
+  </GridLayout>
 
-    <FlexboxLayout justifyContent="center"
-      alignItems="center"
-      padding="0 16 0 0"
-      @tap="onProcessDataCar"
-    >
-      <button 
-        text="Agregar al carro" 
-        color="white"
-        fontWeight="900"
-        fontSize="18" 
-        horizontalAlignment="center"
-        verticalAlignment="center"
-        margin="0"
-        padding="0"
-        height="40"
-        class="btn-primary shadow btn"
-        width="400"
-      />
-    </FlexboxLayout>
-
-  </FlexboxLayout >
 
 </template>
 
@@ -74,7 +69,9 @@
     },
     data() {
       return {
-        car: null
+        carro: null,
+        car: null,
+        loadingButton: false
       };
     },
     components:{
@@ -103,11 +100,19 @@
       async onProcessDataCar(){
         if (this.validateData()) {
           console.log('this.product',this.product)
+          this.loadingButton =true
           await this.processDataCar(this.product,this.combinaciones)
           await this.getCart(this.product.store).then((response)=>{
             this.car = response
+            this.loadingButton = false
+
           })
-          this.onRedirectCart()
+
+          const data = await this.$navigator.modal('/confirm_cart', { fullscreen: false, id: 'confirmCart', props: { product: this.product } })
+          if(data == 'ver'){
+            this.carro = this.car
+            this.onRedirectCart()
+          }
         }
       },
       validateData(){
