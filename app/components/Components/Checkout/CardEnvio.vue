@@ -48,7 +48,7 @@
             <Label 
               v-for="(precio, key) in envio.precios"
               :key="`precio-${envio.id}-${key}`"
-              v-if="envio.precios.length"
+              v-if="envio.precios.length && !envio.isFree"
               fontSize="14"
               fontWeight="600"
               textWrap="true"
@@ -57,6 +57,8 @@
               :color="envio.active ? 'white':''"
               :text="precio" 
             />
+
+            <label fontSize="20" textAlignment="center" textTransform="uppercase" fontWeight="900" text="Envío gratis" v-if="envio.isFree" />
 
             <Label 
               fontSize="14"

@@ -177,6 +177,7 @@ export default {
     }
   },
   mounted(){
+
     if(cache.get('last_search')){
       let data = JSON.parse(cache.get('last_search'))
       this.ultimasbusquedas = new ObservableArray() 
@@ -198,7 +199,24 @@ export default {
         sections: [this.params.section]
       })
       this.search = true
-      this.onGetProducts()
+      this.isLoading = true
+      this.getSearch().then((response)=>{
+       
+        this.products = new ObservableArray(response)
+        this.search = true
+        this.page = this.page+1;
+
+        this.changeParamsProductsSearch({ page:this.page })
+        this.isLoading = false
+        this.getSearch().then((response)=>{
+         this.isLoading = false
+          response.forEach((e)=>{
+            this.products.push(e)
+          })
+        })
+
+      })
+
     }
 
   },
@@ -209,9 +227,7 @@ export default {
       this.isLoading = true
       await this.getSearch().then((response)=>{
         this.isLoading = false
-        // console.log('response',response)s
         this.products = new ObservableArray(response)
-
         this.search = true
       })
     },

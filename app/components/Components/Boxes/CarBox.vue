@@ -47,10 +47,61 @@
 						/> 
 					</StackLayout>
 				</StackLayout>
-				<FlexboxLayout  
+				
+				<StackLayout padding="0" >
+					<FlexboxLayout 
+	          alignItems="center" 
+	          justifyContent="center" 
+	          width="40" 
+	          height="40" 
+	          margin="0" 
+	          class="btn btn-icon"
+	          borderWidth=".5"
+	          borderColor="#4D4D4D"
+	          @tap="onTrashStore"
+	        >
+	          <Image 
+	            src="~/assets/icons/trash.png" 
+	            width="25" 
+	            height="25" 
+	          />
+	        </FlexboxLayout>
+	      </StackLayout>
+			</FlexboxLayout>
+
+			<label
+				v-show="!isOrderMinStatus"
+				:text="textMinOrden"
+				fontSize="12"
+				fontWeight="600"
+				color="red"
+				textAlignment="center"
+			/>
+
+			<GridLayout 
+				borderColor="#666666" 
+				borderTopWidth="0.5" 
+				columns="*, auto" 
+				rows="*"
+			>
+			  <label 
+			  	@tap="onRedirectCart" 
+					text="Ver Carro" 
+					class="label_enlace" 
+					fontSize="14" 
+					textTransform="uppercase"
+					fontWeight="600" 
+					row="0" 
+					col="0"  
+				/>
+			  <FlexboxLayout  
+					col="1"
+					row="0"
 					padding="0" 
 					justifyContent="flex-end" 
-					alignItems="center">
+					alignItems="center"
+					marginTop="8"
+				>
 					<button 
 						text="Comprar" 
 						class="btn btn-primary"
@@ -75,52 +126,12 @@
 						color="#DA0080"
 					/>
 				</FlexboxLayout>
-				<!-- <FlexboxLayout 
-          alignItems="center" 
-          justifyContent="center" 
-          width="40" 
-          height="40" 
-          margin="0" 
-          class="btn btn-icon"
-          borderWidth=".5"
-          borderColor="#4D4D4D"
-        >
-          <Image 
-            src="~/assets/icons/trash.png" 
-            width="25" 
-            height="25" 
-          />
-        </FlexboxLayout> -->
-			</FlexboxLayout>
-				
-			<StackLayout 
-				borderColor="#E6E6E6" 
-				width="100%" 
-				borderTopWidth="1" 
-				margin="8" 
-				padding="0"
-			/>
-			<Label 
-				@tap="onRedirectCart" 
-				text="Ver prendas" 
-				class="label_enlace" 
-				textAlignment="center" 
-				fontSize="14" 
-				textTransform="uppercase" 
-				fontWeight="600" 
-				padding="0" 
-			/>
-			<label
-				v-show="!isOrderMinStatus"
-				:text="textMinOrden"
-				fontSize="12"
-				fontWeight="600"
-				color="red"
-				textAlignment="center"
-			/>
-		</StackLayout>
-	</StackLayout>
 
+			</GridLayout>
+
+
+	</StackLayout>
+</StackLayout>
 
 </template>
 
@@ -172,15 +183,15 @@
 		methods:{
 			// ...mapMutations('checkout',['setGroupId']),
 			// ...mapMutations('car',['removeCardAbsolute']),
-			// ...mapActions('car',['deleteProduct','processCart']),
-			// onTrashStore(){
-			// 	this.car.products.forEach((e)=>{
-			// 		this.deleteProduct(e.id)
-			// 	})
-			// 	this.removeCardAbsolute(this.car)
-			// 	// this.$refs.productsCar.nativeView.refresh();
-			// 	this.$forceUpdate()
-			// },
+			...mapActions('car',['deleteCarts']),
+			onTrashStore(){
+
+					
+
+        this.$emit('deleteCarro', this.carro)
+				// this.$refs.productsCar.nativeView.refresh();
+				
+			},
 
 			onProcessCheckout(){
         if(!this.isOrderMinStatus){

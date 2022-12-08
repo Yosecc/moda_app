@@ -59,96 +59,7 @@ const state = {
       }
     ]),
     envio: null,
-    envios: new ObservableArray([
-        {
-            id: 1,
-            title:'Envío a sucursal',
-            precios: ['Desde $740 a todo el país'],
-            description:'Seleccionando esta opción te enviamos el pedido a la sucursal próxima que elijas en 4 a 7 días.',
-            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
-            active: false,
-            color: '#239B56',
-            icon: 'res://sucursal',
-            agregados:[
-                {
-                    concepto: 'Costo de traslado',
-                    value: 70
-                }
-            ],
-            method: 'post_office'
-        },
-        {
-            id: 2,
-            title:'Envío a domicilio',
-            precios: ['$380 en CABA','$480 en GBA','Desde $1140 al resto del país'],
-            description:'Te enviamos el pedido a tu domicilio por moto de 48 a 72 horas, de 8:00hs a 20:00hs y, por Correo Argentino y OCA de 5 a 9 días hábiles.',
-            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
-            active: false,
-            color: '#CA6F1E',
-            icon: 'res://enviocasa',
-            agregados:[
-                {
-                    concepto: 'Costo de traslado',
-                    value: 70
-                }
-            ],
-            method:'home_delivery'
-        },
-        {
-            id: 3,
-            title:'Transporte tradicional',
-            precios: ['$150 por costo de traslado hasta el transporte elegido. Luego pagás el resto en destino.'],
-            description: 'Elegí el transporte que llega a tu ciudad.',
-            description2:'Esta tienda agregará un costo adicional de $70 por manipulación y embalaje.',
-            active: false,
-            color: '#1976D2',
-            icon: 'res://envio',
-            agregados:[
-                {
-                    concepto: 'Envío',
-                    value: 150
-                },
-                {
-                    concepto: 'Manipulación y embalaje',
-                    value: 70
-                },
-            ],
-            method: 'transport'
-        },
-        {
-            id: 4,
-            title:'INTEGRALPACK',
-            precios: ['$850 por costo de servicio.'],
-            description:'Envíos a terminal de omnibus en 48 a 72 horas. Buscá si llegamos a tu ciudad!',
-            description2: 'Esta tienda agregará un costo adicional de $70 por traslado hasta el transporte.',
-            active: false,
-            color: '#CDDC39',
-            icon: 'res://integralpack',
-            agregados:[
-                {
-                    concepto: 'Envío',
-                    value: 850
-                },
-                {
-                    concepto: 'Costo de traslado',
-                    value: 70
-                },
-            ],
-            method: 'integral_pack'
-        },
-        {
-            id: 5,
-            title:'Retiro por depósito',
-            precios: [],
-            description:'Retira la compra en el depósito.',
-            description2: 'El horario de atención para el retiro de los paquetes en el depósito de Flores, CABA es de Lunes a Viernes de 8:00hs a 15:00hs.',
-            active: false,
-            color: '#5E35B1',
-            icon: 'res://enviostore',
-            agregados: [],
-            method: 'store_pickup'
-        },
-    ]),
+    envios: [],
     direcciones: new ObservableArray([{
       id: 1,
       direccion: 'Joaquin V. Gonzalez 675 Boulogne',
@@ -192,6 +103,7 @@ const state = {
     metodopago: null,
     typeFactura: 1,
     comboDirecciones: {states:[], gba:[], caba:[]},
+    dataFacturacion: {},
     numeroPedido: null
 };
 
@@ -220,6 +132,9 @@ const getters = {
 };
 
 const mutations = {
+    setDatosFacturacion(state, val){
+      state.dataFacturacion = val
+    },
     setnumeroPedido(state, val){
         state.numeroPedido = val
     },
@@ -234,6 +149,9 @@ const mutations = {
     },
     setEnvio(state, val){
         state.envio = val
+    },
+    setEnvios(state, val){
+        state.envios =  new ObservableArray(val)
     },
     setDireccion(state, val){
         state.direccion = val
@@ -256,6 +174,10 @@ const actions = {
   // setCarCheckout(context, val){
   //     context.commit('setcarCheckout',val)
   // },
+  async getEnvios(context, val){
+    const response = await Api.post('checkout/getEnvios',val)
+    return response
+  },
   async editClient(context, val){
     const response = await Api.post('checkout/editClient',val)
     return response
@@ -296,6 +218,10 @@ const actions = {
   },
   async editServiceProvider(context, val){
       const response = await Api.post('checkout/editServiceProvider', val)
+      return response
+  },
+  async isDatosFacturacion(context, val){
+      const response = await Api.post('checkout/isDatosFacturacion', val)
       return response
   },
   async datosFacturacion(context, val){

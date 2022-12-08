@@ -57,7 +57,12 @@ export default {
       if(this.item.name == 'Salir'){
         cache.clear()
       }
-      this.$navigator.navigate(this.item.route,this.options)
+      // if(this.$navigator.path == '/home' && this.item.route == '/home'){
+      //   return
+      // }
+      if(!this.item.disabled){
+        this.$navigator.navigate(this.item.route,this.options)
+      }
     }
   }
 };

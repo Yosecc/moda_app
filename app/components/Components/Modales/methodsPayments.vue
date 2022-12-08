@@ -42,7 +42,7 @@
         text="Efectivo"
         marginBottom="16"
       />
-      <StackLayout class="" background="white" padding="16" orientation="horizontal" marginBottom="16">
+      <StackLayout class=""  padding="16" orientation="horizontal" marginBottom="16">
         <StackLayout
           v-for="(item, key) in modaPago.efectivo"
           :key="`logot-${key}`"
@@ -56,7 +56,7 @@
         text="Tarjetas de crédito"
         marginBottom="16"
       />
-      <StackLayout class="" background="white" padding="16" orientation="horizontal" marginBottom="16">
+      <StackLayout class="" padding="16" orientation="horizontal" marginBottom="16">
         <StackLayout
           v-for="(item, key) in modaPago.tarjeta"
           :key="`logoe-${key}`"
@@ -72,7 +72,7 @@
         textWrap
         texAlignment="center" 
       />
-      <StackLayout class="" background="white" padding="16" orientation="horizontal" marginBottom="16">
+      <StackLayout class="" padding="16" orientation="horizontal" marginBottom="16">
         <StackLayout
           v-for="(item, key) in Transferencias"
           :key="`logoe-${key}`"

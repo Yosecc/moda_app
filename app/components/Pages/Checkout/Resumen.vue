@@ -116,22 +116,45 @@
         <StackLayout padding="8 16" v-if="!loading && resumen && facturacion">
           <Label text="Datos de facturación" marginBottom="8" fontSize="18" fontWeight="700" />
           <StackLayout class="card" padding="16">
-            <Label
-              v-if="facturacion.billing_type == 'personal'" 
-              text="Datos personales"  
-              class="title"
-              fontSize="20"
-              fontWeight="900" 
-              marginBottom="16"
-            />
-            <Label
-              v-else
-              text="Datos empresa"  
-              class="title"
-              fontSize="20"
-              fontWeight="900" 
-              marginBottom="16"
-            />
+            <FlexboxLayout justifyContent="space-between">
+
+              <Label
+                v-if="facturacion.billing_type == 'personal'" 
+                text="Datos personales"  
+                class="title"
+                fontSize="20"
+                fontWeight="900" 
+                marginBottom="16"
+              />
+              <Label
+                v-else
+                text="Datos empresa"  
+                class="title"
+                fontSize="20"
+                fontWeight="900" 
+                marginBottom="16"
+              />
+              <StackLayout>
+                <FlexboxLayout 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  width="40" 
+                  height="40" 
+                  margin="0" 
+                  class="btn btn-icon"
+                  borderWidth=".5"
+                  borderColor="#4D4D4D"
+                  @tap="editDatosFacturacion"
+                >
+                  <Image 
+                    src="~/assets/icons/pencil.png" 
+                    width="25" 
+                    height="25" 
+                  />
+                </FlexboxLayout>
+</StackLayout>
+
+            </FlexboxLayout>
 
             <Label :text="`${facturacion.first_name} ${facturacion.last_name}`" fontSize="16" fontWeight="600" />
             <Label v-if="facturacion.billing_type == 'personal'"  :text="`DNI: ${facturacion.id_number}`" fontSize="16" fontWeight="600" />
@@ -371,6 +394,19 @@
           this.$navigator.navigate('/success')
         }).catch((error)=>{
           this.buttonLoading = false
+        })
+      },
+      editDatosFacturacion(){
+        this.$navigator.navigate('/facturacion',{
+          transition: {
+              name: 'slideRight',
+              duration: 300,
+              curve: 'easeIn'
+            },
+          backstackVisible: false,
+          props:{
+            isEdit: true
+          }
         })
       }
     }

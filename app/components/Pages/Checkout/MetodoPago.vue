@@ -86,7 +86,13 @@
           method: this.metodospagos._array.find((e)=> e.id == this.metodopago).method
         }).then((response)=>{
           this.buttonLoading = false
-          this.$navigator.navigate('/resumen')
+          this.$navigator.navigate('/resumen',{
+            transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+          })
         }).catch((error)=>{
           this.buttonLoading = false
         })

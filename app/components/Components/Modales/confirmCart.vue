@@ -18,7 +18,7 @@
         />
         
         <Label 
-          :text="`Agregaste una preda a tu carrito de ${product.store_data.name}`" 
+          :text="`Agregaste una preda a tu carrito de ${product.store.name}`" 
           fontSize="18" 
           textWrap 
           fontWeight="800" 

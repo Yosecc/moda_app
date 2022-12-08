@@ -3,7 +3,7 @@
     <GridLayout
       rows="auto,*,auto"
     >
-    <HeaderCustom marginBottom="8" row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="false" >
+    <HeaderCustom  class="card secondary" marginBottom="8" row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="false" >
       <FlexboxLayout background="" col="1" alignItems="center" justifyContent="flex-start">
         <ImageCache 
           placeholderStretch="aspectFill"
@@ -47,8 +47,9 @@
       </StackLayout>
 
       <StackLayout
-        backgroundColor="white"
-        class="shadow-n1"
+        
+        class="shadow-n1 card secondary"
+        padding="0"
         row="2"
         v-if="nextStatus"
       >

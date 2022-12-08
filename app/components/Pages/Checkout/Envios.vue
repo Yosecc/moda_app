@@ -9,30 +9,45 @@
     :loading="buttonLoading"
     @onAction="onselectMethodEnvio"
   >
-  <StackLayout  paddingRight="8" paddingLeft="8">
-    <RadListView 
-      for="item in envios"
-      ref="listEnvios"
-      @itemTap="onItemTap"
-    >
-      <v-template name="header">
-        <StackLayout paddingLeft="16" paddingRight="16">
-          <Label class="title_product" text="Tipos de envío" />
-          <Label textWrap text="A continuación podés seleccionar el tipo de envío con el cual querés recibir tu paquete." />
+    <StackLayout  paddingRight="8" paddingLeft="8">
+      <RadListView 
+        for="item in envios"
+        ref="listEnvios"
+        @itemTap="onItemTap"
+        
+      >
+        <v-template name="header">
+          <StackLayout paddingLeft="16" paddingRight="16">
+            <Label class="title_product" text="Tipos de envío" />
+            <Label textWrap text="A continuación podés seleccionar el tipo de envío con el cual querés recibir tu paquete." />
+          </StackLayout>
+        </v-template>
+        <v-template if="item.active == false">
+          <CardEnvio
+            :envio="item"
+          />
+        </v-template>
+        <v-template if="item.active == true">      
+          <CardEnvio
+            :envio="item"
+          />
+        </v-template>
+      </RadListView>
+      <StackLayout v-if="!envios.length">
+        <StackLayout class="label_skeleton" marginBottom="8" width="40%" horizontalAlignment="left" height="30"  />
+        <StackLayout class="label_skeleton" marginBottom="8" width="100%" height="30"  />
+        <StackLayout
+          v-for="i in 5"
+          :key="`sl-${i}`"
+          class="label_skeleton"
+          height="200"
+          width="100%"
+          marginBottom="8"
+        >
+          
         </StackLayout>
-      </v-template>
-      <v-template if="item.active == false">
-        <CardEnvio
-          :envio="item"
-        />
-      </v-template>
-      <v-template if="item.active == true">      
-        <CardEnvio
-          :envio="item"
-        />
-      </v-template>
-    </RadListView>
-  </StackLayout>
+      </StackLayout>
+    </StackLayout>
   </layoutCheckout>
 </Page>
 </template>
@@ -77,12 +92,18 @@
       // 
     },
     mounted(){
+      this.getEnvios({
+        group_id: this.group_id
+      }).then((response)=>{
+        this.setEnvios(response)
+        this.$refs.listEnvios.refresh()
+      })
       this.addCostoEnvio([])
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
-      ...mapMutations('checkout',['setEnvio','addCostoEnvio',]),
-      ...mapActions('checkout',['selectMethodEnvio']),
+      ...mapMutations('checkout',['setEnvio','addCostoEnvio','setEnvios']),
+      ...mapActions('checkout',['selectMethodEnvio','getEnvios']),
       onItemTap({item}){
         this.setEnvio(item.id)
         this.addCostoEnvio([])
@@ -94,7 +115,17 @@
             e.active = false
           }
         })
-        this.addCostoEnvio(this.envios._array.find((e)=> e.active == true).agregados)
+        let envio = this.envios._array.find((e)=> e.active == true).agregados
+
+        if(item.isFree){
+          let index = envio.findIndex((e) => e.concepto == 'Envío')
+          if(index != -1){
+            envio[index].value = 0
+            envio[index].isFree = true
+          }
+        }
+
+        this.addCostoEnvio(envio)
         this.$refs.listEnvios.refresh()
       },
       onselectMethodEnvio(){
@@ -105,12 +136,12 @@
         }).then((e)=>{
           this.buttonLoading = false
           this.$navigator.navigate('/envios_detail',{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-              })
+            transition: {
+                name: 'slideLeft',
+                duration: 300,
+                curve: 'easeIn'
+              },
+          })
         }).catch((error)=>{
           this.buttonLoading = false
         })

@@ -112,6 +112,7 @@
       },
       ChangeColor(color){
         this.colorChecked = color
+        
         this.$emit('change',this.colorChecked)
       }
     } 

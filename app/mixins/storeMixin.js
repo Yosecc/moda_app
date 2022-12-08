@@ -27,6 +27,7 @@ export default {
   },
   computed:{
     ...mapState('categories',['categorieActive']),
+    // ...mapState('car',['carro']),
       precioCar(){
         if(!this.carro){
           return ''
@@ -91,7 +92,8 @@ export default {
       const response = await this.getStores()
       this.setStores(response.data.stores)
     },
-    onRedirectCart(){
+    onRedirectCart(id = null){
+      // console.log('2', this.carro.id, id)
       if(this.carro){
         this.$navigator.navigate('/detail_car', { 
           props: { 

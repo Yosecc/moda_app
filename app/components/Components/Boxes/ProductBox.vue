@@ -1,7 +1,6 @@
 <template lang="html">
   <StackLayout 
       class="product_root border"
-      @tap="onTap()"
       v-if="product"
       paddingBottom="16"
     >
@@ -14,6 +13,7 @@
           top="0"
           left="0"
           padding="8 0 8 0"
+           @tap="onTap()"
         >
          
           <ImageCache 
@@ -37,45 +37,14 @@
             class="product_img" /> -->
         </StackLayout>
 
-        
-        <!--  -->
-        <!-- <StackLayout 
-          top="0"
-          left="0"
-          v-else-if="isOffert && product.images && product.images.length"
-          borderRadius="8"
-          width="100%" 
-          :height="imageHeight" 
-          background="#F6F6F6"
-          :backgroundImage="product.images[0]"
-          :class="!isLoadPage ? 'animation-pulse':''"
-          class="bg"
-        >
-          
-        </StackLayout> -->
-          
           <StoreBox
             top="8"
             left="8"
             width="40"
             height="40"
-            v-if="product.store_data && product.store_data.logo && !isStore"
-            :store="product.store_data"
+            v-if="product.store && product.store.logo && !isStore"
+            :store="product.store"
           />
-
-          <!-- <ImageCache 
-            v-if="!isStore"
-            placeholderStretch="aspectFill"
-            placeholder="res://eskeleton"
-            :src="product.store_data"
-            width="100"
-            height="100"
-            stretch="aspectFill"
-            marginRight="16"
-            marginBottom="8"
-            marginTop="8"
-            class="storeBox"
-          />  -->
            
           <StackLayout
             top="8"
@@ -102,7 +71,7 @@
 
       </AbsoluteLayout>
 
-      <StackLayout class="product_text" >
+      <StackLayout  @tap="onTap()" class="product_text" >
         <price
           :price="product.price"
           :prev_price="product.prev_price"

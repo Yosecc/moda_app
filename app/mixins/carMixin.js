@@ -27,11 +27,11 @@ export default {
         id          : product.id,
         descripcion : product.name,
         store: {
-          id   : product.store_data ? product.store_data.id : product.store.id,
+          id   : product.store ? product.store.id : product.store.id,
           company: product.company ? product.company : product.store.company,
-          name : product.store_data ? product.store_data.name : product.store.name,
-          limit_price: product.store_data ? product.store_data.min : product.store.min,
-          logo: product.store_data ? product.store_data.logo : product.store.logo,
+          name : product.store ? product.store.name : product.store.name,
+          limit_price: product.store ? product.store.min : product.store.min,
+          logo: product.store ? product.store.logo : product.store.logo,
         },
         sizes        : product.sizes,
         colors       : product.colors,
@@ -41,17 +41,11 @@ export default {
       await this.addCar(obj)
     },
     processDataCar(product,combinaciones){
-      // console.log(product,combinaciones)
       this.dataCart(product,combinaciones)
       this.$forceUpdate()
     },
     addCombinacionCart(product_id){
-
-      console.log('mixin',product_id)
       let product = this.carsProducts.find((e)=> e.id == product_id)
-      console.log('mixin addCombinacionCart', product )
-      // this.dataCart(product, product.combinacion)
-      // alert('Agregada combinacion')
     }
   }
 };

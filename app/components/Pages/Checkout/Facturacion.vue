@@ -69,7 +69,10 @@
   export default {
     mixins: [helpersMixin],
     props: {
-
+      isEdit:{
+        type: Boolean, 
+        default: false
+      }
     },
     components: {
       layoutCheckout,
@@ -120,7 +123,7 @@
             paddingRight: 8
           },
           {
-            typeInput: undefined,
+            typeInput: 'number',
             name: 'street_number',
             model: '',
             label: 'Número',
@@ -328,7 +331,7 @@
       }
     },
     computed:{
-      ...mapState('checkout',['envio','envios','group_id','comboDirecciones']),
+      ...mapState('checkout',['envio','envios','group_id','comboDirecciones','dataFacturacion']),
       tipoActive(){
         return this.tiposFacturas.find((e)=> e.active == true)
       },
@@ -342,11 +345,19 @@
       },
     },
     mounted(){
+
       if(!this.comboDirecciones.length){
         this.getComboDirecciones({group_id: this.group_id}).then((response)=>{
           this.inputsDatosPersonales.find((e)=> e.name == 'state').values = this.comboDirecciones.states
           this.inputsDatosEmpresa.find((e)=> e.name == 'state').values = this.comboDirecciones.states
         })
+      }
+      if(this.isEdit){
+        if(this.dataFacturacion.billing_type == 'personal'){
+          this.setModelsInputs(this.inputsDatosPersonales,this.dataFacturacion)
+        }else{
+          this.setModelsInputs(this.inputsDatosEmpresa,this.dataFacturacion)
+        }
       }
     },
     methods:{
@@ -383,13 +394,24 @@
         this.buttonLoading = true
         this.datosFacturacion(data).then((response)=>{
           this.buttonLoading = false
-          this.$navigator.navigate('/metodo_pago',{
+          if(!this.isEdit){
+              this.$navigator.navigate('/metodo_pago',{
                 transition: {
                     name: 'slideLeft',
                     duration: 300,
                     curve: 'easeIn'
                   },
               })
+          }else{
+            this.$navigator.navigate('/resumen',{
+              transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+                  backstackVisible: false,
+            })
+          }
         }).catch((error)=>{
           this.buttonLoading = false
 

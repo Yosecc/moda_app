@@ -13,11 +13,8 @@
             height="40"
             paddingTop="8"
             fontWeight="200"
-            borderBottomLeftRadius="8"
-            borderBottomRightRadius="8"
-            borderTopRightRadius="8"
-            borderTopLeftRadius="8"
-            borderRadius="8" 
+
+            borderRadius="0" 
           />
         </StackLayout>
         <StackLayout  marginTop="24" marginBottom="16" marginLeft="8" marginRight="8">
@@ -28,9 +25,9 @@
           <SliderComponent :sliders="sliders._array"/>
         </StackLayout>  
        
-        <StackLayout marginBottom="24"  marginTop="8">
+        <!-- <StackLayout marginBottom="24"  marginTop="8"> -->
           <!-- <Promotions/> -->
-        </StackLayout>
+        <!-- </StackLayout> -->
 
        <!--  <StackLayout v-if="productsRecentlySeen[0]" padding="16">
           <recentlySeen :product="productsRecentlySeen[0]"/>
@@ -50,29 +47,13 @@
 
         <StackLayout  marginTop="16" >
           <Label 
-          v-if="storesPopular && storesPopular.length"
+            v-if="ultimosProductos.length"
             text="Ingresos de Hoy" 
             marginBottom="16" 
             marginLeft="16" 
             marginRight="16"
             fontWeight="900"
           />
-          <!-- <RadListView 
-            ref="listView"
-            for="item in ultimosProductos"
-            layout="grid"
-            itemWidth="50%"
-            @itemTap="onItemTap"
-            @pullToRefreshInitiated="onPullToRefreshInitiated"
-          >
-              
-            <v-template >
-              <ProductBox
-                :product="item"
-              ></ProductBox>
-            </v-template>
-
-          </RadListView> -->
 
           <WrapLayout v-if="ultimosProductos.length">
             <StackLayout
@@ -83,6 +64,22 @@
               <ProductBox
                 :product="item"
               ></ProductBox>
+            </StackLayout>
+          </WrapLayout>
+
+          <StackLayout v-if="!ultimosProductos.length" padding="0 16">
+            <StackLayout horizontalAlignment="left" class="label_skeleton" width="40%" />
+          </StackLayout>
+          <WrapLayout  v-if="!ultimosProductos.length" >
+            <StackLayout
+              v-for="i in 6"
+              :key="`ultimosSkeleton-${i}`"
+               width="50%"
+               padding="8"
+              >
+              <StackLayout class="label_skeleton" height="200">
+                
+              </StackLayout>
             </StackLayout>
           </WrapLayout>
         </StackLayout>
@@ -174,7 +171,6 @@
         })
         this.getUltimosproductos()
         .then((response)=>{
-          // console.log('response', response)
           this.ultimosProductos = response
         })
       },

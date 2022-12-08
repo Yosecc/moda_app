@@ -1,6 +1,6 @@
 <template lang="html">
   <Page>
-    <HeaderStore :store="product.store_data" :back="true" />
+    <HeaderStore :store="product.store" :back="true" :carro="carro" />
     <RadSideDrawer @drawerClosed="onCloseDrawer" :gesturesEnabled="false" :drawerContentSize="400" :drawerLocation="currentLocation" ref="drawerProduct">
       <StackLayout ~drawerContent >
         <SwipeCombinacion
@@ -22,13 +22,39 @@
         columns="*" 
         rows="*,auto" 
         ~mainContent
+
       >
 
-        <ScrollView row="0">
+        <ScrollView row="0" >
           <StackLayout>
-            <StackLayout row="0" height="380">
-              <CarouselProduct :images="producto.images" />
+            <AbsoluteLayout  row="0" height="380">
+              <CarouselProduct top="0" left="0" width="100%" height="100%" :images="producto.images" />
+              <StackLayout 
+                top="8"
+                left="0" width="100%" height="50" v-if="producto.isCart">
+              <StackLayout
+               
+                width="60%"
+                margin="8"
+                padding="8"
+                background="rgba(218,0,128,0.7)" 
+                orientation="horizontal"
+                horizontalAlignment="center"
+                borderRadius="4"
+                
+              >
+                <image marginRight="8" src="~/assets/icons/check_white.png" width="12"  stretch="aspectFit" />
+                <Label 
+                  text="Agregado al carrito" 
+                  color="white" 
+                  fontSize="12"
+                  padding="0"
+                  margin="0"
+                  fontWeight="600"
+                />
+              </StackLayout> 
             </StackLayout>
+            </AbsoluteLayout >
             
             <StackLayout 
               row="1" 
@@ -71,18 +97,30 @@
                 /> 
               </StackLayout>
               
-              <CombinacionesProduct
-                padding="0 16 32 12"
-                v-if="change"
-                v-model="combinaciones"
-                :product="producto"
-                @openDropBottom="openDropBottomEvent"
-              />
+              <StackLayout padding="0" margin="0" minHeight="140">
+                
+                <CombinacionesProduct
+                  padding="0 16 32 12"
+                  v-if="change && changeCombinaciones"
+                  v-model="combinaciones"
+                  :product="producto"
+                  @openDropBottom="openDropBottomEvent"
+                />
+              </StackLayout>
 
               <!--  -->
 
             </StackLayout>
-            <StackLayout  class="card shadow-n1" borderRadius="0" marginTop="0" paddingTop="16" row="2" :minHeight="!productRelacionados.length ? 500:''">
+            <StackLayout  
+              class="card " 
+              borderRadius="0" 
+              marginTop="0" 
+              paddingTop="16" 
+              row="2" 
+              :class="!productRelacionados.length ? '':'shadow-n1'"
+              :minHeight="!productRelacionados.length ? 500:''"
+              v-if="change"
+            >
               <StackLayout v-show="productRelacionados.length">
               <label 
                   text="Más productos de esta tienda"  
@@ -111,6 +149,7 @@
           v-if="change"
           :product="producto"
           :combinaciones="combinaciones"
+          @acttualizarCarro="onacttualizarCarro"
           padding="8 0 8 16"
           class="shadow-n1"
           row="1"
@@ -170,35 +209,108 @@
         openDrop: false,
         change: true,
         showDrop: false,
-        // heightDrop: 0,
+        // carro: null,
+        changeCombinaciones: true
       };
     },
+    watch:{
+      product(){
+        // alert('su')
+      },
+      producto(){
+        // alert('cambio producto')
+      },
+      product_id(){
+        // alert('cambio producto i')
+
+      },
+      ruta(to){
+        this.getCart(this.product.store.id).then((response)=>{
+          this.setCarro(response)
+        })
+        this.getProduct(this.product.id).then((response)=>{
+        
+          this.changeCombinaciones = false
+          this.producto.models = response[0].models;
+          this.producto.isCart = response[0].isCart;
+
+          setTimeout(()=>{
+            this.changeCombinaciones = true
+          },1)
+            
+        })
+
+      }
+    },
     computed:{
+      ...mapState('car',['carro']),
+      product_id(){
+        return this.product.id
+      },
+      ruta(){
+        return this.$navigator.path
+      }
     },
     mounted(){
+      this.getProduct(this.product.id).then((response)=>{
+        
+      this.changeCombinaciones = false
+      this.producto.models = response[0].models;
+      this.producto.isCart = response[0].isCart;
+
+      setTimeout(()=>{
+        this.changeCombinaciones = true
+      },1)
+        
+        // this.reload()
+      })
+      this.getCart(this.product.store.id).then((response)=>{
+        this.setCarro(response)
+      })
       this.changeParamsProducts({
-        store: this.product.store, 
+        store: this.product.store.id, 
         sections: '',
         plan: '',
         start: 0, 
-        length: 4, 
+        length: 5, 
         search: "",
         no_product_id: this.product.id,
       })
       this.getProductsStoreRosa().then((response)=>{
         this.productRelacionados = new ObservableArray(response) 
       })
+      
       this.$forceUpdate()
     },
     methods:{
       ...mapMutations('products',['changeParamsProducts']),
-      ...mapActions('products',['getProductsStoreRosa']),
-      ...mapMutations('car',['setCombinacion']),
+      ...mapActions('products',['getProductsStoreRosa','getProduct']),
+      ...mapMutations('car',['setCombinacion','setCarro']),
+      ...mapActions('car',['getCart']),
       onCloseDrawer(){
         this.openDrop = false
       },
+      onacttualizarCarro(carro){
+        // console.log('carro', carro)
+        this.getCart(this.product.store.id).then((response)=>{
+          this.setCarro(response)
+        })
+        this.getProduct(this.product.id).then((response)=>{
+        
+          this.changeCombinaciones = false
+          this.producto.models = response[0].models;
+          this.producto.isCart = response[0].isCart;
+
+          setTimeout(()=>{
+            this.changeCombinaciones = true
+          },1)
+            
+        })
+        // this.setCarro(carro)
+      },
       openDropBottomEvent({data, models}){
         this.setCombinacion(data)
+        // console.log('de',data,models)
         this.models = models
         this.openDrop = true
         this.$refs.drawerProduct.showDrawer();

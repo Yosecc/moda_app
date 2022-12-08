@@ -18,10 +18,21 @@
 						:car="item"
 						:buttonStatus="buttonStatus"
 						@processCheckout="onprocessCheckout"
+						@deleteCarro="ondeleteCarro"
 					></CarBox>
 				</StackLayout>
 			</v-template>
 		</RadListView>
+
+		<Label 
+			row="0"
+			v-if="!carsStores.length && isload" 
+			text="No posee carros abiertos"  
+			fontWeight="100"
+      fontSize="30"
+      textAlignment="center"
+      marginTop="30"
+    />
 
 		<StackLayout padding="16 16 0 16"	row="0" v-if="!isload">
 			<StackLayout 
@@ -35,14 +46,14 @@
 			>
 				
 				<StackLayout orientation="horizontal">
-	        <StackLayout horizontalAlignment="left" width="60" height="60" borderRadius="6" backgroundColor="#DDDDDD" />
+	        <StackLayout horizontalAlignment="left" width="60" height="60" borderRadius="6" class="item" />
 	        <StackLayout>
-	          <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
-	          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
+	          <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="16" />
+	          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="16" />
 	        </StackLayout>
 	      </StackLayout>
 
-	      <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" backgroundColor="#DDDDDD"  marginTop="20" />
+	      <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" class="item"  marginTop="20" />
 			</StackLayout>
 		</StackLayout>
 	</GridLayout>
@@ -98,12 +109,13 @@
 	  	
 	  },
 	  mounted(){
+	  	// this.isload = false
 	  	this.mountedCars()
 	  },
 		methods:{
 			...mapMutations('shoping_center',['changeMultienvio']),
 			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
-			...mapActions('car',['getCar','getProductsCart','processCart']),
+			...mapActions('car',['getCar','getProductsCart','processCart','deleteCarts']),
 			...mapMutations('checkout',['setcarCheckout','setGroupId']),
 			mountedCars(){
 				this.isload = false
@@ -111,6 +123,25 @@
 		  		this.isload = true
 		  		this.$forceUpdate()
 		  	})
+		  	this.$refs.carrosabiertos.refresh()
+			},
+			async ondeleteCarro(carro){
+				let index = this.carsStores._array.findIndex((e)=> e.id = carro.id)
+				if(index != -1){
+					this.carsStores._array.splice(index, 1)
+					this.$refs.carrosabiertos.refresh()
+				}
+				await this.deleteCarts({
+          cart_ids: carro.cart_ids,
+          store_id: carro.id
+        })
+				this.getCar().then((e)=>{
+		  		this.$forceUpdate()
+		  		this.$refs.carrosabiertos.refresh()
+		  	})
+		  	
+				// this.$refs.carrosabiertos.refresh()
+		  	
 			},
 			async onPullToRefreshInitiated({ object }){
 				this.isload = false

@@ -1,73 +1,9 @@
 <template lang="html">
   <Page>
 
-    <HeaderStore :store="store" :back="true" />
+    <HeaderStore :store="store" :back="false" :carro="carro" />
 
     <StackLayout>
-      <!-- <StackLayout padding="16" paddingTop="8" paddingBottom="8">
-        <FlexboxLayout 
-          padding="8"
-          class="card"
-          alignItems="center"
-           height="60"
-        >
-          <Image
-            :src="store.logo"
-            width="32"
-            height="32"
-            borderRadius="8"
-            verticalAlignment="top"
-            marginRight="8"
-          />
-          <StackLayout verticalAlignment="top">
-            <Label 
-              textTransform="capitalize"
-              :text="store.name" 
-              fontWeight="900"
-              fontSize="16"
-              lineHeight="0"
-              horizontalAlignment="left"
-              textWrap="true"
-              margin="0"
-              padding="0"
-            />
-            <label 
-              textWrap="true" 
-              fontWeight="300"
-              fontSize="12">
-              <FormattedString>
-                <span  text="Precio mínimo de compra: "></span>
-                <span :text="store.min | moneda " style="color: #DA0080"></span>
-              </FormattedString>
-            </label>
-          </StackLayout>
-        </FlexboxLayout >
-      </StackLayout> -->
-      <!-- <StackLayout 
-        paddingLeft="16" 
-        paddingRight="16" 
-        orientation="horizontal" 
-        marginTop="8"
-        paddingBottom="8"
-      >
-        <SearchBar 
-          class="inputForm" 
-          v-model="filterName"
-          hint="Buscar productos"
-          height="40"
-          borderRadius="8"
-          width="100%"
-        />
-        <Image 
-          col="1"
-          src="~/assets/icons/filter.png"
-          horizontalAlignment="right"
-          width="40"
-          height="40"
-          marginTop="16"
-          @tap="openFilter"
-        />
-      </StackLayout> -->
       <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
         <SearchBar 
           col="0"
@@ -180,7 +116,8 @@ export default {
       config:null,
       products: [],
       filterName: '',
-      statusSearch: false
+      statusSearch: false,
+      // carro: null
     };
   },
   watch:{
@@ -194,7 +131,7 @@ export default {
 
       if(to.length != 0){
         to.forEach((e)=>{
-          e.store_data = {
+          e.store = {
             logo:this.store.logo , 
             name:this.store.name , 
             min: this.store.min , 
@@ -209,6 +146,13 @@ export default {
         this.changeParamsProducts({ search: '' , start: 0})
         this.onGetProducts()
       }
+    },
+    ruta(){
+      let id = this.store.local_cd ? this.store.local_cd: this.store.id
+      this.getCart(id).then((response)=>{
+        this.setCarro(response)
+      })
+      this.onGetProducts()
     }
   },
   computed:{
@@ -216,6 +160,7 @@ export default {
     ...mapGetters('categories',['categorieActiveGetters']),
     ...mapState('products',['parametros']),
     ...mapState('stores',['storeCategorieActive','storeSubcategorieActive']),
+    ...mapState('car',['carro']),
     productsComputed(){
       if(!this.filterName || this.statusSearch){
         return this.products
@@ -225,14 +170,20 @@ export default {
         })
       }
     },
+    ruta(){
+        return this.$navigator.path
+      }
   },
   mounted(){
-    console.log('this.store', this.store)
     this.setStoreCategorieActive(this.categorieActiveGetters.id)
     this.setStoreSubcategorieActive('')
+    let id = this.store.local_cd ? this.store.local_cd: this.store.id
+    this.getCart(id).then((response)=>{
+      this.setCarro(response)
+    })
     this.statusSearch = false
     this.changeParamsProducts({
-      store: this.store.local_cd,
+      store: id,
       categories: '', 
       sections: '', 
       start: 0, 
@@ -240,7 +191,8 @@ export default {
       search: "",
     })
     this.onGetProducts()
-    this.getCategoriesStore(this.store.local_cd).then((response)=>{
+   
+    this.getCategoriesStore(id).then((response)=>{
       this.setCategoriesStore(response)
       // this.setSubcategoriesStore(response.subcategorias)
     })
@@ -250,6 +202,8 @@ export default {
     ...mapActions('stores',['getCategoriesStore']),
     ...mapMutations('products',['changeParamsProducts']),
     ...mapMutations('stores',['setCategoriesStore','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
+    ...mapMutations('car',['setCarro']),
+    ...mapActions('car',['getCart']),
     async onScrolled () {
       this.page = this.page + 1
       // this.parametros.length
@@ -272,6 +226,10 @@ export default {
       this.page = 0
       this.changeParamsProducts({start: 0 })
       await this.$nextTick( async () => {
+        let id = this.store.local_cd ? this.store.local_cd: this.store.id
+        this.getCart(id).then((response)=>{
+          this.setCarro(response)
+        })
         await this.onGetProducts()
         object.notifyPullToRefreshFinished();
       });

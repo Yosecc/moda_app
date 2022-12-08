@@ -117,15 +117,15 @@
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
-        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
-        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="25%" >
-        <StackLayout background="#DDDDDD" class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
       </StackLayout>
 
     </WrapLayout>
@@ -187,6 +187,9 @@
 
     },
     watch:{
+      product(to){
+        // alert('cambio')
+      }
     },
     data() {
       return {
@@ -225,7 +228,7 @@
             }
           })
         }
-        // console.log('paso 1', data)
+        // console.log('abrir modal', this.product)
         this.$emit('openDropBottom', {data:data, models:this.product.models, isNew: keyy})
       },
     }

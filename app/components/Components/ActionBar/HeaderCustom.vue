@@ -5,7 +5,8 @@
       <GridLayout
         columns="auto,*,auto" 
         rows="*" 
-        class="shadow"
+        class="shadow card secondary"
+        borderRadius="0"
       >
         <BtnMenu
           v-show="!back" 

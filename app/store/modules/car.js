@@ -24,7 +24,8 @@ const state = {
       descripcion: '',
       cart_id: null
     },
-    carDB:[]
+    carDB:[],
+    carro: null
 };
 
 const getters = {
@@ -74,6 +75,9 @@ const getters = {
 };
 
 const mutations = {
+  setCarro(state, val){
+    state.carro = val
+  },
   setCombinacion(state, val){
     for(var i in val){
       state.combinacion[i] = val[i]

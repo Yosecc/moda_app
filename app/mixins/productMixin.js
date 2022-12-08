@@ -77,7 +77,7 @@ export default {
         product: product,
       }
 
-      console.log('product',product)
+      // console.log('product',product)
       this.$forceUpdate()
       this.$navigator.navigate('/product',this.options)
     },

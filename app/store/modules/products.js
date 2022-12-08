@@ -90,6 +90,10 @@ const actions = {
     removeProductLike(context, val){
       context.commit('removeProductLike', val)
     },
+    async getProduct(context, val){
+      const response = await Api.get(`product/${val}`)
+      return response
+    },
     async productVisits(context,val){
         const response = await Api.post('product_visits',{
             MODELOS_NUM: val

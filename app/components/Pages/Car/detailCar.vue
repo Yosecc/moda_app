@@ -162,16 +162,16 @@
           padding="16"
         >
           <StackLayout orientation="horizontal">
-            <StackLayout horizontalAlignment="left" width="60" height="60"  backgroundColor="#DDDDDD" />
+            <StackLayout horizontalAlignment="left" width="60" height="60"  class="item" />
             <StackLayout>
-              <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
-              <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginLeft="16" />
+              <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="16" />
+              <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="16" />
             </StackLayout>
           </StackLayout>
 
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginTop="36"/>
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginTop="16"/>
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" backgroundColor="#DDDDDD" marginTop="16"/>
+          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="36"/>
+          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
+          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
         </StackLayout>
       </WrapLayout>
 
@@ -193,7 +193,19 @@
         />
       </StackLayout>
 
-      <StackLayout v-if="products.length && !isLoading" padding="0" margin="0" row="2" class="shadow-n1" >
+
+
+      <StackLayout v-if="products.length && !isLoading" padding="0" margin="0" row="2" class="shadow-n1 card secondary" >
+
+        <label
+          v-show="!isOrderMinStatus"
+          :text="textMinOrden"
+          fontSize="12"
+          fontWeight="600"
+          color="red"
+          textAlignment="center"
+          marginTop="8"
+        />
         <StackLayout padding="8">
           
           <StackLayout :opacity="!isOrderMinStatus ? '.2' : '1'" orientation="horizontal">
@@ -469,10 +481,14 @@
         })
       },
       async loadCart(){
+        if(this.car_id == null){
+          alert('ERROR')
+          return
+        }
         await this.getCart(this.car_id).then((response)=>{
           if(response.length == 0){
             this.getCar()
-            this.$navigator.back()
+            // this.$navigator.back()
             return 
           }
           this.carro = response
@@ -481,7 +497,7 @@
 
           if(response.products.length == 0){
             this.getCar()
-            this.$navigator.back()
+            // this.$navigator.back()
             return 
           }
           this.products = new ObservableArray(response.products) 
@@ -492,7 +508,13 @@
         })
       },
       ondeleteProduct(product_id){
-        this.isLoading = true
+        let index = this.products._array.findIndex((e)=> e.id == product_id)
+        console.log(index)
+        if(index != -1){
+          this.products._array.splice(index, 1)
+        }
+        this.$refs.productsCar.refresh()
+        // this.isLoading = true
         this.deleteProduct(product_id)
         this.loadCart()
       }

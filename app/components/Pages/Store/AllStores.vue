@@ -13,28 +13,6 @@
 
   <GridLayout columns="*" rows="auto, auto, *" >
 
-    <!-- <CategoryBox :isSubcategorias="false" row="0" /> -->
-
-    <!-- <StackLayout 
-      row="1" 
-      paddingBottom="8" 
-      paddingLeft="16" 
-      paddingRight="16" 
-      marginTop="16">
-
-      <SearchBar 
-        class="inputForm" 
-        hint="Buscar tienda"
-        width="100%"
-        height="40"
-        borderRadius="8"
-        id="fi"
-        ref="fi"
-        v-model="filterName"
-        @submit="onSubmit"
-      />
-    </StackLayout -->>
-
     <GridLayout row="1"  height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
         <SearchBar 
           col="0"
@@ -58,9 +36,8 @@
         />
       </GridLayout>
     
-
+<StackLayout padding="0 8" row="2">
     <RadListView 
-      row="2"
       ref="listStores"
       id="listStores"
       for="store in stores"
@@ -121,19 +98,13 @@
           height="100%" 
           padding="8">
           <StackLayout 
-            padding="8"
-            class="animation-pulse card"
-            alignItems="center"
-            width="100%"
+            class="label_skeleton"
             height="120"
-            background="blue"
-            backgroundImage="res://eskeleton"
-            opacity=".1"
           ></StackLayout>
         </StackLayout>
       </v-template>
 
-    </RadListView>
+    </RadListView></StackLayout>
   </GridLayout >
 
 </Page>

@@ -1,7 +1,7 @@
 <template lang="html">
     
   <GridLayout
-    class="card secondary"
+    class="card secondary box-btn"
     columns="*, auto"
   > 
       <StackLayout
@@ -79,10 +79,13 @@
     },
     computed:{
       ...mapState('stores',['storeActive']),
+      // ...mapState('car',['carro']),
       total(){
         let total = 0
         this.combinaciones.forEach((e)=>{
-          total += this.product.price * e.cantidad
+          
+          let p = e.price ? e.price : this.product.price
+          total += p * e.cantidad
         })
         return total
       },
@@ -97,21 +100,28 @@
     methods:{
       ...mapActions('car',['addCar','getCart']),
       ...mapMutations(['changeDrawerCar','changeDrawer']),
+      ...mapMutations('car',['setCarro']),
       async onProcessDataCar(){
         if (this.validateData()) {
-          console.log('this.product',this.product)
           this.loadingButton =true
           await this.processDataCar(this.product,this.combinaciones)
-          await this.getCart(this.product.store).then((response)=>{
+          await this.getCart(this.product.store.id).then((response)=>{
+            console.log('response car' , response)
             this.car = response
             this.loadingButton = false
-
           })
+          this.$emit('acttualizarCarro',this.car)
 
           const data = await this.$navigator.modal('/confirm_cart', { fullscreen: false, id: 'confirmCart', props: { product: this.product } })
           if(data == 'ver'){
-            this.carro = this.car
-            this.onRedirectCart()
+            this.getCart(this.product.store.id).then((response)=>{
+              this.car = response
+              this.carro = this.car
+              this.onRedirectCart(this.car.id)
+              this.setCarro(this.car)
+            })
+            
+            
           }
         }
       },

@@ -169,8 +169,8 @@
     mounted(){
     },
     methods:{
-      ...mapMutations('checkout',['addCostoEnvio']),
-      ...mapActions('checkout',['envioDetail','homeDeliveryProviders','editServiceProvider']),
+      ...mapMutations('checkout',['addCostoEnvio','setDatosFacturacion']),
+      ...mapActions('checkout',['envioDetail','homeDeliveryProviders','editServiceProvider','isDatosFacturacion']),
       onChangeName(name){
         this.nameButtom = name
       },
@@ -205,6 +205,7 @@
         if(this.tipoEnvio.id == 1){
           let costo_envio = this.costoEnvio
           if(this.opcionSucursal.sucursal){
+
             let index = costo_envio.findIndex((e)=> e.concepto == 'Envío')
             let obj = {
               value:  parseInt(this.opcionSucursal.sucursal.price),
@@ -216,6 +217,15 @@
             }else{
               costo_envio.push(obj)
             }
+
+            if(this.tipoEnvio.isFree){
+              let index = costo_envio.findIndex((e) => e.concepto == 'Envío')
+              if(index != -1){
+                costo_envio[index].value = 0
+                costo_envio[index].isFree = true
+              }
+            }
+
             this.addCostoEnvio(costo_envio)
           }
         }
@@ -254,13 +264,30 @@
         })
       },
       nextFacturacion(){
-        this.$navigator.navigate('/facturacion',{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-              })
+
+        this.isDatosFacturacion({group_id: this.group_id}).then((response)=>{
+          if(!Object.entries(response).length){
+            this.$navigator.navigate('/facturacion',{
+              transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+            })
+          }else{
+            this.setDatosFacturacion(response)
+            this.$navigator.navigate('/metodo_pago',{
+              transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+            })
+          }
+
+        })
+
+        
       },
       onEnvioDetail(){
         if(this.buttonLoading){

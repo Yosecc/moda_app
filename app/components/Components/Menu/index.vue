@@ -7,7 +7,7 @@
     padding="8" 
     col="0"
     row="0"
-    class="bg"  backgroundImage="~/assets/patron.png"
+    class="bg bg-infoBox"  backgroundImage="~/assets/patron.png"
   >
     <UserInfoBox height="80" />
   </StackLayout>
@@ -116,12 +116,12 @@
           },
         ],
         othersItemsMenu:[
-          {
-            icon: 'icon_menu_7',
-            name: 'Configuración',
-            route: '/configuration',
-            disabled: true
-          },
+          // {
+          //   icon: 'icon_menu_7',
+          //   name: 'Configuración',
+          //   route: '/configuration',
+          //   disabled: true
+          // },
           {
             icon: '',
             name: 'Salir',

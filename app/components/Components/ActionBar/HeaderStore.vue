@@ -72,12 +72,58 @@
           col="2" 
         >
       
-        <BtnCar
-          row="0"
-          col="2"
-          horizontalAlignment="right"
-        ></BtnCar>
+        <AbsoluteLayout
+          class=""
+          height="40"
+          width="40"
+          padding="0"
+          @tap="redirect"
+        >
 
+          <AbsoluteLayout 
+            top="5"
+            class="btn-icon"
+            borderWidth=".5"
+            borderColor="#DA0080"
+          >
+
+            <Image 
+              top="4"
+              left="4"
+              verticalAlignment="center"
+              horizontalAlignment="center"
+              src="~/assets/icons/basket.png" 
+              width="24" 
+              height="24" />
+
+          </AbsoluteLayout>
+            <FlexboxLayout
+              top="0"
+              left="25"
+              width="15"
+              height="15"
+              backgroundColor="#DA0080"
+              borderRadius="100%"
+              justifyContent="center"
+              alignItems="center"
+              v-if="carro && carro.products_count > 0"
+            >
+
+              <Label 
+                :text="carro.products_count"
+                fontSize="9"
+                color="white"
+                padding="0"
+                margin="0"
+                lineHeight="0"
+                letterSpacing="0"
+                verticalAlignment="center"
+                horizontalAlignment="center"
+               />   
+
+            </FlexboxLayout>
+
+        </AbsoluteLayout>
 
           
           <!-- <Image 
@@ -102,8 +148,10 @@ import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
 import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
 import { mapMutations, mapState, mapGetters } from 'vuex'
+ import storeMixin from '~/mixins/storeMixin.js'
 
   export default {
+    mixins:[storeMixin],
     props:{
       back:{
         type: Boolean,
@@ -111,6 +159,10 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       },
       store:{
         type: Object,
+        default: {}
+      }, 
+      carro:{
+        type: Object|Array,
         default: {}
       }
     },
@@ -162,6 +214,15 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         // setTimeout(() => {
         //   Utils.ad.dismissSoftInput(); 
         // }, 200)
+      },
+      redirect(){
+        console.log(this.carro)
+        if(this.carro && this.carro.products_count){
+          this.onRedirectCart()
+        }else{
+          alert('No posee prendas en el carro')
+        }
+        
       }
     }
    

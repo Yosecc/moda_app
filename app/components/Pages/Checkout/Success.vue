@@ -48,10 +48,10 @@ dentro de las 48 horas hábiles." fontSize="14" class="title" />
     methods:{
       ...mapActions('car',['getCar']),
       home(){
-        this.$navigator.navigate('/home')
+        this.$navigator.navigate('/home',{backstackVisible: false,})
       },
       onTapMisPedidos(){
-        this.$navigator.navigate('/profile')
+        this.$navigator.navigate('/profile',{backstackVisible: false,})
       }
     }
     

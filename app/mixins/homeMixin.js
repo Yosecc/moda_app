@@ -26,7 +26,6 @@ export default {
       })
       
       this.getCategories().then((response)=>{
-
         this.setCategories(response)
       })
 
@@ -72,7 +71,7 @@ export default {
       
       // this.setOfertas(imageens)
      
-     this.getCar()
+      this.getCar()
       this.changeisLoadPage(true)
       
       return await true

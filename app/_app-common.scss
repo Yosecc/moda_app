@@ -378,6 +378,10 @@ Switch.switch[checked=false]{
     &.border-light{
         border-width: .5;
     }
+    &.no-radius{
+
+        border-radius: 0;
+    }
 }
 .category_box{
     margin-top: 16;
@@ -451,6 +455,9 @@ Switch.switch[checked=false]{
     @extend .animation-pulse;
     &.small{
         height: 12;
+    }
+    .item{
+      background: #DDDDDD;
     }
 }
 
@@ -701,8 +708,11 @@ Button{
   }
   .card{
     background:  rgba($primary, 1); 
-    .secondary{
+    .secondary, &.secondary{
         background:  rgba($charcoal, 1);
+    }
+    &.box-btn{
+      background-color: #303030;
     }
   }
   .menuProfile{
@@ -744,8 +754,17 @@ Button{
   .drop{
     background:  rgba($primary, 1); 
   }
+  .label_skeleton{
+    background-color: rgba($primary, 1);
+    .item{
+      background: #141414;
+    }
+  }
+  .bg-infoBox{
+    background-color: #DA0080;
+  }
 }
 
 .ns-modal{
-    border-radius: 20;
+    // border-radius: 20;
 }

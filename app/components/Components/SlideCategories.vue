@@ -16,12 +16,12 @@
           marginBottom="4" 
           v-if="key < 6" 
           :background="item.color" 
-          class="card h-100 shadow-none" 
+          class="card secondary h-100 shadow-none no-radius"
           paddingLeft="0" 
           paddingRight="0" 
           paddingBottom="0"
-          :borderWidth="categorieActiveMethod(item.id) ? '3':'1'"
-          :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#ededed'"
+          :borderWidth="categorieActiveMethod(item.id) ? '3':'.5'"
+          :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#5b5b5b'"
         >
 
           <Image 
@@ -42,7 +42,7 @@
               textWrap
               :text="item.name" 
               fontWeight="800" 
-              fontSize="18" 
+              fontSize="17" 
             />
           </StackLayout>
         </AbsoluteLayout>
@@ -187,9 +187,12 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       onTap(item){
 
         if(!this.isStore){
+          console.log('llewga', this.categorieActive)
           this.setCategorieActive(item.id)
 
           this.changeParamsProductsSearch({sections:[this.categorieActive],page:1})
+
+
 
           if(this.navigate){
             this.$navigator.navigate('/search',{
@@ -198,9 +201,16 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
                 duration: 300,
                 curve: 'easeIn'
               },
+              props:{
+                params:{
+                  search: '',
+                  section: this.categorieActive
+                }
+              }
             })
           }
         }else{
+
           this.changeParamsStores({categorie: this.categorieActiveGetters.key })
           this.setStoreCategorieActive(item.id)
         }

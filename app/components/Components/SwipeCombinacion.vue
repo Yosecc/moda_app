@@ -12,7 +12,11 @@
 
     <StackLayout  row="1" marginTop="8" >
       <GridLayout columns="*,auto" height="50" backgroundColor="" >
-        <label col="0" backgroundColor="" v-if="combinacion" :text="combinacion.descripcion" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
+        <StackLayout orientation="horizontal" col="0" v-if="combinacion">
+          
+          <label :text="combinacion.descripcion" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
+          <label :text="calculaPrecio | moneda" v-if="calculaPrecio" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" color="#DA0080"/>
+        </StackLayout>
         <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
 
         <FlexboxLayout 
@@ -67,6 +71,7 @@
           row="2"
           :colores="colores"
           v-model="combinacion.colorActive"
+          @change="changeColor"
         />
       </StackLayout>
 
@@ -113,7 +118,9 @@
   import Count from '~/components/Components/modules/count'
   import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   import { screen } from "@nativescript/core/platform"
+  import helpersMixin from '~/mixins/helpersMixin.js'
   export default {
+    mixins:[helpersMixin],
     props:{
       show:{
         type: Boolean,
@@ -143,7 +150,7 @@
     },
     watch:{
       models(to){
-        //console.log('cambio models')
+        // console.log('cambio models',to)
       },
       combinacion(to){
         //console.log('cambio combinacion')
@@ -179,16 +186,25 @@
         if(this.models && this.combinacion.talleActive!=''){
 
           let models = this.models.find((e)=>e.size == this.combinacion.talleActive)
-          
+          // console.log('ujum',this.combinacion,models)
           let colors = []
+          if(models.properties == undefined){
+            alert('se quedo sin properties')
+            return colors
+          }
           models.properties.forEach((x)=>{
-            colors.push(this.combinacion.colors.find((e)=> e.id == x.color_id))
-          })
+            let c = this.combinacion.colors.find((e)=> e.id == x.color_id)
 
+            if(c != undefined){
+
+            colors.push(c)
+            }
+          })
+          // console.log('ajam', colors)
           let colorIndex = colors.findIndex((e)=>e.code == this.combinacion.colorActive)
 
           if(colorIndex == -1 && this.isProduct){
-            this.combinacion.colorActive = ''
+            // this.combinacion.colorActive = ''
             this.$forceUpdate()
           }
 
@@ -197,14 +213,24 @@
 
         return this.combinacion.colors
       },
-      // boton(){
-      //   if(this.isProduct){
+      talleSelect(){
+        if(this.models){
+        let index = this.models.findIndex((e)=> e.size == this.combinacion.talleActive)
 
-      //   }
-      // }
+          if(index != -1){
+            return this.models[index]
+          }
+        }
+        return null
+      },
+      calculaPrecio(){
+        if(this.talleSelect){
+          return this.talleSelect.properties[0].price
+        }
+        return null
+      }
     },
     mounted(){
-      // alert(screen.mainScreen.heightDIPs)
     },
     methods:{
       ...mapMutations('car',['clearCombinacion','addCombinacion']),
@@ -212,10 +238,16 @@
         this.openDrop = true
         let height = this.heightDrop
         this.reset = false
+        console.log('models',this.models, this.combinacion)
         setTimeout(()=>{
           this.reset = true
           this.$forceUpdate()
         },100)
+      },
+      changeColor(to){
+        // console.log('ki', to)
+        this.combinacion.colorActive = to
+        // console.log('this.combinacion hy', this.combinacion)
       },
       closeDropBottom(){
         this.openDrop = false
@@ -235,9 +267,11 @@
         this.closeDropBottom()
       },
       onAddCombinacion(){
+         
         if(this.combinacion.talleActive != '' && 
            this.combinacion.colorActive != ''){
-          // console.log('this.combinacion', this.combinacion)
+          this.combinacion.price = this.calculaPrecio
+         
           this.$emit('addCombinacion',this.combinacion)
           this.closeDropBottom()
         }else{

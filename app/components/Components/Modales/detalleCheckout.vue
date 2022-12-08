@@ -3,8 +3,9 @@
     actionBarHidden="true" 
     background="transparent" 
     id="detalleCheckout" 
+    borderRadius="0"
   >
-    <GridLayout rows="auto, *">
+    <GridLayout borderRadius="0" rows="auto, *">
      
       <HeaderCustom row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
         <Label 

@@ -15,7 +15,7 @@
           paddingRight="16"
 
         >
-          <StackLayout padding="24 24 24 0" class="card  bg"  backgroundImage="~/assets/patron.png">
+          <StackLayout padding="24 24 24 0" class="card bg bg-infoBox"   backgroundImage="~/assets/patron.png">
             <StackLayout orientation="horizontal">
               <image src="~/assets/avatar.png" stretch="aspectFill" width="100" height="100" />
               <StackLayout marginTop="14">

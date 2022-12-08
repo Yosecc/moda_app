@@ -109,13 +109,32 @@
       v-show="dataDelivery.length && !loading "
       @itemTap="onItemSelectedDelivery"
     >
-      <v-template>
+      <v-template if="item.status == true">
         <StackLayout padding="8 16 8 16">
 
           <StackLayout 
             class="card" 
             :borderWidth="item.status ? 2:0"
             :borderColor="item.status ? '#DA0080':''"
+          >
+            <FlexboxLayout justifyContent="space-between" alignItems="center">
+              
+                <Label fontSize="20" fontWeight="900" :text="item.provider" />
+                <Label fontSize="20" fontWeight="900" :text="item.price | moneda" />
+
+            </FlexboxLayout>
+          </StackLayout>
+
+        </StackLayout>
+      </v-template>
+
+      <v-template if="item.status == false">
+        <StackLayout padding="8 16 8 16">
+
+          <StackLayout 
+            class="card" 
+            :borderWidth="item.status ? 0:0"
+            :borderColor="item.status ? '':''"
           >
             <FlexboxLayout justifyContent="space-between" alignItems="center">
               
@@ -176,6 +195,7 @@
     },
     data() {
       return {
+        reload: true,
         direccionInput:[
           {
             typeInput: undefined,
@@ -424,7 +444,8 @@
       this.mountedData()
     },
     methods:{
-      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping','addCostoEnvio']),
+      ...mapMutations('checkout',['addCostoEnvio']),
+      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping']),
       mountedData(){
         this.loading = true
         this.datosEnvio({
@@ -471,6 +492,14 @@
           costo_envio[index] = obj
         }else{
           costo_envio.push(obj)
+        }
+
+        if(this.tipoEnvio.isFree){
+          let index = costo_envio.findIndex((e) => e.concepto == 'Envío')
+          if(index != -1){
+            costo_envio[index].value = 0
+            costo_envio[index].isFree = true
+          }
         }
         this.addCostoEnvio(costo_envio)
       },
@@ -553,8 +582,9 @@
         this.$emit('openDrawer',{type: 'select', data: item})
       },
       onItemSelectedDelivery({item}){
+        console.log('item', item)
         this.dataDelivery._array.forEach((e,i)=>{
-          if(e.id == item.id){
+          if(e.type == item.type){
             e.status = true
             this.preparePrecio(e.price)
           }else{
