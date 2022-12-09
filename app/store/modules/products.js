@@ -72,7 +72,7 @@ const mutations = {
         }
     },
     setRecentlySeen(state, val){
-      state.productsRecentlySeen = val
+      state.productsRecentlySeen = new ObservableArray(val)
     },
     changeParamsProducts(state, val){
       for(var i in val){
@@ -143,11 +143,13 @@ const actions = {
       const response = await Api.get(`rosa/search?${qs}`)
       return response
     },
-    
-    async getProductVisits(context)
-    {
+    async getProductVisits(context){
       const response = await Api.get('productsVisitados?is_store=false')
       context.commit('setRecentlySeen', response)
+      return response
+    },
+    async getCategorieSearch(context, val){
+      const response = await Api.get(`getCategorieSearch/${val}`)
       return response
     }
 };

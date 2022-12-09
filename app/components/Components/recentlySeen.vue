@@ -1,13 +1,21 @@
 <template lang="html">
-  <StackLayout class="card" padding="16">
+  <StackLayout class="" padding="16">
     <Label text="Visto recientemente" marginBottom="16" />
-    <StackLayout @tap="onTap()" orientation="horizontal">
-      <image width="80" marginRight="16" :src="product.images[0]" stretch="aspectFill" />
-      <StackLayout>
-        <Label fontWeight="900" textWrap :text="product.descripcion" />
-        <Label fontWeight="900" fontSize="20" :text="product.precio | moneda" />
-      </StackLayout>
-    </StackLayout>
+    <RadListView 
+      ref="recentlySeen"
+      for="item in products"
+      orientation="horizontal"
+    >
+      <v-template >
+        <ProductBox
+          padding="0"
+          width="120"
+          :imageHeight="110"
+          :isSmall="true"
+          :product="item"
+        ></ProductBox>
+      </v-template>
+    </RadListView>
   </StackLayout>
 
 </template>
@@ -15,16 +23,17 @@
 <script>
   import { mapGetters } from 'vuex'
   import productMixin from '~/mixins/productMixin.js'
-
+  import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
   export default {
     mixins: [productMixin],
     props:{
-      product:{
-        type: Object,
+      products:{
+        type: Array|Object,
         default: {}
       }
     },
     components:{
+      ProductBox
     },
     computed:{
       

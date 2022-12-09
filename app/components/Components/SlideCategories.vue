@@ -187,12 +187,10 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       onTap(item){
 
         if(!this.isStore){
-          console.log('llewga', this.categorieActive)
+          // console.log('llewga', this.categorieActive)
           this.setCategorieActive(item.id)
 
           this.changeParamsProductsSearch({sections:[this.categorieActive],page:1})
-
-
 
           if(this.navigate){
             this.$navigator.navigate('/search',{
@@ -205,7 +203,8 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
                 params:{
                   search: '',
                   section: this.categorieActive
-                }
+                },
+                isCategorie: true
               }
             })
           }

@@ -3,7 +3,8 @@ import { mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
-     errors:[]
+     errors:[],
+     errorsValidadores:[]
     };
   },
   filters: {
@@ -57,11 +58,16 @@ export default {
 
      return true
    },
+   getErrores(){
+     return this.errorsValidadores
+   },
     validadores(inputs){
       let validator = []
+      // this.errorsValidadores = []
       inputs.forEach((input)=>{
         if(input.required){
           if(input.model == '' || input.model == null || input.model == undefined){
+            this.errorsValidadores.push(`${input.label} is required`)
             validator.push(false)
           }else{
             validator.push(true)
@@ -75,17 +81,22 @@ export default {
     setModelsInputs(inputs, data)
     {
       if(typeof data == 'object'){
+          console.log('data', data, inputs)
         for(var i in data){
           if(inputs.find((e)=> e.name == i) != undefined){
             inputs.find((e)=> e.name == i).model = data[i]
 
             if(inputs.find((e)=> e.name == i).typeInput == 'select'){
+              // console.log('se', inputs, i)
               // console.log('de',inputs.find((e)=> e.name == i))
               let model = inputs.find((e)=> e.name == i).model
               let values = inputs.find((e)=> e.name == i).values
               console.log(values)
               if(values != undefined && values.length){
-                inputs.find((e)=> e.name == i).title = values.find((e)=> e.id == model).name
+                if(values.find((e)=> e.id == model)){
+                  inputs.find((e)=> e.name == i).title = values.find((e)=> e.id == model).name
+
+                }
               }
 
             }

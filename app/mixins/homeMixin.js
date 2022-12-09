@@ -29,7 +29,7 @@ export default {
         this.setCategories(response)
       })
 
-      // this.getProductVisits()
+      this.getProductVisits()
 
       this.getStoreRosa().then((response)=>{
         let arr = []

@@ -49,7 +49,7 @@
                     @tap="e.onTap(e)"
                   >
                     <GridLayout columns="*, auto">
-                        <Label col="0" class="label" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
+                        <Label col="0" class="selectInput" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
                         <button 
                           col="1"
                           class="btn btn-text btn-sm"

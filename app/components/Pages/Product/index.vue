@@ -327,7 +327,9 @@
       onshowDrop(to){
         this.showDrop = to
       },
+    
       addCombinacion(data){
+
         if(data.combinacion_key != null){
           this.combinaciones[data.combinacion_key] = data
         }else{

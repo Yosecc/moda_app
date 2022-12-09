@@ -184,6 +184,10 @@
             duration: 300,
             curve: 'easeIn'
           },
+          props:{
+            params: {},
+            isCategorie: false
+          }
         })
       },
       all_stores(){

@@ -1,5 +1,5 @@
 <template lang="html">
-  <StackLayout 
+    <StackLayout 
       class="product_root border"
       v-if="product"
       paddingBottom="16"
@@ -8,12 +8,12 @@
       <AbsoluteLayout >
         <StackLayout
           width="100%"
-          borderRadius="10"
           v-if="product.images && product.images.length"
           top="0"
           left="0"
           padding="8 0 8 0"
-           @tap="onTap()"
+          @tap="onTap()"
+     
         >
          
           <ImageCache 
@@ -27,14 +27,7 @@
             placeholderStretch="aspectFill"
             placeholder="res://eskeleton"
             :src="`${product.images[0]}`" />
-          <!-- <image
-            horizontalAlignment="center"
-            verticalAlignment="top"
-            v-if="product.images && product.images.length"
-            :src="`${product.images[0]}`" 
-            stretch="aspectFit" 
-            :height="imageHeight"
-            class="product_img" /> -->
+          
         </StackLayout>
 
           <StoreBox
@@ -55,7 +48,7 @@
             background="rgba(218,0,128,0.7)" 
             orientation="horizontal"
             borderRadius="4"
-            v-if="product.isCart"
+            v-if="product.isCart && !isSmall"
           >
             <image marginRight="8" src="~/assets/icons/check_white.png" width="12"  stretch="aspectFit" />
             <Label 
@@ -71,7 +64,7 @@
 
       </AbsoluteLayout>
 
-      <StackLayout  @tap="onTap()" class="product_text" >
+      <StackLayout v-if="!isSmall"  @tap="onTap()" class="product_text" >
         <price
           :price="product.price"
           :prev_price="product.prev_price"
@@ -116,6 +109,10 @@
         type: Boolean,
         default: false
       },
+      isSmall:{
+        type: Boolean,
+        default: false
+      }
     },
     components:{
       price,

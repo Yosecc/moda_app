@@ -3,7 +3,7 @@
     >
     <HeaderDefault :back="true" />
 
-    <GridLayout columns="*" rows="auto,auto,*">
+    <GridLayout v-if="!isCategorieData" columns="*" rows="auto,auto,*">
       <!-- <CategoryBox row="0" :isIcon="false" /> -->
 
       <GridLayout row="1" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
@@ -30,29 +30,41 @@
       </GridLayout>
       
       <AbsoluteLayout row="2" >
-        <RadListView 
-          v-show="!search"
-          class="listSelect"
-          ref="listUltimasBusquedas"
-          for="item in ultimasbusquedasComputed"
+
+        <GridLayout
+          rows="*,auto"
           top="0"
           left="0"
+          width="100%"
+          height="100%"
+          v-if="!search && !productsComputed.length"
         >
-          <v-template >
-            <StackLayout @tap="setFilter(item)" class="option">
-              <FlexboxLayout justifyContent="space-between" alignItems="center" >
-                <StackLayout orientation="horizontal">
-                  <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
-                  <label :text="item" />
-                </StackLayout>
-                <!-- <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" /> -->
-              </FlexboxLayout>
-            </StackLayout>
-          </v-template>
-        </RadListView>
+          <RadListView 
+            class="listSelect"
+            ref="listUltimasBusquedas"
+            for="item in ultimasbusquedasComputed"
+            row="0"
+          >
+            <v-template >
+              <StackLayout @tap="setFilter(item)" class="option">
+                <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                  <StackLayout orientation="horizontal">
+                    <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
+                    <label :text="item" />
+                  </StackLayout>
+                  <!-- <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" /> -->
+                </FlexboxLayout>
+              </StackLayout>
+            </v-template>
+          </RadListView>
+
+          <StackLayout row="1">
+            <recentlySeen :products="productsRecentlySeen"/>
+          </StackLayout>
+        </GridLayout>
 
         <RadListView 
-          v-show="search"
+          v-if="productsComputed.length"
           ref="listView"
           for="item in productsComputed"
           layout="grid"
@@ -85,15 +97,91 @@
       </AbsoluteLayout>
     
     </GridLayout>
+
+    <GridLayout v-if="isCategorieData" columns="*" rows="auto, *">
+
+      <StackLayout paddingTop="16" row="0" v-if="storesCategorie.length">
+        <Label marginLeft="16" text="Marcas" fontWeight="900" fontSize="20" />
+        <ScrollView scrollBarIndicatorVisible="false" orientation="horizontal">
+          <StackLayout 
+            paddingLeft="16"
+            orientation="horizontal"
+          >
+            <StoreBox
+              v-for="(store, key) in storesCategorie"
+              :key="key"
+              :store="store"
+            />
+          </StackLayout>
+        </ScrollView>
+      </StackLayout>
+
+      <StackLayout paddingTop="16" row="0" v-else >
+        <StackLayout marginLeft="16" class="label_skeleton" horizontalAlignment="left" height="30" width="30%" marginBottom="8" />
+          <StackLayout 
+            paddingLeft="16"
+            orientation="horizontal"
+          >
+            <StackLayout
+              v-for="i in 10"
+              :key="`se${i}`"
+              class="label_skeleton" 
+              height="100" 
+              width="100" 
+              marginRight="16"
+            />
+          </StackLayout>
+      </StackLayout>
+
+      <StackLayout paddingTop="8" row="1" v-if="productsCategorie.length">
+        <!-- <Label marginLeft="16" text="Productos" fontWeight="900" fontSize="20" /> -->
+
+        <RadListView 
+          ref="productsCategorie"
+          for="item in productsCategorie"
+          layout="grid"
+          itemWidth="50%"
+          pullToRefresh="true"
+          top="0"
+          left="0"
+        >
+          <v-template >
+            <ProductBox
+              :product="item"
+            ></ProductBox>
+          </v-template>
+        </RadListView>
+      </StackLayout>
+
+      <StackLayout paddingTop="8" row="1" v-else>
+        <!-- <StackLayout marginLeft="16" class="label_skeleton" horizontalAlignment="left" height="30" width="30%" marginBottom="8" /> -->
+
+        <WrapLayout >
+          <StackLayout
+            v-for="i in 10"
+            :key="`ultimosSekeddleton-${i}`"
+             width="50%"
+             padding="8"
+            >
+            <StackLayout class="label_skeleton" height="200">
+              
+            </StackLayout>
+          </StackLayout>
+        </WrapLayout>
+
+      </StackLayout>
+
+    </GridLayout>
   </Page>
 </template>
 
 <script>
 import Filters from "../Components/Filters.vue";
 
+
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
-
+ import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
 import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
 import { ObservableArray } from '@nativescript/core/data/observable-array';
@@ -101,12 +189,16 @@ import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import CategoryBox from '~/components/Components/Boxes/CategoryBox.vue'
 import cache from '@/plugins/cache'
 import * as utils from "@nativescript/core/utils/utils";
-
+import recentlySeen from '../Components/recentlySeen.vue'
 export default {
   props:{
     params:{
       type: Object,
       default: {}
+    },
+    isCategorie:{
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -115,7 +207,9 @@ export default {
     SlideCategories,
     Products,
     ProductBox,
-    CategoryBox
+    CategoryBox,
+    StoreBox,
+    recentlySeen
   },
   data() {
     return {
@@ -128,7 +222,10 @@ export default {
       filterName: null,
       numero: 1,
       ultimasbusquedas: [],
-      search: false
+      search: false,
+      isCategorieData: this.isCategorie,
+      storesCategorie: [],
+      productsCategorie: []
     };
   },
   watch:{
@@ -142,15 +239,15 @@ export default {
     },
     filterName(to){
       if(to == ''){
-        this.search = false
-        this.products = []
+        // this.search = false
+        // this.products = []
       }
     }
   },
   computed:{
     ...mapState('categories',['categorieActive']),
     ...mapGetters('categories',['categorieActiveGetters']),
-    ...mapState('products',['parametros']),
+    ...mapState('products',['parametros','productsRecentlySeen']),
     cat(){
       return this.parametros.categorie
     },
@@ -161,9 +258,13 @@ export default {
       if(!this.filterName){
         return this.products
       }else{
-        return this.products.filter((item) => {
-          return (item.name.match(new RegExp(this.filterName, 'i')))
-        })
+        if(!this.search){
+          return this.products.filter((item) => {
+            return (item.name.match(new RegExp(this.filterName, 'i')))
+          })
+        }else{
+          return this.products
+        }
       }
     },
     ultimasbusquedasComputed(){
@@ -177,7 +278,7 @@ export default {
     }
   },
   mounted(){
-
+    console.log('params',this.params)
     if(cache.get('last_search')){
       let data = JSON.parse(cache.get('last_search'))
       this.ultimasbusquedas = new ObservableArray() 
@@ -188,7 +289,10 @@ export default {
       })
     }
 
-    if(Object.keys(this.params).length > 0){
+    if(this.isCategorie){
+      this.ongetCategorieSearch(this.params.section)
+    }else{
+      if(Object.keys(this.params).length > 0){
       this.filterName = ''
       this.search = true
       this.changeParamsProductsSearch({
@@ -218,11 +322,18 @@ export default {
       })
 
     }
-
+    }
   },
   methods:{
-    ...mapActions('products',['getProductsRosa','getSearch']),
+    ...mapActions('products',['getProductsRosa','getSearch','getCategorieSearch']),
     ...mapMutations('products',['setProducts','changeParamsProductsSearch']),
+    ongetCategorieSearch(categorie_id){
+      this.getCategorieSearch(categorie_id).then((response)=>{
+        this.storesCategorie = response.stores
+        this.productsCategorie = new ObservableArray(response.products)
+   
+      })
+    },
     async onGetProducts(){
       this.isLoading = true
       await this.getSearch().then((response)=>{

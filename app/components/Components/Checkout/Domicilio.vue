@@ -7,7 +7,6 @@
     />
 
     
-
     <StackLayout row="0" v-if="loading" padding="16" width="100%" >
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
@@ -380,12 +379,12 @@
         dataDirecciones: new ObservableArray(this.direcciones),
         dataDelivery: new ObservableArray(this.delivery),
         loading: false,
-        transportes: []
+        transportes: [],
+        edit: false
       };
     },
     watch:{
       dataSelect(to){
-        console.log('select',to, this.select)
         if(this.select){
           this.changeSelect(this.select)
         }
@@ -395,6 +394,9 @@
           this.$emit('statusData', true)
           let data = this.prepareData(this.direccionInput, false)
           data.id = this.id
+          if(this.edit){
+            data.edit = true
+          }
           this.$emit('change', data)
         }
       },
@@ -406,7 +408,9 @@
             this.$emit('changeSubTitle','Acá podrás ver el listado de todas tus direcciones para este tipo de envío.')
           }
         }else{
-          this.$emit('statusData', false)
+          if(!this.edit){
+            this.$emit('statusData', false)
+          }
           this.$emit('changeName','Guardar')
           this.$emit('changeSubTitle','A continuación podés llenar los datos de la persona que recibirá el paquete.')
         }
@@ -414,6 +418,9 @@
       dataInput(to){
         if(!this.dataDirecciones.length){
           to.id = this.id
+          if(this.edit){
+            to.edit = true
+          }
           this.$emit('change', to)
         }
       }
@@ -427,7 +434,9 @@
         return this.select
       },
       datosInputs(){
+
         return this.validadores(this.direccionInput)
+
       },
       dataInput(){
         return this.prepareData(this.direccionInput, false)
@@ -445,7 +454,7 @@
     },
     methods:{
       ...mapMutations('checkout',['addCostoEnvio']),
-      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping']),
+      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping','editServiceProvider',]),
       mountedData(){
         this.loading = true
         this.datosEnvio({
@@ -471,10 +480,12 @@
             if(i == 0){
               e.status = true
               this.preparePrecio(e.price)
+
             }else{
               e.status = false
             }
           })
+          this.$emit('changeTransporte',this.dataDelivery._array.find((e)=> e.status == true).provider)
           this.$refs.dataDelivery.refresh()
           this.$emit('statusData', true)
           this.$emit('changeSubTitle','Seleccioná el servicio de entrega que enviará tu paquete.')
@@ -535,8 +546,10 @@
       onEditSucursal(item){
         this.dataDirecciones = []
         this.id = item.id
+        this.edit = true
         this.setModelsInputs(this.direccionInput, item)
         this.changeSelect(this.direccionInput.find((e)=> e.name == 'state'))
+        this.changeSelect(this.direccionInput.find((e)=> e.name == 'location'))
         this.setModelsInputs(this.direccionInput, item)
       },
       changeSelect(select){
@@ -559,16 +572,26 @@
               this.direccionInput.find((e)=> e.name == 'location').typeInput = undefined
             }else{
               this.direccionInput.find((e)=> e.name == 'location').typeInput = 'select'
+
+              if(this.direccionInput.find((e)=> e.name == 'location_custom').model == this.direccionInput.find((e)=> e.name == 'location').model){
+              this.direccionInput.find((e)=> e.name == 'location').model = '__other__'
+            }
             }
           }else{
+            if(this.direccionInput.find((e)=> e.name == 'location_custom').model == this.direccionInput.find((e)=> e.name == 'location').model){
+              this.direccionInput.find((e)=> e.name == 'location').model = '__other__'
+            }
             this.direccionInput.find((e)=> e.name == 'location').typeInput = 'select'
           }
 
         }
         if(select.name == 'location'){
-          if(select.model == 0){
+          if(select.model == '__other__'){
             this.direccionInput.find((e)=> e.name == 'location_custom').typeInput = undefined
             this.direccionInput.find((e)=> e.name == 'location_custom').required = true
+
+            
+
           }else{
             this.direccionInput.find((e)=> e.name == 'location_custom').typeInput = 'hidden'
             this.direccionInput.find((e)=> e.name == 'location_custom').required = false
@@ -591,6 +614,12 @@
             e.status = false
           }
         })
+
+        this.editServiceProvider({
+          provider: item.provider.toLowerCase(),
+          group_id:   this.group_id,
+        })
+          this.$emit('changeTransporte',item.provider)
         this.$refs.dataDelivery.refresh()
         this.$emit('statusData', true)
       }

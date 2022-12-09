@@ -234,7 +234,7 @@
         this.opcionSucursal.sucursal = data
       },
       onChangeTransporte(id){
-        this.id_transporte = id
+        this.id_transporte = id.toLowerCase()
       },
       onhomeDeliveryProviders(id){
         this.buttonLoading = true
@@ -285,6 +285,14 @@
             })
           }
 
+        }).catch((error)=>{
+          this.$navigator.navigate('/facturacion',{
+              transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+            })
         })
 
         
@@ -322,14 +330,20 @@
           }
 
           if(this.tipoEnvio.id == 2){
-            if(obj.id != '' && !this.opcionDomicilio.delivery.length){
+            if(obj.id != '' && !this.opcionDomicilio.delivery.length && !obj.edit){
                 this.onhomeDeliveryProviders(obj.id)
                 return
             }
             if(obj.id && this.opcionDomicilio.delivery.length){
+              this.editServiceProvider({
+                provider:this.id_transporte,
+                group_id:   this.group_id,
+              })
+  
               this.nextFacturacion()
               return
             }
+
           }
 
           if(this.tipoEnvio.id == 3 ){

@@ -1,5 +1,5 @@
 import { mapMutations, mapActions } from 'vuex'
-
+import Api from '~/services'
 export default {
   data() {
     return {
@@ -76,8 +76,13 @@ export default {
       this.options.props = {
         product: product,
       }
+      console.log('product',product)
+      // this.productVisits(product.id)
 
-      // console.log('product',product)
+      const response = Api.post('product_visits',{
+            MODELOS_NUM: product.id
+        })
+      
       this.$forceUpdate()
       this.$navigator.navigate('/product',this.options)
     },
