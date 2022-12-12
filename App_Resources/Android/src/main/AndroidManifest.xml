@@ -40,6 +40,16 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:path="/auth"
+				android:scheme="com.googleusercontent.apps.198583103200-esbqglrhnnlmn0huuuvr5p8sna97e0vn"/>
+
+			</intent-filter>
 		</activity>
 		<activity android:name="com.tns.ErrorReportActivity"/>
 	</application>

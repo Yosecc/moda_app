@@ -29,6 +29,9 @@ Vue.registerElement('CarouselItem', () => require('@nstudio/nativescript-carouse
 import { Gif } from 'nativescript-gif';
 Vue.registerElement('Gif', () => Gif);
 
+var auth_service_1 = require("./auth-service");
+auth_service_1.configureOAuthProviders();
+
 
 new Vue({
     render: h => h(App),

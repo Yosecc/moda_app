@@ -1,7 +1,7 @@
 
 import Api from '~/services'
 import cache from '@/plugins/cache'
-
+import { Http } from '@nativescript/core'
 /**
  * 
  */
@@ -69,15 +69,13 @@ const actions = {
       }
       // return response    
   },
-   Register(context, values){
-    // console.log('values', values)
+  Register(context, values){
     const response = Api.post('auth/register',values)
       response.then((response)=>{
         console.log('response', response, response.status)
         console.log('algo pasa aqui?')
         if(response.status){
           cache.set('client', JSON.stringify(response.client))
-          // cache.set('token', response.client.api_token)
         }
       }).catch((error)=>{
           error = JSON.parse(error)
@@ -86,13 +84,10 @@ const actions = {
               alert( `${e}`)
             })
           }
-        // reject(error)
       })
-      
       return response
-      
   },
-   CodeValidation(context, code){
+  CodeValidation(context, code){
       if(cache.get('client')){
         const client = JSON.parse(cache.get('client'))
         
@@ -132,11 +127,51 @@ const actions = {
       }
   },
   getClient(context, email){
-
   },
   sendMail(context, type){
         //Type[] = 'Email de recuperacion de contrasena'
         //
+  },
+  apiAuthUserinfo (context, token){
+    const EXPREG_HTTP_CODE ={
+      success : new RegExp(/^[2][0-9]{0,2}$/),
+      bad: new RegExp(/^[4][0-9]{0,2}$/)
+    }
+        // console.log('TOKEN', token)
+    return  new Promise((resolve, reject) => {
+      Http.request({
+        method: "GET",
+        url: `https://www.googleapis.com/oauth2/v2/userinfo`,
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }).then((res) => {
+        // console.log("res",res);
+          if(String(res.statusCode).match(EXPREG_HTTP_CODE.success)){
+            resolve(res.content.toJSON())
+          }else{
+            reject(res)
+          }
+      }).catch((e) => {
+        console.log('error post',e)
+        reject(e)
+      });
+    });
+    
+  },
+  async LoginSocial(context, val){
+    const response = await Api.post('auth/LoginSocial', val)
+
+      if (response.status) {
+        context.state.user =  response.client
+        cache.set('token', response.client.api_token)
+        cache.set('client', JSON.stringify(response.client))
+        context.state.token = response.client.api_token
+      } 
+      return response
+  },
+  LoginSocial(context, data){
+    
   }
 };
 

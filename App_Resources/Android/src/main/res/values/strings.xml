@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Modatex</string>
     <string name="title_activity_kimera">Modatex</string>
+    <string name="facebook_app_id">451063223693260</string>
+    <string name="facebook_client_token">56789</string>
 </resources>
