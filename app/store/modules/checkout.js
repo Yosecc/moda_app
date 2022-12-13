@@ -11,53 +11,7 @@ const state = {
     carCheckout: {},
     costoEnvio:[],
     coupon: null,
-    coupons: new ObservableArray([
-      {
-        id: 1,
-        span:'Descuento por bienvenida',
-        monto: 250,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $250.00 en esta compra.',
-        color:"#0080DA",
-        active: false,
-      },
-      {
-        id: 2,
-        span:'Descuento por bienvenida',
-        monto: 150,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $150.00 en esta compra.',
-        color:"#DA0080",
-        active: false,
-      },
-      {
-        id: 3,
-        span:'Descuento por bienvenida',
-        monto: 50,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $50.00 en esta compra.',
-        color:"#467700",
-        active: false,
-      },
-      {
-        id: 4,
-        span:'Descuento por bienvenida',
-        monto: 150,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $150.00 en esta compra.',
-        color:"#DA0080",
-        active: false,
-      },
-      {
-        id: 5,
-        span:'Descuento por bienvenida',
-        monto: 50,
-        vencimiento:'Vencimiento 07/11/2021',
-        description: 'Seleccionando este cupón podrás acceder a un descuento por $50.00 en esta compra.',
-        color:"#467700",
-        active: false,
-      }
-    ]),
+    coupons: [],
     envio: null,
     envios: [],
     direcciones: new ObservableArray([{
@@ -146,6 +100,9 @@ const mutations = {
     },
     setCoupon(state, val){
         state.coupon = val
+    },
+    setCoupons(state, val){
+      state.coupons = new ObservableArray(val)
     },
     setEnvio(state, val){
         state.envio = val
@@ -238,6 +195,15 @@ const actions = {
   },
   async confirmarCompra(context, val){
       const response = await Api.post('checkout/confirmarCompra', val)
+      return response
+  },
+
+  async couponSelect(context, val){
+      const response = await Api.post('checkout/couponSelect', val)
+      return response
+  },
+  async couponUnselectAll(context, val){
+      const response = await Api.post('checkout/couponUnselectAll', val)
       return response
   },
   

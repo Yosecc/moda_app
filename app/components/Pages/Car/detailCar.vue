@@ -338,7 +338,7 @@
       this.loadCart()
     },
     methods:{
-      ...mapMutations('checkout',['setcarCheckout','setGroupId']),
+      ...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
       ...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion','updateCarStore']),
       ...mapActions('car',['deleteProduct','processCart','getProductsCart','deleteCarts','deleteModelo','getCart','updatedCar','getCar']),
       onCloseDrawer(){
@@ -385,13 +385,28 @@
                   },
               })
             }else{
-              this.$navigator.navigate('/envios',{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-              })
+
+              if(response.cupon != null){
+                this.setCoupons(response.cupon)
+                this.$navigator.navigate('/coupons',{
+                    transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                    props:{
+                      local_cd: this.car_id
+                    }
+                })
+              }else{
+                this.$navigator.navigate('/envios',{
+                  transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                })
+              }
             }
           }else{
             alert(response.cart.status)

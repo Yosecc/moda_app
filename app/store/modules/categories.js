@@ -216,3 +216,4 @@ export const categories = {
     mutations,
     actions,
 };
+

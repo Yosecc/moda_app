@@ -24,10 +24,10 @@ function configureOAuthProviderGoogle() {
 function configureOAuthProviderFacebook() {
     var facebookProviderOptions = {
         openIdSupport: "oid-none",
-        clientId: "691208554415645",
-        clientSecret: "d8725ac416fa1bb1917ccffd1670e3c6",
+        clientId: "451063223693260",
+        clientSecret: "cc4073bc002287142abe6deba940936e",
         redirectUri: "https://www.facebook.com/connect/login_success.html",
-        scopes: ["email"]
+        scopes: ["email","name","id","last_name"]
     };
     var facebookProvider = new providers_1.TnsOaProviderFacebook(facebookProviderOptions);
     return facebookProvider;

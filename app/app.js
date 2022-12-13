@@ -32,6 +32,41 @@ Vue.registerElement('Gif', () => Gif);
 var auth_service_1 = require("./auth-service");
 auth_service_1.configureOAuthProviders();
 
+// import * as application from '@nativescript/core/application';
+// import { init } from "nativescript-facebook";
+ 
+// application.on(application.launchEvent, function (args) {
+//     init("451063223693260");
+// });
+
+import { LoginManager, AccessToken } from '@nativescript/facebook';
+
+LoginManager.init() // call init early in the app lifecycle e.g main.ts/app.ts
+
+
+var firebase = require("@nativescript/firebase").firebase;
+import { messaging } from '@nativescript/firebase/messaging'
+
+firebase.init({
+   
+}).then(
+    function () {
+      console.log("firebase.init done");
+      
+    messaging.registerForPushNotifications({
+      addOnPushTokenReceivedCallback: function(token){
+        console.log('DEVICE TOKEN', token)
+      }
+    })
+
+    },
+    function (error) {
+      console.log("firebase.init error: " + error);
+    }
+);
+
+
+
 
 new Vue({
     render: h => h(App),

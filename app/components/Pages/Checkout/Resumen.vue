@@ -152,7 +152,7 @@
                     height="25" 
                   />
                 </FlexboxLayout>
-</StackLayout>
+              </StackLayout>
 
             </FlexboxLayout>
 
@@ -230,6 +230,17 @@
             </StackLayout>
           
         </StackLayout>
+
+        <StackLayout padding="8 16" v-if="!loading && cupon">
+          <Label text="Cupón" marginBottom="8" fontSize="18" fontWeight="700" />
+          
+          <StackLayout class="card" padding="16">
+            <Label :text="cupon.amount | moneda" marginBottom="8" fontSize="18" fontWeight="900" />
+            <Label :text="`Expira: ${fecha(cupon.expire)}`"  marginBottom="8" fontSize="16" fontWeight="300" />
+            
+          </StackLayout>
+          
+        </StackLayout>
           
         <StackLayout padding="8 16" v-if="!loading && resumen">
           <Label text="Detalle" marginBottom="8" fontSize="18" fontWeight="700" />
@@ -268,6 +279,7 @@
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
   import { mapState, mapMutations,mapGetters, mapActions } from 'vuex'
+  import moment from 'moment'
 
   export default {
     mixins: [],
@@ -319,6 +331,9 @@
       },
       direccion(){
         return this.resumen.shipping_data
+      },
+      cupon(){
+        return this.resumen.coupon
       },
       servicioEnvio(){
         if(this.tipoEnvio.id == 2 || this.tipoEnvio.id == 3){
@@ -377,6 +392,10 @@
     methods:{
       ...mapMutations('checkout',['setTypeFactura','setnumeroPedido']),
       ...mapActions('checkout',['getResumen','confirmarCompra']),
+      fecha(value){
+        return value
+        return moment(value).lang("es").format('LL')
+      },
       calculoPrendas(combinacion){
         let suma = 0
         combinacion.forEach((e)=>{

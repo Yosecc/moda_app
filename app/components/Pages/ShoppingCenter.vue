@@ -116,7 +116,7 @@
 			...mapMutations('shoping_center',['changeMultienvio']),
 			...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion']),
 			...mapActions('car',['getCar','getProductsCart','processCart','deleteCarts']),
-			...mapMutations('checkout',['setcarCheckout','setGroupId']),
+			...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
 			mountedCars(){
 				this.isload = false
 		  	this.getCar().then((e)=>{
@@ -210,13 +210,29 @@
                   },
               })
             }else{
-              this.$navigator.navigate('/envios',{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-              })
+            	if(response.cupon != null){
+                this.setCoupons(response.cupon)
+                this.$navigator.navigate('/coupons',{
+                  transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                    props:{
+                      local_cd: data.carro.id
+                    }
+                })
+              }else{
+                this.$navigator.navigate('/envios',{
+                  transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                })
+              }
+             
+
             }
           }else{
             alert(response.cart.status)

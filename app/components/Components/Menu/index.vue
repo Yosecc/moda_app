@@ -94,26 +94,26 @@
             icon: 'icon_menu_3',
             name: 'Formas de pago',
             route: '/payment_methods',
-            disabled: true
+            disabled: false
           },
-          {
-            icon: 'icon_menu_4',
-            name: 'Consultas',
-            route: '/inquiries',
-            disabled: true
-          },
-          {
-            icon: 'icon_menu_5',
-            name: 'Notificaciones',
-            route: '/notifications',
-            disabled: true
-          },
-          {
-            icon: 'icon_menu_6',
-            name: 'Ayuda',
-            route: '/help',
-            disabled: true
-          },
+          // {
+          //   icon: 'icon_menu_4',
+          //   name: 'Consultas',
+          //   route: '/inquiries',
+          //   disabled: true
+          // },
+          // {
+          //   icon: 'icon_menu_5',
+          //   name: 'Notificaciones',
+          //   route: '/notifications',
+          //   disabled: true
+          // },
+          // {
+          //   icon: 'icon_menu_6',
+          //   name: 'Ayuda',
+          //   route: '/help',
+          //   disabled: true
+          // },
         ],
         othersItemsMenu:[
           // {
@@ -123,7 +123,7 @@
           //   disabled: true
           // },
           {
-            icon: '',
+            icon: 'salir',
             name: 'Salir',
             route: '/login',
             disabled: false,

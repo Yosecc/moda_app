@@ -1,5 +1,5 @@
 <template lang="html">
-  <Page actionBarHidden="true">apellido
+  <Page actionBarHidden="true">
     <layoutCheckout
       title="Datos personales"
       subTitle="Nos faltan algunos datos. A continuación podés llenarlos."

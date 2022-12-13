@@ -32,41 +32,57 @@
           hint="Email"
           class="inputForm"
         />
-        <StackLayout orientation="horizontal" >
-          <StackLayout orientation="horizontal" width="50%"  >
+
+        <GridLayout height="55" columns="auto,*, auto, *" rows="*">
+
             <TextField 
+              col="0"
               text="+54 - 0"
               keyboardType="number" 
               hint="+54 - 0"
               editable="false"
               class="inputForm inLine-Left"
+              paddingRight="8"
+              marginRight="4"
             />
             <TextField 
+              col="1"
               v-model="dataRegister.cod_area"
               keyboardType="number" 
               hint="Cod área"             
               class="inputForm inLine-Rigth"
+              width="80%"
               @focus="focusInputInline"
+              marginRight="4"
             />
-          </StackLayout>
-          <StackLayout orientation="horizontal" width="50%"   >
             <TextField 
+              col="2"
               text="15 -"
               keyboardType="number" 
               hint="15 -"
               editable="false"
-             
+              paddingRight="8"
+              marginRight="4"
               class="inputForm inLine-Left"
             />
             <TextField 
+              col="3"
               v-model="dataRegister.phone"
               keyboardType="number" 
               hint="Número Celular"
               class="inputForm inLine-Rigth"
               @focus="focusInputInline"
             />
+        </GridLayout>
+
+        <!-- <StackLayout orientation="horizontal" >
+          <StackLayout orientation="horizontal" width="50%"  >
+            
           </StackLayout>
-        </StackLayout>
+          <StackLayout orientation="horizontal" width="50%"   >
+            
+          </StackLayout>
+        </StackLayout> -->
 
         <!--  -->
         <TextField 

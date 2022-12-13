@@ -13,3 +13,28 @@ project.ext {
   // useKotlin = true
   // kotlinVersion = "1.6.0"
 }
+
+
+buildscript {
+  repositories {
+    
+    google()
+
+    mavenCentral()
+
+  }
+  dependencies {
+    classpath 'com.google.gms:google-services:4.3.13'
+
+  }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+        google()
+        mavenCentral()
+    }
+}
+
+

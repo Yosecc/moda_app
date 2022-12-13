@@ -4,9 +4,11 @@
     paddingRight="16"
   >
     <StackLayout 
-      class="card bg active"
+      class="card bg "
+      :class="active && checkout ? 'active-cupon-checkout':'active'"
       borderWidth="2"
       borderColor="#DA0080"
+      :backgroundColor="active && checkout ?  '#DA0080':''"
       backgroundImage="~/assets/cupon_bg.png" 
     >
       	<FlexboxLayout  
@@ -44,6 +46,7 @@
             />
             
             <Label 
+            v-if="!checkout"
               class="label_enlace"
               fontSize="12"
               textAlignment="right"
@@ -76,7 +79,15 @@
 			item:{
 				type: Object,
 				required: true
-			}
+			},
+      checkout:{
+        type: Boolean,
+        defaukt: false
+      },
+      active:{
+        type: Boolean,
+        defaukt: false
+      },
 		},
 		watch:{
 
@@ -101,9 +112,20 @@
 
     },
 		computed:{
-
+      cuponActive(){
+        if(!this.checkout){
+          return 'active'
+        }else{
+          return ''
+        }
+        
+        if(this.checkout && this.item.active){
+          return 'active-cupon-checkout'
+        }
+        return ''
+      },
       typeCupon(){
-        let type = ''
+        let type = 'Descuentos'
         if( this.item && this.item.coupon_type){
           switch (this.item.coupon_type) {
               case 'qualify':
@@ -175,5 +197,7 @@
     @import "@nativescript/theme/scss/variables/blue";
     // End custom common variables
 		
+    
+
 
 </style>

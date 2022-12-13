@@ -23,6 +23,13 @@
 		android:usesCleartextTraffic="true"
 		android:hardwareAccelerated="true">
 
+ 	<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+ 	<meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
+	<provider android:authorities="com.facebook.app.FacebookContentProvider451063223693260"
+				  android:name="com.facebook.FacebookContentProvider"
+				  android:exported="true"/>
+
 		<activity
 			android:windowSoftInputMode="adjustResize"
 			android:screenOrientation="portrait"

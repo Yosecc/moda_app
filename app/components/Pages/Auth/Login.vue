@@ -38,8 +38,9 @@
 
             <StackLayout marginBottom="24">
               <ActivityIndicator 
-                :busy="isLoading" 
-                @busyChange="onBusyChanged" />
+                :busy="isLoading"
+                color="#DA0080"
+               />
 
               <button 
                 text="INGRESAR"
@@ -66,7 +67,11 @@
 
             <Label text="O" opacity=".2" fontWeight="800" textAlignment="center" margin="16" />
 
-            <StackLayout @tap="loginFacebook" marginBottom="16" borderWidth=".5" borderColor="#303030" background="#3b5998" borderRadius="6" padding="0 16">
+            <ActivityIndicator 
+              :busy="isLoading"
+              color="#DA0080"
+             />
+            <!-- <StackLayout v-show="!isLoading" @tap="loginFacebook" marginBottom="16" borderWidth=".5" borderColor="#303030" background="#3b5998" borderRadius="6" padding="0 16">
               <FlexboxLayout padding="10" justifyContent="space-between" alignItems="center" width="60%" >
 
                 <StackLayout>
@@ -75,9 +80,9 @@
                 <Label text="Ingresa con Facebook" fontWeight="700" color="white" />
 
               </FlexboxLayout>
-            </StackLayout>
+            </StackLayout> -->
 
-            <StackLayout @tap="processLoginGoogle" marginBottom="16" borderWidth=".5" borderColor="#303030" background="white" borderRadius="6" padding="0 16">
+            <StackLayout v-show="!isLoading" @tap="processLoginGoogle" marginBottom="16" borderWidth=".5" borderColor="#303030" background="white" borderRadius="6" padding="0 16">
               <FlexboxLayout padding="10" justifyContent="space-between" alignItems="center" width="60%" >
 
                 <StackLayout>
@@ -105,9 +110,11 @@
   import HeaderFullLogo from '../../Components/ActionBar/HeaderFullLogo'
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   import homeMixin from '~/mixins/homeMixin.js'
-  // import { login as fbLogin } from "@nativescript/facebook";
+  // import { Observable } from 'data/observable';
+  import { LoginManager, AccessToken } from '@nativescript/facebook';
+  // import { login as fbLogin } from "nativescript-facebook";
   let auth_service_1 = require("../../../auth-service");
-
+import { Http } from '@nativescript/core'
   export default {
     mixins:[ homeMixin ],
     components:{
@@ -144,7 +151,7 @@
           })
         }).catch((e)=>{
           this.changeisLoading(false)
-          console.log('e',e)
+          // console.log('e',e)
           if(e){
             e = JSON.parse(e)
             if(typeof e == 'object'){
@@ -165,36 +172,52 @@
           const auth =  await auth_service_1.tnsOauthLogin('google').then((response)=>{
             this.apiAuthUserinfo(response.accessToken).then((datos)=>{
               this.LoginSocial({social_method: 'Google', ...datos}).then((response)=>{
-
-                 this.changeisLoading(false)
+                console.log('d', response)
+                this.defineHome().then((response)=>{
+                  this.options.clearHistory = true
+                  this.changeisLoading(false)
+                  this.$navigator.navigate('/home',this.options)
+                })
               })
             }).catch((error)=>{
                this.changeisLoading(false)
             })
+          }).catch((error)=> {
+           this.changeisLoading(false)  
           })
 
           
       },
       apiGraph(token){
-        // return new Promise((resolve, reject)=>{
-        //   Http.getJSON("https://graph.facebook.com/v2.9/me?fields=id,name,email,last_name,first_name&access_token=" + token).then((res) => {
-        //       resolve(res)
-        //       // Get logged in user's avatar
-        //       // ref: https://github.com/NativeScript/NativeScript/issues/2176
-        //       // http.getJSON("https://graph.facebook.com/v2.9/" + res.id + "/picture?type=large&redirect=false&access_token=" + token)
-        //       //    .then((res) => {
-        //       //     this.avatarUrl = res.data.url;
-        //       //     this.ref.detectChanges();
-        //       // }, function (err) {
-        //       //     alert("Error getting user info: " + err);
-        //       // });
-        //   }, function (err) {
-        //       reject(err)
-        //       // alert("Error getting user info: " + err);
-        //   });
-        // })
+        return new Promise((resolve, reject)=>{
+          Http.getJSON("https://graph.facebook.com/v2.9/me?fields=id,name,email,last_name,first_name&access_token=" + token).then((res) => {
+              resolve(res)
+              // Get logged in user's avatar
+              // ref: https://github.com/NativeScript/NativeScript/issues/2176
+              // http.getJSON("https://graph.facebook.com/v2.9/" + res.id + "/picture?type=large&redirect=false&access_token=" + token)
+              //    .then((res) => {
+              //     this.avatarUrl = res.data.url;
+              //     this.ref.detectChanges();
+              // }, function (err) {
+              //     alert("Error getting user info: " + err);
+              // });
+          }, function (err) {
+              reject(err)
+              // alert("Error getting user info: " + err);
+          });
+        })
       },
-      loginFacebook() {
+      async loginFacebook() {
+        // const auth =  await auth_service_1.tnsOauthLogin('facebook').then((response)=>{
+        //   console.log('asa', response)
+        // })
+      try {
+          const result = await LoginManager.logInWithPermissions(['public_profile']); // LoginResult
+          const accessToken = AccessToken.currentAccessToken();
+
+          console.log(accessToken,'si')
+      } catch (e) {}
+ 
         // fbLogin((err, fbData) => {
         //   if (err) {
         //     alert("Error during login: " + err.message);

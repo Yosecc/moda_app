@@ -92,6 +92,7 @@
       // 
     },
     mounted(){
+      this.setEnvio(null)
       this.getEnvios({
         group_id: this.group_id
       }).then((response)=>{

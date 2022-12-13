@@ -160,6 +160,8 @@ const actions = {
     
   },
   async LoginSocial(context, val){
+
+    console.log('ex', val)
     const response = await Api.post('auth/LoginSocial', val)
 
       if (response.status) {
@@ -170,9 +172,7 @@ const actions = {
       } 
       return response
   },
-  LoginSocial(context, data){
-    
-  }
+ 
 };
 
 export const authentication = {

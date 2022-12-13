@@ -1,97 +1,25 @@
 <template lang="html">
-  <Page >
-    <HeaderDefault :back="true" />
+  <Page actionBarHidden="true">
+    
   <layoutCheckout
     title="Cupones Disponibles"
     subTitle="Seleccioná el cupón que quieras para aplicar tus descuentos."
     nextPage="/envios"
     :nextStatus="true"
+    @onAction="onNext"
   >
-  <StackLayout marginTop="8" paddingRight="16" paddingLeft="16">
+  <StackLayout marginTop="8" >
+    <StackLayout paddingLeft="16">
+      <Label v-if="coupon == null" text="No ha seleccionado ningun cupón" fontSize="18" color="red" fontWeight="400"  />
+      <Label v-else text="1 cupón seleccionado" color="#1D8348" fontSize="18" fontWeight="400"  />
+    </StackLayout>
+    
     <RadListView ref="listCoupons" :items="coupons" @itemTap="onItemTap">
-      <v-template >
-        <StackLayout 
-          marginBottom="16" 
-          orientation="horizontal" 
-          class="card">
-
-          <StackLayout 
-            borderRadius="8"
-            padding="2 4" 
-            :backgroundColor="item.color"
-            class="bg"
-            backgroundImage="~/assets/cupon_bg.png" >
-            <Label 
-              color="white"
-              fontSize="11"
-              :text="item.span" />
-            <Label 
-              class="title"
-              fontSize="25"
-              color="#f5f5f5"
-              :text="item.monto | moneda" />
-            <Label 
-              color="white"
-              fontSize="10"
-              :text="item.vencimiento" />
-          </StackLayout>
-          <StackLayout
-            padding="0"
-          >
-            <Label 
-              textWrap
-              fontSize="14"
-              color="#4D4D4D"
-              :text="item.description" />
-            <Label 
-              class="label_enlace"
-              fontSize="12"
-              text="Marcas sin este beneficio" />
-          </StackLayout>
-        </StackLayout>
+      <v-template if="item.active == true" >
+         <CuponBox  :item="item" :active="true" :checkout="true" />
       </v-template>
-      <v-template if="item.active == true">
-        <StackLayout 
-          marginBottom="8" 
-          orientation="horizontal" 
-          class="card bg"
-          :backgroundColor="item.color"
-          backgroundImage="~/assets/cupon_bg.png"
-        >
-          <StackLayout 
-            borderRadius="8"
-            padding="2 4" 
-            class="bg"
-             >
-            <Label 
-              color="white"
-              fontSize="11"
-              :text="item.span" />
-            <Label 
-              class="title"
-              fontSize="25"
-              color="white"
-              :text="item.monto | moneda" />
-            <Label 
-              color="white"
-              fontSize="10"
-              :text="item.vencimiento" />
-          </StackLayout>
-          <StackLayout
-          padding="0"
-        >
-          <Label 
-            textWrap
-            color="white"
-            :text="item.description" />
-          <Label 
-            class="label_enlace"
-            color="white"
-            fontSize="12"
-            text="Marcas sin este beneficio" />
-        </StackLayout>
-        </StackLayout>
-        
+      <v-template if="item.active == false" >
+         <CuponBox  :item="item" :active="false" :checkout="true" />
       </v-template>
 
     </RadListView>
@@ -104,15 +32,19 @@
   import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
-  import { mapState, mapMutations } from 'vuex'
-
+  import { mapState, mapMutations, mapActions } from 'vuex'
+    import CuponBox from '~/components/Components/Boxes/CuponBox.vue'
   export default {
     mixins: [],
     props: {
-
+      local_cd: {
+        type: Number|String,
+        default: null
+      }
     },
     components: {
       HeaderDefault,
+      CuponBox,
       layoutCheckout
     },
     filters: {
@@ -138,14 +70,27 @@
       //   await this.$nextTick()
       //   this.$refs.contentproduct.nativeView.refresh();
       // },
+      coupons(to){
+        console.log('con cupones')
+      }
     },
     computed:{
-      ...mapState('checkout',['coupon','coupons']),
+      ...mapState('checkout',['coupon','coupons','group_id']),
       // ...mapState('car',['carCheckout']),
       // 
     },
     mounted(){
-      // console.log('cupones',this.coupons)
+      this.coupons._array.forEach((e)=>{
+
+        if(e.stat_cd == '2000'){
+          e.active = true
+          this.setCoupon(e.num) 
+        }else{
+          e.active = false
+        }
+      })
+      this.$refs.listCoupons.refresh()
+      console.log('cupones',this.coupons)
       // setTimeout(()=>{
       //   this.montado = true
       // },3000)
@@ -154,17 +99,42 @@
     methods:{
       // ...mapMutations(['changeDrawerCar']),
       ...mapMutations('checkout',['setCoupon']),
+      ...mapActions('checkout',['couponSelect','couponUnselectAll']),
       onItemTap({item}){
-        this.setCoupon(item.id)
-        this.coupons.forEach((e)=>{
-          if(e.id == item.id){
-            e.active = true
-          }else{
-            e.active = false
-          }
-        })
+        
+        if(this.coupon != null &&  this.coupon == item.num){
+
+          this.couponUnselectAll({
+            group_id: this.group_id,
+            
+          })
+          this.coupons._array.find((e)=> e.num == this.coupon).active = false  
+          this.setCoupon(null)        
+        }else{
+          this.setCoupon(item.num)
+          this.couponSelect({
+            group_id: this.group_id,
+            coupon_id: item.num,
+            store_id: this.local_cd,
+          })
+          this.coupons._array.forEach((e)=>{
+            if(e.num == item.num){
+              e.active = true
+            }else{
+              e.active = false
+            }
+          })
+        }
         this.$refs.listCoupons.nativeView.refresh()
-        // console.log(this.coupons)
+      },
+      onNext(data){
+        this.$navigator.navigate('/envios',{
+          transition: {
+              name: 'slideLeft',
+              duration: 300,
+              curve: 'easeIn'
+            },
+        })
       }
       
     }

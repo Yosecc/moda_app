@@ -134,6 +134,13 @@
                 </GridLayout>
                 <GridLayout 
                   columns="*, auto"
+                  v-if="cuponSelect"
+                >
+                  <Label col="0" text="Cupón de descuento" fontWeight="800"/>
+                  <Label col="1" textAlignment="right" :text="`- $${cuponSelect.coupon_price}`"/>
+                </GridLayout>
+                <GridLayout 
+                  columns="*, auto"
                 >
                   <Label col="0" text="Total" fontWeight="800"/>
                   <Label col="1" textAlignment="right" :text="total | moneda"/>
@@ -185,7 +192,13 @@
    
     },
     computed:{
-      ...mapState('checkout',['carCheckout','costoEnvio']),
+      ...mapState('checkout',['carCheckout','costoEnvio','coupon','coupons']),
+      cuponSelect(){
+        if(this.coupon != null){
+          return this.coupons._array.find((e)=> e.num == this.coupon)
+        }
+        return null
+      },
       products(){
         return this.carCheckout.products
       }, 
@@ -201,6 +214,10 @@
         this.resumen.forEach((e)=>{
           suma += e.value
         })
+
+        if(this.cuponSelect){
+          suma -= parseInt(this.cuponSelect.coupon_price)
+        }
 
         return suma
       },

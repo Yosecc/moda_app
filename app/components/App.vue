@@ -21,7 +21,7 @@
 
 <script>
   import Api from '~/services'
-
+    import { messaging } from '@nativescript/firebase/messaging'
 	import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
   import Menu from './Components/Menu'
   import homeMixin from '~/mixins/homeMixin.js'
@@ -64,7 +64,14 @@
       }
 		},
     mounted(){
-      // console.log(cache.get('carsStores'))
+// console.log(messaging)
+
+// messaging.registerForPushNotifications({
+//   addOnPushTokenReceivedCallback(token){
+//     console.log('DEVICE 2 TOKEN', token)
+//   }
+// })
+//       // console.log(cache.get('carsStores'))
       // console.log(cache.get('carsProducts'))
       
     },

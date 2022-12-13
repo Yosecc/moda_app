@@ -17,6 +17,7 @@ import AllStores from './components/Pages/Store/AllStores.vue'
 
 import HowToBuy from './components/Pages/SubPages/HowToBuy.vue' 
 import Shipping from './components/Pages/SubPages/Shipping.vue' 
+import MetodosPagoView from './components/Pages/SubPages/MetodosPagoView.vue' 
 
 
 import webView from './components/Pages/WebViews/offerts.vue'
@@ -47,6 +48,9 @@ import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue
 import confirmCart from '~/components/Components/Modales/confirmCart.vue'
 
 export const routes = {
+  '/payment_methods':{
+    component: MetodosPagoView
+  },
   '/confirm_cart':{
     component: confirmCart
   },
