@@ -117,7 +117,7 @@
 </template>
 
 <script>
-  import * as utils from "@nativescript/core/utils/utils";
+  import * as utils from "@nativescript/core/utils";
 
   import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';

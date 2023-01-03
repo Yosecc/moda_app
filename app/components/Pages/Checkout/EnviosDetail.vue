@@ -102,7 +102,7 @@
   import Tienda from '~/components/Components/Checkout/Tienda.vue'
   import optionsSelect from '~/components/Components/Modales/optionsSelect.vue'
   import { mapState, mapMutations, mapActions } from 'vuex'
-  import * as utils from "@nativescript/core/utils/utils";
+  import * as utils from "@nativescript/core/utils";
   import Sucursales from '~/components/Components/Checkout/Drawers/Sucursales.vue'
   export default {
     mixins: [],

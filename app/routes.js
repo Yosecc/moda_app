@@ -21,6 +21,7 @@ import MetodosPagoView from './components/Pages/SubPages/MetodosPagoView.vue'
 
 
 import webView from './components/Pages/WebViews/offerts.vue'
+import DiscountsEspeciales from './components/Pages/Discounts/DiscountsEspeciales.vue'
 
 import Coupons from './components/Pages/Checkout/Coupons.vue'
 import Datos from './components/Pages/Checkout/Datos.vue'
@@ -48,6 +49,10 @@ import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue
 import confirmCart from '~/components/Components/Modales/confirmCart.vue'
 
 export const routes = {
+
+  '/discount_especial':{
+    component: DiscountsEspeciales
+  },
   '/payment_methods':{
     component: MetodosPagoView
   },

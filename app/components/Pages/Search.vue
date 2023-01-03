@@ -188,7 +188,7 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import CategoryBox from '~/components/Components/Boxes/CategoryBox.vue'
 import cache from '@/plugins/cache'
-import * as utils from "@nativescript/core/utils/utils";
+import * as utils from "@nativescript/core/utils";
 import recentlySeen from '../Components/recentlySeen.vue'
 export default {
   props:{

@@ -17,7 +17,7 @@
         <SearchBar 
           col="0"
           class="inputForm" 
-          hint="Buscar tienda o productos"
+          hint="Buscar tienda"
           width="100%"
           height="40"
           marginTop="16"

@@ -30,6 +30,7 @@
           col="1"
           alignItems="center"
           justifyContent="center"
+          @tap="onViewStore(store)"
         >
 
           <ImageCache 
@@ -41,6 +42,7 @@
             stretch="aspectFill"
             marginRight="8"
             class="storeBox"
+
           /> 
 
           <StackLayout >
@@ -216,7 +218,7 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         // }, 200)
       },
       redirect(){
-        console.log(this.carro)
+        // console.log(this.carro)
         if(this.carro && this.carro.products_count){
           this.onRedirectCart()
         }else{

@@ -8,7 +8,7 @@
         <SearchBar 
           col="0"
           class="inputForm" 
-          hint="Buscar tienda o productos"
+          hint="Buscar productos"
           width="100%"
           height="40"
           marginTop="16"
@@ -79,7 +79,7 @@ import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
-import * as utils from "@nativescript/core/utils/utils";
+import * as utils from "@nativescript/core/utils";
 export default {
   props: {
     store:{

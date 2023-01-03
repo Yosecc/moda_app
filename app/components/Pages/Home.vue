@@ -13,7 +13,6 @@
             height="40"
             paddingTop="8"
             fontWeight="200"
-
             borderRadius="0" 
           />
         </StackLayout>
@@ -41,7 +40,8 @@
             marginRight="16"
             fontWeight="900"
           />
-          <Stores />
+          
+          <!-- <Stores /> -->
           
         </StackLayout>
 
@@ -96,7 +96,7 @@
   import SliderComponent from '../Components/SliderComponent.vue'
   import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
   import SlideCategories from '../Components/SlideCategories.vue'
-  import Stores from '../Components/Stores.vue'
+  import Stores from '~/components/Components/Stores.vue'
   import recentlySeen from '../Components/recentlySeen.vue'
   import Promotions from '~/components/Components/Promotions.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';

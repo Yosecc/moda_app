@@ -57,6 +57,9 @@ const mutations = {
 
 const actions = {
   async Login(context){
+    cache.delete('client')
+    cache.delete('token')
+    cache.clear()
     const response = await Api.post('auth/login',context.state.user)
     // console.log('response', response)
       if (response.status) {
@@ -161,7 +164,9 @@ const actions = {
   },
   async LoginSocial(context, val){
 
-    console.log('ex', val)
+    cache.delete('client')
+    cache.delete('token')
+    cache.clear()
     const response = await Api.post('auth/LoginSocial', val)
 
       if (response.status) {

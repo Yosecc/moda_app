@@ -60,6 +60,8 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import profileMixin from '~/mixins/profileMixin.js'
+  import cache from '@/plugins/cache'
+
   export default {
     mixins: [profileMixin],
     props: {},
@@ -71,11 +73,13 @@
     watch:{
       client(to){
         // console.log('to',to)
-      }
+      },
+      
     },
     computed:{
       ...mapState('authentication',['user']),
-      ...mapGetters('authentication',['client'])
+      ...mapGetters('authentication',['client']),
+
     },
     mounted(){
       // console.log('client', this.client)

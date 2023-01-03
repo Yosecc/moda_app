@@ -133,6 +133,11 @@ const mutations = {
   setPedidos(state, val){
     state.pedidos = val
   },
+  setMasPedidos(state, val){
+    val.forEach((e)=>{
+      state.pedidos.push(e)
+    })
+  },
   setPedidosRosa(state, val){
     state.pedidosRosa = val
   },
@@ -172,9 +177,13 @@ const mutations = {
 };
 
 const actions = {
-  async getPedidos(context){
-    const response = await Api.get('ventas')
+  async getPedidos(context, page=1){
+    const response = await Api.get(`ventas?page=${page}`)
     context.commit('setPedidos', response)
+    return response
+  },
+  async getMasPedidos(context, page=1){
+    const response = await Api.get(`ventas?page=${page}`)
     return response
   },
   async getPedidosRosa(context){

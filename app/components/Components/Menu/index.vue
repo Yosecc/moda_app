@@ -96,6 +96,18 @@
             route: '/payment_methods',
             disabled: false
           },
+          {
+            icon: 'icon_menu_6',
+            name: 'Descuentos Especiales',
+            route: '/discount_especial',
+            disabled: false
+          },
+          // {
+          //   icon: 'icon_menu_6',
+          //   name: 'cam',
+          //   route: '/cam',
+          //   disabled: false
+          // },
           // {
           //   icon: 'icon_menu_4',
           //   name: 'Consultas',

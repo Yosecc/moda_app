@@ -1,32 +1,50 @@
 <template lang="html">
   <StackLayout>
-   <StackLayout v-if="loading" marginTop="24">
+    <StackLayout v-if="loading" marginTop="24">
       <ActivityIndicator busy="true" color="#DA0080" />
     </StackLayout>
-  <StackLayout v-if="pedidosUnidos._array.length == 0 && !loading" padding="24">
+    <StackLayout v-if="pedidosUnidos._array.length == 0 && !loading" padding="24">
 
-    <Label 
-      text="No posee pedidos"
-      fontWeight="100"
-      fontSize="30"
-      textAlignment="center"
-    />
+      <Label 
+        text="No posee pedidos"
+        fontWeight="100"
+        fontSize="30"
+        textAlignment="center"
+      />
 
-    <Label 
-      text="¿Cómo realizar un pedido?"
-      fontWeight="400"
-      fontSize="14"
-      textAlignment="center"
-      class="label_enlace"
-      marginTop="16"
-    />
+      <Label 
+        text="¿Cómo realizar un pedido?"
+        fontWeight="400"
+        fontSize="14"
+        textAlignment="center"
+        class="label_enlace"
+        marginTop="16"
+      />
+    </StackLayout>
+
+    <RadListView v-if="pedidosUnidos._array.length > 0" for="item in pedidosUnidos._array" >
+      <v-template  >
+        <PedidoBox :item="item" />
+      </v-template>
+      
+      <v-template name="footer">
+        <ActivityIndicator v-if="loadingMas" busy="true" color="#DA0080" />
+        <Label 
+          v-else
+          text="Ver más"
+          fontWeight="600"
+          fontSize="18"
+          textAlignment="center"
+          class="label_enlace"
+          padding="16 0"
+          @tap="verMas"
+        />
+      </v-template>
+    </RadListView>
+
+    
+
   </StackLayout>
-
-  <RadListView v-if="pedidosUnidos._array.length > 0" for="item in pedidosUnidos._array" >
-    <v-template >
-      <PedidoBox :item="item" />
-    </v-template>
-  </RadListView></StackLayout>
 </template>
 
 <script>
@@ -50,7 +68,9 @@
     data() {
       return {
         conteo: 0,
-        loading: true
+        loading: true,
+        loadingMas: false,
+        page: 1
       };
     },
     watch:{
@@ -87,13 +107,22 @@
       }).catch((error)=>{
         // alert('error')
       })
-      this.getPedidos().then((response)=>{
+      this.getPedidos(this.page).then((response)=>{
         this.loading = false
       })
     },
     methods:{
-      ...mapActions('profile',['getPedidos','getPedidosRosa']),
-      ...mapMutations('profile',['setPedidos'])
+      ...mapActions('profile',['getPedidos','getPedidosRosa','getMasPedidos']),
+      ...mapMutations('profile',['setPedidos','setMasPedidos']),
+      verMas(){
+        this.page++
+        this.loadingMas = true
+
+        this.getMasPedidos(this.page).then((response)=>{
+          this.setMasPedidos(response)
+          this.loadingMas = false
+        })
+      }
     }
     
   };

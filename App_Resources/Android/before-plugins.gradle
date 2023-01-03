@@ -9,7 +9,7 @@ project.ext {
   // androidXMultidex = "2.0.1"
   // androidXTransition = "1.4.1"
   // androidXViewPager = "1.0.0"
-
+  googlePlayServicesVersion = "+"
   // useKotlin = true
   // kotlinVersion = "1.6.0"
 }
@@ -17,14 +17,14 @@ project.ext {
 
 buildscript {
   repositories {
-    
+    maven { url "https://jitpack.io" }
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://maven.google.com' }
     google()
-
     mavenCentral()
-
   }
   dependencies {
-    classpath 'com.google.gms:google-services:4.3.13'
+    classpath 'com.google.gms:google-services:4.3.14'
 
   }
 }
@@ -32,6 +32,8 @@ buildscript {
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://maven.google.com' }
         google()
         mavenCentral()
     }

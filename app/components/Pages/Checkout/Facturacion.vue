@@ -65,7 +65,7 @@
   import optionsSelect from '~/components/Components/Modales/optionsSelect.vue'
   import { mapState, mapMutations, mapActions } from 'vuex'
   import helpersMixin from '~/mixins/helpersMixin.js'
-  import * as utils from "@nativescript/core/utils/utils";
+  import * as utils from "@nativescript/core/utils";
   export default {
     mixins: [helpersMixin],
     props: {

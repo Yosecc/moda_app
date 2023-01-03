@@ -122,26 +122,104 @@
               v-if="change"
             >
               <StackLayout v-show="productRelacionados.length">
-              <label 
-                  text="Más productos de esta tienda"  
-                  margin="8 0 16 16" 
-                  fontSize="14" 
-                  fontWeight="900" />
-              <RadListView 
-                ref="listView"
-                for="item in productRelacionados"
-                layout="grid"
-                itemWidth="50%"
-              >
-                <v-template >
-                  <ProductBox
-                    :product="item"
-                    :isStore="true"
-                  ></ProductBox>
-                </v-template>
-              </RadListView>
+
+                <FlexboxLayout @tap="onViewStore(product.store)" marginBottom="16" width="100%" justifyContent="space-between" alignItems="center">
+
+                  <label 
+                      text="Más productos de esta tienda"  
+                      margin="0 10" 
+                      fontSize="14" 
+                      fontWeight="900" />
+
+                  <label 
+                      text="Ver todos"  
+                      margin="0 10"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="600" />
+
+                </FlexboxLayout>
+
+                <RadListView 
+                  ref="listView"
+                  for="item in productRelacionados"
+                  layout="grid"
+                  itemWidth="50%"
+                >
+                  <v-template >
+                    <ProductBox
+                      :product="item"
+                      :isStore="true"
+                    ></ProductBox>
+                  </v-template>
+                </RadListView>
+
+                  <label 
+                      text="Ver más"  
+                      margin="16 0"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="600"
+                      textAlignment="center"
+                      @tap="onViewStore(product.store)"
+                  />
+
+
               </StackLayout>
             </StackLayout> 
+
+
+            <StackLayout 
+              class="card " 
+              borderRadius="0" 
+              marginTop="0" 
+              padding="24" 
+            >
+              <GridLayout
+                columns="auto, *"
+                alignItems="center"
+                justifyContent="flex-start"
+                @tap="onViewStore(product.store)"
+              >
+
+                <ImageCache 
+                  placeholderStretch="aspectFill"
+                  placeholder="res://eskeleton"
+                  :src="product.store.logo"
+                  width="120"
+                  height="120"
+                  stretch="aspectFill"
+                  marginRight="8"
+                  class="storeBox"
+                  col="0"
+                /> 
+
+                <StackLayout col="1" >
+                  <Label  horizontalAlignment="left" margin="0" padding="0" :text="product.store.name" textTransform="capitalize" fontWeight="900" fontSize="32" />
+                  <label
+                    margin="0" 
+                    padding="0" 
+                    horizontalAlignment="left" 
+                    fontWeight="300"
+                    fontSize="16"
+                    textWrap
+                  >
+                      <FormattedString>
+                        <span  text="Compra mínima en la tienda: "></span>
+                        <span :text="product.store.min | moneda " style="color: #DA0080"></span>
+                      </FormattedString>
+                  </label>
+                   <label 
+                      text="Ver la tienda"  
+                      margin="16 0"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="400" 
+                  />
+                </StackLayout>
+              </GridLayout  >
+            </StackLayout>
+
           </StackLayout>
         </ScrollView>
 
@@ -172,10 +250,11 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
   import BtnAddCar from './BtnAddCar'
+  import storeMixin from '~/mixins/storeMixin.js'
   // import productMixin from '~/mixins/productMixin.js'
 
   export default {
-    // mixins: [productMixin],
+    mixins: [storeMixin],
     props: {
       product:{
         type: Object
@@ -354,7 +433,10 @@
           this.change = true
           this.$forceUpdate()
         },1)
-      }
+      },
+     
+        // 
+      
     }
     
   };

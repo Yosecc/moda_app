@@ -55,6 +55,8 @@ export default {
     onTapMenu(){
       this.changeDrawer('')
       if(this.item.name == 'Salir'){
+        cache.delete('client')
+    cache.delete('token')
         cache.clear()
       }
       if(this.$navigator.path == '/home' && this.item.route == '/home'){

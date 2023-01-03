@@ -3,41 +3,44 @@
 buildscript {
 
   repositories {
-      maven { url "https://jitpack.io" }
+    maven { url "https://jitpack.io" }
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://maven.google.com' }
+    jcenter()
     google()
-
     mavenCentral()
-
   }
   dependencies {
-    classpath 'com.google.gms:google-services:4.3.13'
-
+    //classpath 'com.android.tools.build:gradle:+'
+    classpath 'com.google.gms:google-services:4.3.14'
   }
 }
+
 
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://maven.google.com' }
         google()
         mavenCentral()
     }
 }
 
-
-
 dependencies {
+
   //implementation 'androidx.multidex:multidex:2.0.1'
   //implementation 'jp.co.cyberagent.android:gpuimage:2.x.x'
   //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
   //implementation 'jp.wasabeef:picasso-transformations:2.4.0'
   implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+  implementation 'com.google.android.gms:play-services-location:21.0.1'
   // Import the Firebase BoM
-  implementation platform('com.google.firebase:firebase-bom:31.1.1')
-
+  //implementation platform('com.google.firebase:firebase-bom:31.1.1')
 
   // TODO: Add the dependencies for Firebase products you want to use
   // When using the BoM, don't specify versions in Firebase dependencies
-  implementation 'com.google.firebase:firebase-analytics'
+ // implementation 'com.google.firebase:firebase-analytics'
 
 
   // Add the dependencies for any other desired Firebase products
@@ -45,13 +48,16 @@ dependencies {
 }
 
 android {
-  // compileSdkVersion 32
+   compileSdkVersion 33
   // buildToolsVersion "32.0.0"
   // ndkVersion ""
 
   defaultConfig {
     minSdkVersion 21
-    // targetSdkVersion 32
+    targetSdkVersion 33
+    multiDexEnabled true
+    
+    //applicationId = "org.nativescript.modatexapp"
 
     // Version Information
     versionCode 1
@@ -64,3 +70,5 @@ android {
     additionalParameters "--no-version-vectors"
   }
 }
+
+//apply plugin: 'com.google.gms.google-services'
