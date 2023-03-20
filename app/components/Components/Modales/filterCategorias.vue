@@ -21,7 +21,7 @@
               :isViewActive="true"
               :isStore="isStore"
               verticalAlignment="center"
-              @ontapCategorie="ontapCategorie"
+              @ontapCategorie="ontapCategorie"id
             />
           </StackLayout>
           <StackLayout v-if="isSubcategorias" minHeight="250" width="100%" >
@@ -161,10 +161,10 @@
       // ...mapActions('stores',['getStoreRosa']),
       ...mapMutations('categories',['setCategorieActive','setSubcategoriesActive']),
       ...mapMutations('stores',['setStoreSubcategorieActive']),
-      ontapCategorie(){
+      ontapCategorie(id){
        
         this.setSubcategoriesActive('')
-        this.$modal.close()
+        this.$modal.close({id})
       },
       onTapSubcategorie(id){
 

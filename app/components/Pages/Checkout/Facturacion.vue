@@ -66,6 +66,8 @@
   import { mapState, mapMutations, mapActions } from 'vuex'
   import helpersMixin from '~/mixins/helpersMixin.js'
   import * as utils from "@nativescript/core/utils";
+  import { firebase } from '@nativescript/firebase';
+  
   export default {
     mixins: [helpersMixin],
     props: {
@@ -345,6 +347,9 @@
       },
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Facturacion`
+      });
 
       if(!this.comboDirecciones.length){
         this.getComboDirecciones({group_id: this.group_id}).then((response)=>{
@@ -392,6 +397,21 @@
         data.group_id = this.group_id
 
         this.buttonLoading = true
+
+          firebase.analytics.logEvent({
+            key: "checkout_facturacion",
+            parameters: [ // optional
+              {
+                key: "group_id",
+                value: this.group_id
+              },
+              {
+                key: "billing_type",
+                value: this.tipoActive.billing_type
+              }
+            ]
+          })
+
         this.datosFacturacion(data).then((response)=>{
           this.buttonLoading = false
           if(!this.isEdit){

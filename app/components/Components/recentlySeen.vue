@@ -1,10 +1,11 @@
 <template lang="html">
-  <StackLayout class="" padding="16">
-    <Label text="Visto recientemente" marginBottom="16" />
+  <StackLayout class="" padding="16 0">
+    <Label text="Visto recientemente" margin="0 16" />
     <RadListView 
       ref="recentlySeen"
       for="item in products"
       orientation="horizontal"
+      padding="0 0 0 16"
     >
       <v-template >
         <ProductBox

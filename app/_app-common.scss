@@ -1,9 +1,7 @@
 @import '@nativescript/theme/core';
 @import '@nativescript/theme/default';
 @import '@nativescript/theme/scss/variables/index';
-
 $modatexColor: #DA0080;
-
 page {
     font-size: 16;
 }
@@ -13,7 +11,7 @@ page {
     padding-right: 8;
 }
 
-.colorActive{
+.colorActive {
     color: $modatexColor !important;
 }
 
@@ -28,7 +26,6 @@ page {
     width: 40px;
     height: 40px;
 }
-
 
 // Place any CSS rules you want to apply on both iOS and Android here.
 // This is where the vast majority of your CSS code goes.
@@ -58,31 +55,33 @@ page {
 
 label {
     font-size: 16;
-
 }
 
 .label_enlace {
     color: #0080DA;
-    
 }
-.title_product, .title{
+
+.title_product,
+.title {
     font-size: 20;
     font-weight: 600;
     // color: #4D4D4D;
-
-    &.primary{
+    &.primary {
         color: $modatexColor;
     }
 }
-.subtitle_product{
+
+.subtitle_product {
     @extend .title_product;
     font-weight: 200;
     font-size: 12;
 }
-.price_product{
+
+.price_product {
     @extend .title_product;
     font-size: 20;
 }
+
 // Common page class
 .page__content {
     &-icon,
@@ -108,118 +107,124 @@ label {
     box-shadow: 0 -3 6 #00000029;
 }
 
-.btn{
+.btn {
     padding: 0 16;
     margin: 0;
     border-radius: 6;
     font-weight: bold;
     // @extend .shadow-xs;
     max-width: content;
-    &.btn-primary{
+    &.btn-primary {
         background-color: $modatexColor;
         color: white;
         border-color: $modatexColor;
     }
-
-    &.btn-info{
+    &.btn-tag {
+        background-color: rgba(#8e8e8e, .1);
+        font-size: 14;
+        border-color: rgba(#515151, .7);
+        color: black;
+    }
+    &.btn-info {
         background-color: #0080DA;
         color: white;
     }
-
-    &.btn-secondary{
+    &.btn-secondary {
         background-color: rgba(#0080DA, .6);
         color: white;
     }
-    &.btn-simple{
+    &.btn-simple {
         background-color: rgba(#CCD1D1, .6);
         color: black;
         width: 100%;
     }
-    &.btn-text{
+    &.btn-text {
         background-color: rgba(#8e8e8e, .1);
         font-size: 12;
         border-color: rgba(#8e8e8e, .7);
         color: rgba(#8e8e8e, .7);
     }
-
-    &.disabled{
+    &.disabled {
         border-color: rgba(#8e8e8e, 1);
         opacity: .3;
         color: #8e8e8e !important;
     }
-    &.btn-sm{
+    &.btn-sm {
         height: 35;
     }
-    &.btn-shadow-none{
+    &.btn-shadow {
+        @extend .shadow-xs;
+    }
+    &.btn-shadow-none {
         z-index: 0 !important;
         shadow: none !important;
     }
-    &.outline{
-      // border-color: $modatexColor;
-      border-width: 2;
-      background-color: transparent; 
-      // color: $modatexColor;
-        &.btn-primary{
+    &.outline {
+        // border-color: $modatexColor;
+        border-width: 2;
+        background-color: transparent;
+        // color: $modatexColor;
+        &.btn-primary {
             color: $modatexColor;
         }
     }
 }
 
-.btn-icon{
-  height: 32; 
-  width: 32; 
-  border-radius:6;
-  margin:0;
-  padding:0;
+.btn-icon {
+    height: 32;
+    width: 32;
+    border-radius: 6;
+    margin: 0;
+    padding: 0;
 }
 
-Switch#switch[checked=true]{
-    color:$modatexColor ;
+Switch#switch[checked=true] {
+    color: $modatexColor;
 }
 
-Switch#switch[checked=false]{
+Switch#switch[checked=false] {
     color: silver;
-    
-}
-Switch.switch[checked=true]{
-    color:$modatexColor ;
 }
 
-Switch.switch[checked=false]{
-    color: silver;
-    
+Switch.switch[checked=true] {
+    color: $modatexColor;
 }
-.box_shadow_card{
+
+Switch.switch[checked=false] {
+    color: silver;
+}
+
+.box_shadow_card {
     box-shadow: 1 4 5 #00000029;
 }
 
-.shadow{
-    box-shadow:  1 1 2 rgba(0,0,0,.3);
+.shadow {
+    box-shadow: 1 1 2 rgba(0, 0, 0, .3);
 }
 
-.shadow-xs{
-    box-shadow:  1 1 4 rgba(0,0,0,.2);
+.shadow-xs {
+    box-shadow: 1 1 4 rgba(0, 0, 0, .2);
 }
 
-.shadow-n1{
-    box-shadow: 0 -1 4 rgba(0,0,0,.1);
+.shadow-n1 {
+    box-shadow: 0 -1 4 rgba(0, 0, 0, .1);
 }
 
-.shadow-lg{
-    box-shadow:  0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-.shadow-xg{
-    box-shadow:  0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+.shadow-xg {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-.inputForm{
+.inputForm {
     placeholder-color: rgba($secondary-dark, .8);
     background: rgba($secondary-dark, .2);
     border-color: rgba($secondary-dark, .2);
     border-width: 1;
     font-weight: bold;
-    color:#4D4D4D;
+    color: #4D4D4D;
     font-size: 16;
     padding-left: 8;
     padding-bottom: 8;
@@ -227,24 +232,21 @@ Switch.switch[checked=false]{
     margin-left: 0;
     margin-right: 0;
     // height: 40;
-    &:focus{
-      // border-width: 1;
-      border-color: rgba($modatexColor, 1);
+    &:focus {
+        // border-width: 1;
+        border-color: rgba($modatexColor, 1);
     }
-
-    &.inLine-Left{
-        margin-right: 0; 
+    &.inLine-Left {
+        margin-right: 0;
     }
-    &.inLine-Rigth{
+    &.inLine-Rigth {
         margin-left: 0;
         padding-right: 8;
-
-        &:focus ~ .inLine-Left{
+        &:focus~.inLine-Left {
             border-color: $modatexColor;
         }
-
     }
-    &.inputNumberMax{
+    &.inputNumberMax {
         height: 120;
         font-weight: 900;
         text-alignment: center;
@@ -255,12 +257,12 @@ Switch.switch[checked=false]{
         font-size: 50;
         vertical-alignment: top;
     }
-
 }
-.selectForm{
+
+.selectForm {
     border-width: 1;
     font-weight: 600;
-    color:#4D4D4D;
+    color: #4D4D4D;
     font-size: 18;
     padding-left: 8;
     border-radius: 4;
@@ -268,12 +270,12 @@ Switch.switch[checked=false]{
     margin-right: 0;
     background: rgba($secondary-dark, .2);
     border-color: rgba($secondary-dark, .2);
-    .btn{
+    .btn {
         border-radius: 4;
     }
 }
 
-.btn-primary-default{
+.btn-primary-default {
     background: $modatexColor;
     height: 40;
     width: 200;
@@ -282,13 +284,13 @@ Switch.switch[checked=false]{
     border-radius: 6;
 }
 
-.btn-primary-layaut{
+.btn-primary-layaut {
     background: $modatexColor;
     height: 40;
     border-radius: 6;
     padding-left: 10;
     padding-right: 8;
-    Label{
+    Label {
         color: white;
         background-color: transparent;
         font-weight: 900;
@@ -296,11 +298,12 @@ Switch.switch[checked=false]{
         vertical-alignment: center;
         margin-left: 8
     }
-    Image{
+    Image {
         vertical-alignment: center;
     }
 }
-.badge{
+
+.badge {
     font-size: white;
     background-color: #F6842D;
     padding: 5;
@@ -310,88 +313,90 @@ Switch.switch[checked=false]{
     text-alignment: center;
     color: white;
 }
-.bg{
-  background-size: cover;
-  background-repeat: no-repeat;
+
+.bg {
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-.product_root{
-  &.border{
-    border-width: .5;
-  }
-  // border-color: black;
-  // background-color: red;
-}
-.product_img{
-  // height: 500px;
-}
-.product_text{
-  padding-left: 8;
-  padding-right: 8;
-  margin-top: 6;
-  padding-bottom: 8;
-
-  &-title{
-    font-size: 16;
-    font-weight: 900;
-  }
-  &-subtitle{
-    font-size: 10;
-    font-weight: 200;
-  }
-  &-mount{
-    color: $modatexColor;
-    font-size: 20;
-    font-weight: 900;
-    padding: 0;
-    margin:0;
-  }
-  &.tachado{
-    text-decoration: line-through;
-  }
+.product_root {
+    &.border {
+        border-width: .5;
+    }
+    // border-color: black;
+    // background-color: red;
 }
 
-.card{
+.product_img {
+    // height: 500px;
+}
+
+.product_text {
+    padding-left: 8;
+    padding-right: 8;
+    margin-top: 0;
+    padding-bottom: 8;
+    &-title {
+        font-size: 16;
+        font-weight: 900;
+    }
+    &-subtitle {
+        font-size: 10;
+        font-weight: 200;
+    }
+    &-mount {
+        color: $modatexColor;
+        font-size: 20;
+        font-weight: 900;
+        padding: 0;
+        margin: 0;
+    }
+    &.tachado {
+        text-decoration: line-through;
+    }
+}
+
+.card {
     padding: 8;
     border-radius: 6;
     @extend .shadow;
     width: 100%;
-    &.active{
+    &.active {
         // background-color: $modatexColor;
         // color: white;
-        label{
+        label {
             // color: white;
         }
     }
-    &.card-info{
+    &.card-info {
         background-color: #3498DB;
     }
-    &.shadoLg{
-        box-shadow:  0 2 10 rgba(0,0,0,.1);
+    &.shadoLg {
+        box-shadow: 0 2 10 rgba(0, 0, 0, .1);
     }
-    &.shadow-none{
+    &.shadow-none {
         box-shadow: none;
     }
-    &.border{
+    &.border {
         border-width: 1;
     }
-    &.border-light{
+    &.border-light {
         border-width: .5;
     }
-    &.no-radius{
-
+    &.no-radius {
         border-radius: 0;
     }
 }
-.category_box{
+
+.category_box {
     margin-top: 16;
     margin-bottom: 8;
     margin-right: 16;
     width: 60;
-    Label{
+    Label {
         text-align: center;
     }
-    FlexboxLayout{
+    FlexboxLayout {
         // background-color: #ECEFF1;
         border-width: 3;
         border-color: rgba(#CFD8DC, .4);
@@ -399,380 +404,405 @@ Switch.switch[checked=false]{
         width: 56;
         height: 56;
     }
-    &.active{
-        FlexboxLayout{
+    &.active {
+        FlexboxLayout {
             border-color: rgba($modatexColor, .4);
         }
     }
 }
-.card_product_horizontal{
+
+.card_product_horizontal {
     @extend .box_shadow_card;
     background-color: white;
     margin-right: 8;
     margin-bottom: 8;
     padding: 5;
     border-radius: 10;
-    .content_product_text{
+    .content_product_text {
         // padding: 10;
     }
-    Image{
+    Image {
         margin-right: 8;
     }
 }
 
-
-
-.idicator{
+.idicator {
     width: 10;
     height: 10;
     background-color: white;
     border-radius: 100%;
     margin-right: 5;
-    &.active{
+    &.active {
         background-color: $modatexColor;
     }
 }
-.listItemStore{
+
+.listItemStore {
     border-bottom-width: 1;
     border-color: rgba(#CFD8DC, .4);
     padding: 8;
     margin-bottom: 8;
 }
 
-.animation-pulse{
+.animation-pulse {
     animation-name: pulse;
     animation-duration: 2s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
 }
 
-.label_skeleton{
+.label_skeleton {
     background-color: #EEEEEE;
     height: 22;
     width: 180;
     border-radius: 3;
-    
     @extend .animation-pulse;
-    &.small{
+    &.small {
         height: 12;
     }
-    .item{
-      background: #DDDDDD;
+    .item {
+        background: #DDDDDD;
     }
 }
-
 
 @keyframes pulse {
     0% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
     }
-
     70% {
         transform: scale(1);
         box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
     }
-
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
 }
 
-
-.disabled{
+.disabled {
     background-color: rgba(#FFFFFF, .8);
     opacity: .8;
     color: #4d4d4d;
 }
 
-
-
-.menu{
-    .label{
+.menu {
+    .label {
         font-size: 20;
         font-weight: bold;
         color: #7b7b7b;
         text-transform: uppercase;
         margin-right: 16;
-        &.active{
+        &.active {
             color: #4d4d4d;
         }
     }
 }
-.bordercolor{
-    border-bottom-color: rgba(0,0,0,.05);
+
+.bordercolor {
+    border-bottom-color: rgba(0, 0, 0, .05);
 }
-.pedidoBox, .direccionBox{
-    .header{
+
+.pedidoBox,
+.direccionBox {
+    .header {
         border-bottom-width: 1;
-        border-bottom-color: rgba(0,0,0,.05);
+        border-bottom-color: rgba(0, 0, 0, .05);
         padding: 8;
     }
-    label{
-        margin: 0 ;
-        padding: 0 ;
+    label {
+        margin: 0;
+        padding: 0;
     }
 }
 
-.shadow-none{
+.shadow-none {
     box-shadow: none !important;
 }
 
-Button{
+Button {
     z-index: 0;
 }
 
-.menuProfile{
-  .label{
-    border-radius: 10;
-    font-size: 16;
-    font-weight: 500;
-    padding: 8 24;
-    // margin: 0;
-    margin-left: 8;
-    border-color:  rgba(#7b7b7b, .3); 
-    border-width: 1.5;
-    &.active{
-      border-color:  rgba($modatexColor, 1); 
-      border-width: 1.5;
-    }
-  }
-}
-
-.btn-car{
-  // background-color: red;
-  padding: 8;
-  &.active{
-    background-color: #DA0080;
-    .btn_header{
-      color: white;
-    }
-  }
-  Label{
-      color: white;
-  }
-  .btn_header{
-    color: #DA0080;
-  }
-}
-
-.productsCar{
-  .item{
-    border-bottom-width: 1;
-    padding-left: 0;
-  }
-  .talleSelect{
-        height:30;
-        padding:0 8 0 8;
-        justify-content:center;
-        align-items:center;
-        border-radius:6;
+.menuProfile {
+    .label {
+        border-radius: 10;
+        font-size: 16;
+        font-weight: 500;
+        padding: 8 24;
+        // margin: 0;
+        margin-left: 8;
+        border-color: rgba(#7b7b7b, .3);
+        border-width: 1.5;
+        &.active {
+            border-color: rgba($modatexColor, 1);
+            border-width: 1.5;
+        }
     }
 }
 
-.storeBox{
+.btn-car {
+    // background-color: red;
+    padding: 8;
+    &.active {
+        background-color: #DA0080;
+        .btn_header {
+            color: white;
+        }
+    }
+    Label {
+        color: white;
+    }
+    .btn_header {
+        color: #DA0080;
+    }
+}
+
+.productsCar {
+    .item {
+        border-bottom-width: 1;
+        padding-left: 0;
+    }
+    .talleSelect {
+        height: 30;
+        padding: 0 8 0 8;
+        justify-content: center;
+        align-items: center;
+        border-radius: 6;
+    }
+}
+
+.storeBox {
     border-width: .5;
 }
 
-.subcategorias{
+.subcategorias {
     margin-top: 16;
-    label{
-      margin-right: 16;
-      margin-bottom: 16;
-      padding: 8;
-      padding-left: 16;
-      padding-right: 16;
-      border-width: 1;
-      font-weight: 200;
-      border-radius: 10;
+    label {
+        margin-right: 16;
+        margin-bottom: 16;
+        padding: 8;
+        padding-left: 16;
+        padding-right: 16;
+        border-width: 1;
+        font-weight: 200;
+        border-radius: 10;
     }
 }
 
-.listSelect{
-  .option{
+.listSelect {
+    .option {
+        border-bottom-width: 1;
+        padding: 8 8 10 4;
+        margin-bottom: 8;
+    }
+}
+
+.item_ultimasbusquedas {
     border-bottom-width: 1;
     padding: 8 8 10 4;
     margin-bottom: 8;
-  }
 }
 
-.item_ultimasbusquedas{
-    border-bottom-width: 1;
-    padding: 8 8 10 4;
-    margin-bottom: 8;
-}
-
-.drop{
+.drop {
     // background: blue;
     border-top-left-radius: 6;
     border-top-right-radius: 6;
     // box-shadow: 0 -8 10 rgba(#17202A,.2);
 }
 
-.combinaciones{
+.combinaciones {
     border-color: rgba(#8e8e8e, .3);
 }
 
-.ns-light{
-  .header-full-logo{
-    background: $modatexColor; 
-  }
-  .product_root{
-    &.border{
-      border-color: rgba($primary, .05);
-    }
-  }
-  .productsCar{
-    .item{
-      border-color: rgba($primary, .05);
-    }
-    .talleSelect{
-        background-color:rgba(#8e8e8e, .2);
-    }
-  }
-  .card{
-    background:  rgba($grey-background, .1); 
-    .secondary{
-      background:  #F4F6F6;
-    }
-  }
-  .menuProfile{
-    .label{
-      background:  rgba($grey-background, .2);
-    }
-  }
-  .direccionBox{
-    &.active{
-      // background: $modatexColor;
-      // color: white;
-      border-color: $modatexColor;
-      border-width: 2;
-      label{
-        // color: white;
-      }
-    }
-  }
-  .btn-icon{
-    background:  rgba($grey-background, .1); 
-  }
-  .storeBox{
-    border-color:  rgba($grey-background, .6)
-  }
-  .subcategorias{
-    label{
-      border-color: #F4F6F6;
-    }
-  }
-  .listSelect{
-    .option{
-      border-color: #F4F6F6;
-    }
-  }
-  .drop{
-    background:  white; 
-  }
-}
-
-
-.ns-dark{
-  .header-full-logo{
-    // background:  rgba($primary, .05); 
-  }
-  .headertransparent{
-    background: rgba($primary, .4);
-  }
-  .inputForm{
-    border-color: transparent;
-    &:focus{
-      border-width: 1;
-      border-color: $modatexColor;
-    }
-    &.false{
-        color: rgba($secondary-dark, 1);
-        vertical-align: middle;
-    }
-  }
-  .product_root{
-    &.border{
-       border-color: rgba($secondary-dark, .05);
-    }
-  }
-  .productsCar{
-    .item{
-       border-color: rgba($secondary-dark, .05);
-    }
-    .talleSelect{
-       background-color:rgba(#8e8e8e, .7);
-    }
-  }
-  .card{
-    background:  rgba($primary, 1); 
-    .secondary, &.secondary{
-        background:  rgba($charcoal, 1);
-    }
-    &.box-btn{
-      background-color: #303030;
-    }
-  }
-  .menuProfile{
-    .label{
-      background:  rgba($primary, 1); 
-    }
-  }
-  .direccionBox{
-    &.active{
-      background: $modatexColor;
-      color: white;
-      label{
-        color: white;
-      }
-    }
-  }
-  .btn-icon{
-    background:  rgba($primary, 1); 
-  }
-  .storeBox{
-    border-color:  rgba($primary, 1);
-  }
-
-  .subcategorias{
-    label{
-      border-color: rgba($secondary-dark, .05);
-      &.active{
-        border-color: $modatexColor;
+.ns-light {
+    .header-full-logo {
         background: $modatexColor;
-        // color: white;
-      }
     }
-  }
-  .listSelect{
-    .option{
-      border-color: rgba($secondary-dark, .5);
+    .product_root {
+        &.border {
+            border-color: rgba($primary, .05);
+        }
     }
-  }
-  .drop{
-    background:  rgba($primary, 1); 
-  }
-  .label_skeleton{
-    background-color: rgba($primary, 1);
-    .item{
-      background: #141414;
+    .productsCar {
+        .item {
+            border-color: rgba($primary, .05);
+        }
+        .talleSelect {
+            background-color: rgba(#8e8e8e, .2);
+        }
     }
-  }
-  .bg-infoBox{
-    background-color: #DA0080;
-  }
-  .selectInput{
-    color: white;
-  }
+    .card {
+        background: rgba($grey-background, .1);
+        .secondary {
+            background: #F4F6F6;
+        }
+    }
+    .menuProfile {
+        .label {
+            background: rgba($grey-background, .2);
+        }
+    }
+    .direccionBox {
+        &.active {
+            // background: $modatexColor;
+            // color: white;
+            border-color: $modatexColor;
+            border-width: 2;
+            label {
+                // color: white;
+            }
+        }
+    }
+    .btn-icon {
+        // background: rgba($grey-background, .1);
+    }
+    .storeBox {
+        border-color: rgba($grey-background, .6)
+    }
+    .subcategorias {
+        label {
+            border-color: #F4F6F6;
+        }
+    }
+    .listSelect {
+        .option {
+            border-color: #F4F6F6;
+        }
+    }
+    .drop {
+        background: white;
+    }
 }
 
-.ns-modal{
+.toast {
+    padding: 16;
+    &.success {
+        background-color: #229954;
+    }
+    &.danger {
+        background-color: #CB4335;
+    }
+    &.primary {
+        background-color: $modatexColor;
+    }
+}
+
+.ns-dark {
+    .header-full-logo {
+        // background:  rgba($primary, .05); 
+    }
+    .headertransparent {
+        background: rgba($primary, .4);
+    }
+    .inputForm {
+        border-color: transparent;
+        &:focus {
+            border-width: 1;
+            border-color: $modatexColor;
+        }
+        &.false {
+            color: rgba($secondary-dark, 1);
+            vertical-align: middle;
+        }
+    }
+    .product_root {
+        &.border {
+            border-color: rgba($secondary-dark, .05);
+        }
+    }
+    .productsCar {
+        .item {
+            border-color: rgba($secondary-dark, .05);
+        }
+        .talleSelect {
+            background-color: rgba(#8e8e8e, .7);
+        }
+    }
+    .card {
+        background: rgba($primary, 1);
+        .secondary,
+        &.secondary {
+            background: rgba($charcoal, 1);
+        }
+        &.box-btn {
+            background-color: #303030;
+        }
+    }
+    .menuProfile {
+        .label {
+            background: rgba($primary, 1);
+        }
+    }
+    .direccionBox {
+        &.active {
+            background: $modatexColor;
+            color: white;
+            label {
+                color: white;
+            }
+        }
+    }
+    .btn-icon {
+        background: rgba($primary, 1);
+    }
+    .storeBox {
+        border-color: rgba($primary, 1);
+    }
+    .subcategorias {
+        label {
+            border-color: rgba($secondary-dark, .05);
+            &.active {
+                border-color: $modatexColor;
+                background: $modatexColor;
+                // color: white;
+            }
+        }
+    }
+    .listSelect {
+        .option {
+            border-color: rgba($secondary-dark, .5);
+        }
+    }
+    .drop {
+        background: rgba($primary, 1);
+    }
+    .label_skeleton {
+        background-color: rgba($primary, 1);
+        .item {
+            background: #141414;
+        }
+    }
+    .bg-infoBox {
+        background-color: #DA0080;
+    }
+    .selectInput {
+        color: white;
+    }
+}
+
+.ns-modal {
     // border-radius: 20;
 }
 
-.active-cupon-checkout{
-      background-color: #DA0080;
-      color: white;
+.active-cupon-checkout {
+    background-color: #DA0080;
+    color: white;
+}
+
+@keyframes example {
+    from {
+        transform: translate(900);
     }
+    to {
+        transform: translate(0);
+    }
+}
+
+.toastAnimate {
+    .toast {
+        animation-name: example;
+        animation-duration: .3s;
+        animation-fill-mode: forwards;
+    }
+}

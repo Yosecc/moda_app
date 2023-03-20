@@ -111,10 +111,12 @@
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   import homeMixin from '~/mixins/homeMixin.js'
   // import { Observable } from 'data/observable';
+  import { firebase } from '@nativescript/firebase';
+
   import { LoginManager, AccessToken } from '@nativescript/facebook';
   // import { login as fbLogin } from "nativescript-facebook";
   let auth_service_1 = require("../../../auth-service");
-import { Http } from '@nativescript/core'
+  import { Http } from '@nativescript/core'
   export default {
     mixins:[ homeMixin ],
     components:{
@@ -142,25 +144,33 @@ import { Http } from '@nativescript/core'
       ...mapMutations(['changeisLoading']),
       onLogin(){
         this.changeisLoading(true)
-        this.Login().then((response)=>{       
-          
+        this.Login().then((response)=>{
+
           this.defineHome().then((response)=>{
+            firebase.analytics.logEvent({ key: "login", parameters: []})
+
             this.options.clearHistory = true
             this.changeisLoading(false)
             this.$navigator.navigate('/home',this.options)
           })
         }).catch((e)=>{
           this.changeisLoading(false)
-          // console.log('e',e)
           if(e){
             e = JSON.parse(e)
             if(typeof e == 'object'){
+              console.log('pe',e)
               // console.log('mmm')
               for(var i in e){
-                // console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
-                e[i].forEach((i)=>{
-                  alert(`${i}`)
-                })
+                console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
+                if(typeof e[i] == 'object'){
+                  e[i].forEach((i)=>{
+                    alert(`${i}`)
+                  })
+                }
+
+                if(typeof e[i] == 'string'){
+                  alert(e[i])
+                }
               }
             } 
             
@@ -172,8 +182,9 @@ import { Http } from '@nativescript/core'
           const auth =  await auth_service_1.tnsOauthLogin('google').then((response)=>{
             this.apiAuthUserinfo(response.accessToken).then((datos)=>{
               this.LoginSocial({social_method: 'Google', ...datos}).then((response)=>{
-                console.log('d', response)
+                
                 this.defineHome().then((response)=>{
+                  firebase.analytics.logEvent({ key: "login_social_google", parameters: []})
                   this.options.clearHistory = true
                   this.changeisLoading(false)
                   this.$navigator.navigate('/home',this.options)

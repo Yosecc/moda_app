@@ -8,34 +8,36 @@
         marginTop="10"
         marginBottom="5"
         paddingLeft="0"
-        :marginLeft="-16"
-      >
-        <BtnMenu
-          v-show="!back" 
-          col="0"
-          horizontalAlignment="left" 
-          :marginLeft="-8"
-        ></BtnMenu>
         
-        <BtnBack
-          v-show="back"
-          col="0"
-          horizontalAlignment="left" 
-          :marginLeft="-8"
-        ></BtnBack>
-
+       
+      >
         <FlexboxLayout 
-          v-if="logoCenter"
-          col="1"
+          
+          col="0"
           alignItems="center"
           justifyContent="center"
+          
         >
+          <BtnMenu
+            v-show="!back" 
+            col="0"
+            horizontalAlignment="left" 
+          ></BtnMenu>
+        
+          <BtnBack
+            v-show="back"
+            col="0"
+            horizontalAlignment="left" 
+          ></BtnBack>
+
+          
+
           <Image 
-            src="~/assets/logo.png"
+            src="res://logo"
             padding="0"
             width="100"
             height="32"
-            marginTop="4"
+            v-if="logoCenter"
           />
         </FlexboxLayout >
 
@@ -45,23 +47,25 @@
           orientation="horizontal"
           col="2" 
         >
-      
+  
+          <BtnNotification
+            v-if="isNotification"
+            row="0"
+            col="2"
+            horizontalAlignment="right"
+          ></BtnNotification>
+
           <BtnCar
             v-if="isCar"
             row="0"
             col="2"
             horizontalAlignment="right"
           ></BtnCar>
-
-          <StackLayout v-else width="40"> </StackLayout>
           
-          <!-- <Image 
-            src="~/assets/icons/bell.png" 
-            padding="0"
-            width="32"
-            height="32"
-            opacity=".05"
-          /> -->
+          <BtnPromotions></BtnPromotions>
+
+          <!-- <StackLayout v-else width="40"> </StackLayout> -->
+
         </StackLayout>
       </GridLayout>
      
@@ -75,6 +79,8 @@
 import BtnBack from './BtnBack.vue'
 import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
+import BtnNotification from '~/components/Components/ActionBar/BtnNotification.vue'
+import BtnPromotions from '~/components/Components/ActionBar/BtnPromotions.vue'
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
   export default {
@@ -94,12 +100,18 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       isCar:{
         type: Boolean,
         default: true
-      }
+      },
+      isNotification:{
+        type: Boolean,
+        default: true
+      },
     },
     components:{
       BtnMenu,
       BtnBack,
-      BtnCar
+      BtnCar,
+      BtnNotification,
+      BtnPromotions
     },
     data() {
       return {

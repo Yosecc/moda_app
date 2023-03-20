@@ -73,7 +73,7 @@
   import infoPersonal        from '~/components/Components/Profile/infoPersonal.vue'
   import changePassword        from '~/components/Components/Profile/changePassword.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
-
+  import { firebase } from '@nativescript/firebase';
   import { mapState, mapMutations, mapGetters } from 'vuex'
 
   export default {
@@ -100,11 +100,11 @@
             component: 'Pedidos',
             active: true
           },
-          // {
-          //   label: 'Direcciones',
-          //   component: 'Direcciones',
-          //   active: false
-          // },
+          {
+            label: 'Direcciones',
+            component: 'Direcciones',
+            active: false
+          },
           {
             label: 'Cupones',
             component: 'Coupons',
@@ -133,7 +133,9 @@
       ...mapGetters('authentication',['client'])
     },
     mounted(){
-      // console.log('cupones',this.menu)
+      firebase.analytics.setScreenName({
+        screenName: `Profile`
+      });
       
     },
     methods:{

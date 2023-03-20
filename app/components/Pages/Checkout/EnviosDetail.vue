@@ -104,6 +104,8 @@
   import { mapState, mapMutations, mapActions } from 'vuex'
   import * as utils from "@nativescript/core/utils";
   import Sucursales from '~/components/Components/Checkout/Drawers/Sucursales.vue'
+  import { firebase } from '@nativescript/firebase';
+
   export default {
     mixins: [],
     props: {
@@ -167,6 +169,9 @@
       },
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Envios Detalle`
+      });
     },
     methods:{
       ...mapMutations('checkout',['addCostoEnvio','setDatosFacturacion']),

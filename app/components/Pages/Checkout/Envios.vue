@@ -59,6 +59,8 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import { mapState, mapMutations, mapActions } from 'vuex'
+  import { firebase } from '@nativescript/firebase';
+
   export default {
     mixins: [],
     props: {
@@ -92,6 +94,10 @@
       // 
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Envios`
+      });
+
       this.setEnvio(null)
       this.getEnvios({
         group_id: this.group_id
@@ -131,6 +137,19 @@
       },
       onselectMethodEnvio(){
         this.buttonLoading = true
+          firebase.analytics.logEvent({
+            key: "checkout_select_method_envio",
+            parameters: [ // optional
+              {
+                key: "group_id",
+                value: this.group_id
+              },
+              {
+                key: "method",
+                value: this.envios._array.find((e)=> e.active == true).method
+              }
+            ]
+          })
         this.selectMethodEnvio({
           group_id: this.group_id,
           method: this.envios._array.find((e)=> e.active == true).method

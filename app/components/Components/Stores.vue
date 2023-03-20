@@ -12,17 +12,6 @@
         :store="store"
         v-if="isLoadPage"
       />
-      <!-- <StackLayout
-        v-if="!isLoadPage"
-        v-for="i in 4"
-        :key="`storebox-${i}`"
-        marginRight="16"
-        marginBottom="8"
-        borderRadius="10"
-        backgroundImage="res://eskeleton"
-        width="100"
-        height="100"
-      /> -->
 
     </StackLayout>
   </ScrollView>

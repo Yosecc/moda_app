@@ -251,7 +251,8 @@
   import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
   import BtnAddCar from './BtnAddCar'
   import storeMixin from '~/mixins/storeMixin.js'
-  // import productMixin from '~/mixins/productMixin.js'
+  import { firebase } from '@nativescript/firebase';
+
 
   export default {
     mixins: [storeMixin],
@@ -331,6 +332,9 @@
       }
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Product: ${this.producto.id}`
+      });
       this.getProduct(this.product.id).then((response)=>{
         
       this.changeCombinaciones = false
@@ -394,19 +398,9 @@
         this.openDrop = true
         this.$refs.drawerProduct.showDrawer();
       },
-      // pageLoaded(arg){
-      //   // this.heightDrop = this.$refs.Gridlayout.nativeView.getActualSize().height 
-      // },
-      // navigated(arg){
-      //   // this.heightDrop = this.$refs.Gridlayout.nativeView.getActualSize().height
-      // },
-      // onLoaded(arg){
-      //   // arg.object.android.setMinLines(2)
-      // },
       onshowDrop(to){
         this.showDrop = to
       },
-    
       addCombinacion(data){
 
         if(data.combinacion_key != null){
@@ -419,6 +413,23 @@
             this.combinaciones.push(data) 
           }
         }
+            firebase.analytics.logEvent({
+                key: "add_combinacion_product",
+                parameters: [
+                  {
+                    key: 'product_id',
+                    value: this.product.id
+                  },
+                  {
+                    key: 'talle',
+                    value: data.talleActive
+                  },
+                  {
+                    key: 'color',
+                    value: data.colorActive
+                  }
+                ]
+            })
         this.$refs.drawerProduct.closeDrawer();
         this.reload()
       },
@@ -434,9 +445,6 @@
           this.$forceUpdate()
         },1)
       },
-     
-        // 
-      
     }
     
   };

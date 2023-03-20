@@ -158,6 +158,7 @@
     },
     methods:{
       ...mapActions('profile',['setDireccionDefault','getDirecciones','changePrincipalAddress']),
+      ...mapMutations(['changeToast']),
       onTapEditar(item){
         this.$navigator.navigate('/direcciones_form',{
           transition: {
@@ -195,6 +196,12 @@
           // if(this.limit == 0){
             this.changePrincipalAddress(this.principalAddress.id).then((response)=>{
               this.loading = true
+              this.changeToast({
+                  title: response.message,
+                  status: true,
+                  type: 'success',
+                  message: ''
+              })
               this.getDirecciones().then((response)=>{
                 this.loading = false
                 this.limit++

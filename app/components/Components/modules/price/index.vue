@@ -22,7 +22,8 @@
           fontSize="24"
           fontWeight="800"
           :class="priceOffert ? 'product_text-mount':''"
-          class="price"   
+          class="price" 
+          color="black"  
         />
        
         <Label 

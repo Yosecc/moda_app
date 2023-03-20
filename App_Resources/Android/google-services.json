@@ -7,64 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:198583103200:android:80d1487f4a2ca7540cea85",
+        "mobilesdk_app_id": "1:198583103200:android:b69ae812aa98c5800cea85",
         "android_client_info": {
           "package_name": "com.modatex.app"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "198583103200-9vnjhpn87e19cb5ijhh5n79a47b7v9n6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.modatex.app",
-            "certificate_hash": "1d03f7502a08373b935ac09cd4835692a1c25721"
-          }
-        },
-        {
-          "client_id": "198583103200-b6q4n4oau87afdf8fvdn79uslfk74hl1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCCPyLvX7YzZ2UWjcGLyqfgPLN4TS2vjyM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "198583103200-b6q4n4oau87afdf8fvdn79uslfk74hl1.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "198583103200-esbqglrhnnlmn0huuuvr5p8sna97e0vn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.tns.NativeScriptApplication"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:198583103200:android:aa8aa734b40adf2f0cea85",
-        "android_client_info": {
-          "package_name": "com.tns.NativeScriptApplication"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "198583103200-hop91dg1lg6otmnrgkq147ag3rcordgq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.tns.NativeScriptApplication",
-            "certificate_hash": "1d03f7502a08373b935ac09cd4835692a1c25721"
-          }
-        },
         {
           "client_id": "198583103200-b6q4n4oau87afdf8fvdn79uslfk74hl1.apps.googleusercontent.com",
           "client_type": 3

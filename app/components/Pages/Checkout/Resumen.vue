@@ -280,6 +280,7 @@
   import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
   import { mapState, mapMutations,mapGetters, mapActions } from 'vuex'
   import moment from 'moment'
+  import { firebase } from '@nativescript/firebase';
 
   export default {
     mixins: [],
@@ -379,6 +380,10 @@
       },
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Resumen`
+      });
+      
       this.loading = true
       this.getResumen({
         group_id: this.group_id
@@ -410,6 +415,18 @@
           group_id: this.group_id
         }).then((response)=>{
           this.setnumeroPedido(response.purchase_id)
+          firebase.analytics.logEvent({
+            key: "checkout_success",
+            parameters: [ // optional
+              {
+                key: "group_id",
+                value: this.group_id
+              },
+              {
+                key: "purchase_id",
+                value: response.purchase_id
+              }]
+          })
           this.$navigator.navigate('/success')
         }).catch((error)=>{
           this.buttonLoading = false

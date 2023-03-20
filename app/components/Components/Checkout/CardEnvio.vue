@@ -7,81 +7,66 @@
       class="card"
 
     >
-      <!-- <AbsoluteLayout height="100%" width="100%" > -->
+      <StackLayout
+        top="8"
+        left="8">
+        <StackLayout orientation="horizontal">
+          
+          <image 
+            top="16"
+            left="64"
+            width="35"
+            :src="envio.active ? `${envio.icon}_white`:envio.icon" 
+            stretch="aspectFill" 
+          /> 
 
-        <!-- -->
+          <Label 
+            class="title"
+            fontSize="20"
+            fontWeight="900"
+            margin="0 0 0 6"
+            padding="0"
+            :color="envio.active ? 'white':''"
+            :text="envio.title" 
+          />
 
-          <StackLayout
-            top="8"
-            left="8">
-            <StackLayout orientation="horizontal">
-              
-              <image 
-                top="16"
-                left="64"
-                width="35"
-                :src="envio.active ? `${envio.icon}_white`:envio.icon" 
-                stretch="aspectFill" 
-              /> 
+        </StackLayout>
+        <Label 
+          class="title"
+          fontSize="14"
+          fontWeight="600"
+          textWrap="true"
+          :marginBottom="envio.precios.length ? 16:''"
+          :color="envio.active ? 'white':''"
+          :text="envio.description" 
+        />
 
-              <Label 
-                class="title"
-                fontSize="20"
-                fontWeight="900"
-                margin="0 0 0 6"
-                padding="0"
-                :color="envio.active ? 'white':''"
-                :text="envio.title" 
-              />
-
-            </StackLayout>
-            <Label 
-              class="title"
-              fontSize="14"
-              fontWeight="600"
-              textWrap="true"
-              :marginBottom="envio.precios.length ? 16:''"
-              :color="envio.active ? 'white':''"
-              :text="envio.description" 
-            />
-
-            <Label 
-              v-for="(precio, key) in envio.precios"
-              :key="`precio-${envio.id}-${key}`"
-              v-if="envio.precios.length && !envio.isFree"
-              fontSize="14"
-              fontWeight="600"
-              textWrap="true"
-              margin="0 0 8 16"
-              padding="0"
-              :color="envio.active ? 'white':''"
-              :text="precio" 
-            />
-
-            <label fontSize="20" textAlignment="center" textTransform="uppercase" fontWeight="900" text="Envío gratis" v-if="envio.isFree" />
-
-            <Label 
-              fontSize="14"
-              fontWeight="300"
-              textWrap="true"
-              marginTop="8"
-              :color="envio.active ? 'white':''"
-              :text="envio.description2" 
-            />
-
-          </StackLayout>
-      <!-- </AbsoluteLayout> -->
-        
-        <!-- <StackLayout 
-          margin="0" 
-          marginLeft="8"
+        <Label 
+          v-for="(precio, key) in envio.precios"
+          :key="`precio-${envio.id}-${key}`"
+          v-if="envio.precios.length && !envio.isFree"
+          fontSize="14"
+          fontWeight="600"
+          textWrap="true"
+          margin="0 0 8 16"
           padding="0"
-          v-for="(e, ke) in envio.precios" 
-          :key="`${envio.id}-precios-${ke}`">
-          <Label  :color="envio.active ? 'white':''" margin="0" padding="0" :text="e" />
-        </StackLayout> -->
-        
-        <!-- <Label  :color="envio.active ? 'white':''"  textWrap :text="envio.description" /> -->
+          :color="envio.active ? 'white':''"
+          :text="precio" 
+        />
+
+        <label fontSize="20" textAlignment="center" textTransform="uppercase" fontWeight="900" text="Envío gratis" v-if="envio.isFree" />
+
+        <Label 
+          fontSize="14"
+          fontWeight="300"
+          textWrap="true"
+          marginTop="8"
+          :color="envio.active ? 'white':''"
+          :text="envio.description2" 
+        />
+
+      </StackLayout>
+       
     </StackLayout> 
   </StackLayout>
 </template>

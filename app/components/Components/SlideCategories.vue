@@ -1,6 +1,6 @@
 <template lang="html">
-  <StackLayout>
-    <GridLayout v-if="categoriesComputed && !isStore" :columns="columns" :rows="rows">
+  <StackLayout padding="0">
+    <!-- <GridLayout v-if="categoriesComputed && !isStore" :columns="columns" :rows="rows">
       <StackLayout 
         @tap="onTap(item)"
         v-for="(item,key) in categoriesComputed" 
@@ -48,12 +48,43 @@
         </AbsoluteLayout>
       </StackLayout>
 
-    </GridLayout>
+    </GridLayout> -->
   
 
-     <ScrollView v-if="isStore" orientation="horizontal" :scrollBarIndicatorVisible="false">
-       <StackLayout orientation="horizontal">
-        <StackLayout 
+     <ScrollView orientation="horizontal" :scrollBarIndicatorVisible="false">
+       <StackLayout  orientation="horizontal">
+        <FlexboxLayout
+          v-for="(item,key) in categoriesComputed" 
+          :key="`category${key}`"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          marginRight="0"
+          padding="0 8 0 8"
+          @tap="onTap(item)"
+        >
+          <FlexboxLayout 
+            background="white"
+            class="box_shadow_card"
+            padding="16"
+            
+            borderRadius="100%"
+            borderColor="#f5f5f5"
+            borderWidth="1"
+            alignItems="center"
+            justifyContent="center"
+            horizontalAlignment="center"
+          >
+            <Image 
+              :src="item.icon"
+              stretch="aspectFit"
+              horizontalAlignment="center"
+              verticalAlignment="center"
+            />
+          </FlexboxLayout >
+          <Label :text="item.name" textAlignment="center" fontSize="12" color="black" fontWeight="100" />
+        </FlexboxLayout>
+        <!-- <StackLayout 
           @tap="onTap(item)"
           v-for="(item,key) in categoriesComputed" 
           :key="`category${key}`"
@@ -98,7 +129,7 @@
               />
             </StackLayout>
           </AbsoluteLayout>
-        </StackLayout>
+        </StackLayout> -->
        </StackLayout>
      </ScrollView>
   </StackLayout>
@@ -110,12 +141,13 @@
 // import { ScrollEventData } from '@nativescript/core/ui/scroll-view';
 // import { EventData } from '@nativescript/core/ui/core/view';
 // import { Utils, Device } from '@nativescript/core'
+import { firebase } from '@nativescript/firebase';
 
 import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
   export default {
     props:{
       categories:{
-        type: Array,
+        type: Array|Object,
         default:[]
       },
       rows:{
@@ -187,13 +219,35 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       onTap(item){
 
         if(!this.isStore){
-          // console.log('llewga', this.categorieActive)
-          this.setCategorieActive(item.id)
-
-          this.changeParamsProductsSearch({sections:[this.categorieActive],page:1})
 
           if(this.navigate){
-            this.$navigator.navigate('/search',{
+            firebase.analytics.logEvent({
+              key: "on_search_category",
+              parameters: []
+            }).then(
+                function () {
+                  console.log("Firebase Analytics event logged");
+                }
+            );
+
+            if(item.type && item.type == 'search'){
+              this.$navigator.navigate('/search',{
+                transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+                props:{
+                  params:{
+                    search: item.search,
+                    section: []
+                  },
+                }
+              })
+              return
+            }
+
+            this.$navigator.navigate('/categories',{
               transition: {
                 name: 'slideLeft',
                 duration: 300,
@@ -202,9 +256,8 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
               props:{
                 params:{
                   search: '',
-                  section: this.categorieActive
+                  section: item.id
                 },
-                isCategorie: true
               }
             })
           }
@@ -213,13 +266,11 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
           this.changeParamsStores({categorie: this.categorieActiveGetters.key })
           this.setStoreCategorieActive(item.id)
         }
-        // this.changeParamsProducts({categorie: this.categorieActiveGetters.key, sections: this.categorieActiveGetters.key })
 
-        this.$emit('ontapCategorie')
+        this.$emit('ontapCategorie',item.id)
         
       },
       onImageLoaded(arg){
-        // console.log('ase',arg)
       },
       categorieActiveMethod(id){
         if(!this.isStore){

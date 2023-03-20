@@ -66,10 +66,12 @@
 	import BtnCar from '../Components/BtnActions/BtnCar.vue'
 	import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 	import Talles from '~/components/Pages/Product/Talles'
-  import Colores from '~/components/Pages/Product/Colores'
-  import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
-  import carMixin from '~/mixins/carMixin.js'
+  	import Colores from '~/components/Pages/Product/Colores'
+  	import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
+  	import carMixin from '~/mixins/carMixin.js'
 	import { ObservableArray } from '@nativescript/core/data/observable-array';
+	import { firebase } from '@nativescript/firebase';
+	
   export default {
   	mixins: [carMixin],
     components:{
@@ -109,7 +111,9 @@
 	  	
 	  },
 	  mounted(){
-	  	// this.isload = false
+		firebase.analytics.setScreenName({
+			screenName: "Shopping Center"
+		});
 	  	this.mountedCars()
 	  },
 		methods:{

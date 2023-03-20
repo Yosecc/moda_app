@@ -25,45 +25,11 @@
         ></BtnBack>
 
 
-
-        <FlexboxLayout 
-          col="1"
-          alignItems="center"
-          justifyContent="center"
-        >
-
-          <ImageCache 
-            placeholderStretch="aspectFill"
-            placeholder="res://eskeleton"
-            :src="categorie.icon"
-            width="30"
-            height="30"
-            stretch="aspectFill"
-            marginRight="8"
-            marginBottom="8"
-            marginTop="8"
-            class=""
-            rounded="true"
-          /> 
-
-          <StackLayout orientation="horizontal">
-            <Label  horizontalAlignment="left" margin="0" padding="0" text="Tiendas / " textTransform="capitalize" fontWeight="900" fontSize="14" />
-            <Label  horizontalAlignment="left" margin="0" padding="0" :text="categorie.name" textTransform="capitalize" fontWeight="900" fontSize="14" />
-            <!-- <label
-             margin="0" padding="0"
-         
-            marginBottom="0" 
-              horizontalAlignment="left" 
-                fontWeight="300"
-                fontSize="10">
-                <FormattedString>
-                  <span  text="Compra mínima en la tienda: "></span>
-                  <span :text="store.min | moneda " style="color: #DA0080"></span>
-                </FormattedString>
-              </label> -->
+          <StackLayout col="1" orientation="horizontal">
+            <Label  horizontalAlignment="left" margin="0" padding="0" text="Marcas: " textTransform="uppercase" fontWeight="900" fontSize="16" />
+            <Label  horizontalAlignment="left" margin="0" padding="0" :text="categorie.name" textTransform="uppercase" fontWeight="900" fontSize="16" />
           </StackLayout>
 
-        </FlexboxLayout >
         
         <StackLayout
           orientation="horizontal"

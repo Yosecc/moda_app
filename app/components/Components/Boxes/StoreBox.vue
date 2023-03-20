@@ -8,7 +8,7 @@
         stretch="aspectFill"
         marginRight="16"
         marginBottom="8"
-        marginTop="8"
+        marginTop="0"
         class="storeBox"
         @tap="onTap"
       /> 

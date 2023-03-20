@@ -130,8 +130,8 @@
             label: 'Provincia',
             title: 'Seleccione su provincia',
             hint: 'Seleccion su provincia',
-            values: provincias,
-            campos: {id: 'id', name: 'nombre_completo'},
+            // values: provincias,
+            campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
               this.opendDrwer(input)
@@ -194,11 +194,14 @@
 
     },
     computed:{
-      // ...mapState('checkout',['coupon','coupons']),
+
     },
-    mounted(){
+    async mounted(){
+      await this.getStates().then((response)=>{
+        this.inputs.find((e)=> e.name == 'STAT_NUM').values = response
+      })
+      
       if(this.item){
-        console.log('item',this.item)
         const data = this.item.detalle
         for (var i in data) {
           let index = this.inputs.findIndex( (e) =>  e.name == i  )
@@ -206,18 +209,20 @@
             this.inputs[index].model = data[i]
 
             if(this.inputs[index].typeInput == 'select'){
-              console.log('select',this.inputs[index] )
-              let title = this.inputs[index].values.find((e)=> e[this.inputs[index].campos.id] == this.inputs[index].model)
-              console.log('title',title)
-              this.inputs[index].title = title != undefined ? title[this.inputs[index].campos.name]:''
+              if(this.inputs[index].values && this.inputs[index].values.length){
+
+                let title = this.inputs[index].values.find((e)=> e[this.inputs[index].campos.id] == this.inputs[index].model)
+                this.inputs[index].title = title != undefined ? title[this.inputs[index].campos.name]:''
+              }
             }
           }
         }
       }
     },
     methods:{
-      // ...mapMutations(['changeDrawerCar','changeDrawer']),
       ...mapActions('profile',['addDireccion','updateDireccion','getDirecciones']),
+      ...mapActions(['getStates']),
+      ...mapMutations(['changeToast']),
       opendDrwer(input){
         this.select = input
         this.$refs.drawerSelect.showDrawer();
@@ -225,37 +230,35 @@
       },
       async onTapSave(){
         const data = this.prepareData(this.inputs)
-        console.log(data)
-
         if(!this.errors.length){
           this.loading = true
+          let title = ''
           if(this.type == "edit"){
+            title = 'Registro actualizado'
             await this.updateDireccion({ data: data, id: this.item.id })
           }else{
+            title = 'Registro creado'
+
             await this.addDireccion(data)
           }
+          this.changeToast({
+              title: title,
+              status: true,
+              type: 'success',
+              message: ''
+          })
           await this.getDirecciones()
           this.loading = false
           this.$navigator.back()
         }
-        
       },
       onDrawerClosed(){
         // this.changeDrawer('close')
       },
       change(value){
-
         setTimeout(()=>{
           this.$refs.drawerSelect.closeDrawer(); 
         }, 500)
-
-        // this.inputs.forEach((input)=>{
-        //   if(input.name == this.valueSelect.name){
-        //     input.model == this.valueSelect.model
-        //     input.tile = this.valueSelect.title
-        //   }
-        // })
-       // console.log('valor model' ,this.valueSelect, this.inputs)
       }
     }
     

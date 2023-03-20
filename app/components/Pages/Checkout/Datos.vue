@@ -30,6 +30,8 @@
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import helpersMixin from '~/mixins/helpersMixin.js'
   import { mapState, mapMutations, mapActions } from 'vuex'
+  import { firebase } from '@nativescript/firebase';
+
   export default {
     mixins: [helpersMixin],
     props: {
@@ -190,7 +192,7 @@
       // },
     },
     computed:{
-      ...mapState('checkout',['coupon','coupons','typeFactura']),
+      ...mapState('checkout',['coupon','coupons','typeFactura','group_id']),
       ...mapState('profile',['infoPersonal']),
       inputsStep (){
         if(this.typeFactura == 1){
@@ -219,6 +221,10 @@
       }
     },
     mounted(){
+
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Datos`
+      });
 
       const quitar_campos = ['email','sex','mobile','phone_company'];
 
@@ -266,6 +272,15 @@
       async oneditClient(){
         const obj = this.prepareData(this.infoPersonal)
         await this.editClient(obj)
+          firebase.analytics.logEvent({
+            key: "checkout_edit_client",
+            parameters: [ // optional
+              {
+                key: "group_id",
+                value: this.group_id
+              }
+            ]
+          })
           this.$navigator.navigate('/envios',{
                   transition: {
                     name: 'slideLeft',

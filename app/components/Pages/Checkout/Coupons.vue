@@ -34,6 +34,7 @@
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import { mapState, mapMutations, mapActions } from 'vuex'
     import CuponBox from '~/components/Components/Boxes/CuponBox.vue'
+    import { firebase } from '@nativescript/firebase';
   export default {
     mixins: [],
     props: {
@@ -80,6 +81,9 @@
       // 
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Cupones`
+      });
       this.coupons._array.forEach((e)=>{
 
         if(e.stat_cd == '2000'){

@@ -296,6 +296,7 @@
   import storeMixin from '~/mixins/storeMixin.js'
   import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
+  import { firebase } from '@nativescript/firebase';
 
   export default {
     mixins: [carMixin, storeMixin],
@@ -334,6 +335,10 @@
 
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Cart: ${this.store.name}`
+      });
+
       this.isLoading = true
       this.loadCart()
     },
@@ -374,6 +379,24 @@
         })
 
         this.processCart(this.car_id).then((response)=>{
+
+          firebase.analytics.logEvent({
+            key: "process_cart",
+            parameters: [ // optional
+              {
+                key: "store_id",
+                value: this.store.local_cd ? this.store.local_cd : this.store.id 
+              },
+              {
+                key: "store_name",
+                value: this.store.name
+              },
+              {
+                key: "group_id",
+                value: response.cart.data.group_id
+              }
+            ]
+          })
           if(response.cart.status == 'success'){
             this.setGroupId(response.cart.data.group_id)
             if(response.is_missing_data.status == 'missing_data'){

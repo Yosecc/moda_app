@@ -9,15 +9,17 @@ import Home from './components/Pages/Home.vue'
 
 import ShoppingCenter from './components/Pages/ShoppingCenter.vue'
 import Search from './components/Pages/Search.vue'
+import Promotion from './components/Pages/Promotion.vue'
+import Categories from './components/Pages/Categories.vue'
 
 import Product from './components/Pages/Product/index.vue'
 import Store from './components/Pages/Store.vue'
 
 import AllStores from './components/Pages/Store/AllStores.vue'
 
-import HowToBuy from './components/Pages/SubPages/HowToBuy.vue' 
-import Shipping from './components/Pages/SubPages/Shipping.vue' 
-import MetodosPagoView from './components/Pages/SubPages/MetodosPagoView.vue' 
+import HowToBuy from './components/Pages/SubPages/HowToBuy.vue'
+import Shipping from './components/Pages/SubPages/Shipping.vue'
+import MetodosPagoView from './components/Pages/SubPages/MetodosPagoView.vue'
 
 
 import webView from './components/Pages/WebViews/offerts.vue'
@@ -48,112 +50,131 @@ import methodsPaymentsModal from './components/Components/Modales/methodsPayment
 import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue'
 import confirmCart from '~/components/Components/Modales/confirmCart.vue'
 
-export const routes = {
+import Nofitications from '~/components/Pages/Notifications/index.vue'
+import fullModal from '~/components/Components/Modales/fullModalComponent.vue'
 
-  '/discount_especial':{
-    component: DiscountsEspeciales
-  },
-  '/payment_methods':{
-    component: MetodosPagoView
-  },
-  '/confirm_cart':{
-    component: confirmCart
-  },
-  '/facturacion':{
-    component: Facturacion
-  },
-  '/detalle_checkout':{
-    component: detalleCheckout
-  },
-  '/methods_payments':{
-    component: methodsPaymentsModal
-  },
-  '/detail_car':{
-    component: detailCar
-  },
-  '/shipping':{
-    component: Shipping
-  },
-  '/tiendas_modal':{
-    component: tiendasModal
-  },
-  '/register': {
-    component: Register,
-  },
-  '/login': {
-    component: Login,
-  },
-  '/recover_password':{
-    component: RecoverPassword
-  },
-  '/set_categories':{
-    component: SetCategories
-  },
-  '/terms_and_conditions':{
-    component: TermsAndConditions
-  },
-  '/code_validation':{
-    component: CodeValidation
-  },
-  '/home':{
-    component: Home
-  },
-  '/shopping_center':{
-    component: ShoppingCenter
-  },
-  '/search':{
-    component: Search
-  },
-  '/how_to_buy':{
-    component: HowToBuy
-  },
-  '/product':{
-    component: Product
-  },
-  '/store':{
-    component: Store
-  },
-  '/web_view':{
-    component: webView
-  },
-  '/all_stores':{
-    component: AllStores
-  },
-  '/coupons':{
-    component: Coupons
-  },
-  '/envios':{
-    component: Envios
-  },
-  '/envios_detail':{
-    component: EnviosDetail
-  },
-  '/metodo_pago':{
-    component: MetodoPago
-  },
-  '/metodo_pago_detail':{
-    component: MetodoPagoDetail
-  },
-  '/resumen':{
-    component: Resumen
-  },
-  '/success':{
-    component: Success
-  },
-  '/datos':{
-    component: Datos  
-  },
-  '/profile' : {
-    component: Profile
-  },
-  '/direcciones_form':{
-    component: DireccionesForm
-  },
-  '/pedido':{
-    component: Pedido
-  },
-  '/filter_categorias':{
-    component: filterCategorias
-  }
-  
+import Promotions from '~/components/Pages/Promotions/index.vue'
+
+export const routes = {
+    '/promotions': {
+        component: Promotions
+    },
+    '/promotion': {
+        component: Promotion
+    },
+    '/fullModal': {
+        component: fullModal
+    },
+    '/categories': {
+        component: Categories
+    },
+    '/notifications': {
+        component: Nofitications
+    },
+    '/discount_especial': {
+        component: DiscountsEspeciales
+    },
+    '/payment_methods': {
+        component: MetodosPagoView
+    },
+    '/confirm_cart': {
+        component: confirmCart
+    },
+    '/facturacion': {
+        component: Facturacion
+    },
+    '/detalle_checkout': {
+        component: detalleCheckout
+    },
+    '/methods_payments': {
+        component: methodsPaymentsModal
+    },
+    '/detail_car': {
+        component: detailCar
+    },
+    '/shipping': {
+        component: Shipping
+    },
+    '/tiendas_modal': {
+        component: tiendasModal
+    },
+    '/register': {
+        component: Register,
+    },
+    '/login': {
+        component: Login,
+    },
+    '/recover_password': {
+        component: RecoverPassword
+    },
+    '/set_categories': {
+        component: SetCategories
+    },
+    '/terms_and_conditions': {
+        component: TermsAndConditions
+    },
+    '/code_validation': {
+        component: CodeValidation
+    },
+    '/home': {
+        component: Home
+    },
+    '/shopping_center': {
+        component: ShoppingCenter
+    },
+    '/search': {
+        component: Search
+    },
+    '/how_to_buy': {
+        component: HowToBuy
+    },
+    '/product': {
+        component: Product
+    },
+    '/store': {
+        component: Store
+    },
+    '/web_view': {
+        component: webView
+    },
+    '/all_stores': {
+        component: AllStores
+    },
+    '/coupons': {
+        component: Coupons
+    },
+    '/envios': {
+        component: Envios
+    },
+    '/envios_detail': {
+        component: EnviosDetail
+    },
+    '/metodo_pago': {
+        component: MetodoPago
+    },
+    '/metodo_pago_detail': {
+        component: MetodoPagoDetail
+    },
+    '/resumen': {
+        component: Resumen
+    },
+    '/success': {
+        component: Success
+    },
+    '/datos': {
+        component: Datos
+    },
+    '/profile': {
+        component: Profile
+    },
+    '/direcciones_form': {
+        component: DireccionesForm
+    },
+    '/pedido': {
+        component: Pedido
+    },
+    '/filter_categorias': {
+        component: filterCategorias
+    }
+
 }

@@ -5,16 +5,17 @@
       class="d"
       height="40" 
       width="40" 
-
+      
       borderRadius="6"
       marginRight="8"
       marginLeft="0"
       paddingLeft="0"
     >
     <Image 
-      src="~/assets/icons/burger.png" 
-      width="20" 
-      height="15" 
+      src="res://burger" 
+      width="28" 
+      height="28"
+      :marginLeft="-10"
     />
 
   </GridLayout>

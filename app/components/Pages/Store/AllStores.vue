@@ -8,103 +8,101 @@
     :back="true"
     :categorie="categorieActiveGetters"
   />
-
-
-
   <GridLayout columns="*" rows="auto, auto, *" >
 
     <GridLayout row="1"  height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
-        <SearchBar 
-          col="0"
-          class="inputForm" 
-          hint="Buscar tienda"
-          width="100%"
-          height="40"
-          marginTop="16"
-          borderRadius="8"
-          v-model="filterName"
-          @submit="onSubmit"
-        />
-        <Image 
-          col="1"
-          src="~/assets/icons/filter.png"
-          horizontalAlignment="right"
-          width="40"
-          height="40"
-          marginTop="16"
-          @tap="openFilter"
-        />
-      </GridLayout>
+      <SearchBar 
+        col="0"
+        class="inputForm" 
+        hint="Buscar tienda"
+        width="100%"
+        height="40"
+        marginTop="16"
+        borderRadius="8"
+        v-model="filterName"
+        @submit="onSubmit"
+      />
+      <Image 
+        col="1"
+        src="~/assets/icons/filter.png"
+        horizontalAlignment="right"
+        width="40"
+        height="40"
+        marginTop="16"
+        @tap="openFilter"
+      />
+    </GridLayout>
     
-<StackLayout padding="0 8" row="2">
-    <RadListView 
-      ref="listStores"
-      id="listStores"
-      for="store in stores"
-      layout="grid"
-      itemWidth="50%"
-      @loaded="onloadied"
-      :pullToRefresh="true"
-      @pullToRefreshInitiated="onPullToRefreshInitiated"
-      @scrollEnded="scrollEnd"
-    >
-      <v-template if="store.logo != null">
-        <StackLayout 
-          padding="8" @tap="onTapViewStore(store)">
+    <StackLayout padding="0 8" row="2">
+      <RadListView 
+        ref="listStores"
+        id="listStores"
+        for="store in stores"
+        layout="grid"
+        itemWidth="50%"
+        @loaded="onloadied"
+        :pullToRefresh="true"
+        @pullToRefreshInitiated="onPullToRefreshInitiated"
+        @scrollEnded="scrollEnd"
+      >
+        <v-template if="store.logo != null">
           <StackLayout 
-            padding="8"
-            class="card"
-            alignItems="center"
-          >
-            <!-- <Image
-              :src="store.logo"
-              width="80"
-              height="80"
-              borderRadius="8"
-              verticalAlignment="top"
-              marginRight="8"
-            /> -->
+            padding="8" @tap="onTapViewStore(store)">
+            <StackLayout 
+              padding="8"
+              class="card"
+              alignItems="center"
+            >
+              <!-- <Image
+                :src="store.logo"
+                width="80"
+                height="80"
+                borderRadius="8"
+                verticalAlignment="top"
+                marginRight="8"
+              /> -->
 
-            <ImageCache 
-                  stretch="aspectFill" 
-                  width="80" 
-                  height="80"
-                  placeholderStretch="aspectFill"
-                  placeholder="res://eskeleton"
-                  :src="store.logo"
-                  marginRight="8"
-                  verticalAlignment="top"
-                />
-      
-            <StackLayout verticalAlignment="top">
-              
-              <label 
-                textWrap="true" 
-                fontWeight="300"
-                fontSize="12">
-                <FormattedString>
-                  <span text="Precio mínimo de compra: "></span>
-                  <span :text="store.min |moneda " style="color: #DA0080"></span>
-                </FormattedString>
-              </label>
-            </StackLayout>
-          </StackLayout >
-        </StackLayout>
-      </v-template>
+              <ImageCache 
+                    stretch="aspectFill" 
+                    width="80" 
+                    height="80"
+                    placeholderStretch="aspectFill"
+                    placeholder="res://eskeleton"
+                    :src="store.logo"
+                    marginRight="8"
+                    verticalAlignment="top"
+                  />
+        
+              <StackLayout verticalAlignment="top">
+                
+                <label 
+                  textWrap="true" 
+                  fontWeight="300"
+                  fontSize="12">
+                  <FormattedString>
+                    <span text="Precio mínimo de compra: "></span>
+                    <span :text="store.min |moneda " style="color: #DA0080"></span>
+                  </FormattedString>
+                </label>
+              </StackLayout>
+            </StackLayout >
+          </StackLayout>
+        </v-template>
 
-      <v-template if="store.logo == null" >
-        <StackLayout 
-          width="100%"
-          height="100%" 
-          padding="8">
+        <v-template if="store.logo == null" >
           <StackLayout 
-            class="label_skeleton"
-            height="120"
-          ></StackLayout>
-        </StackLayout>
-      </v-template>
+            width="100%"
+            height="100%" 
+            padding="8">
+            <StackLayout 
+              class="label_skeleton"
+              height="120"
+            ></StackLayout>
+          </StackLayout>
+        </v-template>
 
-    </RadListView></StackLayout>
+      </RadListView>
+    </StackLayout>
   </GridLayout >
 
 </Page>
@@ -123,6 +121,8 @@
   import { ScrollEventData } from '@nativescript/core/ui'
   import {  ScrollView } from '@nativescript/core/ui/scroll-view'
   import CategoryBox from '~/components/Components/Boxes/CategoryBox.vue'
+  import { firebase } from '@nativescript/firebase';
+
   export default {
     mixins: [storeMixin],
     props: {
@@ -190,6 +190,7 @@
     computed:{
       ...mapGetters('categories',['categorieActiveGetters']),
       ...mapState('stores',['planes','paramsStores']),
+      ...mapState('categories',['categoriesBase']),
       stores(){
         if(!this.filterName || this.buscador){
           return this.storess
@@ -204,6 +205,9 @@
       }
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `All Stores`
+      });
       this.loading = true
       this.buscador = false
       this.numero = 1
@@ -216,6 +220,7 @@
     methods:{
       ...mapActions('stores',['getStoreRosa']),
       ...mapMutations('stores',['changeParamsStores']),
+      ...mapMutations('categories',['setCategorieActive']),
       async onPullToRefreshInitiated ({ object }) {
         this.loading = true
         this.changeParamsStores({ search: '' })
@@ -271,8 +276,9 @@
 
         const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: false ,isSubcategorias: false } })
 
+        this.setCategorieActive(data.id)
         this.changeParamsStores({ 
-          categorie: this.categorieActiveGetters.key, 
+          categorie: data ? this.categoriesBase.find((e)=>e.id == data.id).key : this.categorieActiveGetters.key, 
           search: '' 
         })
 

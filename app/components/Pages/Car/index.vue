@@ -107,7 +107,7 @@ export default {
     // console.log('se creo el carro')
   },
   mounted(){
-    // console.log('se monto el carro')
+    // console.log('se monto el carro',this.storeActive)
   },
   updated(){
     // console.log('se actualizo el carro')

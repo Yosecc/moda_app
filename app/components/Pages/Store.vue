@@ -79,6 +79,7 @@ import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
+import { firebase } from '@nativescript/firebase';
 import * as utils from "@nativescript/core/utils";
 export default {
   props: {
@@ -175,6 +176,9 @@ export default {
       }
   },
   mounted(){
+    firebase.analytics.setScreenName({
+			screenName: `Store: ${this.store.name}`
+		});
     this.setStoreCategorieActive(this.categorieActiveGetters.id)
     this.setStoreSubcategorieActive('')
     let id = this.store.local_cd ? this.store.local_cd: this.store.id

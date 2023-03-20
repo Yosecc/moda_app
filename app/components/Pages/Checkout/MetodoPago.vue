@@ -33,6 +33,7 @@
   import layoutCheckout from '~/components/Pages/Checkout/layout.vue'
   import CardMetodoPago from '~/components/Components/Checkout/CardMetodoPago.vue'
   import { mapState, mapMutations, mapActions } from 'vuex'
+  import { firebase } from '@nativescript/firebase';
   export default {
     mixins: [],
     props: {
@@ -63,6 +64,10 @@
       }
     },
     mounted(){
+      
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Metodo de pago`
+      });
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
@@ -81,10 +86,26 @@
       },
       onselectMethodPayment(){
         this.buttonLoading = true
+
         this.selectMethodPayment({
           group_id:   this.group_id,
           method: this.metodospagos._array.find((e)=> e.id == this.metodopago).method
         }).then((response)=>{
+
+          firebase.analytics.logEvent({
+            key: "checkout_metodo_pago",
+            parameters: [ // optional
+              {
+                key: "group_id",
+                value: this.group_id
+              },
+              {
+                key: "method",
+                value: this.metodospagos._array.find((e)=> e.id == this.metodopago).method
+              }
+            ]
+          })
+
           this.buttonLoading = false
           this.$navigator.navigate('/resumen',{
             transition: {

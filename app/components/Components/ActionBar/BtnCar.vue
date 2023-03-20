@@ -6,28 +6,28 @@
     height="40"
     width="40"
     padding="0"
+    marginRight="8"
   >
 
     <AbsoluteLayout 
-      top="5"
+      top="3"
+      left="3"
       class="btn-icon"
-      borderWidth=".5"
-      borderColor="#DA0080"
     >
-
+  
       <Image 
-        top="8"
-        left="8"
+        top="0"
+        left="0"
         verticalAlignment="center"
         horizontalAlignment="center"
-        src="~/assets/icons/car.png" 
-        width="16" 
-        height="16" />
+        src="res://car" 
+        width="32" 
+        height="32" />
 
     </AbsoluteLayout>
     <FlexboxLayout
         top="0"
-        left="25"
+        left="24"
         width="15"
         height="15"
         backgroundColor="#DA0080"

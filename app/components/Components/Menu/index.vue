@@ -114,12 +114,12 @@
           //   route: '/inquiries',
           //   disabled: true
           // },
-          // {
-          //   icon: 'icon_menu_5',
-          //   name: 'Notificaciones',
-          //   route: '/notifications',
-          //   disabled: true
-          // },
+          {
+            icon: 'icon_menu_5',
+            name: 'Notificaciones',
+            route: '/notifications',
+            disabled: false
+          },
           // {
           //   icon: 'icon_menu_6',
           //   name: 'Ayuda',

@@ -1,5 +1,5 @@
 <template >
-<StackLayout >
+<StackLayout  padding="0">
   <Carousel 
     v-if="recharge"
     height="140" 
@@ -24,14 +24,13 @@
       paddingRight="16"
       paddingLeft="16"
       @tap="onTap(i)"
-
     >
 
         <ImageCache 
           stretch="aspectFill"
           placeholderStretch="aspectFit"
           borderRadius="10"
-          placeholder="res://eskeleton"
+          placeholder=""
           :src="i.img"
           height="100%"
           class="imageCache"
@@ -55,7 +54,7 @@
   export default {
     props:{
       sliders:{
-        type: Array,
+        type: Array|Object,
         default:[]
       }
     },
@@ -132,16 +131,16 @@
           })
 
         }else{
-          this.$navigator.navigate('/web_view',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-            props: {
-              link: 'https://www.modatex.com.ar'+item.url
-            }
-          })
+          // this.$navigator.navigate('/web_view',{
+          //   transition: {
+          //     name: 'slideLeft',
+          //     duration: 300,
+          //     curve: 'easeIn'
+          //   },
+          //   props: {
+          //     link: 'https://www.modatex.com.ar'+item.url
+          //   }
+          // })
         }
       },
       getImage(img){

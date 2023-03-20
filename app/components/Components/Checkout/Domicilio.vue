@@ -6,7 +6,6 @@
       v-if="!dataDirecciones.length && !loading"
     />
 
-    
     <StackLayout row="0" v-if="loading" padding="16" width="100%" >
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
@@ -151,8 +150,6 @@
       :inputs="transportesInputs"
       v-if="!loading && isTransportes"
     />
-
-
        
   </StackLayout>
 </template>

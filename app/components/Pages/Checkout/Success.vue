@@ -23,6 +23,8 @@ dentro de las 48 horas hábiles." fontSize="14" class="title" />
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex'
+  import { firebase } from '@nativescript/firebase';
+  
   export default {
     mixins: [],
     props: {
@@ -43,6 +45,9 @@ dentro de las 48 horas hábiles." fontSize="14" class="title" />
       ...mapState('checkout',['numeroPedido']),
     },
     mounted(){
+      firebase.analytics.setScreenName({
+        screenName: `Checkout Success`
+      });
       this.getCar()
     },
     methods:{

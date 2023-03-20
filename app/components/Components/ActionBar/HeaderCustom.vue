@@ -42,7 +42,13 @@
           orientation="horizontal"
           col="2" 
         >
-      
+          <BtnNotification
+            v-if="isNotification"
+            row="0"
+            col="2"
+            horizontalAlignment="right"
+          ></BtnNotification>
+
           <BtnCar
             v-if="car"
             row="0"
@@ -70,6 +76,8 @@
 import BtnBack from './BtnBack.vue'
 import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
+import BtnNotification from '~/components/Components/ActionBar/BtnNotification.vue'
+
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
   export default {
@@ -94,11 +102,16 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean, 
         default: false
       },
+      isNotification:{
+        type: Boolean,
+        default: true
+      },
     },
     components:{
       BtnMenu,
       BtnBack,
-      BtnCar
+      BtnCar,
+      BtnNotification
     },
     data() {
       return {
