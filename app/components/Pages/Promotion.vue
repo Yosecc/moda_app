@@ -152,7 +152,7 @@
         // ...mapMutations('products',['changeParamsProductsSearch']),
         // ...mapMutations('categories',['setCategorieActive']),
         onTapRedirect(redirect){
-            console.log(redirect)
+            // console.log(redirect)
             
             this.$navigator.navigate(redirect.route,{
                 transition: {

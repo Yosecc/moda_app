@@ -382,7 +382,7 @@
         this.select = item
         this.resetSelect = false
           setTimeout(()=>{
-            console.log('item', this.select)
+            // console.log('item', this.select)
             this.resetSelect = true
             this.$refs.drawerSelect.showDrawer();
           },100)

@@ -21,7 +21,7 @@
               :isViewActive="true"
               :isStore="isStore"
               verticalAlignment="center"
-              @ontapCategorie="ontapCategorie"id
+              @ontapCategorie="ontapCategorie"
             />
           </StackLayout>
           <StackLayout v-if="isSubcategorias" minHeight="250" width="100%" >
@@ -66,7 +66,7 @@
 <script>
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   import SlideCategories from '~/components/Components/SlideCategories.vue'
-
+  import { ObservableArray } from '@nativescript/core/data/observable-array';
   export default {
     mixins: [],
     props: {
@@ -87,7 +87,8 @@
     },
     data() {
       return {
-        copia: []
+        copia: [],
+        categories: []
       };
     },
     watch:{
@@ -161,6 +162,12 @@
       // ...mapActions('stores',['getStoreRosa']),
       ...mapMutations('categories',['setCategorieActive','setSubcategoriesActive']),
       ...mapMutations('stores',['setStoreSubcategorieActive']),
+      ...mapActions(['getCategories']),
+      onGetCategories(){
+        this.getCategories().then((response)=>{
+          this.categories = new ObservableArray(response)
+        }) 
+      },
       ontapCategorie(id){
        
         this.setSubcategoriesActive('')

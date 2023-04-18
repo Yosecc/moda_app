@@ -7,11 +7,24 @@
         height="100"
         stretch="aspectFill"
         marginRight="16"
-        marginBottom="8"
+        marginBottom="0"
         marginTop="0"
         class="storeBox"
         @tap="onTap"
       /> 
+      <!-- <StackLayout
+                  orientation="horizontal"
+                  padding="0"
+                  margin="0"
+                >
+                  <Image 
+                    src="res://star"
+                    width="16"
+                    height="16"
+                    marginRight="-4"
+                  />
+                  <label :text="store?.rep" textWrap textTransform="uppercase" fontWeight="700" fontSize="12" margin="0" />
+                </StackLayout> -->
    <!--  <Image
       :src="store.logo"
       width="100"

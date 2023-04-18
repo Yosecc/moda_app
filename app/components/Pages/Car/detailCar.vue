@@ -1,6 +1,12 @@
 <template lang="html">
   <Page  actionBarHidden="true"  >
-  <RadSideDrawer @drawerClosed="onCloseDrawer" :gesturesEnabled="false" :drawerContentSize="400" :drawerLocation="currentLocation" ref="drawerCar">
+  <RadSideDrawer 
+    @drawerClosed="onCloseDrawer" 
+    :gesturesEnabled="false" 
+    :drawerContentSize="400" 
+    :drawerLocation="currentLocation" 
+    ref="drawerCar"
+  >
     <StackLayout ~drawerContent >
       
         <SwipeCombinacion
@@ -42,7 +48,7 @@
               fontSize="10"
             >
               <FormattedString>
-                <span  text="Compra mínima en la tienda: "></span>
+                <span  text="Compra mínima: "></span>
                 <span :text="store.min | moneda " style="color: #DA0080"></span>
               </FormattedString>
             </label>
@@ -51,7 +57,7 @@
       </HeaderCustom>
 
       <StackLayout row="1">
-        <Label text="Carro de compras" fontSize="18" fontWeight="800"  marginLeft="16" marginBottom="8" />
+        <Label text="Carrito" textTransform="uppercase" fontSize="18" fontWeight="800"  marginLeft="16" marginBottom="8" />
 
         <RadListView 
           v-if="products.length && !isLoading"
@@ -119,8 +125,6 @@
                           height="40" 
                           margin="0" 
                           class="btn btn-icon"
-                          borderWidth=".5"
-                          borderColor="#4D4D4D"
                           @tap="ondeleteProduct(item.id)"
                         >
                           <Image 
@@ -135,7 +139,7 @@
                   </StackLayout>
                 </StackLayout>
                 
-                
+                <!-- <label :text="item.combinacion.length" /> -->
                 <CombinacionesProduct
                   v-if="change && item.combinacion && (item.precio != null)"
                   v-model="item.combinacion"
@@ -192,8 +196,6 @@
           @tap="noproducts"
         />
       </StackLayout>
-
-
 
       <StackLayout v-if="products.length && !isLoading" padding="0" margin="0" row="2" class="shadow-n1 card secondary" >
 
@@ -346,6 +348,106 @@
       ...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
       ...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion','updateCarStore']),
       ...mapActions('car',['deleteProduct','processCart','getProductsCart','deleteCarts','deleteModelo','getCart','updatedCar','getCar']),
+      async loadCart(config = { type: 'create' }){
+        if(this.car_id == null){
+          alert('ERROR')
+          return
+        }
+        await this.getCart(this.car_id).then((response)=>{
+          if(response.length == 0){
+            this.getCar()
+            return 
+          }
+          this.carro = response
+        })
+
+        await this.getProductsCart(this.car_id).then((response)=>{
+          if(response.products.length == 0){
+            this.getCar()
+            return 
+          }
+
+          if(config.type == 'create'){
+            this.products = new ObservableArray(response.products) 
+            this.products._array.forEach((e)=>{
+              e.isEnabledCombinaciones = true
+            })
+          }else if(config.type == 'update'){
+            response.products.map((product)=>{
+              let index = this.products.findIndex( (e) => e.id == product.id ) 
+              if(index != -1){
+                this.products._array[index].combinacion = product.combinacion
+              }else{
+                this.products._array.push(product)
+              }
+            })
+          }
+          this.isLoading = false
+          this.$refs.productsCar.refresh()
+        })
+      },
+      async onEditCombinacion(combinacion){
+        let product = this.products._array.find((e)=> e.id == combinacion.product_id)
+        let size_id = product.models.find((e)=> e.size == combinacion.talleActive).size_id
+        let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
+
+        let modelo   = product.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
+
+        let modelo_price = modelo.price != null ? modelo.price: product.models.find((e)=> e.size == combinacion.talleActive).price
+
+        let obj = {
+          group_cd    : product.store.company,
+          local_cd    : product.store.id,
+          product_id  : product.id,
+          modelo_actual:  combinacion.modelo,
+          models_id   : modelo.id,
+          size_id     : size_id,
+          color_id    : color_id,
+          price       : modelo_price,
+          cantidad    : combinacion.cantidad,
+          total_price : modelo_price*combinacion.cantidad
+        }
+
+        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
+        this.$refs.productsCar.refresh()
+        await this.updatedCar(obj)
+          this.$refs.drawerCar.closeDrawer();
+            await this.loadCart({ type: 'update' })
+              this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
+              this.$refs.productsCar.refresh()
+
+      },
+      async onAddCombinacion(combinacion){
+        let index = this.products._array.find((e)=> e.id == combinacion.product_id).combinacion.findIndex((x)=> x.modelo == combinacion.modelo)
+        this.products._array.find((e)=> e.id == combinacion.product_id).combinacion[index] = combinacion
+        let product = this.products._array.find((e)=> e.id == combinacion.product_id)
+
+        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
+        this.$refs.productsCar.refresh()
+        await this.dataCart(product,[combinacion])
+          this.$refs.drawerCar.closeDrawer();
+          await this.loadCart({ type: 'update' })
+            this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
+            this.$refs.productsCar.refresh()
+      },
+      async deleteCombinacion(combinacion){
+        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
+        this.$refs.productsCar.refresh()
+
+        await this.deleteModelo({
+          product_id: combinacion.product_id,
+          modelo: combinacion.modelo
+        })
+        
+          this.$refs.drawerCar.closeDrawer();
+          await this.loadCart({ type: 'update' })
+          if( this.products._array.length != 0){
+            this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
+            this.$refs.productsCar.refresh()
+          }
+      },
+
+
       onCloseDrawer(){
         this.openDrop = false
       },
@@ -353,7 +455,6 @@
         this.openDrop = to
       },
       onTapProduct(product){
-        // console.log(product)
       },
       openDropBottomEvent({data, models, isNew}){
         this.setCombinacion(data)
@@ -439,66 +540,6 @@
           this.buttomLoading = false
         })
       },
-      async onEditCombinacion(combinacion){
-        let product = this.products._array.find((e)=> e.id == combinacion.product_id)
-        let size_id = product.models.find((e)=> e.size == combinacion.talleActive).size_id
-        let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
-
-        let modelo   = product.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
-
-        let modelo_price = modelo.price != null ? modelo.price: product.models.find((e)=> e.size == combinacion.talleActive).price
-
-        let obj = {
-          group_cd    : product.store.company,
-          local_cd    : product.store.id,
-          product_id  : product.id,
-          modelo_actual:  combinacion.modelo,
-          models_id   : modelo.id,
-          size_id     : size_id,
-          color_id    : color_id,
-          price       : modelo_price,
-          cantidad    : combinacion.cantidad,
-          total_price : modelo_price*combinacion.cantidad
-        }
-
-        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
-        this.$refs.productsCar.refresh()
-        await this.updatedCar(obj)
-          this.$refs.drawerCar.closeDrawer();
-            await this.loadCart()
-            this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
-            this.$refs.productsCar.refresh()
-      },
-      async onAddCombinacion(combinacion){
-
-        let index = this.products._array.find((e)=> e.id == combinacion.product_id).combinacion.findIndex((x)=> x.modelo == combinacion.modelo)
-        this.products._array.find((e)=> e.id == combinacion.product_id).combinacion[index] = combinacion
-        let product = this.products._array.find((e)=> e.id == combinacion.product_id)
-
-        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
-        this.$refs.productsCar.refresh()
-        await this.dataCart(product,[combinacion])
-          this.$refs.drawerCar.closeDrawer();
-          await this.loadCart()
-            this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
-            this.$refs.productsCar.refresh()
-      },
-      async deleteCombinacion(combinacion){
-        this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = false
-        this.$refs.productsCar.refresh()
-
-        this.$refs.drawerCar.closeDrawer();
-        await this.deleteModelo({
-          product_id: combinacion.product_id,
-          modelo: combinacion.modelo
-        })
-
-        await this.loadCart()
-        if( this.products._array.length != 0){
-          this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
-          this.$refs.productsCar.refresh()
-        }
-      },
       onMetodoPagos(){
         this.$navigator.modal('/methods_payments', { fullscreen: true, id: 'methodsPaymentsModal' })
       },
@@ -518,36 +559,10 @@
           this.$forceUpdate()
         })
       },
-      async loadCart(){
-        if(this.car_id == null){
-          alert('ERROR')
-          return
-        }
-        await this.getCart(this.car_id).then((response)=>{
-          if(response.length == 0){
-            this.getCar()
-            // this.$navigator.back()
-            return 
-          }
-          this.carro = response
-        })
-        await this.getProductsCart(this.car_id).then((response)=>{
-
-          if(response.products.length == 0){
-            this.getCar()
-            // this.$navigator.back()
-            return 
-          }
-          this.products = new ObservableArray(response.products) 
-          this.products._array.forEach((e)=>{
-            e.isEnabledCombinaciones = true
-          })
-          this.isLoading = false
-        })
-      },
+      
       ondeleteProduct(product_id){
         let index = this.products._array.findIndex((e)=> e.id == product_id)
-        console.log(index)
+        // console.log(index)
         if(index != -1){
           this.products._array.splice(index, 1)
         }

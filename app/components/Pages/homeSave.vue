@@ -152,7 +152,7 @@ import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
       ...mapActions('products',['getProducts']),
       ...mapMutations(['changeisLoadPage']),
       async onPullToRefreshInitiated ({ object }) {
-        console.log('Pulling...');
+        // console.log('Pulling...');
         // in order to avoid race conditions (only on iOS),
         // in which the UI may not be completely updated here
         // we use this.$nextTick call

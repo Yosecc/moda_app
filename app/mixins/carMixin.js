@@ -18,7 +18,8 @@ export default {
         ...mapState('car', ['carsProducts'])
     },
     methods: {
-        ...mapActions('car', ['addCar']),
+        ...mapActions('car', ['addCar', 'getCart']),
+        ...mapMutations('car', ['setCarro']),
         async dataCart(product, combinaciones) {
 
             let obj = {
@@ -60,6 +61,31 @@ export default {
         },
         addCombinacionCart(product_id) {
             let product = this.carsProducts.find((e) => e.id == product_id)
-        }
+        },
+        async onProcessDataCar(product, combinaciones) {
+
+            this.loadingButton = true
+            await this.processDataCar(product, combinaciones)
+            await this.getCart(product.store.id).then((response) => {
+                // console.log('response car', response)
+                this.car = response
+                    // this.carro = this.car
+                this.setCarro(this.car)
+                this.loadingButton = false
+            })
+            this.$emit('acttualizarCarro', this.car)
+
+            // const data = await this.$navigator.modal('/confirm_cart', { fullscreen: false, id: 'confirmCart', props: { product: this.product } })
+            // if (data == 'ver') {
+            //     this.getCart(this.product.store.id).then((response) => {
+            //         this.car = response
+            //             // this.carro = this.car
+            //         this.onRedirectCart(this.car.id)
+            //         this.setCarro(this.car)
+            //     })
+            // }
+
+        },
+
     }
 };

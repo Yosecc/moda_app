@@ -106,13 +106,13 @@
           zipcode: this.code_postal
         }).then((e)=>{
           this.loading = false
-          console.log('sera que pasa por aqui')
+          // console.log('sera que pasa por aqui')
           this.listSucursales = new ObservableArray(e)
           this.$refs.listSucursales.refresh()
         }).catch((error)=>{
           this.loading = false
           error = JSON.parse(error)
-          console.log('por aqui si debe pasar', error)
+          // console.log('por aqui si debe pasar', error)
           this.message = error.message
         })
       },

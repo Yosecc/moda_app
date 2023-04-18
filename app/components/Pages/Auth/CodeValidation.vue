@@ -232,7 +232,7 @@
           
             this.CodeValidation(this.codeInsert)
               .then((response) => {
-                console.log('response', response)
+                // console.log('response', response)
                 this.$navigator.navigate('/home',{
                   transition: {
                     name: 'slideLeft',

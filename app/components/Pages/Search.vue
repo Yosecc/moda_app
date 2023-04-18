@@ -105,7 +105,7 @@
 	export default {
     props:{
       params:{
-        type: Object,
+        type: Object|Array,
         default: {}
       },
     },

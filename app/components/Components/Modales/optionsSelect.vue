@@ -67,7 +67,7 @@
     },
     computed:{
       datos(){
-        console.log('this.select', this.select, 'selectActual:::::::', this.selectActual)
+        // console.log('this.select', this.select, 'selectActual:::::::', this.selectActual)
         if(this.select){
           let values = this.select.values
           

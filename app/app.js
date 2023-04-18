@@ -56,59 +56,64 @@ import { messaging } from '@nativescript/firebase/messaging'
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import cache from '@/plugins/cache'
 
+new Vue({
+    render: h => h(App),
+    store: store,
+}).$start()
+
+// console.log(this)
 firebase.init({
         showNotifications: true,
         showNotificationsWhenInForeground: true,
         // onPushTokenReceivedCallback: (token) => {
         //     console.log('[Firebase] onPushTokenReceivedCallback:', { token });
         // },
-        // onMessageReceivedCallback: (message) => {
-        //     console.log('[Firebase] onMessageReceivedCallback:', { message });
-        // }
+        onMessageReceivedCallback: (message) => {
+            console.log('[Firebase] onMessageReceivedCallback:', { message });
+            store._modules.root._rawModule.state.notification = message
+
+
+
+        }
     })
     .then(() => {
         console.log('[Firebase] Initialized');
-        firebase.subscribeToTopic("news").then(() => console.log("Subscribed to topic"));
-        messaging.registerForPushNotifications({
-            onPushTokenReceivedCallback: (token) => {
-                console.log("Firebase plugin received a push token: " + token);
-                if (cache.get('firebaseToken') == undefined) {
-                    cache.set('firebaseToken', token)
-                    Api.post('notifications_push/save_token', { token: token }).then((response) => {
-                        console.log('token enviado', response)
-                    })
-                }
+        // firebase.subscribeToTopic("news")
+        // messaging.registerForPushNotifications({
+        //     onPushTokenReceivedCallback: (token) => {
+        //         console.log("Firebase plugin received a push token: " + token);
+        //         if (cache.get('firebaseToken') == undefined) {
+        //             cache.set('firebaseToken', token)
+        //             Api.post('notifications_push/save_token', { token: token }).then((response) => {
+        //                 // console.log('token enviado', response)
+        //             })
+        //         }
 
-                if (cache.get('firebaseToken') != token) {
-                    cache.set('firebaseToken', token)
-                    Api.post('notifications_push/save_token', { token: token }).then((response) => {
-                        console.log('token enviado', response)
-                    })
-                }
-            },
-            onMessageReceivedCallback: (message) => {
-                console.log("Push message received: ", { message });
+        //         if (cache.get('firebaseToken') != token) {
+        //             cache.set('firebaseToken', token)
+        //             Api.post('notifications_push/save_token', { token: token }).then((response) => {
+        //                 // console.log('token enviado', response)
+        //             })
+        //         }
+        //     },
+        //     onMessageReceivedCallback: (message) => {
+        //         // console.log("Push message received: ", { message });
 
-                Api.get('notifications_push/get_notifications').then((response) => {
-                    store._modules.root._rawModule.state.notifications = new ObservableArray(response)
-                    let notificationCount = store._modules.root._rawModule.state.notificationCount
-                    store._modules.root._rawModule.state.notificationCount = notificationCount + 1
+        //         Api.get('notifications_push/get_notifications').then((response) => {
+        //             store._modules.root._rawModule.state.notifications = new ObservableArray(response)
+        //             let notificationCount = store._modules.root._rawModule.state.notificationCount
+        //             store._modules.root._rawModule.state.notificationCount = notificationCount + 1
 
-                    store._modules.root._rawModule.state.viewNotification = true
-                    setTimeout(() => {
-                        store._modules.root._rawModule.state.viewNotification = false
-                    }, 8000)
-                })
-            },
-            showNotifications: true,
-            showNotificationsWhenInForeground: true
-        }).then(() => console.log("Registered for push"));
+        //             store._modules.root._rawModule.state.viewNotification = true
+        //             setTimeout(() => {
+        //                 store._modules.root._rawModule.state.viewNotification = false
+        //             }, 8000)
+        //         })
+        //     },
+        //     showNotifications: true,
+        //     showNotificationsWhenInForeground: true
+        // })
     })
     .catch(error => {
-        console.log('[Firebase] Initialize', { error });
+        // console.log('[Firebase] Initialize', { error });
     });
-
-new Vue({
-    render: h => h(App),
-    store: store,
-}).$start()

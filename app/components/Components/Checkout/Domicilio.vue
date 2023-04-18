@@ -602,7 +602,7 @@
         this.$emit('openDrawer',{type: 'select', data: item})
       },
       onItemSelectedDelivery({item}){
-        console.log('item', item)
+        // console.log('item', item)
         this.dataDelivery._array.forEach((e,i)=>{
           if(e.type == item.type){
             e.status = true

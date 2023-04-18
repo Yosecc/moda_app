@@ -1,7 +1,7 @@
 <template lang="html">
 <Page>
 	<HeaderDefault :logoCenter="false" :back="true" :isCar="false" >
-		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carros abiertos" />
+		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carritos abiertos" />
 	</HeaderDefault>
 	<GridLayout rows="*"  >
 		<RadListView
@@ -27,33 +27,33 @@
 		<Label 
 			row="0"
 			v-if="!carsStores.length && isload" 
-			text="No posee carros abiertos"  
+			text="No tenés carritos abiertos."  
 			fontWeight="100"
-      fontSize="30"
-      textAlignment="center"
-      marginTop="30"
-    />
+			fontSize="30"
+			textAlignment="center"
+			marginTop="30"
+		/>
 
 		<StackLayout padding="16 16 0 16"	row="0" v-if="!isload">
 			<StackLayout 
 				v-for="i in 6"
-	      :key="`eskeletonshopping-${i}`"
-	      width="100%"
-	      height="140"
-	      class="label_skeleton"
-	      marginBottom="16"
-	      padding="16"
+				:key="`eskeletonshopping-${i}`"
+				width="100%"
+				height="140"
+				class="label_skeleton"
+				marginBottom="16"
+				padding="16"
 			>
 				
 				<StackLayout orientation="horizontal">
-	        <StackLayout horizontalAlignment="left" width="60" height="60" borderRadius="6" class="item" />
-	        <StackLayout>
-	          <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="16" />
-	          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="16" />
-	        </StackLayout>
-	      </StackLayout>
+					<StackLayout horizontalAlignment="left" width="60" height="60" borderRadius="6" class="item" />
+					<StackLayout>
+						<StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="16" />
+						<StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="16" />
+					</StackLayout>
+				</StackLayout>
 
-	      <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" class="item"  marginTop="20" />
+	      		<StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" class="item"  marginTop="20" />
 			</StackLayout>
 		</StackLayout>
 	</GridLayout>
@@ -94,7 +94,8 @@
 	  watch:{
 	  	ruta(to){
 	  		this.$refs.carrosabiertos.refresh()
-	  	},carsStores(){
+	  	},
+		carsStores(){
 	  		this.$refs.carrosabiertos.refresh()
 	  	},
 	  },
@@ -123,47 +124,47 @@
 			...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
 			mountedCars(){
 				this.isload = false
-		  	this.getCar().then((e)=>{
-		  		this.isload = true
-		  		this.$forceUpdate()
-		  	})
-		  	this.$refs.carrosabiertos.refresh()
+				this.getCar().then((e)=>{
+					this.isload = true
+					this.$forceUpdate()
+				})
+				this.$refs.carrosabiertos.refresh()
 			},
 			async ondeleteCarro(carro){
+				console.log(carro.id)
 				let index = this.carsStores._array.findIndex((e)=> e.id = carro.id)
+				// console.log(index)
 				if(index != -1){
 					this.carsStores._array.splice(index, 1)
 					this.$refs.carrosabiertos.refresh()
 				}
 				await this.deleteCarts({
-          cart_ids: carro.cart_ids,
-          store_id: carro.id
-        })
+					cart_ids: carro.cart_ids,
+					store_id: carro.id
+				})
+				this.$refs.carrosabiertos.refresh()
 				this.getCar().then((e)=>{
-		  		this.$forceUpdate()
-		  		this.$refs.carrosabiertos.refresh()
-		  	})
-		  	
-				// this.$refs.carrosabiertos.refresh()
-		  	
+					this.$forceUpdate()
+					this.$refs.carrosabiertos.refresh()
+				})
 			},
 			async onPullToRefreshInitiated({ object }){
 				this.isload = false
-		  	await this.getCar().then((e)=>{
-		  		this.isload = true
-		  		object.notifyPullToRefreshFinished();
-		  		this.$forceUpdate()
-		  	})
+				await this.getCar().then((e)=>{
+					this.isload = true
+					object.notifyPullToRefreshFinished();
+					this.$forceUpdate()
+				})
 			},
 			onshowDrop(to){
-        this.openDrop = to
-      },
+				this.openDrop = to
+			},
 			shoppingCenter(){
-	  		this.isload = false
-	  		setTimeout(()=>{
-	  			this.isload = true
-	  		}, 1000)
-	  		this.$forceUpdate()
+				this.isload = false
+				setTimeout(()=>{
+					this.isload = true
+				}, 1000)
+				this.$forceUpdate()
 			},
 			onAddCombinacion(combinacion){
 				this.addCombinacion(combinacion)
@@ -179,73 +180,72 @@
 				this.$refs.carrosabiertos.refresh()
 				
 				await this.getProductsCart(data.carro.id).then((response)=>{
-          if(response.products.length == 0){
-            this.mountedCars()
-            return 
-          }
-          products = new ObservableArray(response.products) 
-          products._array.forEach((e)=>{
-            e.isEnabledCombinaciones = true
-          })
-        }).catch((error)=>{
-          this.buttonStatus.loading = false
-        })
+					if(response.products.length == 0){
+						this.mountedCars()
+						return 
+					}
+					products = new ObservableArray(response.products) 
+					products._array.forEach((e)=>{
+						e.isEnabledCombinaciones = true
+					})
+				}).catch((error)=>{
+					this.buttonStatus.loading = false
+				})
 
 				await this.setcarCheckout({
-          logo:        data.carro.logo,
-          name:        data.carro.name,
-          min:         data.carro.limit_price,
-          total:       data.total,
-          prendas:     data.prendas,
-          products:    products
-        })
+					logo:        data.carro.logo,
+					name:        data.carro.name,
+					min:         data.carro.limit_price,
+					total:       data.total,
+					prendas:     data.prendas,
+					products:    products
+				})
 						
 				await this.processCart(data.carro.id).then((response)=>{
-          if(response.cart.status == 'success'){
-            this.setGroupId(response.cart.data.group_id)
-            this.buttonStatus.loading = false
-        		this.$refs.carrosabiertos.refresh()
-            if(response.is_missing_data.status == 'missing_data'){
-              this.$navigator.navigate('/datos',{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-              })
-            }else{
-            	if(response.cupon != null){
-                this.setCoupons(response.cupon)
-                this.$navigator.navigate('/coupons',{
-                  transition: {
-                      name: 'slideLeft',
-                      duration: 300,
-                      curve: 'easeIn'
-                    },
-                    props:{
-                      local_cd: data.carro.id
-                    }
-                })
-              }else{
-                this.$navigator.navigate('/envios',{
-                  transition: {
-                      name: 'slideLeft',
-                      duration: 300,
-                      curve: 'easeIn'
-                    },
-                })
-              }
-             
+					if(response.cart.status == 'success'){
+						this.setGroupId(response.cart.data.group_id)
+						this.buttonStatus.loading = false
+							this.$refs.carrosabiertos.refresh()
+						if(response.is_missing_data.status == 'missing_data'){
+						this.$navigator.navigate('/datos',{
+							transition: {
+								name: 'slideLeft',
+								duration: 300,
+								curve: 'easeIn'
+							},
+						})
+						}else{
+							if(response.cupon != null){
+							this.setCoupons(response.cupon)
+							this.$navigator.navigate('/coupons',{
+							transition: {
+								name: 'slideLeft',
+								duration: 300,
+								curve: 'easeIn'
+								},
+								props:{
+								local_cd: data.carro.id
+								}
+							})
+						}else{
+							this.$navigator.navigate('/envios',{
+							transition: {
+								name: 'slideLeft',
+								duration: 300,
+								curve: 'easeIn'
+								},
+							})
+						}
+						
 
-            }
-          }else{
-            alert(response.cart.status)
-          }
-
-        }).catch((error)=>{
-          this.buttonStatus.loading = false
-        })
-        this.$refs.carrosabiertos.refresh()
+						}
+					}else{
+						alert(response.cart.status)
+					}
+				}).catch((error)=>{
+					this.buttonStatus.loading = false
+				})
+					this.$refs.carrosabiertos.refresh()
 			}
 		}
   }

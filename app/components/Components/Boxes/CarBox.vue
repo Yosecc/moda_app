@@ -18,16 +18,16 @@
 				<StackLayout paddingTop="0" paddingBottom="0" margin="0" orientation="horizontal">
 					<ImageCache
 						@tap="onTapViewStore"
-            stretch="aspectFill" 
-            width="60" 
+						stretch="aspectFill" 
+						width="60" 
 						height="60"
-            placeholderStretch="aspectFill"
-            placeholder="res://eskeleton"
-            :src="car.logo" 
-            marginRight="10"
-            class="img_tienda"
-            horizontalAlignment="left"
-          />
+						placeholderStretch="aspectFill"
+						placeholder="res://eskeleton"
+						:src="car.logo" 
+						marginRight="10"
+						class="img_tienda"
+						horizontalAlignment="left"
+					/>
 					<StackLayout padding="0" >
 						<label 
 						 	:text="car.name" 
@@ -86,7 +86,7 @@
 			>
 			  <label 
 			  	@tap="onRedirectCart" 
-					text="Ver Carro" 
+					text="Ver Carrito" 
 					class="label_enlace" 
 					fontSize="14" 
 					textTransform="uppercase"
@@ -156,15 +156,15 @@
 			}
 		},
 		watch:{
-			carro(to){
-				alert('cambio el carro'+to.id)
+			car(to){
+				this.carro = to
 			}
 		},
 		mounted(){
 		},
-    components:{
+		components:{
 			CombinacionesProduct
-    },
+		},
 		computed:{
 			buttomLoading(){
 				if(this.buttonStatus.id){
@@ -175,44 +175,37 @@
 				return false
 			}
 		},
-    data() {
-      return {
-      	carro: this.car,
-      };
-    },
+		data() {
+			return {
+				carro: this.car,
+			};
+		},
 		methods:{
 			// ...mapMutations('checkout',['setGroupId']),
 			// ...mapMutations('car',['removeCardAbsolute']),
 			...mapActions('car',['deleteCarts']),
 			onTrashStore(){
-
-					
-
-        this.$emit('deleteCarro', this.carro)
-				// this.$refs.productsCar.nativeView.refresh();
-				
+        		this.$emit('deleteCarro', this.carro)
 			},
-
 			onProcessCheckout(){
-        if(!this.isOrderMinStatus){
-          alert(this.textMinOrden)
-          return
-        }
-
-        this.$emit('processCheckout',{
-        	carro: 			this.carro,
-          total:       this.precioCar,
-          prendas:     this.textPrendasLabel,
-          // products:    this.carro.products
-        })
-      },
+				if(!this.isOrderMinStatus){
+					alert(this.textMinOrden)
+					return
+				}
+				this.$emit('processCheckout',{
+					carro: 		this.carro,
+					total:  	this.precioCar,
+					prendas:	this.textPrendasLabel,
+					// products:    this.carro.products
+				})
+			},
 			onTapViewStore(){
 				this.onViewStore({
-          logo:     this.car.logo,
-          name:     this.car.name,
-          local_cd: this.car.id,
-          min:      this.car.limit_price
-        })
+					logo:     this.car.logo,
+					name:     this.car.name,
+					local_cd: this.car.id,
+					min:      this.car.limit_price
+				})
 			}
 		}
 	}

@@ -26,6 +26,31 @@
           height="32" />
   
       </AbsoluteLayout>
+      <FlexboxLayout
+        top="0"
+        left="24"
+        width="10"
+        height="10"
+        backgroundColor="#DA0080"
+        borderRadius="100%"
+        justifyContent="center"
+        alignItems="center"
+        v-if="isNewPromotions"
+      >
+        <!-- 
+          <Label 
+            
+            fontSize="9"
+            color="white"
+            padding="0"
+            margin="0"
+            lineHeight="0"
+            letterSpacing="0"
+            verticalAlignment="center"
+            horizontalAlignment="center"
+          />    -->
+
+      </FlexboxLayout>
 
     </AbsoluteLayout>
   
@@ -40,7 +65,7 @@
         };
       }, 
       computed:{
-  
+        ...mapState(['isNewPromotions'])
       },
       watch:{
   

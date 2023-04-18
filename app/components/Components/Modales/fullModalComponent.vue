@@ -156,7 +156,7 @@
             {
               title: 'Bienvenido a Modatex',
               image: '~/assets/paso3.png',
-              body: 'Podrás ver los carritos según tus marcas seleccionadas.',
+              body: 'Podrás ver los carritos según tus tiendas seleccionadas.',
               id: 2
             },
             {

@@ -26,7 +26,7 @@
 
 
           <StackLayout col="1" orientation="horizontal">
-            <Label  horizontalAlignment="left" margin="0" padding="0" text="Marcas: " textTransform="uppercase" fontWeight="900" fontSize="16" />
+            <Label  horizontalAlignment="left" margin="0" padding="0" text="Tiendas: " textTransform="uppercase" fontWeight="900" fontSize="16" />
             <Label  horizontalAlignment="left" margin="0" padding="0" :text="categorie.name" textTransform="uppercase" fontWeight="900" fontSize="16" />
           </StackLayout>
 

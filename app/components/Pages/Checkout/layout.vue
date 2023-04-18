@@ -190,7 +190,7 @@
         let total = this.carCheckout.total
 
         if(this.costoEnvio.length){
-          console.log('thiscostoEnvio',this.costoEnvio)
+          // console.log('thiscostoEnvio',this.costoEnvio)
           this.costoEnvio.forEach((e)=>{
             total += e.value
           })

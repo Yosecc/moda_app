@@ -118,7 +118,7 @@
       ...mapMutations(['changeToast']),
       onMounted(){
         this.descuentosExclusivos().then((response)=>{
-          console.log(response)
+          // console.log(response)
           this.descuentos = response
         })
       },
@@ -129,7 +129,7 @@
         }
         this.isLoadingCanje = code
         this.canjearCupon(code).then((response)=>{
-          console.log(response)
+          // console.log(response)
           this.isLoadingCanje = null
           this.onMounted()
           this.changeToast({
@@ -141,7 +141,7 @@
           // alert(response)
           
         }).catch((error)=>{
-          console.log(error)
+          // console.log(error)
           this.isLoadingCanje = null
           // alert(error)
           this.changeToast({

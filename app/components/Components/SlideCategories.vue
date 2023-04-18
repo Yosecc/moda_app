@@ -1,60 +1,37 @@
 <template lang="html">
   <StackLayout padding="0">
-    <!-- <GridLayout v-if="categoriesComputed && !isStore" :columns="columns" :rows="rows">
-      <StackLayout 
-        @tap="onTap(item)"
-        v-for="(item,key) in categoriesComputed" 
-        :key="`category${key}`"
-        padding="4 8 4 8"
-        :marginBottom="item.marginBottom ? item.marginBottom:''"
-        :colSpan="item.colSpan" 
-        :row="item.row" 
-        :col="item.col"
-        v-if="item.show ? item.show:true"
-      >
-        <AbsoluteLayout  
-          marginBottom="4" 
-          v-if="key < 6" 
-          :background="item.color" 
-          class="card secondary h-100 shadow-none no-radius"
-          paddingLeft="0" 
-          paddingRight="0" 
-          paddingBottom="0"
-          :borderWidth="categorieActiveMethod(item.id) ? '3':'.5'"
-          :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#5b5b5b'"
-        >
-
-          <Image 
-            :top="item.top ? item.top:10"
-            :left="item.left"
-            :src="item.icon"
-            width="120"
-            :loaded="onImageLoaded"
-            horizontalAlignment="right"
-          />
-          <StackLayout 
-            top="0"
-            left="0" 
-            width="100%" 
-            paddingLeft="10"
-          >
-            <Label 
-              textWrap
-              :text="item.name" 
-              fontWeight="800" 
-              fontSize="17" 
-            />
-          </StackLayout>
-        </AbsoluteLayout>
-      </StackLayout>
-
-    </GridLayout> -->
-  
-
-     <ScrollView orientation="horizontal" :scrollBarIndicatorVisible="false">
-       <StackLayout  orientation="horizontal">
+    <ScrollView v-if="!isViewActive" orientation="horizontal" :scrollBarIndicatorVisible="false">
+      <StackLayout v-if="!categories.length" orientation="horizontal">
         <FlexboxLayout
-          v-for="(item,key) in categoriesComputed" 
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="flex-start"
+          marginRight="0"
+          padding="0 8 0 8"
+          height="110"
+          v-for="(i , k) in 6"
+          :key="`slid-${k}`"
+        >
+          <FlexboxLayout 
+            class="label_skeleton"
+            padding="16"
+            borderRadius="100%"
+            borderColor="#f5f5f5"
+            borderWidth="1"
+            alignItems="center"
+            justifyContent="center"
+            horizontalAlignment="center"
+            width="80"
+            height="80"
+          >
+
+          </FlexboxLayout >
+          <Label class="label_skeleton" height="14" width="60" marginTop="6" />
+        </FlexboxLayout> 
+      </StackLayout>
+      <StackLayout v-if="categories.length" orientation="horizontal">
+        <FlexboxLayout
+          v-for="(item,key) in categories" 
           :key="`category${key}`"
           flexDirection="column"
           alignItems="center"
@@ -62,18 +39,20 @@
           marginRight="0"
           padding="0 8 0 8"
           @tap="onTap(item)"
+          height="110"
         >
           <FlexboxLayout 
             background="white"
             class="box_shadow_card"
             padding="16"
-            
             borderRadius="100%"
             borderColor="#f5f5f5"
             borderWidth="1"
             alignItems="center"
             justifyContent="center"
             horizontalAlignment="center"
+            width="80"
+            height="80"
           >
             <Image 
               :src="item.icon"
@@ -84,54 +63,47 @@
           </FlexboxLayout >
           <Label :text="item.name" textAlignment="center" fontSize="12" color="black" fontWeight="100" />
         </FlexboxLayout>
-        <!-- <StackLayout 
-          @tap="onTap(item)"
-          v-for="(item,key) in categoriesComputed" 
+      </StackLayout>
+    </ScrollView>
+    <StackLayout v-else>
+      <WrapLayout width="100%" v-if="categories.length" orientation="horizontal">
+        <FlexboxLayout
+          v-for="(item,key) in categories" 
           :key="`category${key}`"
-          padding="4 8 4 8"
-          :marginBottom="item.marginBottom ? item.marginBottom:''"
-          :colSpan="item.colSpan" 
-          :row="item.row" 
-          :col="item.col"
-          v-if="item.show ? item.show:true"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          marginRight="0"
+          padding="0 8 0 8"
+          @tap="onTap(item)"
+          height="110"
+          width="33.33%"
         >
-          <AbsoluteLayout  
-            marginBottom="4" 
-            v-if="key < 6" 
-            :background="item.color" 
-            class="card h-100 shadoLg" 
-            paddingLeft="0" 
-            paddingRight="0" 
-            paddingBottom="0"
-            :borderWidth="categorieActiveMethod(item.id) ? '3':'1'"
-            :borderColor="categorieActiveMethod(item.id) ? '#DA0080':'#ededed'"
+          <FlexboxLayout 
+            background="white"
+            class="box_shadow_card"
+            padding="16"
+            borderRadius="100%"
+            borderColor="#f5f5f5"
+            borderWidth="1"
+            alignItems="center"
+            justifyContent="center"
+            horizontalAlignment="center"
+            width="80"
+            height="80"
           >
-
             <Image 
-              :top="item.top ? item.top:10"
-              :left="item.left"
               :src="item.icon"
-              width="120"
-              :loaded="onImageLoaded"
-              horizontalAlignment="right"
+              stretch="aspectFit"
+              horizontalAlignment="center"
+              verticalAlignment="center"
             />
-            <StackLayout 
-              top="0"
-              left="0" 
-              width="100%" 
-              paddingLeft="10"
-            >
-              <Label 
-                textWrap
-                :text="item.name" 
-                fontWeight="800" 
-                fontSize="18" 
-              />
-            </StackLayout>
-          </AbsoluteLayout>
-        </StackLayout> -->
-       </StackLayout>
-     </ScrollView>
+          </FlexboxLayout >
+          <Label :text="item.name" textAlignment="center" fontSize="12" color="black" fontWeight="100" />
+        </FlexboxLayout>
+      </WrapLayout>
+    </StackLayout>
+
   </StackLayout>
 
 </template>
@@ -150,26 +122,26 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
         type: Array|Object,
         default:[]
       },
-      rows:{
-        type: String,
-        default: '*,*'
-      },
-      columns:{
-        type: String,
-        default: '*,*,*,*,*,*'
-      },
-      isIconFilter:{
-        type: Boolean,
-        default: true
-      },
-      isTodo:{
-        type: Boolean,
-        default: true
-      },
-      isHome:{
-        type: Boolean,
-        default: false
-      },
+      // rows:{
+      //   type: String,
+      //   default: '*,*'
+      // },
+      // columns:{
+      //   type: String,
+      //   default: '*,*,*,*,*,*'
+      // },
+      // isIconFilter:{
+      //   type: Boolean,
+      //   default: true
+      // },
+      // isTodo:{
+      //   type: Boolean,
+      //   default: true
+      // },
+      // isHome:{
+      //   type: Boolean,
+      //   default: false
+      // },
       navigate:{
         type: Boolean,
         default: true
@@ -183,7 +155,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
         default: false
       },
       
-      ontapCategorie:{},
+      // ontapCategorie:{},
     },
     data() {
       return {
@@ -197,25 +169,24 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       // }
     },
     computed:{
-      ...mapState(['isLoadPage']),
-      ...mapState('products',['count']),
-      ...mapState('stores',['storeCategorieActive']),
-      ...mapState('categories',['isLoadCategories','categorieActive','categoriesBase']),
-      ...mapGetters('categories',['categorieActiveGetters']),
-      categoriesComputed(){
-        if(this.categories.length){
-          return this.categories
-        }
-        return this.categoriesBase
-      },
-
+      // ...mapState(['isLoadPage']),
+      // ...mapState('products',['count']),
+      // ...mapState('stores',['storeCategorieActive']),
+      // ...mapState('categories',['isLoadCategories','categorieActive','categoriesBase']),
+      // ...mapGetters('categories',['categorieActiveGetters']),
+      // categoriesComputed(){
+      //   if(this.categories.length){
+      //     return this.categories
+      //   }
+      //   return this.categoriesBase
+      // },
     },
     methods:{
-      ...mapActions('products',['getHome']),
-      ...mapMutations('categories',['setCategorieActive']),
-      ...mapMutations(['changeDrawer','changePage']),
-      ...mapMutations('stores',['changeParamsStores','setStoreCategorieActive']),
-      ...mapMutations('products',['changeParamsProducts','changeParamsProductsSearch']),
+      // ...mapActions('products',['getHome']),
+      // ...mapMutations('categories',['setCategorieActive']),
+      // ...mapMutations(['changeDrawer','changePage']),
+      // ...mapMutations('stores',['changeParamsStores','setStoreCategorieActive']),
+      // ...mapMutations('products',['changeParamsProducts','changeParamsProductsSearch']),
       onTap(item){
 
         if(!this.isStore){
@@ -226,11 +197,12 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
               parameters: []
             }).then(
                 function () {
-                  console.log("Firebase Analytics event logged");
+                  // console.log("Firebase Analytics event logged");
                 }
             );
 
             if(item.type && item.type == 'search'){
+
               this.$navigator.navigate('/search',{
                 transition: {
                   name: 'slideLeft',
@@ -260,6 +232,8 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
                 },
               }
             })
+
+
           }
         }else{
 
@@ -270,21 +244,20 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
         this.$emit('ontapCategorie',item.id)
         
       },
-      onImageLoaded(arg){
-      },
-      categorieActiveMethod(id){
-        if(!this.isStore){
-          if(this.isViewActive && this.categorieActive == id ){
-            return true
-          }
-        }else{
-          if(this.isViewActive && this.storeCategorieActive == id){
-            return true
-          }
-        }
-        return false
-      }
-      
+      // onImageLoaded(arg){
+      // },
+      // categorieActiveMethod(id){
+      //   if(!this.isStore){
+      //     if(this.isViewActive && this.categorieActive == id ){
+      //       return true
+      //     }
+      //   }else{
+      //     if(this.isViewActive && this.storeCategorieActive == id){
+      //       return true
+      //     }
+      //   }
+      //   return false
+      // }
     }
   }
 </script>

@@ -1,9 +1,10 @@
 <template lang="html">
   <Page background="#FDFDFD">
     <HeaderDefault :back="false" />
-      
+   
     <GridLayout  rows="*">
-      <AbsoluteLayout padding="0" margin="0" row="1">
+      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0" row="1">
+        
         <RadListView 
           ref="arrayHome"
           :items="arrayHome"
@@ -21,224 +22,84 @@
           left="0"
         >
           <v-template if="item.name == 'buscador'">
-            <StackLayout marginTop="16" padding="0" marginLeft="16" marginRight="16">
-              <label 
-                @tap="onNavigateSearch"
-                text="Buscar productos" 
-                class="inputForm false" 
-                horizontalAlignment="left"
+            <StackLayout
+              padding="16 16 8 16"
+            >
+              <FlexboxLayout 
+                alignItems="center"
                 width="100%"
                 height="40"
-                paddingTop="8"
-                fontWeight="200"
-                borderRadius="0" 
-              />
+                class="inputForm"
+                padding="0"
+                margin="0"
+                @tap="onNavigateSearch"
+              >
+                <Image 
+                  verticalAlignment="center"
+                  horizontalAlignment="center"
+                  src="~/assets/icons/search.png" 
+                  width="20" 
+                  height="20"
+                  margin="2 6 0 8"
+                />
+                <label 
+                  
+                  text="Buscar productos" 
+                  class="" 
+                  horizontalAlignment="left"
+                  fontWeight="200"
+                  fontSize="16"
+                  margin="0"
+                  padding="0"
+                />
+              </FlexboxLayout >
             </StackLayout>
           </v-template>
           
           <v-template if="item.name == 'slider'">
-            <StackLayout padding="0" margin="0">
-              
-                <SliderComponent :sliders="item.data" v-if="item.data.length"/>
-              
-
-              <StackLayout padding="0 16" margin="0" v-if="!item.data.length">
-                <StackLayout 
-                    v-for="i in 1"
-                    class="label_skeleton"
-                    :key="`skeleto-marca-${i}}`" 
-                    height="140" 
-                    width="100%" 
-                    stretch="aspectFill"
-                    
-                  />
-              </StackLayout>
-            </StackLayout>
-
+            <SliderComponent :sliders="item.data" />              
           </v-template>
           <v-template if="item.name == 'categories'">
-            <SlideCategories  :categories="item.data" />
-          </v-template>
-          <v-template if="item.name == 'promociones'">
-            <StackLayout padding="0" margin="0 0 16 0">
-              <PromotionsComponent :data="item.data" />
+            <StackLayout padding="16 0 0 0" >
+              <SlideCategories :categories="item.data" />
             </StackLayout>
           </v-template>
+          <v-template if="item.name == 'promociones'">
+            <PromotionsComponent :data="item.data" />
+          </v-template>
           <v-template if="item.name == 'marcas'">
-            <StackLayout padding="0" margin="0" >
-                <Label 
-                  :text="`Marcas Populares`" 
-                  marginBottom="0" 
-                  marginLeft="10"
-                  fontWeight="600"
-                  fontSize="13"
-                />
-                
-                <ScrollView  scrollBarIndicatorVisible="false" orientation="horizontal">
-                  <StackLayout 
-                    orientation="horizontal"
-                    v-if="item.data.length"
-                    paddingLeft="16"
-                  >
-                    <StoreBox
-                      v-for="(store, key) in item.data"
-                      :key="key"
-                      :store="store"  
-                    />
-                  </StackLayout>
-                  <StackLayout 
-                    orientation="horizontal"
-                    v-if="!item.data.length"
-                    paddingLeft="16"
-                  >
-                    <StackLayout 
-                        v-for="i in 5"
-                        class="label_skeleton"
-                        :key="`skeleto-marca-${i}}`" 
-                        width="100"
-                        height="100"
-                        stretch="aspectFill"
-                        marginRight="16"
-                        marginBottom="8"
-                        marginTop="8" 
-                      />
-                  </StackLayout>
-                </ScrollView>
-
-              </StackLayout>
+            <StackLayout padding="16 0 20 0" >
+              <Marcas :data="item.data" />
+            </StackLayout>
           </v-template>
           <v-template if="item.name == 'bloques'">
-            <StackLayout padding="0" margon="0" >
-                <StackLayout
-                  v-for="(bloque, key) in item.data"
-                  :key="`bloque-${key}`"
-                  :padding="(bloque.config && !bloque.config.slider) || !bloque.config  ? '16':'0'"
-                  :margin="(bloque.config && !bloque.config.slider) || !bloque.config  ? '':'0 0 24 0'"
-                >
-                  <StackLayout 
-                    :class="bloque.config && !bloque.config.is_card ? '':'card' "
-                    padding="0"
-                    borderRadius="8"
-                    :background="bloque.config && !bloque.config.is_card ? '':'white' "
-                    v-if="['categorie','filter'].includes(bloque.type)"
-                  >
-                    <StackLayout
-                      borderBottomWidth="1"
-                      borderColor="#f8f8f8"
-                      padding="4 10"
-                    >
-                      <Label 
-                      :text="bloque.name" 
-                        fontWeight="600"
-                        fontSize="13" />
-                    </StackLayout>
-                    <StackLayout padding="0" margin="0">
-                      <RadListView 
-                        ref="producsScroll"
-                        :layout="(bloque.config && !bloque.config.slider) || !bloque.config  ? 'grid':'linear' "
-                        :items="bloque.products"
-                        :orientation="(bloque.config && !bloque.config.slider) || !bloque.config ? 'vertical':'horizontal'"
-                      >
-                        <v-template key="product">
-                          
-                            <ProductBox
-                                :width="(bloque.config && !bloque.config.slider) || !bloque.config ? '':'170'"
-                                :paddingLeft="((bloque.config && !bloque.config.slider) || !bloque.config)  ? '':'16'"
-                                :product="item"
-                                
-                            ></ProductBox>
-                          
-                        </v-template>
-                      </RadListView>
-                    </StackLayout>
-                    <FlexboxLayout
-                      borderTopWidth="1"
-                      borderColor="#f8f8f8"
-                      padding="4 10"
-                      justifyContent="space-between"
-                      @tap="`onTapVerMas`(bloque)"
-                    >
-                      <Label text="Ver más" fontSize="12"  fontWeight="200" />
-                      <image src="res://arrow_right" height="12" stretch="aspectFit" />
-                    </FlexboxLayout>
-                  </StackLayout>
-
-                  <StackLayout
-                    v-if="['promotions'].includes(bloque.type)"
-                    padding="0"
-                    margin="0"
-                    width="100%" 
-                    borderRadius="10"
-                  >
-                    <Carousel 
-                      height="160" 
-                      width="100%" 
-                      ref="SliderBloque"
-                      indicatorColor="#DA0080" 
-                      indicatorColorUnselected="rgba(0,0,0,.1)"
-                      :showIndicator="false" 
-                      indicatorOffset="200,60"
-                      finite="true" 
-                      bounce="false" 
-                      android:indicatorAlignment="bottom"
-                      verticalAlignment="top"  
-                      horizontalAlignment="center"   
-                      padding="0"
-                      margin="0"
-                      borderRadius="10"
-                    >
-
-                      <CarouselItem 
-                        v-for="(i,key) in bloque.promotions" 
-                        :key="`slide-bloque-${key}`"
-                        :id="`slide-bloque-${key}`" 
-                        verticalAlignment="middle"
-                        padding="0"
-                        margin="0"
-                        borderRadius="10"
-                      >
-                        <ImageCache 
-                          stretch="aspectFill"
-                          placeholderStretch="aspectFit"
-                          borderRadius="10"
-                          placeholder=""
-                          :src="i.url"
-                          height="100%"
-                          class="imageCache"
-                          rounded="false"
-                          ref="imageCache"
-                          @tap="onTapPromotion(i)"
-                        /> 
-                      </CarouselItem>
-                      
-                    </Carousel>
-                  </StackLayout>
-
-                </StackLayout>
+            <StackLayout padding="16 0" >
+              <Bloques :data="item.data" />
             </StackLayout>
           </v-template>
           <v-template name="productos" if="item.name == 'productos'" >
-            <GridLayout rows="auto,*, auto">
-              <Label 
-                text="Ingresos de Hoy" 
-                marginBottom="16" 
-                marginLeft="16" 
-                marginRight="16"
-                fontWeight="900"
-                row="0"
-              />
-
-              <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length">
-                <StackLayout 
-                  v-for="i in 4"
-                  class="label_skeleton"
-                  :key="`skeleto-marca-${i}}`" 
-                  height="340" 
-                  width="50%"
-                  stretch="aspectFill" 
+            <StackLayout padding="0" margin="0">
+              <StackLayout width="100%" height="24"  class="degrade"></StackLayout>
+              <GridLayout rows="auto,*, auto" background="white">
+                <Label 
+                  text="Ingresos de Hoy" 
+                  marginBottom="16" 
+                  marginLeft="16" 
+                  marginRight="16"
+                  fontWeight="900"
+                  row="0"
                 />
-              </WrapLayout >
 
+                <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length">
+                  <StackLayout 
+                    v-for="i in 4"
+                    class="label_skeleton"
+                    :key="`skeleto-marca-${i}}`" 
+                    height="340" 
+                    width="50%"
+                    stretch="aspectFill" 
+                  />
+                </WrapLayout >
 
                 <RadListView 
                   ref="producsScroll"
@@ -256,13 +117,12 @@
                   </v-template>
                 </RadListView>
 
-                
+                <StackLayout row="2" padding="0" margin="0" >
+                  <ActivityIndicator busy="true" color="#DA0080" v-if="isLoadingProducts" horizontalAlignment="center" margin="16" row="1" />
+                </StackLayout>
 
-              <StackLayout row="2" padding="0" margin="0" >
-                <ActivityIndicator busy="true" color="#DA0080" v-if="isLoadingProducts" horizontalAlignment="center" margin="16" row="1" />
-              </StackLayout>
-
-            </GridLayout>
+              </GridLayout>
+            </StackLayout>
           </v-template>
         </RadListView>
         <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
@@ -282,6 +142,8 @@
   import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
   import SlideCategories from '../Components/SlideCategories.vue'
   import Stores from '~/components/Components/Stores.vue'
+  import Marcas from '~/components/Components/Marcas.vue'
+  import Bloques from '~/components/Components/Bloques/index.vue'
   import recentlySeen from '../Components/recentlySeen.vue'
 
   import { ObservableArray } from '@nativescript/core/data/observable-array';
@@ -301,7 +163,9 @@
       PromotionsComponent,
       recentlySeen,
       ProductBox,
-      StoreBox
+      StoreBox,
+      Marcas,
+      Bloques
     },
     data() {
       return {     
@@ -322,92 +186,92 @@
           {
             name:'categories',
             data: new ObservableArray([
-              {
-                id:1,
-                name:'Mujer',
-                key: 'woman', 
-                icon:'res://woman',
-                color: "",
-                colSpan: 3,
-                col: 0,
-                row: 0,
-                left: 100,
-              },
-              {
-                id:3,
-                name:'Hombre',
-                key: 'man', 
-                icon:'res://men',
-                color: "",
-                colSpan: 3,
-                col: 3,
-                row: 0,
-                left: 100,
-              },
-              {
-                id:6,
-                name:'Talle especial',
-                key: 'xl', 
-                icon:'res://label',
-                color: "",
-                colSpan: 2,
-                col: 0,
-                row:1,
-                left: 35,
-                top: 20
-              },
-              {
-                id:4,
-                name:'Niños',
-                key: 'kids', 
-                icon:'res://baby',
-                color: "",
-                colSpan: 2,
-                col: 2,
-                row: 1,
-                left: 35,
-                top: 20
-              },
-              {
-                id:2,
-                name:'Accesorios',
-                key: 'accessories', 
-                icon:'res://accessories',
-                color: "",
-                colSpan: 2,
-                col: 4,
-                row: 1,
-                left: 35,
-                top: 20
-              },
-              {
-                id:5,
-                name:'Zapatos',
-                type: 'search',
-                search: 'zapatos',
-                key: 'zapatos', 
-                icon:'res://shoes',
-                color: "",
-                colSpan: 2,
-                col: 4,
-                row: 1,
-                left: 35,
-                top: 20
-              },
-              {
-                id:7,
-                name:'Remeras',
-                type: 'search',
-                search: 'remera',
-                key: 'tshitr', 
-                icon:'res://tshirt',
-                color: "",
-                colSpan: 2,
-                col: 4,
-                row: 1,
-                left: 35,
-                top: 20
-              },
+              // {
+              //   id:1,
+              //   name:'Mujer',
+              //   key: 'woman', 
+              //   icon:'res://woman',
+              //   color: "",
+              //   colSpan: 3,
+              //   col: 0,
+              //   row: 0,
+              //   left: 100,
+              // },
+              // {
+              //   id:3,
+              //   name:'Hombre',
+              //   key: 'man', 
+              //   icon:'res://men',
+              //   color: "",
+              //   colSpan: 3,
+              //   col: 3,
+              //   row: 0,
+              //   left: 100,
+              // },
+              // {
+              //   id:6,
+              //   name:'Talle especial',
+              //   key: 'xl', 
+              //   icon:'res://label',
+              //   color: "",
+              //   colSpan: 2,
+              //   col: 0,
+              //   row:1,
+              //   left: 35,
+              //   top: 20
+              // },
+              // {
+              //   id:4,
+              //   name:'Niños',
+              //   key: 'kids', 
+              //   icon:'res://baby',
+              //   color: "",
+              //   colSpan: 2,
+              //   col: 2,
+              //   row: 1,
+              //   left: 35,
+              //   top: 20
+              // },
+              // {
+              //   id:2,
+              //   name:'Accesorios',
+              //   key: 'accessories', 
+              //   icon:'res://accessories',
+              //   color: "",
+              //   colSpan: 2,
+              //   col: 4,
+              //   row: 1,
+              //   left: 35,
+              //   top: 20
+              // },
+              // {
+              //   id:5,
+              //   name:'Zapatos',
+              //   type: 'search',
+              //   search: 'zapatos',
+              //   key: 'zapatos', 
+              //   icon:'res://shoes',
+              //   color: "",
+              //   colSpan: 2,
+              //   col: 4,
+              //   row: 1,
+              //   left: 35,
+              //   top: 20
+              // },
+              // {
+              //   id:7,
+              //   name:'Remeras',
+              //   type: 'search',
+              //   search: 'remera',
+              //   key: 'tshitr', 
+              //   icon:'res://tshirt',
+              //   color: "",
+              //   colSpan: 2,
+              //   col: 4,
+              //   row: 1,
+              //   left: 35,
+              //   top: 20
+              // },
             ])
           },
           {
@@ -460,9 +324,60 @@
       ...mapActions('products',['getProductsRosa','getUltimosproductos','getCategorieSearch','getSearch','getBloques']),
       ...mapActions(['getHome', 'getSliders','getPromociones','getCategories']),
       ...mapActions('stores', ['getStores', 'getStoreRosa']),
-
       ...mapMutations(['changeisLoadPage']),
       ...mapMutations('products',['changeParamsProductsSearch']),
+      cargaHome(){
+        this.page = 1
+
+        this.onGetProducts()
+        this.getSliders({ slide_category: '0,1' }).then((response) => {
+          this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
+        })
+        this.getStoreRosa().then((response) => {
+          let arr = []
+          response.forEach((e, i) => {
+              if (i < 10) {
+                  arr.push(e)
+              }
+          })
+          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(arr)
+        })
+        
+        this.searchBloques()
+        this.onGetPromociones()
+        this.onGetCategories()
+        this.defineHome()
+      },
+      onGetPromociones(){
+        this.arrayHome.forEach(element => {
+          if(element.name == 'promociones'){
+            this.getPromociones().then((response)=>{
+              element.data = new ObservableArray(response)
+            })
+          }
+        });
+      },
+      onGetCategories(){
+        this.arrayHome.forEach(element => {
+          if(element.name == 'categories'){
+            this.getCategories().then((response)=>{
+              element.data = new ObservableArray(response)
+            })
+          }
+        });
+      },
+      searchBloques()
+      {
+        this.arrayHome.forEach(element => {
+          if(element.name == 'bloques'){
+            this.getBloques().then((response)=>{
+              element.data = new ObservableArray(response)
+              this.$refs.arrayHome.refresh()
+            })
+          }
+        });
+      },
+
       arrowTop(){
         let scrollv = this.$refs.arrayHome.nativeView;
         scrollv.scrollToIndex(0,true)
@@ -495,29 +410,7 @@
               
           }
       },
-      cargaHome(){
-        // console.log('siTT')
-        
-        this.page = 1
-        this.onGetProducts()
-        this.getSliders({ slide_category: '0,1' }).then((response) => {
-          this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
-        })
-        this.getStoreRosa().then((response) => {
-          let arr = []
-          response.forEach((e, i) => {
-              if (i < 10) {
-                  arr.push(e)
-              }
-          })
-          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(arr)
-        })
-        
-        this.searchBloques()
-        this.onGetPromociones()
-        // this.onGetCategories()
-        this.defineHome()
-      },
+      
       async onPullToRefreshInitiated ({ object }) {
         // console.log('Pulling...');
         await this.$nextTick( async () => {
@@ -527,37 +420,7 @@
           this.$refs.arrayHome.refresh()
         });
       },
-      onGetPromociones(){
-        this.arrayHome.forEach(element => {
-          if(element.name == 'promociones'){
-            this.getPromociones().then((response)=>{
-              element.data = new ObservableArray(response)
-            })
-          }
-        });
-      },
-      onGetCategories(){
-        // console.log('llega')
-        this.arrayHome.forEach(element => {
-          if(element.name == 'categories'){
-            this.getCategories().then((response)=>{
-
-              element.data = new ObservableArray(response)
-            })
-          }
-        });
-      },
-      searchBloques()
-      {
-        this.arrayHome.forEach(element => {
-          if(element.name == 'bloques'){
-            this.getBloques().then((response)=>{
-              element.data = new ObservableArray(response)
-              this.$refs.arrayHome.refresh()
-            })
-          }
-        });
-      },
+      
       onScrolled (args) {
         this.page = this.page + 1
         this.onGetProducts()
@@ -623,68 +486,8 @@
           },
         })
       },
-      onTapPromotion(i){    
-        if(i.action){
-            if(i.action.redirect){
-                this.$navigator.navigate(i.action.redirect.route,{
-                transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                },
-                props: i.action.redirect.params
-                })
-
-                return
-            }   
-        }
-        if(!Object.entries(i.data).length){
-            return;
-        }
-        this.$navigator.navigate('/promotion',{
-          transition: {
-            name: 'slideLeft',
-            duration: 300,
-            curve: 'easeIn'
-          },
-          props:{
-              data: i.data,
-          }
-        })
-      },
-      onTapVerMas(bloque){
-        if(bloque.type =='categorie'){
-          this.$navigator.navigate('/categories',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-            props:{
-              params:{
-                search: '',
-                section: bloque.value
-              },
-            }
-          })
-        }
-        if(bloque.type == 'filter'){
-          this.$navigator.navigate('/search',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-            props:{
-              params:{
-                search: bloque.value,
-                section: []
-              },
-            }
-          })
-          return
-        }
-      }
+      
+      
     }
   }
 </script>

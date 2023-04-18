@@ -134,7 +134,7 @@
           }
           return x
         })
-        console.log('data',data)
+        // console.log('data',data)
         this.setNotifications(data)
         this.$ref.listNotifications.refresh()
         // console.log(this.notifications)

@@ -72,7 +72,7 @@
       //   this.$refs.contentproduct.nativeView.refresh();
       // },
       coupons(to){
-        console.log('con cupones')
+        // console.log('con cupones')
       }
     },
     computed:{
@@ -94,7 +94,7 @@
         }
       })
       this.$refs.listCoupons.refresh()
-      console.log('cupones',this.coupons)
+      // console.log('cupones',this.coupons)
       // setTimeout(()=>{
       //   this.montado = true
       // },3000)

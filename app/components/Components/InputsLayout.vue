@@ -168,7 +168,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
         // this.$refs.drawerInput.open('bottom')
       },
       checkedChange({value}){
-        console.log(value)
+        // console.log(value)
       }
     }
   }

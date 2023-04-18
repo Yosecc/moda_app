@@ -68,7 +68,7 @@
           },
           {
             icon: 'icon_menu_0',
-            name: 'Marcas',
+            name: 'Tiendas',
             route: '/all_stores',
             disabled: false
           },
@@ -76,6 +76,12 @@
             icon: 'icon_menu_0',
             name: 'Mis pedidos',
             route: '/profile',
+            disabled: false
+          },
+          {
+            icon: 'icon_menu_6',
+            name: 'Descuentos Especiales',
+            route: '/discount_especial',
             disabled: false
           },
           {
@@ -96,12 +102,7 @@
             route: '/payment_methods',
             disabled: false
           },
-          {
-            icon: 'icon_menu_6',
-            name: 'Descuentos Especiales',
-            route: '/discount_especial',
-            disabled: false
-          },
+          
           // {
           //   icon: 'icon_menu_6',
           //   name: 'cam',
@@ -124,7 +125,7 @@
           //   icon: 'icon_menu_6',
           //   name: 'Ayuda',
           //   route: '/help',
-          //   disabled: true
+          //   disabled: false
           // },
         ],
         othersItemsMenu:[

@@ -1,6 +1,6 @@
 
 <template lang="html">
-  <StackLayout >
+  <StackLayout  >
     <Label text="Combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
     <WrapLayout 
       v-for="(combinacion, key) in combination" 
@@ -13,13 +13,13 @@
       marginBottom="8" 
     >
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
-        <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''"  width="100%">
-          <FlexboxLayout width="100%" alignItems="center" justifyContent="space-between">
+        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" height="55" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''"  width="100%">
+          <FlexboxLayout padding="0 8" width="100%" alignItems="center" justifyContent="space-between">
             <label 
               text="Talle"  
               marginLeft="0" 
               paddingLeft="0" 
-              fontSize="14" 
+              fontSize="12" 
               fontWeight="900" 
             />
             <StackLayout v-if="combinacion.talleActive != ''" padding="0" marginRight="0">
@@ -35,16 +35,16 @@
             fontSize="12" 
             fontWeight="300" 
           />
-        </StackLayout>
+        </FlexboxLayout>
       </StackLayout>
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
-        <StackLayout padding="8" borderRadius="8" height="100%" class="card secondary"  :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
-          <FlexboxLayout width="100%" backgroundColor="" alignItems="center" justifyContent="space-between">
+        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" background="" height="55" class="card secondary"  :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
+          <FlexboxLayout width="100%" padding="0 8" backgroundColor="" alignItems="center" justifyContent="space-between">
             <label 
               text="Color"  
               marginLeft="0"
               paddingLeft="0" 
-              fontSize="14" 
+              fontSize="12" 
               fontWeight="900" 
             />
             
@@ -58,6 +58,9 @@
                   :backgroundColor="combinacion.colorActive"
                   opacity=".5"
                   borderRadius="100%"
+                  borderColor="#808B96"
+                  borderWidth=".8"
+                  v-if="!combinacion.colorActive.includes('/')"
                 />
 
                 <label
@@ -67,13 +70,28 @@
                   height="20"
                   :backgroundColor="combinacion.colorActive"
                   borderRadius="100%"
+                  v-if="!combinacion.colorActive.includes('/')"
                 />
+                <label
+                  left="5"
+                  top="5"
+                  borderWidth="1"
+                  borderColor="#DFDFDF"
+                  backgroundColor="#DFDFDF"
+                  padding="4"
+                  fontSize="12"
+                  :text="combinacion.colors.find((e)=> e.code == combinacion.colorActive).name"
+                  borderRadius="4"
+                  v-if="combinacion.colorActive.includes('/')"
+                />
+
                 <Image
-                  left="11"
+                  left="10"
                   top="5"
                   src="~/assets/icons/check_white.png" 
-                  width="8" 
+                  width="10" 
                   height="auto" 
+                  v-if="!combinacion.colorActive.includes('/')"
                 />
               </AbsoluteLayout>
             </StackLayout>
@@ -86,16 +104,16 @@
             fontSize="12" 
             fontWeight="300" 
           />
-        </StackLayout>
+        </FlexboxLayout>
       </StackLayout>
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="25%">
-        <StackLayout padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '100%':'46'" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
-          <FlexboxLayout justifyContent="space-between"  alignItems="center" >
+        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '55':'55'" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
+          <FlexboxLayout padding="0 8" width="100%" justifyContent="space-between"  alignItems="center" >
             <label 
               text="Cant."  
               marginLeft="0"
               paddingLeft="0" 
-              fontSize="14" 
+              fontSize="12" 
               fontWeight="900" 
             />
             <label 
@@ -113,19 +131,19 @@
             fontSize="12" 
             fontWeight="500" 
           />
-        </StackLayout>
+        </FlexboxLayout>
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
-        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="55" width="100%"></StackLayout>
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
-        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="55" width="100%"></StackLayout>
       </StackLayout>
 
       <StackLayout v-show="!isEnabled" padding="4" width="25%" >
-        <StackLayout class="label_skeleton" height="45" width="100%"></StackLayout>
+        <StackLayout class="label_skeleton" height="55" width="100%"></StackLayout>
       </StackLayout>
 
     </WrapLayout>
@@ -189,6 +207,9 @@
     watch:{
       product(to){
         // alert('cambio')
+      },
+      combinaciones(to){
+        this.combination = to
       }
     },
     data() {
@@ -228,7 +249,7 @@
             }
           })
         }
-        // console.log('abrir modal', this.product)
+        // console.log('soy el keyy', keyy)
         this.$emit('openDropBottom', {data:data, models:this.product.models, isNew: keyy})
       },
     }

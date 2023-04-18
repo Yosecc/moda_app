@@ -151,17 +151,19 @@
 
             this.options.clearHistory = true
             this.changeisLoading(false)
+            this.configNofitificationPush()
             this.$navigator.navigate('/home',this.options)
           })
+          
         }).catch((e)=>{
           this.changeisLoading(false)
           if(e){
             e = JSON.parse(e)
             if(typeof e == 'object'){
-              console.log('pe',e)
+              // console.log('pe',e)
               // console.log('mmm')
               for(var i in e){
-                console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
+                // console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
                 if(typeof e[i] == 'object'){
                   e[i].forEach((i)=>{
                     alert(`${i}`)
@@ -226,7 +228,7 @@
           const result = await LoginManager.logInWithPermissions(['public_profile']); // LoginResult
           const accessToken = AccessToken.currentAccessToken();
 
-          console.log(accessToken,'si')
+          // console.log(accessToken,'si')
       } catch (e) {}
  
         // fbLogin((err, fbData) => {

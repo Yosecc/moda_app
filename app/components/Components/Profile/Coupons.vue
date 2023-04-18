@@ -74,13 +74,13 @@
         }
         this.isLoadingCanje = true
         this.canjearCupon(this.code).then((response)=>{
-          console.log(response)
+          // console.log(response)
           this.isLoadingCanje = false
           this.getCoupons()
           alert(response)
           
         }).catch((error)=>{
-          console.log(error)
+          // console.log(error)
           this.isLoadingCanje = false
           alert(error)
 

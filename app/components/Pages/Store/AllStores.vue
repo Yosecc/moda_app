@@ -33,75 +33,74 @@
       />
     </GridLayout>
     
+    <!-- @pullToRefreshInitiated="onPullToRefreshInitiated"
+          @loadMoreDataRequested="onLoadCargar"
+          @scrollStarted="onScrolled"
+          @scrolled="onScroll" -->
     <StackLayout padding="0 8" row="2">
-      <RadListView 
-        ref="listStores"
-        id="listStores"
-        for="store in stores"
-        layout="grid"
-        itemWidth="50%"
-        @loaded="onloadied"
-        :pullToRefresh="true"
-        @pullToRefreshInitiated="onPullToRefreshInitiated"
-        @scrollEnded="scrollEnd"
-      >
-        <v-template if="store.logo != null">
-          <StackLayout 
-            padding="8" @tap="onTapViewStore(store)">
+        <RadListView 
+          ref="listStores"
+          :items="storess"
+          pullToRefresh="true"
+          loadOnDemandMode="Auto"
+          :loadOnDemandBufferSize="20"
+          @itemTap="onItemSelected"
+        >
+          <v-template>
             <StackLayout 
-              padding="8"
-              class="card"
-              alignItems="center"
+              borderBottomWidth="1"
+              borderColor="#E6E6E6"
+              padding="16 8"
+              orientation="horizontal"
             >
-              <!-- <Image
-                :src="store.logo"
-                width="80"
-                height="80"
-                borderRadius="8"
-                verticalAlignment="top"
-                marginRight="8"
-              /> -->
-
               <ImageCache 
-                    stretch="aspectFill" 
-                    width="80" 
-                    height="80"
-                    placeholderStretch="aspectFill"
-                    placeholder="res://eskeleton"
-                    :src="store.logo"
-                    marginRight="8"
-                    verticalAlignment="top"
+                stretch="aspectFill" 
+                width="80" 
+                height="80"
+                placeholderStretch="aspectFill"
+                placeholder="res://eskeleton"
+                :src="item.logo"
+                marginRight="8"
+                verticalAlignment="top"
+                class="storeBox"
+              />
+              <StackLayout padding="0">
+                
+                <StackLayout
+                  orientation="horizontal"
+                  padding="0"
+                  margin="0"
+                >
+                  <Image 
+                    src="res://star"
+                    width="16"
+                    height="16"
+                    marginRight="-4"
                   />
-        
-              <StackLayout verticalAlignment="top">
+                  <label :text="item.rep" textWrap textTransform="uppercase" fontWeight="700" fontSize="12" margin="0" />
+                </StackLayout>
+
+                <label :text="item.name" textWrap textTransform="uppercase" fontWeight="600" margin="0 0 8 0" padding="0" />
                 
                 <label 
                   textWrap="true" 
                   fontWeight="300"
-                  fontSize="12">
+                  fontSize="12"
+                  margin="0" 
+                  padding="0"
+                >
                   <FormattedString>
-                    <span text="Precio mínimo de compra: "></span>
-                    <span :text="store.min |moneda " style="color: #DA0080"></span>
+                    <span text="Compra mínima: "></span>
+                    <span :text="item.min | moneda " ></span>
                   </FormattedString>
                 </label>
-              </StackLayout>
-            </StackLayout >
-          </StackLayout>
-        </v-template>
-
-        <v-template if="store.logo == null" >
-          <StackLayout 
-            width="100%"
-            height="100%" 
-            padding="8">
-            <StackLayout 
-              class="label_skeleton"
-              height="120"
-            ></StackLayout>
-          </StackLayout>
-        </v-template>
-
-      </RadListView>
+                
+                
+              
+            </StackLayout>
+            </StackLayout>
+          </v-template>
+        </RadListView>
     </StackLayout>
   </GridLayout >
 
@@ -139,23 +138,7 @@
     data() {
       return {
         loading: true,
-        storess: new ObservableArray([
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null},
-          {logo:null}
-        ]),
+        storess: [],
         filterName: null,
         page: Page,
         scrollView: ScrollView, 
@@ -172,7 +155,7 @@
       cat(to){
         this.buscador = false
         this.getStoreRosa().then((response)=>{
-          this.storess = new ObservableArray(response)
+          this.storess = new ObservableArray(response.data)
           this.loading = false
         })
       },
@@ -181,8 +164,9 @@
           this.buscador = false
           this.changeParamsStores({ search: '' })
           this.getStoreRosa().then((response)=>{
-            this.storess = new ObservableArray(response)
+            this.storess = new ObservableArray(response.data)
             this.loading = false
+            this.$refs.listStores.refresh();
           })
         }
       }
@@ -213,8 +197,10 @@
       this.numero = 1
       this.changeParamsStores({ search: '' })
       this.getStoreRosa().then((response)=>{
-        this.storess = new ObservableArray(response)
-        this.loading = false
+        console.log(response)
+        // this.storess = new ObservableArray(response.data)
+        // this.$refs.listStores.refresh();
+        // this.loading = false
       })
     },
     methods:{
@@ -227,7 +213,7 @@
 
         await this.$nextTick( async () => {
           await this.getStoreRosa().then((response)=>{
-            this.storess = new ObservableArray(response)
+            this.storess = new ObservableArray(response.data)
             this.loading = false
           })
           object.notifyPullToRefreshFinished();
@@ -273,9 +259,7 @@
         this.onViewStore(store)
       },
       async openFilter(){
-
         const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: false ,isSubcategorias: false } })
-
         this.setCategorieActive(data.id)
         this.changeParamsStores({ 
           categorie: data ? this.categoriesBase.find((e)=>e.id == data.id).key : this.categorieActiveGetters.key, 
@@ -291,6 +275,13 @@
 
         this.numero = 1
       },
+      onItemSelected({ index, object }) {
+        const store = this.storess.getItem(index);
+        this.onTapViewStore(store)
+        // console.log('store',store)
+        // console.log(`Item selected: ${store.name}`);
+      },
+      
     }
   };
 </script>

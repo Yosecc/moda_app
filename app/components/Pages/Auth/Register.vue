@@ -132,6 +132,7 @@
 
         <ActivityIndicator 
           :busy="isLoading" 
+          color="#DA0080"
           @busyChange="onBusyChanged" />
 
         <button 
@@ -162,6 +163,7 @@
 <script>
   import HeaderFullLogo from '../../Components/ActionBar/HeaderFullLogo'
   import CheckBox from '../../Components/modules/checkbox/checkbox.vue'
+  import cache from '@/plugins/cache'
   import { mapActions, mapState, mapMutations } from 'vuex'
   export default {
     components:{
@@ -187,7 +189,7 @@
     },
     methods:{
       ...mapActions('authentication',['Register']),
-      ...mapMutations(['changeisLoading']),
+      ...mapMutations(['changeisLoading','changeToast']),
       focusInputInline(event){
         // console.log('f',event.object)
       },
@@ -195,23 +197,53 @@
         this.changeisLoading(true)
         if(this.dataRegister.termsAndConditions){
           if(this.dataRegister.password == this.dataRegister.recoverPassword){
-            // console.log('this.dataRegister', this.dataRegister)
+            console.log('this.dataRegister', this.dataRegister)
              this.Register(this.dataRegister)
             .then((response)=>{
-              console.log('response2', response)
+              console.log('register.vue', response)
+              if (response.status) {
+                cache.set('client', JSON.stringify(response.client))
+              }
               this.$navigator.navigate('/code_validation')
               this.changeisLoading(false)
             }).catch((error)=>{
-              // console.log('y aqui?', error)
-               this.changeisLoading(false)
+              console.log(error)
+              this.changeisLoading(false)
+              error = JSON.parse(error)
+              console.log('error', error)
+                for (var i in error) {
+                    error[i].forEach((e) => {
+                        if(typeof e == 'string'){
+                          this.changeToast({
+                              title: `${e}`,
+                              status: true,
+                              type: 'danger',
+                              message: ''
+                          })
+                        }else if(typeof e == 'object'){
+                          console.log(e)
+                        }
+                    })
+                }
             })
           }else{
             this.changeisLoading(false)
-            alert('Las contrasenas no coinciden')
+            this.changeToast({
+                              title: 'Las contrasenas no coinciden',
+                              status: true,
+                              type: 'danger',
+                              message: ''
+                          })
+           
           }
         }else{
           this.changeisLoading(false)
-          alert('Debe aceptar los terminos y condicones')
+          this.changeToast({
+                              title: 'Aceptar términos y condicones',
+                              status: true,
+                              type: 'danger',
+                              message: ''
+                          })
         }
       },
       onBusyChanged(args){

@@ -74,7 +74,7 @@
         this.$nextTick()
       },
       categorieActive(to){
-        console.log('categorieActive', to)
+        // console.log('categorieActive', to)
         if(to != 0){
           this.onGetProducts()
         }

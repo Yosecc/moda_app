@@ -73,7 +73,9 @@ export default new Vuex.Store({
             type: '',
             message: '',
             time: 3000
-        }
+        },
+        isNewPromotions: false,
+        notification: null
     },
     getters: {
         componentActive(state) {
@@ -169,6 +171,9 @@ export default new Vuex.Store({
             const response = await Api.get(`getCategories`)
             return response
         },
+        // navigatePush(context) {
+        //     alert('si')
+        // }
 
     },
     modules: {

@@ -113,7 +113,7 @@ import { modapago, tranferencias } from '~/data/methodsPaymentData.js'
       
     },
     mounted(){
-      console.log(this.modaPago.efectivo)
+      // console.log(this.modaPago.efectivo)
     },
     methods:{
       onTapViewStore(store){

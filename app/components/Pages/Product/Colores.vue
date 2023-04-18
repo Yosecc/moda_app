@@ -1,58 +1,73 @@
 <template lang="html">
   
           
-          <StackLayout 
-            orientation="horizontal"
-          >
-            <AbsoluteLayout
-              marginRight="16"
-              v-for="(color, key) in colores"
-              :key="key"
-              @tap="ChangeColor(color.code)"
-            >
+  <StackLayout 
+    orientation="horizontal"
+  >
+    <AbsoluteLayout
+      marginRight="16"
+      v-for="(color, key) in colores"
+      :key="key"
+      @tap="ChangeColor(color.code)"
+    >
 
-              <label
-                left="0"
-                top="0"
-                width="40"
-                height="40"
-                :backgroundColor="color.code"
-                opacity=".5"
-                borderRadius="100%"
-                :borderWidth="borderForWhite(color.code) != '' ? '.7':'0'"
-                :boderColor="borderForWhite(color.code)"
-              />
+      <label
+        left="0"
+        top="0"
+        width="40"
+        height="40"
+        :backgroundColor="color.code"
+        opacity=".5"
+        borderRadius="100%"
+        borderColor="#808B96"
+        borderWidth=".8"
+        v-if="!color.code.includes('/')"
+      />
 
-              <label
-                left="5"
-                top="5"
-                width="30"
-                height="30"
-                :backgroundColor="color.code"
-                borderRadius="100%"
-              />
+      <label
+        left="5"
+        top="5"
+        width="30"
+        height="30"
+        :backgroundColor="color.code"
+        borderRadius="100%"
+        v-if="!color.code.includes('/')"
+      />
+
+      <label
+        left="5"
+        top="5"
+        borderWidth="1"
+        borderColor="#DFDFDF"
+        padding="4 8 4 28"
+        fontSize="16"
+        :text="color.name"
+        borderRadius="4"
+        :backgroundColor="colorChecked == color.code ? '#DFDFDF':''"
+        v-if="color.code.includes('/')"
+      />
 
 
-              <Image
-                 v-show="colorChecked == color.code && (color != '#ffffff' || color != '#FFFFFF' || color != 'white')"
-                left="11"
-                top="11"
-                src="~/assets/icons/check_white.png" 
-                width="18" 
-                height="auto" 
-              />
+      <Image
+        v-show="colorChecked == color.code && (color != '#ffffff' || color != '#FFFFFF' || color != 'white')"
+        left="11"
+        top="11"
+        src="~/assets/icons/check_white.png" 
+        width="18" 
+        height="auto" 
+      />
 
-              <Image
-                v-show="colorChecked == color.code && (color == '#ffffff' || color == '#FFFFFF' || color == 'white')"
-                left="11"
-                top="11"
-                src="~/assets/icons/check_grey.png" 
-                width="18" 
-                height="auto" 
-              />
+      <Image
+        v-show="colorChecked == color.code && (color == '#ffffff' || color == '#FFFFFF' || color == 'white') "
+        left="11"
+        top="11"
+        src="~/assets/icons/check_grey.png" 
+        width="18" 
+        height="auto" 
+      />
 
-            </AbsoluteLayout>
-          </StackLayout>
+    </AbsoluteLayout>
+  </StackLayout>
         
 </template>
 
@@ -102,7 +117,6 @@
           return '#D5DBDB'
         }
         return ''
-
       },
       checkColor(color){
         if(color == '#ffffff' || color == '#FFFFFF' || color == 'white'){

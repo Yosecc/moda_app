@@ -2,6 +2,8 @@ import { mapMutations, mapActions, mapState } from 'vuex'
 import Api from '~/services'
 import cache from '@/plugins/cache'
 import { Http, ImageSource } from '@nativescript/core'
+import { messaging } from '@nativescript/firebase/messaging'
+import { firebase } from '@nativescript/firebase';
 export default {
     computed: {
         ...mapState('authentication', ['token']),
@@ -20,6 +22,8 @@ export default {
         ...mapActions('car', ['getCar']),
         async defineHome(params) {
             Api.defaults.headers.common['x-api-key'] = this.token
+
+
 
             // this.getSliders(params).then((response) => {
             //     this.setSlider(response)
@@ -65,6 +69,28 @@ export default {
                     // console.log('eimage error', e)
                 }
             )
+        },
+        configNofitificationPush() {
+            firebase.subscribeToTopic("news")
+            messaging.registerForPushNotifications({
+                onPushTokenReceivedCallback: (token) => {
+                    console.log("Firebase plugin received a push token: " + token);
+
+                    if (cache.get('firebaseToken') == undefined) {
+                        cache.set('firebaseToken', token)
+                        Api.post('notifications_push/save_token', { token: token }).then((response) => {
+                            console.log('token enviado', response)
+                        })
+                    }
+                },
+                onMessageReceivedCallback: (message) => {
+                    console.log("Push message received: ", { message });
+
+
+                },
+                showNotifications: true,
+                showNotificationsWhenInForeground: true
+            })
         }
     }
 };

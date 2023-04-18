@@ -8,13 +8,13 @@
         marginTop="10"
         marginBottom="5"
         paddingLeft="0"
-        :marginLeft="-16"
+        
       >
         <BtnMenu
           v-show="!back" 
           col="0"
           horizontalAlignment="left" 
-          :marginLeft="-8"
+          
         ></BtnMenu>
         
         <BtnBack
@@ -42,11 +42,33 @@
             stretch="aspectFill"
             marginRight="8"
             class="storeBox"
-
           /> 
 
           <StackLayout >
-            <Label  horizontalAlignment="left" margin="0" padding="0" :text="store.name" textTransform="capitalize" fontWeight="900" fontSize="18" />
+
+            <StackLayout  margin="0" padding="0" orientation="horizontal">
+
+              <Label   horizontalAlignment="left" margin="0 8 0 0" padding="0" :text="store.name" textTransform="capitalize" fontWeight="900" fontSize="18" />
+              
+              <StackLayout
+                orientation="horizontal"
+                width="100"
+                height="16"
+                padding="0"
+                margin="0"
+                v-if="store.rep"
+              >
+                  <Image 
+                    src="res://star"
+                    width="16"
+                    height="16"
+                    marginRight="0"
+                  />
+                <label :text="store.rep" textWrap textTransform="uppercase"  height="16" fontWeight="700" fontSize="12" margin="0" padding="0" />
+              </StackLayout>
+            
+            </StackLayout>
+
             <label
               margin="0" 
               padding="0" 
@@ -55,7 +77,7 @@
               fontSize="10"
             >
                 <FormattedString>
-                  <span  text="Compra mínima en la tienda: "></span>
+                  <span  text="Compra mínima: "></span>
                   <span :text="store.min | moneda " style="color: #DA0080"></span>
                 </FormattedString>
               </label>
@@ -85,8 +107,6 @@
           <AbsoluteLayout 
             top="5"
             class="btn-icon"
-            borderWidth=".5"
-            borderColor="#DA0080"
           >
 
             <Image 

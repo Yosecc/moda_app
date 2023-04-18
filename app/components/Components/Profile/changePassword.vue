@@ -59,10 +59,10 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
           return
         }
           this.eventChangePassword(data).then((response)=>{
-            console.log('response', response)
+            // console.log('response', response)
             alert(response.message)
           }).catch((error)=>{
-            console.log('error', error, typeof error)
+            // console.log('error', error, typeof error)
             if(typeof error == 'object'){
               error = JSON.parse(error)
               alert(error.message)

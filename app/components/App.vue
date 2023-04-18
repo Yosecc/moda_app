@@ -123,6 +123,25 @@
         }else{
           this.$refs.drawerMenu.closeDrawer();
         }
+      },
+      notification(to){
+        
+        if(Object.keys(to.data).length > 0){
+          if(typeof to.data.redirect == 'string'){
+            let redirect = JSON.parse(to.data.redirect)
+            if(Object.keys(redirect).length > 0){
+              this.$navigator.navigate( redirect.route ,{
+                transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+                props: redirect.params
+              })
+            }
+          }
+        }
+        // console.log('notification cambios',to.data)
       }
     },
     data(){
@@ -134,6 +153,7 @@
       ...mapState(['drawer','directionDrawer','isLoadPage','viewNotification','notifications']),
       ...mapGetters('authentication',['isLogged']),
       ...mapState('categories',['openFilter']),
+      ...mapState(['notification']),
       notificationActive(){
         if(this.viewNotification){
           return this.notifications._array[0]
@@ -143,6 +163,7 @@
     },
 		created(){
       this.changeisLoadPage(false)
+      console.log('sse crea la app')
       if(this.isLogged){
         this.defineHome()
       }

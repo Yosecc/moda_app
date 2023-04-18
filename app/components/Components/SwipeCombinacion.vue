@@ -13,14 +13,19 @@
     <StackLayout  row="1" marginTop="8" >
       <GridLayout columns="*,auto" height="50" backgroundColor="" >
         <StackLayout orientation="horizontal" col="0" v-if="combinacion">
-          
-          <label :text="combinacion.descripcion" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
+
+          <!-- <label :text="combinacion.colorActive"  textWrap color="black" />
+          <label :text="combinacion.talleActive"  textWrap color="black" /> -->
+          <!-- <label :text="combinacion.combinacion_key" color="black" />
+          <label :text="isNew" color="black" /> -->
+
+          <label :text="combinacion.descripcion" textWrap margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
           <label :text="calculaPrecio | moneda" v-if="calculaPrecio" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" color="#DA0080"/>
         </StackLayout>
         <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
 
         <FlexboxLayout 
-          v-if="combinacion.combinacion_key != null && !isProduct" 
+          v-if="combinacion.combinacion_key != null" 
           @tap="deleteCombinacion" 
           col="1" 
           alignItems="center" 
@@ -29,8 +34,7 @@
           height="40" 
           margin="0" 
           class="btn btn-icon"
-          borderWidth=".5"
-          borderColor="#4D4D4D"
+         
         >
           <Image 
             src="~/assets/icons/trash.png" 
@@ -104,7 +108,7 @@
     </StackLayout>
 
     <StackLayout  row="2">
-      <button v-if="isNew == null"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
+      <button v-if="!edit"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
       <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
     </StackLayout>
     <StackLayout row="2" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
@@ -149,6 +153,11 @@
       Count
     },
     watch:{
+      openDrop(to){
+        if(this.combinacion.cantidad == 0) {
+          this.combinacion.cantidad = 1
+        }
+      },
       models(to){
         // console.log('cambio models',to)
       },
@@ -156,19 +165,28 @@
         //console.log('cambio combinacion')
       },
       show(to){
-        //console.log('cambio show')
+        // console.log('cambio show', to)
         this.$forceUpdate()
         if(to){
+          // console.log('d',this.combinacion.talleActive != '' && this.combinacion.colorActive != '')
+          if(this.combinacion.talleActive != '' && this.combinacion.colorActive != ''){
+            this.edit = true
+          }else{
+            this.edit = false
+
+          }
           this.openDropBottom()
         }else{
-           this.clearCombinacion()
+          
+          this.clearCombinacion()
         }
       }
     },
     data() {
       return {
         openDrop: false,
-        reset: true
+        reset: true,
+        edit: false
       };
     },
     computed:{
@@ -214,9 +232,10 @@
         return this.combinacion.colors
       },
       talleSelect(){
+        // console.log(this.models)
         if(this.models){
-        let index = this.models.findIndex((e)=> e.size == this.combinacion.talleActive)
-
+          let index = this.models.findIndex((e)=> e.size == this.combinacion.talleActive)
+          // console.log(this.models[index])
           if(index != -1){
             return this.models[index]
           }
@@ -224,8 +243,13 @@
         return null
       },
       calculaPrecio(){
+        
         if(this.talleSelect){
-          return this.talleSelect.properties[0].price
+          let price = this.talleSelect.properties[0].price
+          if([0,null,undefined,'',false,'0'].includes(price)){
+            price = this.talleSelect.price
+          }
+          return price
         }
         return null
       }
@@ -234,11 +258,12 @@
     },
     methods:{
       ...mapMutations('car',['clearCombinacion','addCombinacion']),
+      ...mapMutations(['changeToast']),
       openDropBottom(){
         this.openDrop = true
         let height = this.heightDrop
         this.reset = false
-        console.log('models',this.models, this.combinacion)
+        // console.log('models',this.models, this.combinacion)
         setTimeout(()=>{
           this.reset = true
           this.$forceUpdate()
@@ -275,7 +300,13 @@
           this.$emit('addCombinacion',this.combinacion)
           this.closeDropBottom()
         }else{
-          alert('Talle y color son requeridos')
+          // alert('Talle y color son requeridos')
+          this.changeToast({
+                  title: 'Talle y color son requeridos',
+                  status: true,
+                  type: 'danger',
+                  message: ''
+              })
         }
       },
       async deleteCombinacion(){

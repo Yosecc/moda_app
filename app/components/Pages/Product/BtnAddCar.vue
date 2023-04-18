@@ -3,17 +3,20 @@
   <GridLayout
     class="card secondary box-btn"
     columns="*, auto"
+     
   > 
       <StackLayout
         col="0"
         horizontalAlignment="left"
         paddingTop="6"
         paddingBottom="6"
+       
+        height="60"
       >
           <Label :text="`${calculoPrendas} ${ calculoPrendas > 1 ? 'prendas' : 'prenda' } `" v-if="calculoPrendas" fontSize="10" fontWeight="300" />
           <Label 
+          :text="total | moneda"
             width="400"
-            :text="total | moneda"
             fontSize="24" 
             fontWeight="900" 
             color="#DA0080"
@@ -24,7 +27,37 @@
       </StackLayout>
 
 
-        <button 
+      <FlexboxLayout  
+        col="1" 
+        class=""
+        orientation="horizontal"
+        margin="0 16 0 0"
+        paddingTop="6"
+        paddingBottom="6"
+        height="60"
+        justifyContent="space-between"
+        alignItems="flex-end"
+        borderColor="#4d4d4d"
+        @tap="onContinue"
+        v-if="!loadingButton"
+      >
+
+      <label 
+          text="Continuar"
+          color="#DA0080"
+          fontWeight="900"
+          fontSize="24" 
+          margin="0"
+          padding="0"
+          textTransform="uppercase"
+        />
+        
+        <!-- <Image 
+          src="~/assets/icons/basket.png" 
+          width="20" 
+          height="20" /> -->
+      </FlexboxLayout >
+        <!-- <button 
           col="1"
           text="Agregar al carro" 
           color="white"
@@ -36,13 +69,13 @@
           padding="0 16"
           height="40"
           class="btn-primary shadow btn"
-          @tap="onProcessDataCar"
+          @tap="tapOnProcessDataCar"
           v-if="!loadingButton"
         />
 
       <FlexboxLayout col="1" v-else alignItems="center" justifyContent="center" width="160" padding="16 16 0 0">
         <ActivityIndicator  busy="true" color="#DA0080" verticalAlignment="center" />
-      </FlexboxLayout>
+      </FlexboxLayout> -->
   </GridLayout>
 
 
@@ -66,10 +99,14 @@
         type:Boolean,
         default: false
       },
+      carro:{
+        type: Object|Array,
+        default: {}
+      }
     },
     data() {
       return {
-        carro: null,
+        // carro: null,
         car: null,
         loadingButton: false
       };
@@ -101,28 +138,37 @@
       ...mapActions('car',['addCar','getCart']),
       ...mapMutations(['changeDrawerCar','changeDrawer']),
       ...mapMutations('car',['setCarro']),
-      async onProcessDataCar(){
+      onContinue(){
+        if(this.carro && this.carro.products_count){
+          this.onRedirectCart()
+        }else{
+          alert('No posee prendas en el carro')
+        }
+      },
+      async tapOnProcessDataCar(){
         if (this.validateData()) {
-          this.loadingButton =true
-          await this.processDataCar(this.product,this.combinaciones)
-          await this.getCart(this.product.store.id).then((response)=>{
-            console.log('response car' , response)
-            this.car = response
-            this.loadingButton = false
-          })
-          this.$emit('acttualizarCarro',this.car)
+          
+          this.onProcessDataCar(this.product,this.combinaciones)
+          // this.loadingButton =true
+          // await this.processDataCar(this.product,this.combinaciones)
+          // await this.getCart(this.product.store.id).then((response)=>{
+          //   console.log('response car' , response)
+          //   this.car = response
+          //   this.loadingButton = false
+          // })
+          // this.$emit('acttualizarCarro',this.car)
 
-          const data = await this.$navigator.modal('/confirm_cart', { fullscreen: false, id: 'confirmCart', props: { product: this.product } })
-          if(data == 'ver'){
-            this.getCart(this.product.store.id).then((response)=>{
-              this.car = response
-              this.carro = this.car
-              this.onRedirectCart(this.car.id)
-              this.setCarro(this.car)
-            })
+          // const data = await this.$navigator.modal('/confirm_cart', { fullscreen: false, id: 'confirmCart', props: { product: this.product } })
+          // if(data == 'ver'){
+          //   this.getCart(this.product.store.id).then((response)=>{
+          //     this.car = response
+          //     this.carro = this.car
+          //     this.onRedirectCart(this.car.id)
+          //     this.setCarro(this.car)
+          //   })
             
             
-          }
+          // }
         }
       },
       validateData(){

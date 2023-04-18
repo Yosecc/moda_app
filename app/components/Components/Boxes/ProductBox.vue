@@ -1,7 +1,7 @@
 <template lang="html">
     <StackLayout 
       class="product_root"
-      borderWidth=".5"
+      :borderWidth="isBorders ? '.5':'0'"
       borderColor="#F5F5F5"
       v-if="product && product.id != undefined"
       paddingBottom="8"
@@ -39,7 +39,7 @@
           :store="product.store"
         />
            
-        <StackLayout
+        <!-- <StackLayout
           top="170"
           left="0"
           width="92%"
@@ -59,7 +59,7 @@
             margin="0"
             fontWeight="600"
           />
-        </StackLayout> 
+        </StackLayout>  -->
          
 
       </AbsoluteLayout>
@@ -118,6 +118,10 @@
         type: Boolean,
         default: false
       },
+      isBorders:{
+        type: Boolean,
+        default: true
+      },
       // borders_props:{
       //   type: Object,
       //   default: {
@@ -139,7 +143,7 @@
     },
     mounted(){
 
-      console.log(this.$refs.titulo.nativeView.android)
+      // console.log(this.$refs.titulo.nativeView.android)
     },
     computed:{
       ...mapState(['isLoadPage']),
@@ -152,7 +156,7 @@
     },
     methods:{
       loaded({object}){
-        console.log(object.getActualSize())
+        // console.log(object.getActualSize())
       },
      onTap(){
       
