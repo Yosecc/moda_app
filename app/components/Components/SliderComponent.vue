@@ -103,7 +103,7 @@
       },
       page(to){
 
-        console.log(to)
+        // console.log(to)
       }
       // imageCacheComputed(to){
       //   console.log(to)

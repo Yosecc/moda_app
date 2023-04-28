@@ -174,7 +174,6 @@
         this.$modal.close({id})
       },
       onTapSubcategorie(id){
-
         if(!this.isStore){
           if(this.subCategorieActive == id){
             this.setSubcategoriesActive('')
@@ -182,16 +181,8 @@
             this.setSubcategoriesActive(id)
           }
         }else{
-
-          if(this.storeSubcategorieActive == id){
-            this.setStoreSubcategorieActive('')
-          }else{
-            this.setStoreSubcategorieActive(id)
-          }
-
+          this.setStoreSubcategorieActive(id)
         }
-
-
       },
       statusSubcategorie(id){
         if(!this.isStore){
@@ -199,7 +190,7 @@
             return true
           }
         }else{
-          if(this.storeSubcategorieActive == id){
+          if(this.storeSubcategorieActive.includes(id)){
             return true
           }
         }

@@ -4,7 +4,7 @@
     <HeaderStore :store="store" :back="false" :carro="carro" />
 
     <StackLayout>
-      <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+      <!-- <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
         <SearchBar 
           col="0"
           class="inputForm" 
@@ -25,21 +25,56 @@
           marginTop="16"
           @tap="openFilter"
         />
-      </GridLayout>
+      </GridLayout> -->
       
       <StackLayout>
         <AbsoluteLayout  >
           <RadListView 
             ref="listView"
-            for="item in productsComputed"
+            :items="products"
             layout="grid"
             itemWidth="50%"
-            @scrollEnded="onScrolled"
+            loadOnDemandMode="Auto"
+            loadOnDemandBufferSize="15"
+            @loadMoreDataRequested="onScrolled"
             pullToRefresh="true"
             @pullToRefreshInitiated="onPullToRefreshInitiated"
             top="0"
             left="0"
           >
+            <v-template name="header">
+              <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+                <SearchBar 
+                  col="0"
+                  class="inputForm" 
+                  hint="Buscar productos"
+                  width="100%"
+                  height="40"
+                  borderRadius="8"
+                  v-model="filterName"
+                  @submit="onSubmit"
+                />
+
+                <Image 
+                  col="1"
+                  src="res://filter"
+                  horizontalAlignment="right"
+                  width="40"
+                  height="40"
+                  @tap="openFilter"
+                  v-if="storeSubcategorieActive.length == 0"
+                />
+                <Image 
+                  col="1"
+                  src="res://filter"
+                  horizontalAlignment="right"
+                  width="40"
+                  height="40"
+                  @tap="openFilter"
+                  v-else
+                />
+              </GridLayout>
+            </v-template>
             <v-template >
               <ProductBox
                 :product="item"
@@ -115,13 +150,14 @@ export default {
       isLoading: false,
       page: 0,
       config:null,
-      products: [],
+      products: new ObservableArray([]),
       filterName: '',
       statusSearch: false,
       // carro: null
     };
   },
   watch:{
+    
     productsComputed(to){
       if(to.length == 0 && this.filterName != ''){
         this.statusSearch = false
@@ -144,6 +180,7 @@ export default {
     filterName(to){
       if(to == ''){
         this.statusSearch = false
+        this.products =  new ObservableArray([])
         this.changeParamsProducts({ search: '' , start: 0})
         this.onGetProducts()
       }
@@ -162,15 +199,15 @@ export default {
     ...mapState('products',['parametros']),
     ...mapState('stores',['storeCategorieActive','storeSubcategorieActive']),
     ...mapState('car',['carro']),
-    productsComputed(){
-      if(!this.filterName || this.statusSearch){
-        return this.products
-      }else{
-        return this.products.filter((item) => {
-          return (item.name.match(new RegExp(this.filterName, 'i')))
-        })
-      }
-    },
+    // productsComputed(){
+    //   if(!this.filterName || this.statusSearch){
+    //     return this.products
+    //   }else{
+    //     return this.products.filter((item) => {
+    //       return (item.name.match(new RegExp(this.filterName, 'i')))
+    //     })
+    //   }
+    // },
     ruta(){
         return this.$navigator.path
       }
@@ -179,12 +216,13 @@ export default {
     firebase.analytics.setScreenName({
 			screenName: `Store: ${this.store.name}`
 		});
+    this.resetStoreSubcategorieActive()
     this.setStoreCategorieActive(this.categorieActiveGetters.id)
     this.setStoreSubcategorieActive('')
     let id = this.store.local_cd ? this.store.local_cd: this.store.id
-    this.getCart(id).then((response)=>{
-      this.setCarro(response)
-    })
+    // this.getCart(id).then((response)=>{
+    //   this.setCarro(response)
+    // })
     this.statusSearch = false
     this.changeParamsProducts({
       store: id,
@@ -194,7 +232,7 @@ export default {
       length: 16,
       search: "",
     })
-    this.onGetProducts()
+    // this.onGetProducts()
    
     this.getCategoriesStore(id).then((response)=>{
       this.setCategoriesStore(response)
@@ -205,34 +243,45 @@ export default {
     ...mapActions('products',['getProductsStoreRosa']),
     ...mapActions('stores',['getCategoriesStore']),
     ...mapMutations('products',['changeParamsProducts']),
-    ...mapMutations('stores',['setCategoriesStore','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
+    ...mapMutations('stores',['setCategoriesStore','resetStoreSubcategorieActive','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
     ...mapMutations('car',['setCarro']),
     ...mapActions('car',['getCart']),
-    async onScrolled () {
+    async onScrolled (args) {
       this.page = this.page + 1
-      // this.parametros.length
+   
       let proxima = this.parametros.start
-      if(this.parametros.start == 0){
-        proxima = this.parametros.length+1
-      }else{
-        proxima = this.parametros.start + (this.parametros.length+1)
-      }
-      
+      proxima = this.parametros.start + (this.parametros.length+1)
       this.changeParamsProducts({start: proxima })
       await this.getProductsStoreRosa().then((response)=>{
+        this.isLoading = false
+        if(response.length == 0){
+          args.returnValue = false;
+          args.object.notifyAppendItemsOnDemandFinished(0, true);
+          return
+        }
+        
         response.forEach((e)=>{
           this.products.push(e)
         })
-        this.isLoading = false
+        args.returnValue = true;
+				args.object.notifyAppendItemsOnDemandFinished(0, false);
+        
       })
     },
     async onPullToRefreshInitiated ({ object }) {
       this.page = 0
-      this.changeParamsProducts({start: 0 })
       await this.$nextTick( async () => {
         let id = this.store.local_cd ? this.store.local_cd: this.store.id
         this.getCart(id).then((response)=>{
           this.setCarro(response)
+        })
+        this.products =  new ObservableArray([])
+        this.changeParamsProducts({
+          categories: '', 
+          sections: '', 
+          start: 0, 
+          length: 16,
+          search: "",
         })
         await this.onGetProducts()
         object.notifyPullToRefreshFinished();
@@ -242,24 +291,31 @@ export default {
       this.isLoading = true
       await this.getProductsStoreRosa().then((response)=>{
         this.isLoading = false
-        this.products = new ObservableArray(response)
+        response.forEach((e)=>{
+          this.products.push(e)
+        })
       })
     },
     async openFilter(){
-
+      
       const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: true ,isSubcategorias: true } })
       this.changeParamsProducts({
         start:     0,
         length:    15,
         sections:  this.categoriesBase.find((e) => e.id == this.storeCategorieActive ).key,
-        categories: this.storeSubcategorieActive,
+        categories: this.storeSubcategorieActive.toString(),
         // search:    "",
       })
       this.page = 1
+      this.products =  new ObservableArray([])
+      utils.ad.dismissSoftInput();
       this.onGetProducts()
     }, 
     onSubmit(){
+      console.log('onsubmit')
       this.statusSearch = true
+      this.products =  new ObservableArray([])
+      // this.$refs.listView.refresh()
       this.changeParamsProducts({start: 0, search:this.filterName, categories: '' })
       this.onGetProducts()
       utils.ad.dismissSoftInput();

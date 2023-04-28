@@ -38,12 +38,15 @@
           @scrollStarted="onScrolled"
           @scrolled="onScroll" -->
     <StackLayout padding="0 8" row="2">
-        <RadListView 
+        <RadListView
+          v-if="reload"
           ref="listStores"
           :items="storess"
           pullToRefresh="true"
           loadOnDemandMode="Auto"
-          :loadOnDemandBufferSize="20"
+          loadOnDemandBufferSize="16"
+          @pullToRefreshInitiated="onPullToRefreshInitiated"
+          @loadMoreDataRequested="onLoadDada"
           @itemTap="onItemSelected"
         >
           <v-template>
@@ -144,27 +147,40 @@
         scrollView: ScrollView, 
         numero: 1,
         numeroSave: 1,
-        buscador: false
+        buscador: false,
+        current_page: 1,
+        reload: true
       };
     },
     watch:{
       storess(to){
         this.loading = false
-        this.$refs.listStores.nativeView.refresh();
+        this.$refs.listStores.refresh();
       },
       cat(to){
         this.buscador = false
-        this.getStoreRosa().then((response)=>{
-          this.storess = new ObservableArray(response.data)
-          this.loading = false
-        })
+        // this.getStoreRosa().then((response)=>{
+        //   this.storess = new ObservableArray(response.data)
+        //   this.loading = false
+        // })
       },
       filterName(to){
         if(to == ''){
           this.buscador = false
-          this.changeParamsStores({ search: '' })
+          this.changeParamsStores({ search: '', page: 1 })
+          
           this.getStoreRosa().then((response)=>{
-            this.storess = new ObservableArray(response.data)
+            // this.storess = new ObservableArray(response.data)
+            this.storess = new ObservableArray([])
+            for (const i in response.data) {
+              this.storess.push(response.data[i])
+            }
+
+            // this.reload = false
+            // setTimeout(()=>{
+            //   this.reload = true
+            // },100)
+
             this.loading = false
             this.$refs.listStores.refresh();
           })
@@ -195,92 +211,150 @@
       this.loading = true
       this.buscador = false
       this.numero = 1
-      this.changeParamsStores({ search: '' })
+      this.changeParamsStores({ search: '', page: 1 })
       this.getStoreRosa().then((response)=>{
-        console.log(response)
-        // this.storess = new ObservableArray(response.data)
-        // this.$refs.listStores.refresh();
-        // this.loading = false
+        this.storess = new ObservableArray(response.data)
+        this.$refs.listStores.refresh();
+        this.loading = false
       })
     },
     methods:{
       ...mapActions('stores',['getStoreRosa']),
       ...mapMutations('stores',['changeParamsStores']),
       ...mapMutations('categories',['setCategorieActive']),
+
+      async onLoadDada(args){
+        this.changeParamsStores({ page: this.paramsStores.page + 1 })
+
+        await this.getStoreRosa().then((response)=>{
+
+          if(Object.keys(response.data).length > 0){
+            args.returnValue = true;
+					  args.object.notifyAppendItemsOnDemandFinished(0, false);
+          }
+          
+          if(response.last_page == this.paramsStores.page || Object.keys(response.data).length === 0){
+            args.returnValue = false;
+            args.object.notifyAppendItemsOnDemandFinished(0, true);
+            return
+          }
+
+          for (const i in response.data) {
+           this.storess.push(response.data[i])
+          }
+
+          args.returnValue = true;
+					args.object.notifyAppendItemsOnDemandFinished(0, false);
+
+          this.$refs.listStores.refresh();
+          
+          this.loading = false
+        })
+      },
+
+      async onSubmit(){
+
+        this.changeParamsStores({ search: this.filterName , page: 1 })
+        this.loading = true
+        this.buscador = true
+        await this.getStoreRosa().then((response)=>{
+          this.storess = new ObservableArray([])
+          for (const i in response.data) {
+           this.storess.push(response.data[i])
+          }
+          this.$refs.listStores.refresh();
+          this.loading = false
+        })
+      },
+
       async onPullToRefreshInitiated ({ object }) {
         this.loading = true
-        this.changeParamsStores({ search: '' })
-
+        this.changeParamsStores({ search: '', page: 1 })
         await this.$nextTick( async () => {
           await this.getStoreRosa().then((response)=>{
             this.storess = new ObservableArray(response.data)
+
+            this.reload = false
+            setTimeout(()=>{
+              this.reload = true
+            },100)
+
             this.loading = false
           })
           object.notifyPullToRefreshFinished();
         });
       },
-      onloadied(event){
-        //console.log('event',event.object )
-      },
-      async scrollEnd({ object, scrollOffset }){
-        let altura = object.getActualSize().height * this.numero
 
-        if(scrollOffset  >= altura){
-          this.loading = true
-          let plan = this.planes[this.numero]
-          if(plan != undefined){
-            await this.changeParamsStores({plan: plan  })
-            
-            await this.$nextTick( async () => {
-              await this.getStoreRosa().then((response)=>{
-                response.forEach((e)=>{
-                  this.storess.push(e)
-                })
-                this.loading = false
-                this.numero = this.numero+1
-              })
-            });
-
-            this.$refs.listStores.nativeView.refresh();
-          }
-          
-        }
-      },
-      onSubmit(){
-        this.changeParamsStores({ search: this.filterName })
-        this.loading = true
-        this.buscador = true
-        this.getStoreRosa().then((response)=>{
-          this.storess = new ObservableArray(response)
-          this.loading = false
-        })
-      },
-      onTapViewStore(store){
-        this.onViewStore(store)
-      },
       async openFilter(){
         const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: false ,isSubcategorias: false } })
+        console.log(data)
+        if(data == undefined){
+          return
+        }
         this.setCategorieActive(data.id)
         this.changeParamsStores({ 
           categorie: data ? this.categoriesBase.find((e)=>e.id == data.id).key : this.categorieActiveGetters.key, 
-          search: '' 
+          search: '',
+          page: 1
         })
 
         this.loading = true
         this.buscador = false
         this.getStoreRosa().then((response)=>{
-          this.storess = new ObservableArray(response)
+          this.storess = new ObservableArray([])
+          response.data.forEach((e)=> {
+            this.storess.push(e)
+          })
+          this.reload = false
+            setTimeout(()=>{
+              this.reload = true
+            },10)
+          this.$refs.listStores.refresh();
           this.loading = false
         })
 
         this.numero = 1
       },
+      
       onItemSelected({ index, object }) {
         const store = this.storess.getItem(index);
         this.onTapViewStore(store)
-        // console.log('store',store)
-        // console.log(`Item selected: ${store.name}`);
       },
+
+      onTapViewStore(store){
+        this.onViewStore(store)
+      },
+      
+      // async scrollEnd({ object, scrollOffset }){
+      //   let altura = object.getActualSize().height * this.numero
+
+      //   if(scrollOffset  >= altura){
+      //     this.loading = true
+      //     let plan = this.planes[this.numero]
+      //     if(plan != undefined){
+      //       await this.changeParamsStores({plan: plan  })
+            
+      //       await this.$nextTick( async () => {
+      //         await this.getStoreRosa().then((response)=>{
+      //           response.forEach((e)=>{
+      //             this.storess.push(e)
+      //           })
+      //           this.loading = false
+      //           this.numero = this.numero+1
+      //         })
+      //       });
+
+      //       this.$refs.listStores.nativeView.refresh();
+      //     }
+          
+      //   }
+      // },
+      
+      
+      
+
+
+     
       
     }
   };

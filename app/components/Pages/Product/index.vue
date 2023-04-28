@@ -18,18 +18,17 @@
           @deleteCombinacion="deleteCombinacion"
         />
       </StackLayout>
-      
-         
+
       <GridLayout 
         columns="*" 
         rows="*,auto" 
         ~mainContent
       >
       <ScrollView row="0" >
-    <StackLayout>
-      <AbsoluteLayout  row="0" height="380">
-        <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
-      </AbsoluteLayout >
+        <StackLayout>
+          <AbsoluteLayout  row="0" height="380">
+            <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
+          </AbsoluteLayout >
       
       <StackLayout 
         row="1" 
@@ -107,21 +106,134 @@
             :isProduct="false"
             :isEnabled="loadCombinaciones"
             @openDropBottom="openDropBottomEvent"
-          />
+          >
+            <StackLayout v-if="combinaciones[0].talleActive != ''" >
+              <StackLayout padding="0" orientation="horizontal">
+                <label
+                    fontSize="10"
+                    fontWeight="300"
+                    color="black"
+                    :text="textPrendasLabelProduct"
+                    textAlignment="right"
+                    padding="0"
+                    marginRight="4"
+                /> 
+                <label
+                      fontSize="10"
+                      fontWeight="100"
+                      margin="0`"
+                      padding="0"
+                      color="black"
+                      text="(Precios sin IVA)"
+                      textAlignment="right"
+                  /> 
+
+              </StackLayout>
+
+              <StackLayout padding="0" >
+
+                <label
+                    fontSize="20"
+                    fontWeight="900"
+                    color="black"
+                    margin="0"
+                    padding="0"
+                    :text="totalProduct | moneda"
+                    textAlignment="right"
+                /> 
+                <!-- <label
+                    fontSize="10"
+                    fontWeight="100"
+                    margin="0`"
+                    padding="0"
+                    color="black"
+                    text="(Precios sin IVA)"
+                    textAlignment="right"
+                />  -->
+              </StackLayout>
+            </StackLayout>
+          </CombinacionesProduct>
+
+          <StackLayout v-if="combinaciones[0].talleActive != ''" padding="0 16">
+
+            <button 
+              text="Ver carrito" 
+              width="100%" 
+              class="btn btn-primary btn-md outline" 
+              textTransform="uppercase" 
+              marginBottom="20"
+              @tap="redirectCarro"
+            ></button>
+
+            
+
+            
+
+            <FlexboxLayout
+              justifyContent="space-between"
+              alignItems="center"
+              v-if="textPrendasRestantesCar"
+              marginBottom="8"
+            >
+              <label
+                fontSize="11"
+                fontWeight="300"
+               
+                color="black"
+                :text="textPrendasRestantesCarLabel"
+                textAlignment="center"
+                padding="0"
+              /> 
+
+              <label
+                fontSize="11"
+                fontWeight="600"
+                color="black"
+                :text="`Total: ${textCarMonto}`"
+                textAlignment="center"
+                padding="0"
+              /> 
+            </FlexboxLayout>
+            
+            
+            <button 
+              :text="buttomComprar" 
+              @tap="onNewProcessCheckout" 
+              width="100%" 
+              class="btn btn-primary  btn-md" 
+              textTransform="uppercase" 
+              :class="!isOrderMinStatus ? 'opacitybg' : '1'"
+              :fontSize="!isOrderMinStatus ? '12':''"
+              :fontWeight="!isOrderMinStatus ? '200':'600'"
+              marginBottom="4"
+            ></button>
+
+            <StackLayout orientation="horizontal" marginBottom="8">
+              <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="10" margin="0 8 0 0" />
+              
+              <label textWrap="true" @tap="onMetodoPagos">
+                <FormattedString>
+                  <span text="Pagá con Modapago" fontSize="11" marginRight="16" fontWeight="600" />
+                  <span text=" Ver métodos de pago" class="label_enlace" fontSize="11" marginLeft="16"  />
+                </FormattedString>
+              </label>
+            </StackLayout>
+
+          </StackLayout>
         </StackLayout>
-
-     
-
       </StackLayout>
 
+      <StackLayout width="100%" height="24"  class="degrade"></StackLayout>
 
       <StackLayout  
-        class="card " 
+        class="" 
         borderRadius="0" 
         marginTop="0" 
         paddingTop="16" 
         row="2" 
-        :class="!productRelacionados.length ? '':'shadow-n1'"
+        borderWidth="0"
+        background="white"
+        :class="!productRelacionados.length ? '':'shadw-n1'"
         :minHeight="!productRelacionados.length ? 500:''"
         v-if="change"
       >
@@ -229,12 +341,12 @@
 
         
 
-        <BtnActionBarCar
+        <!-- <BtnActionBarCar
           :combinaciones="combinaciones"
           :product="producto"
           :carro="carro"
           row="1"
-        />
+        /> -->
 
       </GridLayout>
     </RadSideDrawer>
@@ -315,8 +427,9 @@
         loadCombinaciones: true,
         isNew: null,
         // carro: null,
-        changeCombinaciones: true
-      };
+        changeCombinaciones: true,
+        products: []
+      }; 
     },
     watch:{
       product(){
@@ -342,7 +455,58 @@
       },
       ruta(){
         return this.$navigator.path
+      },
+
+      textCarMontoProduct() {
+        return '$' + this.totalProduct.toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&.');
+      },
+      totalProduct(){
+        let total = 0
+        this.combinaciones.forEach((e)=>{
+          let p = e.price ? e.price : this.product.price
+          total += p * e.cantidad
+        })
+        return total
+      },
+
+      calculoPrendasProduct(){
+        let numero = 0
+        this.combinaciones.forEach((e)=>{
+          numero += e.cantidad
+        })
+        return numero
+      },
+      textPrendasLabelProduct() {
+        let numero = this.calculoPrendasProduct
+        var txt = numero + ' prenda'
+        if (numero > 1) {
+            txt += 's'
+        }
+        txt += ''
+        return txt
+      },
+
+      textPrendasRestantesCar() {
+        return this.cantidadPrendasCarro - this.calculoPrendasProduct
+      },
+      textPrendasRestantesCarLabel() {
+        let text = 'prenda'
+
+        if(this.textPrendasRestantesCar > 1){
+          text = 'prendas'
+        }
+        return `Tenés ${this.textPrendasRestantesCar} ${text} más en el carrito`
+      },
+
+      buttomComprar(){
+        if(this.isOrderMinStatus){
+          return 'Comprar ahora'
+        }else{
+          return  this.textMinOrden
+        }
       }
+
+      
     },
     mounted(){
       firebase.analytics.setScreenName({
@@ -358,6 +522,9 @@
       ...mapActions('products',['getProductsStoreRosa','getProduct']),
       ...mapMutations('car',['setCombinacion','setCarro']),
       ...mapActions('car',['getCart','getProductsCart','updatedCar','deleteModelo']),
+      onMetodoPagos(){
+        this.$navigator.modal('/methods_payments', { fullscreen: true, id: 'methodsPaymentsModal' })
+      },
       async onLoadProductosRelacionados(){
         let id = this.producto.store.id  ? this.producto.store.id : this.producto.local_cd
         this.changeParamsProducts({
@@ -394,19 +561,19 @@
                 colorActive: '',
                 cantidad: 1,
                 combinacion_key: -1,
-                
               }
             ]
             return
           }
           this.loadCombinaciones = false
           this.setCarro(response)
+          // console.log(this.carro)
           this.getProductsCart(response.id).then((response)=>{
+            this.products = response.products
             const product = response.products.find((e)=> e.id == this.producto.id)
             if(product != undefined){
               this.combinaciones = product.combinacion
             }
-
             if(product == undefined){
               this.combinaciones = [
                 { 
@@ -463,8 +630,18 @@
         let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
 
         let modelo   = product.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
+        
+        let modelo_price = null
+        let c = product.models.find((e)=> e.size == combinacion.talleActive).price
 
-        let modelo_price = modelo.price != null ? modelo.price: product.models.find((e)=> e.size == combinacion.talleActive).price
+        
+        if(modelo.price != null && modelo.price > 0){
+          modelo_price =  modelo.price
+        }else if(c != '' || c != '0' || c > 0){
+          modelo_price = c
+        }else{
+          modelo_price = product.models.price
+        }
 
         let id = product.store.id  ? product.store.id : product.local_cd
 
@@ -480,6 +657,8 @@
           cantidad    : combinacion.cantidad,
           total_price : modelo_price*combinacion.cantidad
         }
+
+        console.log('obj', obj)
 
         await this.updatedCar(obj)
         await this.onLoadCarro()
@@ -513,6 +692,15 @@
           this.change = true
           this.$forceUpdate()
         },1)
+      },
+      redirectCarro(){
+        // console.log(this.carro)
+        if(this.carro && this.carro.products_count){
+          this.onRedirectCart()
+        }else{
+          alert('No posee prendas en el carro')
+        }
+        
       },
       
     }

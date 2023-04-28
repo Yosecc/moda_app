@@ -12,10 +12,6 @@
           :clases="'shadow-none'"
           :inputs="infoPersonal"
         >
-          <template slot="top">
-          </template> 
-          <template slot="bottom">
-          </template> 
         </InputsLayout>
       </StackLayout>
     </layoutCheckout>
@@ -271,7 +267,8 @@
       },
       async oneditClient(){
         const obj = this.prepareData(this.infoPersonal)
-        await this.editClient(obj)
+        await this.editClient(obj).then((response)=>{
+
           firebase.analytics.logEvent({
             key: "checkout_edit_client",
             parameters: [ // optional
@@ -289,6 +286,11 @@
                   },
                   // clearHistory: true
                 })
+
+        }).catch((error) => {
+          console.log(error.response)
+        })
+          
       }
       
     }

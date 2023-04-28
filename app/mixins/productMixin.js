@@ -75,9 +75,9 @@ export default {
             product.count = 1
 
             this.options.props = {
-                product: product,
-            }
-            console.log('product', product)
+                    product: product,
+                }
+                // console.log('product', product)
                 // this.productVisits(product.id)
 
             const response = Api.post('product_visits', {

@@ -210,7 +210,7 @@
         />
         <StackLayout padding="8">
           
-          <StackLayout :opacity="!isOrderMinStatus ? '.2' : '1'" orientation="horizontal">
+          <StackLayout :opacity="!isOrderMinStatus ? '1' : '1'" orientation="horizontal">
             <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="20" margin="0 8 0 8" />
             
             <label textWrap="true" @tap="onMetodoPagos">
@@ -230,7 +230,7 @@
           @tap="onProcessCheckout" 
           padding="16" 
           :backgroundColor="!isOrderMinStatus ? '#CECECE':'#DA0080'"
-          :opacity="!isOrderMinStatus ? '.2' : '1'"
+          :opacity="!isOrderMinStatus ? '1' : '1'"
           height="80"
         >
           <StackLayout>
@@ -392,8 +392,20 @@
         let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
 
         let modelo   = product.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
+        
+        let modelo_price = null
+        let c = product.models.find((e)=> e.size == combinacion.talleActive).price
 
-        let modelo_price = modelo.price != null ? modelo.price: product.models.find((e)=> e.size == combinacion.talleActive).price
+        
+        if(modelo.price != null && modelo.price > 0){
+          modelo_price =  modelo.price
+        }else if(c != '' || c != '0' || c > 0){
+          modelo_price = c
+        }else{
+          modelo_price = product.price
+        }
+
+        // let modelo_price = modelo.price != null ? modelo.price: product.models.find((e)=> e.size == combinacion.talleActive).price
 
         let obj = {
           group_cd    : product.store.company,
@@ -465,7 +477,12 @@
       },
       onProcessCheckout(){
         if(!this.isOrderMinStatus){
-          alert(this.textMinOrden)
+          this.changeToast({
+              title: this.textMinOrden,
+              status: true,
+              type: 'danger',
+              message: ''
+          })
           return
         }
 

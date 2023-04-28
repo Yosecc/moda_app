@@ -127,6 +127,7 @@ label {
     }
     &.btn-info {
         background-color: #0080DA;
+        border-color: #0080DA;
         color: white;
     }
     &.btn-secondary {
@@ -149,8 +150,17 @@ label {
         opacity: .3;
         color: #8e8e8e !important;
     }
+    &.opacitybg {
+        &.btn-primary {
+            background-color: rgba($modatexColor, .4);
+            color: black;
+        }
+    }
     &.btn-sm {
         height: 35;
+    }
+    &.btn-md {
+        height: 45;
     }
     &.btn-shadow {
         @extend .shadow-xs;
@@ -166,6 +176,9 @@ label {
         // color: $modatexColor;
         &.btn-primary {
             color: $modatexColor;
+        }
+        &.btn-info {
+            color: black;
         }
     }
 }

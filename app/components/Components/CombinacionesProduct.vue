@@ -148,20 +148,26 @@
 
     </WrapLayout>
 
-    <StackLayout orientation="horizontal">
-      <Button 
-        text="Agregá más prendas"
-        class="btn btn-primary btn-sm outline "
-        marginLeft="0"
-        horizontalAlignment="left"
-        fontSize="12"
-        v-if="isButtom && combinaciones.length && combinaciones[0].talleActive != ''"
-        v-show="isEnabled"
-        :isEnabled="combinaciones[0].talleActive != ''"
-        @tap="openDropBottom(null)"
-      />
-      <ActivityIndicator v-if="!isEnabled" busy="true" color="DA0080"/>
-    </StackLayout>
+    <GridLayout columns="*,auto">
+      <StackLayout col="0">
+        <Button 
+          text="Agregá más prendas"
+          class="btn btn-info btn-sm outline "
+          marginLeft="0"
+          horizontalAlignment="left"
+          fontSize="12"
+          v-if="isButtom && combinaciones.length && combinaciones[0].talleActive != ''"
+          v-show="isEnabled"
+          :isEnabled="combinaciones[0].talleActive != ''"
+          @tap="openDropBottom(null)"
+        />
+        <ActivityIndicator v-if="!isEnabled" busy="true" color="DA0080"/>
+      </StackLayout>
+      <StackLayout col="1">
+        <slot></slot>
+      </StackLayout>
+    </GridLayout >
+    
   </StackLayout>
 </template>
 <script>

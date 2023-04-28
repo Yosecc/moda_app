@@ -52,18 +52,23 @@ export default {
             if (!this.carro) {
                 return ''
             }
+            return this.monedaMethod(this.precioCar)
             return '$' + this.precioCar.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.');
         },
         textMinOrden() {
             if (!this.carro) {
                 return ''
             }
-            return `Restan $${this.calculoRestanteOrderMin} para completar el mínimo de compra`
+            return `Restan ${this.monedaMethod(this.calculoRestanteOrderMin)} para completar el mínimo de compra`
+        },
+        cantidadPrendasCarro() {
+            return this.carro.products_count
         },
         textPrendasLabel() {
             if (!this.carro) {
                 return ''
             }
+            console.log(this.carro)
             if (this.carro.products_count > 0) {
                 let numero = this.carro.products_count
                 var txt = numero + ' prenda'
@@ -79,9 +84,21 @@ export default {
     },
     methods: {
         ...mapMutations('stores', ['setStoreActive', 'setStore', 'setStores']),
-        // ...mapMutations('car',['setStoreActiveCar']),
+        ...mapMutations('checkout', ['setcarCheckout', 'setGroupId', 'setCoupons']),
         ...mapActions('stores', ['getStores']),
-        // ...mapActions('products',['getProducts']),
+        ...mapActions('car', ['processCart']),
+        ...mapMutations(['changeToast']),
+        monedaMethod(value) {
+            value += '';
+            var x = value.split('.');
+            var x1 = x[0];
+            var x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + '.' + '$2');
+            }
+            return '$' + x1 + x2;
+        },
         onViewStore(store) {
             this.options.props = {
                 store: store,
@@ -120,6 +137,91 @@ export default {
                     },
                 })
             }
-        }
+        },
+        onNewProcessCheckout() {
+            if (!this.isOrderMinStatus) {
+                this.changeToast({
+                    title: this.textMinOrden,
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+
+                return
+            }
+
+            this.setcarCheckout({
+                logo: this.carro.logo,
+                name: this.carro.name,
+                min: this.carro.limit_price,
+                total: this.precioCar,
+                prendas: this.textPrendasLabel,
+                products: this.products
+            })
+            let id = this.producto.store.id ? this.producto.store.id : this.producto.local_cd
+
+            this.processCart(id).then((response) => {
+
+                firebase.analytics.logEvent({
+                    key: "process_cart",
+                    parameters: [ // optional
+                        {
+                            key: "store_id",
+                            value: id
+                        },
+                        {
+                            key: "store_name",
+                            value: this.producto.store.name
+                        },
+                        {
+                            key: "group_id",
+                            value: response.cart.data.group_id
+                        }
+                    ]
+                })
+
+                if (response.cart.status == 'success') {
+                    console.log('llega')
+                    this.setGroupId(response.cart.data.group_id)
+                    if (response.is_missing_data.status == 'missing_data') {
+                        this.$navigator.navigate('/datos', {
+                            transition: {
+                                name: 'slideLeft',
+                                duration: 300,
+                                curve: 'easeIn'
+                            },
+                        })
+                    } else {
+
+                        if (response.cupon != null) {
+                            this.setCoupons(response.cupon)
+                            this.$navigator.navigate('/coupons', {
+                                transition: {
+                                    name: 'slideLeft',
+                                    duration: 300,
+                                    curve: 'easeIn'
+                                },
+                                props: {
+                                    local_cd: id
+                                }
+                            })
+                        } else {
+                            this.$navigator.navigate('/envios', {
+                                transition: {
+                                    name: 'slideLeft',
+                                    duration: 300,
+                                    curve: 'easeIn'
+                                },
+                            })
+                        }
+                    }
+                } else {
+                    alert(response.cart.status)
+                }
+                this.buttomLoading = false
+            }).catch((error) => {
+                this.buttomLoading = false
+            })
+        },
     }
 };

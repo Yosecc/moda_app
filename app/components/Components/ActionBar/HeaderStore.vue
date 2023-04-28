@@ -81,6 +81,7 @@
                   <span :text="store.min | moneda " style="color: #DA0080"></span>
                 </FormattedString>
               </label>
+              <!-- <label fontSize="10" :text="JSON.stringify(carro)" textWrap="true" /> -->
           </StackLayout>
           <!-- <Image 
             src="~/assets/logo.png"
@@ -128,10 +129,11 @@
               borderRadius="100%"
               justifyContent="center"
               alignItems="center"
-              v-if="carro && carro.products_count > 0"
+              v-if="carro != null && Object.keys(carro).length > 0"
             >
 
               <Label 
+                v-if="carro.products_count > 0"
                 :text="carro.products_count"
                 fontSize="9"
                 color="white"

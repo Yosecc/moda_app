@@ -335,7 +335,8 @@
         })
         this.getStoreRosa().then((response) => {
           let arr = []
-          response.forEach((e, i) => {
+         
+          response.data.forEach((e, i) => {
               if (i < 10) {
                   arr.push(e)
               }
@@ -390,14 +391,14 @@
           this.viewArrowTop = false
         }
       },
-      async onLoadCargar(args){
+       onLoadCargar(args){
           if(this.last_page > 0 && this.page > this.last_page){
             args.returnValue = false;
             args.object.notifyAppendItemsOnDemandFinished(0, true);
             return
           }else{
             this.page = this.page + 1
-            await this.onGetProducts().then((response)=>{
+            this.onGetProducts().then((response)=>{
               if(!response){
                 args.returnValue = false;
                 args.object.notifyAppendItemsOnDemandFinished(0, true);

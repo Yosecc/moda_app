@@ -63,7 +63,7 @@ const actions = {
             // console.log('response', response)
         if (response.status) {
             context.state.user = response.client
-                // console.log('aqui')
+                // console.log('token', response.client.api_token)
             cache.set('token', response.client.api_token)
             cache.set('client', JSON.stringify(response.client))
             context.state.token = response.client.api_token

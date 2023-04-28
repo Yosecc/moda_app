@@ -8,12 +8,12 @@ const state = {
     storesPopular: [],
     store: {},
     storeActive: null,
-    paramsStores: { categorie: 'woman', plan: "black", search: '' },
+    paramsStores: { categorie: 'woman', plan: "black", search: '', page: 1 },
     categories: ['woman', 'man', 'xl', 'kids', 'accessories'],
     planes: ['black', 'platinum', 'gold', 'blue'],
     categoriesStore: [],
     storeCategorieActive: 1,
-    storeSubcategorieActive: null,
+    storeSubcategorieActive: [],
 };
 
 const getters = {
@@ -66,8 +66,16 @@ const mutations = {
     setStoreCategorieActive(state, val) {
         state.storeCategorieActive = val
     },
+    resetStoreSubcategorieActive(tate) {
+        state.storeSubcategorieActive = []
+    },
     setStoreSubcategorieActive(state, val) {
-        state.storeSubcategorieActive = val
+        let index = state.storeSubcategorieActive.findIndex((e) => e == val)
+        if (index != -1) {
+            state.storeSubcategorieActive.splice(index, 1)
+        } else {
+            state.storeSubcategorieActive.push(val)
+        }
     }
 };
 
