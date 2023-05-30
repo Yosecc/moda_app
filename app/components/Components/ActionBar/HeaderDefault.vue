@@ -8,15 +8,12 @@
         marginTop="10"
         marginBottom="5"
         paddingLeft="0"
-        
-       
+        height="50"
       >
         <FlexboxLayout 
-          
           col="0"
           alignItems="center"
           justifyContent="center"
-          
         >
           <BtnMenu
             v-show="!back" 
@@ -29,8 +26,6 @@
             col="0"
             horizontalAlignment="left" 
           ></BtnBack>
-
-          
 
           <Image 
             src="res://logo"

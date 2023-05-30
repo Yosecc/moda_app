@@ -10,12 +10,12 @@ export default {
         ...mapState(['sliders'])
     },
     methods: {
-        ...mapMutations(['changeisLoadPage', 'setSlider', 'setOfertas']),
+        ...mapMutations(['changeisLoadPage', 'setSlider', 'setOfertas', 'setMenuList']),
         ...mapMutations('categories', ['setCategories']),
         ...mapMutations('stores', ['setStoresPopular']),
         ...mapMutations('products', ['setProducts', 'setRecentlySeen']),
         ...mapMutations('car', ['setCarsProducts', 'addCarStore']),
-        ...mapActions(['getHome', 'getSliders']),
+        ...mapActions(['getHome', 'getSliders', 'menuList']),
         ...mapActions('categories', ['getCategories']),
         ...mapActions('stores', ['getStores', 'getStoreRosa']),
         ...mapActions('products', ['getProductVisits']),
@@ -23,30 +23,13 @@ export default {
         async defineHome(params) {
             Api.defaults.headers.common['x-api-key'] = this.token
 
-
-
-            // this.getSliders(params).then((response) => {
-            //     this.setSlider(response)
-            // })
-
-            // this.getCategories().then((response) => {
-            //     this.setCategories(response)
-            // })
-
-
-            // this.getStoreRosa().then((response) => {
-            //     let arr = []
-            //     response.forEach((e, i) => {
-            //         if (i < 10) {
-            //             arr.push(e)
-            //         }
-            //     })
-            //     this.setStoresPopular(arr)
-            // })
-
             this.getProductVisits()
             this.getCar()
-                // this.changeisLoadPage(true)
+            this.menuList().then((response) => {
+                this.setMenuList(response)
+            }).catch((error) => {
+                console.log('error menu', menu)
+            })
 
             return await true
         },
@@ -71,7 +54,7 @@ export default {
             )
         },
         configNofitificationPush() {
-            firebase.subscribeToTopic("news")
+            firebase.subscribeToTopic("News")
             messaging.registerForPushNotifications({
                 onPushTokenReceivedCallback: (token) => {
                     console.log("Firebase plugin received a push token: " + token);
@@ -85,8 +68,6 @@ export default {
                 },
                 onMessageReceivedCallback: (message) => {
                     console.log("Push message received: ", { message });
-
-
                 },
                 showNotifications: true,
                 showNotificationsWhenInForeground: true

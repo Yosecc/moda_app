@@ -75,7 +75,8 @@ export default new Vuex.Store({
             time: 3000
         },
         isNewPromotions: false,
-        notification: null
+        notification: null,
+        menuList: []
     },
     getters: {
         componentActive(state) {
@@ -83,6 +84,9 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setMenuList(state, val) {
+            state.menuList = val
+        },
         changeToast(state, val) {
             for (var i in val) {
                 state.toast[i] = val[i]
@@ -169,6 +173,10 @@ export default new Vuex.Store({
         },
         async getCategories(context) {
             const response = await Api.get(`getCategories`)
+            return response
+        },
+        async menuList(context) {
+            const response = await Api.get(`menu`)
             return response
         },
         // navigatePush(context) {

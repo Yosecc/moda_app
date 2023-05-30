@@ -99,6 +99,16 @@
                       <StackLayout paddingTop="0">
                         <Label v-if="item.precio == null" textAlignment="cnter" fontWeight="200" text="Esta prenda no se encuentra disponible" />
                         <Label 
+                          v-if="item.code && item.code != ''"
+                          :text="item.code"
+                          fontWeight="200"
+                          marginLeft="0"
+                          marginBottom="0"
+                          marginRight="16"
+                          fontSize="12"
+                          padding="0"
+                        />
+                        <Label 
                           :text="item.descripcion" 
                           fontWeight="900"
                           fontSize="18"
@@ -347,6 +357,7 @@
     methods:{
       ...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
       ...mapMutations('car',['removeCombinacion','addCombinacion','setCombinacion','updateCarStore']),
+      ...mapMutations(['changeToast']),
       ...mapActions('car',['deleteProduct','processCart','getProductsCart','deleteCarts','deleteModelo','getCart','updatedCar','getCar']),
       async loadCart(config = { type: 'create' }){
         if(this.car_id == null){
@@ -426,6 +437,12 @@
           this.$refs.drawerCar.closeDrawer();
             await this.loadCart({ type: 'update' })
               this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
+              this.changeToast({
+                  title: 'Combinación modificada',
+                  status: true,
+                  type: 'success',
+                  message: ''
+              })
               this.$refs.productsCar.refresh()
 
       },
@@ -440,6 +457,12 @@
           this.$refs.drawerCar.closeDrawer();
           await this.loadCart({ type: 'update' })
             this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
+            this.changeToast({
+                  title: 'Combinación agregada',
+                  status: true,
+                  type: 'success',
+                  message: ''
+              })
             this.$refs.productsCar.refresh()
       },
       async deleteCombinacion(combinacion){
@@ -453,6 +476,12 @@
         
           this.$refs.drawerCar.closeDrawer();
           await this.loadCart({ type: 'update' })
+          this.changeToast({
+                  title: 'Combinación eliminada',
+                  status: true,
+                  type: 'success',
+                  message: ''
+              })
           if( this.products._array.length != 0){
             this.products._array.find((e)=> e.id == combinacion.product_id).isEnabledCombinaciones = true
             this.$refs.productsCar.refresh()

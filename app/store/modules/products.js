@@ -32,7 +32,14 @@ const state = {
         search: '',
         page: 1,
         offset: 15
-    }
+    },
+    categories: [
+        { name: 'woman', id: 1 },
+        { name: 'man', id: 3 },
+        { name: 'xl', id: 6 },
+        { name: 'kids', id: 4 },
+        { name: 'accessories', id: 2 },
+    ],
 };
 
 const getters = {
@@ -127,6 +134,16 @@ const actions = {
         return response
     },
     async getUltimosproductos(context) {
+        let categoriesids = context.state.parametrosSearch.sections
+
+        let d = []
+
+        context.state.parametrosSearch.sections.forEach((e) => {
+            d.push(context.state.categories.find((i) => i.id == e).name)
+        })
+
+        context.state.parametrosSearch.sections = d
+
         const qs = Object.keys(context.state.parametrosSearch)
             .map(key => `${key}=${context.state.parametrosSearch[key]}`)
             .join('&');
@@ -135,6 +152,18 @@ const actions = {
         return response
     },
     async getSearch(context) {
+
+        // console.log('por aqui', context.state.parametrosSearch)
+        let categoriesids = context.state.parametrosSearch.sections
+
+        let d = []
+
+        context.state.parametrosSearch.sections.forEach((e) => {
+            d.push(context.state.categories.find((i) => i.id == e).name)
+        })
+
+        context.state.parametrosSearch.sections = d
+
         const qs = Object.keys(context.state.parametrosSearch)
             .map(key => `${key}=${context.state.parametrosSearch[key]}`)
             .join('&');

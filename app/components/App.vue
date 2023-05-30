@@ -85,8 +85,6 @@
             </StackLayout>
           </StackLayout>
           <Toast />
-          <!-- <fullModal /> -->
-
         </AbsoluteLayout>
         
       </GridLayout>
@@ -114,7 +112,6 @@
       templateProduct, 
       Car,
       Toast,
-      
     },
     watch:{
       drawer(to){
@@ -163,14 +160,11 @@
     },
 		created(){
       this.changeisLoadPage(false)
-      console.log('sse crea la app')
       if(this.isLogged){
         this.defineHome()
       }
-      
 		},
     mounted(){
-      // console.log('monta')
       setTimeout(()=>{
         if(this.isLogged){
 
@@ -185,7 +179,6 @@
           //   })
         }
       },100)
-      
     },
 		methods:{
       ...mapMutations(['changeisLoadPage','changeDrawer','changeviewNotification','changeToast']),

@@ -5,6 +5,7 @@
         <Label col="1" fontWeight="900"  fontSize="16" padding="8 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Buscador" />
       </HeaderCustom>
 			<GridLayout paddingTop="4" row="1" rows="auto,*">
+
         <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
           <SearchBar 
             col="0"
@@ -15,11 +16,12 @@
             marginTop="16"
             borderRadius="8"
             v-model="filterName"
+            @textChange="onTextChanged"
             @submit="onSubmitBusqueda"
           />
           <Image 
             col="1"
-            src="~/assets/icons/filter.png"
+            src="res://filter"
             horizontalAlignment="right"
             width="40"
             height="40"
@@ -28,36 +30,36 @@
           />
         </GridLayout>
 				
-        <StackLayout row="1" v-if="search">
-          <StackLayout  padding="0" margin="0" >
-            <ActivityIndicator busy="true" color="#DA0080"  v-if="isLoadingProducts" horizontalAlignment="center" margin="16" row="1" />
-          </StackLayout>
-          <RadListView 
-            ref="productsScroll"
-            layout="grid"
-            :items="products"
-            loadOnDemandMode="Auto"
-            loadOnDemandBufferSize="15"
-            scrollBarIndicatorVisible="true"
-            pullToRefresh="true"
-            scrollPositionProperty="right"
-            @pullToRefreshInitiated="onPullToRefreshInitiated"
-            @loadMoreDataRequested="onLoadCargar"
-            orientation="vertical"
-          >
-            <v-template key="product" >
-              <ProductBox
-                  :product="item"
-              ></ProductBox>
-            </v-template>
-          </RadListView>
-          <StackLayout  padding="0" margin="0" >
-            <ActivityIndicator busy="true" color="#DA0080"  v-if="isLoadingProductsBottom" horizontalAlignment="center" margin="16" row="1" />
-          </StackLayout>
+        <StackLayout  row="1" v-if="search">
+          <AbsoluteLayout >
+            <RadListView 
+              ref="productsScroll"
+              layout="grid"
+              :items="products"
+              loadOnDemandMode="Auto"
+              loadOnDemandBufferSize="15"
+              scrollBarIndicatorVisible="true"
+              pullToRefresh="true"
+              scrollPositionProperty="right"
+              @pullToRefreshInitiated="onPullToRefreshInitiated"
+              @loadMoreDataRequested="onLoadCargar"
+              orientation="vertical"
+              top="0"
+              left="0"
+            >
+              <v-template key="product" >
+                <ProductBox
+                    :product="item"
+                ></ProductBox>
+              </v-template>
+            </RadListView>
+            <StackLayout :top="(alturaDispositivo - 240)" width="100%" left="0" padding="0" margin="0" v-if="isLoadingProducts" >
+              <ActivityIndicator busy="true" color="#DA0080"   horizontalAlignment="center" margin="16" />
+            </StackLayout>
+          </AbsoluteLayout >
         </StackLayout>
-
         <GridLayout
-          rows="*,auto"
+          rows="*"
           width="100%"
           height="100%"
           row="1"
@@ -67,24 +69,32 @@
             class="listSelect"
             ref="listUltimasBusquedas"
             for="item in ultimasbusquedas"
-            row="0"
+            row="1"
           >
-            <v-template >
-              <StackLayout @tap="setFilter(item)" class="option">
+            <v-template if="item.type == 'store'" >
+              <StackLayout @tap="onViewStore(item.data)" marginBottom="0"  class="option">
+                <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                  <StackLayout orientation="horizontal">
+                    <ImageCache placeholder="res://eskeleton" marginRight="16" :src="item.data.logo" width="40" height="40" stretch="aspectFill" />
+                    <label :text="item.data.name" textTransform="uppercase" fontWeight="900" />
+                  </StackLayout>
+                  <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
+                </FlexboxLayout>
+              </StackLayout>
+            </v-template>
+
+            <v-template if="item.type == 'cache'" >
+              <StackLayout @tap="setFilter(item.data)" class="option">
                 <FlexboxLayout justifyContent="space-between" alignItems="center" >
                   <StackLayout orientation="horizontal">
                     <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
-                    <label :text="item" />
+                    <label :text="item.data" />
                   </StackLayout>
                   <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
                 </FlexboxLayout>
               </StackLayout>
             </v-template>
           </RadListView>
-
-          <StackLayout row="1">
-            <!-- <recentlySeen :products="productsRecentlySeen"/> -->
-          </StackLayout>
         </GridLayout>
 
 			</GridLayout>        
@@ -102,7 +112,11 @@
   import * as utils from "@nativescript/core/utils";
   import cache from '@/plugins/cache'
   import { firebase } from '@nativescript/firebase';
+  import storeMixin from '~/mixins/storeMixin.js'
+  import { screen } from "@nativescript/core/platform";
+
 	export default {
+    mixins: [storeMixin],
     props:{
       params:{
         type: Object|Array,
@@ -121,24 +135,43 @@
         last_page: 6,
         // =====
         isLoadingProducts: false,
-        isLoadingProductsBottom: false,
         products: new ObservableArray([]),
-        filterName: null,
+        filterName: '',
         search: false,
         ultimasbusquedas: new ObservableArray([]),
-        sections: [1]
+        sections: [1,3,6,4,2],
+        storess: [],
+        alturaDispositivo: 0
       };
     },
     watch:{
+      filterName(to){
+        // console.log('to', typeof to, to)
+        if(to === '' ){
+          // console.log('aja')
+          this.ultimasbusquedas = this.ultimasbusquedas.filter((e)=> e.type == 'cache')
+          this.search = false
+
+          if(this.$refs.listUltimasBusquedas == undefined || !this.$refs.listUltimasBusquedas){
+            return
+          }
+          this.$refs.listUltimasBusquedas.refresh()
+        }
+      },
+      ruta(to){
+        if(this.filterName == ''){
+          this.search = false
+        }
+      }
     },
     computed:{
       ...mapState('products',['parametros','productsRecentlySeen']),
+      ruta(){
+        return this.$navigator.path
+      },
     },
     mounted(){
-      // console.log('llega')
-      firebase.analytics.setScreenName({
-        screenName: "Buscador"
-      });
+      this.alturaDispositivo = screen.mainScreen.heightDIPs
 			this.getCache()
       if(this.params.categorie_default != undefined){
         this.sections = this.params.categorie_default
@@ -150,9 +183,14 @@
         this.filterName = this.params.search
         this.onSubmitBusqueda()
       }
+      firebase.analytics.setScreenName({
+        screenName: "Buscador"
+      });
     },
     methods:{
+      ...mapActions('stores',['getStoreRosa']),
       ...mapActions('products',['getSearch']),
+      ...mapMutations('stores',['changeParamsStores']),
       ...mapMutations('products',['changeParamsProductsSearch']),
       ...mapMutations('categories',['setCategorieActive']),
 			async onPullToRefreshInitiated ({ object }) {
@@ -172,9 +210,9 @@
           offset: 16,
           sections: this.sections
         })
-        this.isLoadingProductsBottom = true
+        this.isLoadingProducts = true
         await this.getSearch().then((response)=>{
-          this.isLoadingProductsBottom = false
+          this.isLoadingProducts = false
           if(response.length == 0){
             args.returnValue = false;
             args.object.notifyAppendItemsOnDemandFinished(0, true);
@@ -188,6 +226,7 @@
         })
       },
       onSubmitBusqueda(){
+        this.onSubmit()
         firebase.analytics.logEvent({ key: "on_search_custom", parameters: [
           {
             key: 'input',
@@ -198,7 +237,7 @@
             value: JSON.stringify(this.sections)
           }
         ]})
-        this.onSubmit()
+        
       },
       async onSubmit(){
         this.search = true
@@ -230,7 +269,7 @@
           let data = JSON.parse(cache.get('last_search'))
           data.forEach((e)=>{
             if(e != ''){
-              this.ultimasbusquedas.push(e)
+              this.ultimasbusquedas.push({ type:"cache", data: e })
             }
           })
         }
@@ -253,6 +292,38 @@
         this.page = 1
         this.onSubmit()
       },
+      async onTextChanged(){
+        if(this.filterName != '' || this.filterName != null || this.filterName != 'null' || this.filterName != ' '){
+
+          this.changeParamsStores({ search: this.filterName , page: 1 })
+         
+          await this.getStoreRosa().then((response)=>{
+            this.storess = []
+            this.ultimasbusquedas = this.ultimasbusquedas.filter((e)=> e.type == 'cache')
+            for (const i in response.data) {
+              this.storess.push({
+                type: "store",
+                data: response.data[i]
+              })
+            }
+
+            if(this.storess.length){              
+              this.storess.reverse().forEach((e)=>{
+                this.ultimasbusquedas.unshift(e)
+              })
+              if(this.$refs.listUltimasBusquedas == undefined || !this.$refs.listUltimasBusquedas){
+                return
+              }
+              this.$refs.listUltimasBusquedas.scrollToIndex(0,false)
+              this.$refs.listUltimasBusquedas.refresh()
+            }
+
+          })
+        }
+        if(this.filterName === ''){
+          this.ultimasbusquedas = this.ultimasbusquedas.filter((e)=> e.type == 'cache')
+        }
+      }
     }
   };
 </script>  

@@ -1,106 +1,62 @@
 <template lang="html">
-  <Page>
-
-    <HeaderStore :store="store" :back="false" :carro="carro" />
-
-    <StackLayout>
-      <!-- <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
-        <SearchBar 
-          col="0"
-          class="inputForm" 
-          hint="Buscar productos"
-          width="100%"
-          height="40"
-          marginTop="16"
-          borderRadius="8"
-          v-model="filterName"
-          @submit="onSubmit"
-        />
-        <Image 
-          col="1"
-          src="~/assets/icons/filter.png"
-          horizontalAlignment="right"
-          width="40"
-          height="40"
-          marginTop="16"
-          @tap="openFilter"
-        />
-      </GridLayout> -->
+  <Page actionBarHidden="true">
+    <GridLayout rows="auto,*">
+      <HeaderStore row="0" background="" :store="store" :back="true" :carro="carro" />
       
-      <StackLayout>
-        <AbsoluteLayout  >
-          <RadListView 
-            ref="listView"
-            :items="products"
-            layout="grid"
-            itemWidth="50%"
-            loadOnDemandMode="Auto"
-            loadOnDemandBufferSize="15"
-            @loadMoreDataRequested="onScrolled"
-            pullToRefresh="true"
-            @pullToRefreshInitiated="onPullToRefreshInitiated"
-            top="0"
-            left="0"
-          >
-            <v-template name="header">
-              <GridLayout height="60" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
-                <SearchBar 
-                  col="0"
-                  class="inputForm" 
-                  hint="Buscar productos"
-                  width="100%"
-                  height="40"
-                  borderRadius="8"
-                  v-model="filterName"
-                  @submit="onSubmit"
-                />
-
-                <Image 
-                  col="1"
-                  src="res://filter"
-                  horizontalAlignment="right"
-                  width="40"
-                  height="40"
-                  @tap="openFilter"
-                  v-if="storeSubcategorieActive.length == 0"
-                />
-                <Image 
-                  col="1"
-                  src="res://filter"
-                  horizontalAlignment="right"
-                  width="40"
-                  height="40"
-                  @tap="openFilter"
-                  v-else
-                />
-              </GridLayout>
-            </v-template>
-            <v-template >
-              <ProductBox
-                :product="item"
-                :isStore="true"
-              ></ProductBox>
-            </v-template>
-          </RadListView>
-          <StackLayout 
-            top="50"
-            left="0"
-            height="50"
+      <GridLayout paddingTop="4" row="1" rows="auto,*" >
+        <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+          <SearchBar 
+            col="0"
+            class="inputForm" 
+            hint="Buscar productos"
             width="100%"
-          >
-            <ActivityIndicator 
-              :busy="isLoading" 
-              color="#DA0080"
-              margin="16"
-              horizontalAlignment="center"
-            />
-          </StackLayout>
-          <!-- <StackLayout v-else>
-            <label text="no hay productos" />
-          </StackLayout> -->
-        </AbsoluteLayout>
-      </StackLayout>
-    </StackLayout>
+            height="40"
+            marginTop="0"
+            borderRadius="8"
+            v-model="filterName"
+            @submit="onSubmitBusqueda"
+          />
+          <Image 
+            col="1"
+            src="res://filter"
+            horizontalAlignment="right"
+            width="40"
+            height="40"
+            marginTop="0"
+            @tap="openFilter"
+          />
+        </GridLayout>
+        <StackLayout row="1" >
+          <AbsoluteLayout >
+            <RadListView 
+              ref="productsScroll"
+              layout="grid"
+              :items="products"
+              loadOnDemandMode="Auto"
+              loadOnDemandBufferSize="15"
+              scrollBarIndicatorVisible="true"
+              pullToRefresh="true"
+              scrollPositionProperty="right"
+              @loadMoreDataRequested="onLoadCargar"
+              @pullToRefreshInitiated="onPullToRefreshInitiated"
+              orientation="vertical"
+              top="0"
+              left="0"
+            >
+              <v-template key="product" >
+                <ProductBox
+                    :product="item"
+                ></ProductBox>
+              </v-template>
+            </RadListView>
+            <StackLayout :top="(alturaDispositivo - 240)" width="100%" left="0" padding="0" margin="0" v-if="isLoading" >
+              <ActivityIndicator busy="true" color="#DA0080"   horizontalAlignment="center" margin="16" />
+            </StackLayout>
+          </AbsoluteLayout >
+        </StackLayout>
+      </GridLayout>
+        
+    </GridLayout>    
   </Page>
 </template>
 
@@ -116,6 +72,9 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 import { firebase } from '@nativescript/firebase';
 import * as utils from "@nativescript/core/utils";
+import { screen } from "@nativescript/core/platform";
+
+
 export default {
   props: {
     store:{
@@ -153,11 +112,21 @@ export default {
       products: new ObservableArray([]),
       filterName: '',
       statusSearch: false,
-      // carro: null
+      arrayEstructuraStorePage : new ObservableArray([
+        {
+          name: "header",
+          data: null
+        },
+        {
+          name: "products",
+          data: []
+        }
+      ]),
+      alturaDispositivo: 0
+
     };
   },
   watch:{
-    
     productsComputed(to){
       if(to.length == 0 && this.filterName != ''){
         this.statusSearch = false
@@ -187,10 +156,19 @@ export default {
     },
     ruta(){
       let id = this.store.local_cd ? this.store.local_cd: this.store.id
+      this.changeParamsProducts({
+        no_product_id: null
+      })
       this.getCart(id).then((response)=>{
         this.setCarro(response)
       })
       this.onGetProducts()
+    },
+    products(to){
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data = to
+    },
+    storeSubcategorieActive(to){
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'header').data = to
     }
   },
   computed:{
@@ -199,30 +177,19 @@ export default {
     ...mapState('products',['parametros']),
     ...mapState('stores',['storeCategorieActive','storeSubcategorieActive']),
     ...mapState('car',['carro']),
-    // productsComputed(){
-    //   if(!this.filterName || this.statusSearch){
-    //     return this.products
-    //   }else{
-    //     return this.products.filter((item) => {
-    //       return (item.name.match(new RegExp(this.filterName, 'i')))
-    //     })
-    //   }
-    // },
     ruta(){
-        return this.$navigator.path
-      }
+      return this.$navigator.path
+    }
   },
   mounted(){
-    firebase.analytics.setScreenName({
-			screenName: `Store: ${this.store.name}`
-		});
+    this.alturaDispositivo = screen.mainScreen.heightDIPs
+    
+
     this.resetStoreSubcategorieActive()
     this.setStoreCategorieActive(this.categorieActiveGetters.id)
     this.setStoreSubcategorieActive('')
     let id = this.store.local_cd ? this.store.local_cd: this.store.id
-    // this.getCart(id).then((response)=>{
-    //   this.setCarro(response)
-    // })
+
     this.statusSearch = false
     this.changeParamsProducts({
       store: id,
@@ -231,13 +198,17 @@ export default {
       start: 0, 
       length: 16,
       search: "",
+      no_product_id: null
     })
+    
     // this.onGetProducts()
    
     this.getCategoriesStore(id).then((response)=>{
       this.setCategoriesStore(response)
-      // this.setSubcategoriesStore(response.subcategorias)
     })
+    firebase.analytics.setScreenName({
+			screenName: `Store: ${this.store.name}`
+		});
   },
   methods:{
     ...mapActions('products',['getProductsStoreRosa']),
@@ -246,9 +217,26 @@ export default {
     ...mapMutations('stores',['setCategoriesStore','resetStoreSubcategorieActive','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
     ...mapMutations('car',['setCarro']),
     ...mapActions('car',['getCart']),
-    async onScrolled (args) {
+    async onGetProducts(){
+      this.isLoading = true
+      await this.getProductsStoreRosa().then((response)=>{
+        this.isLoading = false
+        response.forEach((e)=>{
+          this.products.push(e)
+        })
+        if(this.$refs.productsScroll == undefined){
+          return
+        }
+        this.$refs.productsScroll.refresh()
+      })
+    },
+    async onLoadCargar (args) {
+      
+      
       this.page = this.page + 1
-   
+      this.isLoading = true
+      
+      
       let proxima = this.parametros.start
       proxima = this.parametros.start + (this.parametros.length+1)
       this.changeParamsProducts({start: proxima })
@@ -259,14 +247,30 @@ export default {
           args.object.notifyAppendItemsOnDemandFinished(0, true);
           return
         }
-        
         response.forEach((e)=>{
           this.products.push(e)
         })
         args.returnValue = true;
 				args.object.notifyAppendItemsOnDemandFinished(0, false);
-        
+        if(this.$refs.productsScroll == undefined){
+          return
+        }
+        this.$refs.productsScroll.refresh()
       })
+    },
+    onSubmitBusqueda(){
+      console.log('onSubmitBusqueda')
+      this.statusSearch = true
+      this.products =  new ObservableArray([])
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data = this.products
+      if(this.$refs.productsScroll == undefined){
+          return
+        }
+      this.$refs.productsScroll.refresh()
+
+      this.changeParamsProducts({start: 0, search:this.filterName, categories: '', length: 16 })
+      this.onGetProducts()
+      utils.ad.dismissSoftInput();
     },
     async onPullToRefreshInitiated ({ object }) {
       this.page = 0
@@ -276,6 +280,11 @@ export default {
           this.setCarro(response)
         })
         this.products =  new ObservableArray([])
+        // this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data = this.products
+        if(this.$refs.productsScroll == undefined){
+          return
+        }
+        this.$refs.productsScroll.refresh()
         this.changeParamsProducts({
           categories: '', 
           sections: '', 
@@ -287,39 +296,24 @@ export default {
         object.notifyPullToRefreshFinished();
       });
     },
-    async onGetProducts(){
-      this.isLoading = true
-      await this.getProductsStoreRosa().then((response)=>{
-        this.isLoading = false
-        response.forEach((e)=>{
-          this.products.push(e)
-        })
-      })
-    },
+    
     async openFilter(){
       
       const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isStore: true ,isSubcategorias: true } })
       this.changeParamsProducts({
         start:     0,
-        length:    15,
+        length:    16,
         sections:  this.categoriesBase.find((e) => e.id == this.storeCategorieActive ).key,
         categories: this.storeSubcategorieActive.toString(),
         // search:    "",
       })
       this.page = 1
       this.products =  new ObservableArray([])
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data = this.products
+      // this.$refs.productsScroll.refresh()
       utils.ad.dismissSoftInput();
       this.onGetProducts()
     }, 
-    onSubmit(){
-      console.log('onsubmit')
-      this.statusSearch = true
-      this.products =  new ObservableArray([])
-      // this.$refs.listView.refresh()
-      this.changeParamsProducts({start: 0, search:this.filterName, categories: '' })
-      this.onGetProducts()
-      utils.ad.dismissSoftInput();
-    }
   }
 };
 </script>

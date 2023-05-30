@@ -62,13 +62,16 @@ export default {
             return `Restan ${this.monedaMethod(this.calculoRestanteOrderMin)} para completar el mínimo de compra`
         },
         cantidadPrendasCarro() {
-            return this.carro.products_count
+            if (this.carro) {
+                return this.carro.products_count
+            }
+            return 0
         },
         textPrendasLabel() {
             if (!this.carro) {
                 return ''
             }
-            console.log(this.carro)
+            // console.log(this.carro)
             if (this.carro.products_count > 0) {
                 let numero = this.carro.products_count
                 var txt = numero + ' prenda'

@@ -82,7 +82,7 @@
               </FlexboxLayout>
             </StackLayout> -->
 
-            <StackLayout v-show="!isLoading" @tap="processLoginGoogle" marginBottom="16" borderWidth=".5" borderColor="#303030" background="white" borderRadius="6" padding="0 16">
+            <!-- <StackLayout v-show="!isLoading" @tap="processLoginGoogle" marginBottom="16" borderWidth=".5" borderColor="#303030" background="white" borderRadius="6" padding="0 16">
               <FlexboxLayout padding="10" justifyContent="space-between" alignItems="center" width="60%" >
 
                 <StackLayout>
@@ -91,7 +91,7 @@
                 <Label text="Ingresa con Google" fontWeight="700" color="black" />
 
               </FlexboxLayout>
-            </StackLayout>
+            </StackLayout> -->
           
           </StackLayout> 
 

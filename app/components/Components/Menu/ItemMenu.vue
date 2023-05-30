@@ -7,7 +7,7 @@
     @tap="onTapMenu"
   >
     <image 
-      :src="`~/assets/icons/${item.icon}.png`"
+      :src="`${item.icon}`"
       col="0"
       row="0"
       verticalAlignment="center"
@@ -56,14 +56,32 @@ export default {
       this.changeDrawer('')
       if(this.item.name == 'Salir'){
         cache.delete('client')
-    cache.delete('token')
+        cache.delete('token')
         cache.clear()
       }
-      if(this.$navigator.path == '/home' && this.item.route == '/home'){
-        return
-      }
+      
       if(!this.item.disabled){
-        this.$navigator.navigate(this.item.route,this.options)
+        if(typeof this.item.redirect == 'object'){
+          if(Object.keys(this.item.redirect).length > 0){
+            this.options.props = this.item.redirect.params
+
+            if(this.$navigator.path == '/home' && this.item.redirect.route == '/home'){
+              return
+            }
+          }
+        }
+        
+        if(this.item.redirect == undefined){
+          this.options.props = { data: this.item.data }
+          // alert(JSON.stringify(this.options))
+          this.$navigator.navigate('/promotion',this.options)
+
+          return
+        }
+
+        console.log(this.item.redirect.route,this.options)
+
+        this.$navigator.navigate(this.item.redirect.route,this.options)
       }
     }
   }

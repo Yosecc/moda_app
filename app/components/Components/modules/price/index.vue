@@ -38,7 +38,7 @@
         <label 
           col="0"
           row="0"
-          v-if="priceOffert && prev_price"
+          v-if="priceOffert && prev_price && (price < prev_price)"
           :text="prev_price | moneda" 
           class="price"
           fontSize="12"

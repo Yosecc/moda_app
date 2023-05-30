@@ -85,6 +85,8 @@ const actions = {
         return response
     },
     async getStoreRosa(context, params) {
+
+
         const qs = Object.keys(context.state.paramsStores)
             .map(key => `${key}=${context.state.paramsStores[key]}`)
             .join('&');

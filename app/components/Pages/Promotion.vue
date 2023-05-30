@@ -9,7 +9,7 @@
                     ref="promotionScroll"
                     :items="promotion.body"
                 >
-                    <v-template name="header" >
+                    <v-template name="header" v-if="promotion.header.image != ''" >
                         <StackLayout
                             padding="0"
                             id="header"

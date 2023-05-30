@@ -6,6 +6,16 @@
         marginLeft="10"
         fontWeight="600"
         fontSize="13"
+        v-if="data.length"
+    />
+    <StackLayout 
+      v-else
+      class="label_skeleton" 
+      width="100"
+      height="13"
+      marginBottom="0" 
+      marginLeft="16"
+      horizontalAlignment="left"
     />
     
     <ScrollView  scrollBarIndicatorVisible="false" orientation="horizontal">
@@ -46,10 +56,24 @@
       margin="16 16 0 16"
       padding="0 4"
       @tap="onViewMas"
+      v-if="data.length"
     >
       <Label text="Ver más" fontSize="12"  fontWeight="200" />
       <image src="res://arrow_right" height="12" opacity=".5" stretch="aspectFit" />
     </FlexboxLayout>
+    <StackLayout 
+      v-else
+      padding="0 16"
+    >
+      <StackLayout 
+        class="label_skeleton" 
+        width="100%"
+        height="13"
+        horizontalAlignment="left"
+      />
+
+    </StackLayout>
+
 
     <!-- <Label text="Ver más" fontSize="12"  fontWeight="200" textAlignment="right" /> -->
 

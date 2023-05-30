@@ -5,7 +5,7 @@
         <image  src="~/assets/iconsuccess.png" width="128" stretch="aspectFill" />
       </StackLayout>
       <StackLayout row="1">
-        <Label  horizontalAlignment="center" color="white" fontSize="28" text="La tienda ya recibió tu pedido" class="title" />
+        <Label  horizontalAlignment="center" color="white" fontSize="28" text="La tienda ya recibió tu pedido" class="title" textWrap />
         <Label  textAlignment="center" horizontalAlignment="center" color="white" textWrap text="La tienda se pondrá en contacto con vos vía mail o teléfono
 dentro de las 48 horas hábiles." fontSize="14" class="title" />
       </StackLayout>
@@ -53,10 +53,10 @@ dentro de las 48 horas hábiles." fontSize="14" class="title" />
     methods:{
       ...mapActions('car',['getCar']),
       home(){
-        this.$navigator.navigate('/home',{backstackVisible: false,})
+        this.$navigator.navigate('/home',{backstackVisible: false, clearHistory: true})
       },
       onTapMisPedidos(){
-        this.$navigator.navigate('/profile',{backstackVisible: false,})
+        this.$navigator.navigate('/profile',{backstackVisible: false, clearHistory: true})
       }
     }
     

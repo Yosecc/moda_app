@@ -156,7 +156,10 @@
         return txt
       },
       productsCountCarro(){
-        return this.carro.products_count
+        if(this.carro){
+          return this.carro.products_count
+        }
+        return 0
       }
 
     },

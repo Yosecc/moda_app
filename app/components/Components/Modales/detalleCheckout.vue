@@ -94,7 +94,7 @@
                       />
                       <Label 
                         v-if="item.precio" 
-                        :text="`Precio uni. desde ${item.precio | moneda} (${calculoPrendas(item.combinacion)})`" 
+                        :text="`Precio uni. desde ${ $options.filters.moneda(item.precio)  } (${calculoPrendas(item.combinacion)})`" 
                         fontWeight="200"
                         fontSize="16"
                         padding="0" 
@@ -171,17 +171,17 @@
       CombinacionesProduct
     },
     filters: {
-      moneda: function (value) {
-        value += '';
-        var x = value.split('.');
-        var x1 = x[0];
-        var x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1)) {
-          x1 = x1.replace(rgx, '$1' + '.' + '$2');
-        }
-        return '$'+ x1 + x2;
-      }
+      // moneda: function (value) {
+      //   value += '';
+      //   var x = value.split('.');
+      //   var x1 = x[0];
+      //   var x2 = x.length > 1 ? '.' + x[1] : '';
+      //   var rgx = /(\d+)(\d{3})/;
+      //   while (rgx.test(x1)) {
+      //     x1 = x1.replace(rgx, '$1' + '.' + '$2');
+      //   }
+      //   return '$'+ x1 + x2;
+      // }
     },
     data() {
       return {

@@ -833,3 +833,28 @@ Button {
 .degrade {
     background: linear-gradient(#F8F8F8, white);
 }
+
+.RadListView .tns-load-on-demand-status {
+    width: 10;
+    height: 10;
+}
+
+.pull-to-refresh-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 16px;
+}
+
+.custom-scrollbar {
+    background-color: gray;
+    width: 5px;
+    opacity: 0.5;
+}
+
+ActionBar {
+    padding-left: 0!important;
+}

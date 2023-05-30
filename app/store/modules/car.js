@@ -76,6 +76,7 @@ const getters = {
 
 const mutations = {
     setCarro(state, val) {
+        // console.log('pasa', val)
         state.carro = val
     },
     setCombinacion(state, val) {

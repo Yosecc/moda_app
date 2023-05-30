@@ -1,20 +1,19 @@
 <template lang="html">
-  <Page background="#FDFDFD">
+  <Page background="#FDFDFD" @loaded="onLoaded" >
     <HeaderDefault :back="false" />
    
-    <GridLayout  rows="*">
-      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0" row="1">
-        
+    <GridLayout  rows="*,auto">
+      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0" row="0"> 
         <RadListView 
           ref="arrayHome"
           :items="arrayHome"
           scrollBarIndicatorVisible="true"
           pullToRefresh="true"
-          @pullToRefreshInitiated="onPullToRefreshInitiated"
           scrollPositionProperty="right"
           orientation="vertical"
           loadOnDemandMode="Auto"
-          :loadOnDemandBufferSize="20"
+          :loadOnDemandBufferSize="4"
+          @pullToRefreshInitiated="onPullToRefreshInitiated"
           @loadMoreDataRequested="onLoadCargar"
           @scrollStarted="onScrolled"
           @scrolled="onScroll"
@@ -55,7 +54,6 @@
               </FlexboxLayout >
             </StackLayout>
           </v-template>
-          
           <v-template if="item.name == 'slider'">
             <SliderComponent :sliders="item.data" />              
           </v-template>
@@ -88,6 +86,19 @@
                   marginRight="16"
                   fontWeight="900"
                   row="0"
+                  v-if="item.data.length"
+                />
+                <StackLayout 
+                  v-else
+                  class="label_skeleton"
+                  width="150"
+                  height="16"
+                  marginBottom="0" 
+                  marginLeft="16" 
+                  marginRight="16"
+                  fontWeight="900"
+                  row="0"
+                  horizontalAlignment="left"
                 />
 
                 <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length">
@@ -117,10 +128,6 @@
                   </v-template>
                 </RadListView>
 
-                <StackLayout row="2" padding="0" margin="0" >
-                  <ActivityIndicator busy="true" color="#DA0080" v-if="isLoadingProducts" horizontalAlignment="center" margin="16" row="1" />
-                </StackLayout>
-
               </GridLayout>
             </StackLayout>
           </v-template>
@@ -128,9 +135,12 @@
         <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
           <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
         </FlexboxLayout>
+        <StackLayout width="100%" height="100" row="1" padding="0" margin="0" :top="h" left="0" v-if="isLoadingProducts" >
+          <ActivityIndicator busy="true" color="#DA0080"  horizontalAlignment="center" margin="16" row="1" />
+        </StackLayout>
       </AbsoluteLayout>
+      
     </GridLayout>
-
   </Page> 
 </template>
 
@@ -151,6 +161,7 @@
   import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
   import { firebase } from '@nativescript/firebase';
   import PromotionsComponent from '~/components/Components/PromotionsComponent.vue'
+  import { screen } from "@nativescript/core/platform";
 
   import Api from '~/services'
   export default {
@@ -172,7 +183,6 @@
         page: 1,
         ultimosProductos:  new ObservableArray([]),
         isLoadingProducts: false,
-        reloadStores:true,
         last_page: 4,
         viewArrowTop: false,
         arrayHome: new ObservableArray([
@@ -185,100 +195,12 @@
           },
           {
             name:'categories',
-            data: new ObservableArray([
-              // {
-              //   id:1,
-              //   name:'Mujer',
-              //   key: 'woman', 
-              //   icon:'res://woman',
-              //   color: "",
-              //   colSpan: 3,
-              //   col: 0,
-              //   row: 0,
-              //   left: 100,
-              // },
-              // {
-              //   id:3,
-              //   name:'Hombre',
-              //   key: 'man', 
-              //   icon:'res://men',
-              //   color: "",
-              //   colSpan: 3,
-              //   col: 3,
-              //   row: 0,
-              //   left: 100,
-              // },
-              // {
-              //   id:6,
-              //   name:'Talle especial',
-              //   key: 'xl', 
-              //   icon:'res://label',
-              //   color: "",
-              //   colSpan: 2,
-              //   col: 0,
-              //   row:1,
-              //   left: 35,
-              //   top: 20
-              // },
-              // {
-              //   id:4,
-              //   name:'Niños',
-              //   key: 'kids', 
-              //   icon:'res://baby',
-              //   color: "",
-              //   colSpan: 2,
-              //   col: 2,
-              //   row: 1,
-              //   left: 35,
-              //   top: 20
-              // },
-              // {
-              //   id:2,
-              //   name:'Accesorios',
-              //   key: 'accessories', 
-              //   icon:'res://accessories',
-              //   color: "",
-              //   colSpan: 2,
-              //   col: 4,
-              //   row: 1,
-              //   left: 35,
-              //   top: 20
-              // },
-              // {
-              //   id:5,
-              //   name:'Zapatos',
-              //   type: 'search',
-              //   search: 'zapatos',
-              //   key: 'zapatos', 
-              //   icon:'res://shoes',
-              //   color: "",
-              //   colSpan: 2,
-              //   col: 4,
-              //   row: 1,
-              //   left: 35,
-              //   top: 20
-              // },
-              // {
-              //   id:7,
-              //   name:'Remeras',
-              //   type: 'search',
-              //   search: 'remera',
-              //   key: 'tshitr', 
-              //   icon:'res://tshirt',
-              //   color: "",
-              //   colSpan: 2,
-              //   col: 4,
-              //   row: 1,
-              //   left: 35,
-              //   top: 20
-              // },
-            ])
+            data: new ObservableArray([])
           },
           {
             name: 'promociones',
             data: new ObservableArray([])
           },
-          
           {
             name:'marcas',
             data: new ObservableArray([])
@@ -291,9 +213,9 @@
             name:'productos',
             data: new ObservableArray([]),
             alturaBase: 350
-          },
-          
-        ])
+          },  
+        ]),
+        alturaDispositivo: 0
       };
     },
     watch:{  
@@ -312,13 +234,16 @@
         }
         return this.products
       },
+      h(){
+        return this.alturaDispositivo  - 180
+      }
     },
     mounted(){
       firebase.analytics.setScreenName({
         screenName: "Home"
       });
-      
-       this.cargaHome()
+      this.alturaDispositivo = screen.mainScreen.heightDIPs
+      this.cargaHome()
     },
     methods:{
       ...mapActions('products',['getProductsRosa','getUltimosproductos','getCategorieSearch','getSearch','getBloques']),
@@ -326,6 +251,10 @@
       ...mapActions('stores', ['getStores', 'getStoreRosa']),
       ...mapMutations(['changeisLoadPage']),
       ...mapMutations('products',['changeParamsProductsSearch']),
+      onLoaded({object}){
+        // const deviceHeightDP = ;
+        // alert("Altura del dispositivo en DP:" + this.alturaDispositivo);
+      },
       cargaHome(){
         this.page = 1
 
@@ -335,7 +264,6 @@
         })
         this.getStoreRosa().then((response) => {
           let arr = []
-         
           response.data.forEach((e, i) => {
               if (i < 10) {
                   arr.push(e)
@@ -378,7 +306,6 @@
           }
         });
       },
-
       arrowTop(){
         let scrollv = this.$refs.arrayHome.nativeView;
         scrollv.scrollToIndex(0,true)
@@ -391,7 +318,7 @@
           this.viewArrowTop = false
         }
       },
-       onLoadCargar(args){
+      onLoadCargar(args){
           if(this.last_page > 0 && this.page > this.last_page){
             args.returnValue = false;
             args.object.notifyAppendItemsOnDemandFinished(0, true);
@@ -410,10 +337,9 @@
             })
               
           }
-      },
-      
+      },   
       async onPullToRefreshInitiated ({ object }) {
-        // console.log('Pulling...');
+        console.log('Pulling...');
         await this.$nextTick( async () => {
           await this.cargaHome()
           object.refreshing = false;
@@ -421,18 +347,15 @@
           this.$refs.arrayHome.refresh()
         });
       },
-      
       onScrolled (args) {
         this.page = this.page + 1
         this.onGetProducts()
-        
-          // console.log('SIdIUOJ',)
       
         // this.getCategorieSearch({val: 1, page: 1, product_paginate: 4}).then((response)=>{
         //   console.log(response)
         // })
-        // let scrollv = this.$refs.layo.nativeView;
-        // console.log(object.nativeView)
+        // let scrollv = this.$refs.arrayHome.nativeView;
+
         // if(scrollv.scrollableHeight == scrollY){
         //   this.isLoadingProducts = true
         //   this.page = this.page+1;
@@ -442,15 +365,16 @@
       async onGetProducts(){
         this.changeParamsProductsSearch({
           menu: 'get_new_entry_products',
-          sections:[],
+          sections:[1,3,6,4,2],
           search:'',
           page: this.page,
-          offset:4,
+          offset:12,
         })
         this.isLoadingProducts = true
         await this.getUltimosproductos()
         .then((response)=>{
           if(response.length == 0){
+            this.isLoadingProducts = false
             return false
           }
           this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)
@@ -459,11 +383,6 @@
           this.$refs.arrayHome.refresh()
           return true
         })
-
-        
-      },
-      onItemTap({ item }) {
-        // console.log(`Tapped on ${item.name}`);
       },
       onNavigateSearch(){
         this.$navigator.navigate('/search',{
@@ -487,8 +406,6 @@
           },
         })
       },
-      
-      
     }
   }
 </script>

@@ -1,14 +1,14 @@
 <template lang="html">
 
-    <ActionBar >
+    <!-- <ActionBar paddingLeft="0" margin="0" > -->
       
       <GridLayout
-        columns="auto,auto,*" 
+        columns="auto,*,auto" 
         rows="*" 
-        marginTop="10"
+        class="shadow card secondary"
         marginBottom="5"
-        paddingLeft="0"
-        
+        height="65"
+        borderRadius="0"
       >
         <BtnMenu
           v-show="!back" 
@@ -21,16 +21,13 @@
           v-show="back"
           col="0"
           horizontalAlignment="left" 
-          :marginLeft="-8"
         ></BtnBack>
-
-
 
         <FlexboxLayout 
           col="1"
           alignItems="center"
-          justifyContent="center"
           @tap="onViewStore(store)"
+          
         >
 
           <ImageCache 
@@ -48,7 +45,7 @@
 
             <StackLayout  margin="0" padding="0" orientation="horizontal">
 
-              <Label   horizontalAlignment="left" margin="0 8 0 0" padding="0" :text="store.name" textTransform="capitalize" fontWeight="900" fontSize="18" />
+              <Label   horizontalAlignment="left" margin="0 8 0 0" textWrap padding="0" :text="`${store.name}`" textTransform="capitalize" fontWeight="900" fontSize="18" />
               
               <StackLayout
                 orientation="horizontal"
@@ -83,13 +80,7 @@
               </label>
               <!-- <label fontSize="10" :text="JSON.stringify(carro)" textWrap="true" /> -->
           </StackLayout>
-          <!-- <Image 
-            src="~/assets/logo.png"
-            padding="0"
-            width="100"
-            height="32"
-            marginTop="4"
-          /> -->
+
         </FlexboxLayout >
         
         <StackLayout
@@ -97,70 +88,72 @@
           col="2" 
         >
       
-        <AbsoluteLayout
-          class=""
-          height="40"
-          width="40"
-          padding="0"
-          @tap="redirect"
-        >
-
-          <AbsoluteLayout 
-            top="5"
-            class="btn-icon"
+          <AbsoluteLayout
+            class=""
+            height="40"
+            width="40"
+            padding="0"
+            @tap="redirect"
           >
 
-            <Image 
-              top="4"
-              left="4"
-              verticalAlignment="center"
-              horizontalAlignment="center"
-              src="~/assets/icons/basket.png" 
-              width="24" 
-              height="24" />
-
-          </AbsoluteLayout>
-            <FlexboxLayout
-              top="0"
-              left="25"
-              width="15"
-              height="15"
-              backgroundColor="#DA0080"
-              borderRadius="100%"
-              justifyContent="center"
-              alignItems="center"
-              v-if="carro != null && Object.keys(carro).length > 0"
+            <AbsoluteLayout 
+              top="5"
+              class="btn-icon"
             >
 
-              <Label 
-                v-if="carro.products_count > 0"
-                :text="carro.products_count"
-                fontSize="9"
-                color="white"
-                padding="0"
-                margin="0"
-                lineHeight="0"
-                letterSpacing="0"
+              <!-- <Image 
+                top="4"
+                left="4"
                 verticalAlignment="center"
                 horizontalAlignment="center"
-               />   
+                src="~/assets/icons/basket.png" 
+                width="24" 
+                height="24" /> -->
 
-            </FlexboxLayout>
+              <Image 
+                top="0"
+                left="0"
+                verticalAlignment="center"
+                horizontalAlignment="center"
+                src="~/assets/icons/basket.png" 
+                width="32" 
+                height="32" 
+              />
 
-        </AbsoluteLayout>
+            </AbsoluteLayout>
+              <FlexboxLayout
+                top="0"
+                left="25"
+                width="15"
+                height="15"
+                backgroundColor="#DA0080"
+                borderRadius="100%"
+                justifyContent="center"
+                alignItems="center"
+                v-if="carro != null && Object.keys(carro).length > 0"
+              >
 
-          
-          <!-- <Image 
-            src="~/assets/icons/bell.png" 
-            padding="0"
-            width="32"
-            height="32"
-            opacity=".05"
-          /> -->
+                <Label 
+                  v-if="carro.products_count > 0"
+                  :text="carro.products_count"
+                  fontSize="9"
+                  color="white"
+                  padding="0"
+                  margin="0"
+                  lineHeight="0"
+                  letterSpacing="0"
+                  verticalAlignment="center"
+                  horizontalAlignment="center"
+                />   
+
+              </FlexboxLayout>
+
+          </AbsoluteLayout>
+
         </StackLayout>
       </GridLayout>
      
-    </ActionBar>
+    <!-- </ActionBar> -->
  
 </template>
 

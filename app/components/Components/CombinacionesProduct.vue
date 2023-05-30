@@ -3,6 +3,41 @@
   <StackLayout  >
     <Label text="Combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
     <WrapLayout 
+    paddingBottom="0" 
+      marginBottom="0"
+      borderBottomWidth="0"
+      class="combinaciones"
+    >
+      <StackLayout padding="4 4 4 4" width="37.5%">
+        <label 
+              text="Talle"  
+              marginLeft="0" 
+              paddingLeft="0" 
+              fontSize="12" 
+              fontWeight="900" 
+            />
+      </StackLayout>
+      <StackLayout padding="4 4 4 4" width="37.5%">
+        <label 
+          text="Color"  
+          marginLeft="0"
+          paddingLeft="0" 
+          fontSize="12" 
+          fontWeight="900" 
+        />
+      </StackLayout>
+      <StackLayout padding="4 4 4 4" width="25%">
+        <label 
+          text="Cant."  
+          marginLeft="0"
+          paddingLeft="0" 
+          fontSize="12" 
+          fontWeight="900" 
+        />
+      </StackLayout>
+
+    </WrapLayout>
+    <WrapLayout 
       v-for="(combinacion, key) in combination" 
       v-if="combinaciones.length"
       :key="key" 
@@ -15,13 +50,6 @@
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
         <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" height="55" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''"  width="100%">
           <FlexboxLayout padding="0 8" width="100%" alignItems="center" justifyContent="space-between">
-            <label 
-              text="Talle"  
-              marginLeft="0" 
-              paddingLeft="0" 
-              fontSize="12" 
-              fontWeight="900" 
-            />
             <StackLayout v-if="combinacion.talleActive != ''" padding="0" marginRight="0">
               <FlexboxLayout padding="8" justifyContent="center" alignItems="center" height="30" minWidth="30"  borderRadius="4" borderWidth="1" borderColor="#8e8e8e" class="talleSelect" >
                 <Label :text="combinacion.talleActive" horizontalAlignment="center" fontSize="12" fontWeight="600" padding="0" margin="0" />
@@ -39,15 +67,7 @@
       </StackLayout>
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
         <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" background="" height="55" class="card secondary"  :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
-          <FlexboxLayout width="100%" padding="0 8" backgroundColor="" alignItems="center" justifyContent="space-between">
-            <label 
-              text="Color"  
-              marginLeft="0"
-              paddingLeft="0" 
-              fontSize="12" 
-              fontWeight="900" 
-            />
-            
+          <FlexboxLayout width="100%" padding="0 8" backgroundColor="" alignItems="center" justifyContent="space-between">           
             <StackLayout v-if="combinacion.colorActive != ''" padding="0" horizontalAlignment="right">
               <AbsoluteLayout>
                 <label
@@ -109,13 +129,7 @@
       <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="25%">
         <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '55':'55'" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
           <FlexboxLayout padding="0 8" width="100%" justifyContent="space-between"  alignItems="center" >
-            <label 
-              text="Cant."  
-              marginLeft="0"
-              paddingLeft="0" 
-              fontSize="12" 
-              fontWeight="900" 
-            />
+            
             <label 
               v-if="combinacion.talleActive != ''"
               :text="combinacion.cantidad"  

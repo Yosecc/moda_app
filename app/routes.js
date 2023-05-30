@@ -21,7 +21,6 @@ import HowToBuy from './components/Pages/SubPages/HowToBuy.vue'
 import Shipping from './components/Pages/SubPages/Shipping.vue'
 import MetodosPagoView from './components/Pages/SubPages/MetodosPagoView.vue'
 
-
 import webView from './components/Pages/WebViews/offerts.vue'
 import DiscountsEspeciales from './components/Pages/Discounts/DiscountsEspeciales.vue'
 
@@ -40,9 +39,7 @@ import Profile from './components/Pages/Profile/index.vue'
 import DireccionesForm from './components/Pages/Profile/DireccionesForm.vue'
 import Pedido from './components/Pages/Profile/Pedido.vue'
 
-
 import detailCar from './components/Pages/Car/detailCar.vue'
-
 
 import filterCategorias from './components/Components/Modales/filterCategorias.vue'
 import tiendasModal from './components/Components/Modales/tiendas.vue'

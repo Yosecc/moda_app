@@ -20,7 +20,7 @@
       paddingTop="24"
     >
       <ItemMenu
-        v-for="(item, key) in itemsMenu"
+        v-for="(item, key) in menuList"
         :key="key"
         :item="item"
       />
@@ -47,6 +47,8 @@
 <script>
   import UserInfoBox from '../Boxes/UserInfoBox'
   import ItemMenu from './ItemMenu'
+import { mapState } from 'vuex'
+
   export default {
     props: {},
 
@@ -60,73 +62,55 @@
     data() {
       return {
         itemsMenu:[
-          {
-            icon: 'home',
-            name: 'Inicio',
-            route: '/home',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_0',
-            name: 'Tiendas',
-            route: '/all_stores',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_0',
-            name: 'Mis pedidos',
-            route: '/profile',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_6',
-            name: 'Descuentos Especiales',
-            route: '/discount_especial',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_1',
-            name: '¿Cómo comprar?',
-            route: '/how_to_buy',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_2',
-            name: 'Envíos a todo el país',
-            route: '/shipping',
-            disabled: false
-          },
-          {
-            icon: 'icon_menu_3',
-            name: 'Formas de pago',
-            route: '/payment_methods',
-            disabled: false
-          },
-          
           // {
-          //   icon: 'icon_menu_6',
-          //   name: 'cam',
-          //   route: '/cam',
+          //   icon: 'home',
+          //   name: 'Inicio',
+          //   route: '/home',
           //   disabled: false
           // },
           // {
-          //   icon: 'icon_menu_4',
-          //   name: 'Consultas',
-          //   route: '/inquiries',
-          //   disabled: true
-          // },
-          {
-            icon: 'icon_menu_5',
-            name: 'Notificaciones',
-            route: '/notifications',
-            disabled: false
-          },
-          // {
-          //   icon: 'icon_menu_6',
-          //   name: 'Ayuda',
-          //   route: '/help',
+          //   icon: 'icon_menu_0',
+          //   name: 'Tiendas',
+          //   route: '/all_stores',
           //   disabled: false
           // },
+          // {
+          //   icon: 'icon_menu_0',
+          //   name: 'Mis pedidos',
+          //   route: '/profile',
+          //   disabled: false
+          // },
+          // {
+          //   icon: 'icon_menu_6',
+          //   name: 'Descuentos Especiales',
+          //   route: '/discount_especial',
+          //   disabled: false
+          // },
+          // {
+          //   icon: 'icon_menu_1',
+          //   name: '¿Cómo comprar?',
+          //   route: '/how_to_buy',
+          //   disabled: false
+          // },
+          // {
+          //   icon: 'icon_menu_2',
+          //   name: 'Envíos a todo el país',
+          //   route: '/shipping',
+          //   disabled: false
+          // },
+          // {
+          //   icon: 'icon_menu_3',
+          //   name: 'Formas de pago',
+          //   route: '/payment_methods',
+          //   disabled: false
+          // },
+          // {
+          //   icon: 'icon_menu_5',
+          //   name: 'Notificaciones',
+          //   route: '/notifications',
+          //   disabled: false
+          // },
+
         ],
         othersItemsMenu:[
           // {
@@ -148,7 +132,7 @@
       };
     },
     computed:{
-
+      ...mapState(['menuList'])
     },
     methods:{
 

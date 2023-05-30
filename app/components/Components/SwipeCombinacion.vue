@@ -1,6 +1,7 @@
 <template lang="html">
-  <GridLayout padding="0 16 8 16" rows="auto,*, auto">
-    <StackLayout
+  <GridLayout   padding="0 16 8 16"  rows="auto,*, auto">
+    <!-- <label text="sjs" height="400" width="500" background="blue" @swipe="onSwipe" ref="hu" /> -->
+    <!-- <StackLayout
       row="0"
       marginTop="16"
       backgroundColor="#8e8e8e" 
@@ -8,33 +9,39 @@
       height="4" 
       borderRadius="40" 
       marginBottom="8"
-    />
+    /> -->
+
+    <StackLayout row="0">
+          <Image 
+            src="~/assets/icons/plus.png"
+            width="40"
+            height="40"
+            horizontalAlignment="left"
+            rotate="45"
+            @tap="closeDropBottom()"
+          />
+    </StackLayout>
 
     <StackLayout  row="1" marginTop="8" >
       <GridLayout columns="*,auto" height="50" backgroundColor="" >
-        <StackLayout orientation="horizontal" col="0" v-if="combinacion">
 
-          <!-- <label :text="combinacion.colorActive"  textWrap color="black" />
-          <label :text="combinacion.talleActive"  textWrap color="black" /> -->
-          <!-- <label :text="combinacion.combinacion_key" color="black" />
-          <label :text="isNew" color="black" /> -->
-
+        <StackLayout orientation="horizontal"  col="0" v-if="combinacion">
           <label :text="combinacion.descripcion" textWrap margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
-          <label :text="calculaPrecio | moneda" v-if="calculaPrecio" margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" color="#DA0080"/>
         </StackLayout>
-        <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
 
+        <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
+        
         <FlexboxLayout 
-          v-if="combinacion.combinacion_key != null" 
+          v-if="combinacion.combinacion_key != null && edit" 
           @tap="deleteCombinacion" 
           col="1" 
+          
           alignItems="center" 
           justifyContent="center" 
           width="40" 
           height="40" 
           margin="0" 
           class="btn btn-icon"
-         
         >
           <Image 
             src="~/assets/icons/trash.png" 
@@ -42,6 +49,8 @@
             height="25" 
           />
         </FlexboxLayout>
+
+        <!--  -->
       </GridLayout>
       
       <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
@@ -69,13 +78,14 @@
           </StackLayout>
         </StackLayout>
 
-      <StackLayout padding="0" margin="0" v-if="combinacion.colors.length">
-        <label text="Elegí un color" margin="8 0 8 0" fontSize="12" fontWeight="900" />
+      <StackLayout padding="0" margin="0" height="80" v-if="combinacion.colors.length">
+        <label :text="`Elegí un color`" textWrap margin="8 0 8 0" fontSize="12" fontWeight="900" />
         <Colores
           row="2"
           :colores="colores"
           v-model="combinacion.colorActive"
           @change="changeColor"
+          v-if="reloadColor"
         />
       </StackLayout>
 
@@ -94,11 +104,14 @@
             />
           </StackLayout>
         </StackLayout>
-
-      <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
-        <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
-        <Count v-if="reset" v-model="combinacion.cantidad" />
-      </StackLayout>
+      
+        <FlexboxLayout justifyContent="space-between" alignItems="flex-end">
+          <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
+            <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
+            <Count v-if="reset" v-model="combinacion.cantidad" />
+          </StackLayout>
+          <label row="1" col="0" :text="`${$options.filters.moneda(calculaPrecio)} c/u`" v-if="calculaPrecio != ''"  margin="0 0 10 0" paddingRight="24" fontSize="14" fontWeight="900" color="#DA0080"/>
+        </FlexboxLayout>
 
         <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="24">
           <StackLayout class="label_skeleton"  width="30%" height="20" marginBottom="8" horizontalAlignment="left" />
@@ -111,7 +124,7 @@
       <button v-if="!edit"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
       <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
     </StackLayout>
-    <StackLayout row="2" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
+    <StackLayout row="3" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
 
   </GridLayout>
 </template>
@@ -123,6 +136,9 @@
   import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   import { screen } from "@nativescript/core/platform"
   import helpersMixin from '~/mixins/helpersMixin.js'
+  import { GestureTypes, SwipeGestureEventData, Label } from '@nativescript/core'
+  
+  
   export default {
     mixins:[helpersMixin],
     props:{
@@ -180,13 +196,15 @@
           
           this.clearCombinacion()
         }
-      }
+      },
+      
     },
     data() {
       return {
         openDrop: false,
         reset: true,
-        edit: false
+        edit: false,
+        reloadColor: true
       };
     },
     computed:{
@@ -200,36 +218,48 @@
         },
       },
       colores(){
-        
-        if(this.models && this.combinacion.talleActive!=''){
+
+        let data = this.combinacion.colors
+
+        data.forEach((e)=>{
+          e.disabled = false
+        })
+
+        // console.log('primerdata', this.combinacion, this.models)
+
+        if(this.models && this.combinacion.talleActive!='' && data.length){
 
           let models = this.models.find((e)=>e.size == this.combinacion.talleActive)
-          // console.log('ujum',this.combinacion,models)
+
           let colors = []
           if(models.properties == undefined){
             alert('se quedo sin properties')
-            return colors
+            return data
           }
-          models.properties.forEach((x)=>{
-            let c = this.combinacion.colors.find((e)=> e.id == x.color_id)
 
-            if(c != undefined){
-
-            colors.push(c)
+          data.forEach((e)=>{
+            let x = models.properties.findIndex((i)=> e.id == i.color_id)
+            
+            if(x == -1){
+              e.disabled = true
             }
+
           })
-          // console.log('ajam', colors)
-          let colorIndex = colors.findIndex((e)=>e.code == this.combinacion.colorActive)
 
-          if(colorIndex == -1 && this.isProduct){
-            // this.combinacion.colorActive = ''
-            this.$forceUpdate()
-          }
+          // this.combinacion.colorActive = ''
+    
+          this.reloadColor = false
+          setTimeout(() => {
+            this.reloadColor = true
+          }, 1);
+          
 
-          return colors
+          // console.log('ujum',data)
+
+          // return colors
         }
-
-        return this.combinacion.colors
+        
+        return data
       },
       talleSelect(){
         // console.log(this.models)
@@ -244,21 +274,41 @@
       },
       calculaPrecio(){
         
-        if(this.talleSelect){
+        if(this.talleSelect && this.talleSelect.properties != undefined){
+          // console.log('tyu',this.talleSelect.properties[0])
+          if(this.talleSelect.properties[0].price == undefined){
+            this.changeToast({
+                  title: 'Combinación no disponible',
+                  status: true,
+                  type: 'danger',
+                  message: ''
+              })
+              this.combinacion.colorActive = ''
+              return
+          }
+
           let price = this.talleSelect.properties[0].price
           if([0,null,undefined,'',false,'0'].includes(price)){
             price = this.talleSelect.price
           }
           return price
         }
-        return null
+        return ''
+      },
+      t(){
+        return this.combinacion.talleActive
       }
     },
     mounted(){
+     
+      
     },
     methods:{
       ...mapMutations('car',['clearCombinacion','addCombinacion']),
       ...mapMutations(['changeToast']),
+      onSwipe(args) {
+        console.log("Swipe Direction: ");
+      },
       openDropBottom(){
         this.openDrop = true
         let height = this.heightDrop

@@ -6,268 +6,268 @@
       subTitle="Aquí podrás ver el resumen de toda la compra. Comprobá que todos los datos estén correctos."
       :nextStatus="nextStatus"
       @onAction="onComprar"
-      :viewBottomDetail="false"
+      :viewBottomDetail="true"
       :nameButtom="'Confirmar Compra'"
       :loading="buttonLoading"
     >
 
-    <ScrollView >
-      <StackLayout  >
+      <ScrollView >
+        <StackLayout  >
 
-        <StackLayout padding="8 16" v-if="loading">
-          <StackLayout 
-            v-for="i in 6"
-            :key="`'skeleton-${i}`"
-            marginBottom="16" 
-          >
-            <StackLayout class="label_skeleton"  width="100%" height="30" marginBottom="8"></StackLayout>
-            <StackLayout class="label_skeleton"  width="100%" height="100"></StackLayout>
-          </StackLayout>
-        </StackLayout>
-           
-        <StackLayout padding="8 16" v-if="!loading && resumen">
-          <Label text="Tipo de envío" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16" orientation="horizontal">
-            <image 
-              top="16"
-              left="64"
-              width="35"
-              :src="tipoEnvio.icon" 
-              stretch="aspectFill" 
-            /> 
-            <Label 
-              class="title"
-              fontSize="20"
-              fontWeight="900"
-              margin="4 0 0 8"
-              :text="tipoEnvio.title" 
-            />
-          </StackLayout>
-          <Label textWrap text="Una vez realizada la compra, no se podrá cambiar el tipo de envío."  fontSize="12" fontWeight="100" />
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 1 || tipoEnvio.id == 4)">
-          <Label text="Datos de la sucursal" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16">
-            <Label :text="`${direccion.first_name} ${direccion.last_name}`" fontSize="16" fontWeight="600" />
-            <Label :text="`DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
-          </StackLayout>
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 2 || tipoEnvio.id == 3)">
-          <Label text="Datos de la dirección" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16">
-            <Label :text="`${direccion.alias}`" fontSize="18" fontWeight="800" />
-            <Label :text="`${direccion.first_name} ${direccion.last_name} - DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
-            <Label :text="`${direccion.street_name} ${direccion.street_number}, ${direccion.location_name}, ${direccion.state_name} - CP: ${direccion.zipcode}`" fontSize="16" fontWeight="600" />
-          </StackLayout>
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 5">
-          <Label text="Datos del destinatario" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16">
-            <Label :text="`${direccion.first_name} ${direccion.last_name}`" fontSize="16" fontWeight="600" />
-            <Label :text="`DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
-          </StackLayout>
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 1">
-          <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" orientation="horizontal" padding="16">
-            <ImageCache 
-              stretch="aspectFill" 
-              width="60"
-              height="60"
-              placeholderStretch="aspectFill"
-              placeholder="res://eskeleton"
-              :src="(servicioEnvio.provider == 'oca' || servicioEnvio.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
-              rounded="true"
-              borderWidth=".5"
-              borderColor="#4D4D4D"
-            />
-            <StackLayout marginLeft="16">
-              <Label fontSize="16" textWrap :text="servicioEnvio.label" margin="0" padding="0" />
-              <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
+          <StackLayout padding="8 16" v-if="loading">
+            <StackLayout 
+              v-for="i in 6"
+              :key="`'skeleton-${i}`"
+              marginBottom="16" 
+            >
+              <StackLayout class="label_skeleton"  width="100%" height="30" marginBottom="8"></StackLayout>
+              <StackLayout class="label_skeleton"  width="100%" height="100"></StackLayout>
             </StackLayout>
           </StackLayout>
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 2 || tipoEnvio.id == 3)">
-          <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" orientation="horizontal" padding="16">
-            <Label fontSize="20" textWrap :text="servicioEnvio.provider ? servicioEnvio.provider : servicioEnvio.name" margin="0" padding="0" />
-            <StackLayout marginLeft="16">
-              <Label text="Costo de envío" fontWeight="800" fontSize="18" />
-              <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
-            </StackLayout>
-          </StackLayout>
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 4">
-          <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card"  padding="16">
-           
-            <Label fontSize="18" textWrap :text="servicioEnvio.label" margin="0" padding="0" />
-            <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
             
+          <StackLayout padding="8 16" v-if="!loading && resumen">
+            <Label text="Tipo de envío" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16" orientation="horizontal">
+              <image 
+                top="16"
+                left="64"
+                width="35"
+                :src="tipoEnvio.icon" 
+                stretch="aspectFill" 
+              /> 
+              <Label 
+                class="title"
+                fontSize="20"
+                fontWeight="900"
+                margin="4 0 0 8"
+                :text="tipoEnvio.title" 
+              />
+            </StackLayout>
+            <Label textWrap text="Una vez realizada la compra, no se podrá cambiar el tipo de envío."  fontSize="12" fontWeight="100" />
           </StackLayout>
-        </StackLayout>
 
-        <StackLayout padding="8 16" v-if="!loading && resumen && facturacion">
-          <Label text="Datos de facturación" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16">
-            <FlexboxLayout justifyContent="space-between">
+          <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 1 || tipoEnvio.id == 4)">
+            <Label text="Datos de la sucursal" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16">
+              <Label :text="`${direccion.first_name} ${direccion.last_name}`" fontSize="16" fontWeight="600" />
+              <Label :text="`DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
+            </StackLayout>
+          </StackLayout>
 
-              <Label
-                v-if="facturacion.billing_type == 'personal'" 
-                text="Datos personales"  
-                class="title"
-                fontSize="20"
-                fontWeight="900" 
-                marginBottom="16"
+          <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 2 || tipoEnvio.id == 3)">
+            <Label text="Datos de la dirección" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16">
+              <Label :text="`${direccion.alias}`" fontSize="18" fontWeight="800" />
+              <Label :text="`${direccion.first_name} ${direccion.last_name} - DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
+              <Label :text="`${direccion.street_name} ${direccion.street_number}, ${direccion.location_name}, ${direccion.state_name} - CP: ${direccion.zipcode}`" fontSize="16" fontWeight="600" />
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 5">
+            <Label text="Datos del destinatario" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16">
+              <Label :text="`${direccion.first_name} ${direccion.last_name}`" fontSize="16" fontWeight="600" />
+              <Label :text="`DNI: ${direccion.dni}`" fontSize="16" fontWeight="600" />
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 1">
+            <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" orientation="horizontal" padding="16">
+              <ImageCache 
+                stretch="aspectFill" 
+                width="60"
+                height="60"
+                placeholderStretch="aspectFill"
+                placeholder="res://eskeleton"
+                :src="(servicioEnvio.provider == 'oca' || servicioEnvio.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
+                rounded="true"
+                borderWidth=".5"
+                borderColor="#4D4D4D"
               />
-              <Label
-                v-else
-                text="Datos empresa"  
-                class="title"
-                fontSize="20"
-                fontWeight="900" 
-                marginBottom="16"
-              />
-              <StackLayout>
-                <FlexboxLayout 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  width="40" 
-                  height="40" 
-                  margin="0" 
-                  class="btn btn-icon"
-                  borderWidth=".5"
-                  borderColor="#4D4D4D"
-                  @tap="editDatosFacturacion"
-                >
-                  <Image 
-                    src="~/assets/icons/pencil.png" 
-                    width="25" 
-                    height="25" 
-                  />
-                </FlexboxLayout>
+              <StackLayout marginLeft="16">
+                <Label fontSize="16" textWrap :text="servicioEnvio.label" margin="0" padding="0" />
+                <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
               </StackLayout>
-
-            </FlexboxLayout>
-
-            <Label :text="`${facturacion.first_name} ${facturacion.last_name}`" fontSize="16" fontWeight="600" />
-            <Label v-if="facturacion.billing_type == 'personal'"  :text="`DNI: ${facturacion.id_number}`" fontSize="16" fontWeight="600" />
-            <Label v-else  :text="`CUIT: ${facturacion.id_number}`" fontSize="16" fontWeight="600" />
-
-            <Label textWrap :text="`${facturacion.street_name} ${facturacion.street_number}, ${facturacion.location}, ${facturacion.state_name} - CP: ${facturacion.zipcode}`" fontSize="16" fontWeight="600" />
+            </StackLayout>
           </StackLayout>
-        </StackLayout>
 
-        <StackLayout padding="8 16" v-if="!loading && resumen && metodoPago">
-          <Label text="Método de pago" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout class="card" padding="16">
-            <Label 
-              class="title"
-              fontSize="20"
-              fontWeight="900"
-              :text="metodoPago.name" 
-            />
+          <StackLayout padding="8 16" v-if="!loading && resumen && (tipoEnvio.id == 2 || tipoEnvio.id == 3)">
+            <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" orientation="horizontal" padding="16">
+              <Label fontSize="20" textWrap :text="servicioEnvio.provider ? servicioEnvio.provider : servicioEnvio.name" margin="0" padding="0" />
+              <StackLayout marginLeft="16">
+                <Label text="Costo de envío" fontWeight="800" fontSize="18" />
+                <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
+              </StackLayout>
+            </StackLayout>
           </StackLayout>
-        </StackLayout>
 
-        <StackLayout padding="8 16" v-if="!loading && resumen">
-          <Label text="Prendas" marginBottom="8" fontSize="18" fontWeight="700" />
-          
-            <StackLayout
-              v-for="(item, key) in products"
-              :key="`product-${key}`"
-              marginBottom="8"
-              class="card">
-              <StackLayout width="100%" marginBottom="8" orientation="horizontal" >
-                <ImageCache 
-                  stretch="aspectFill" 
-                  width="60"
-                  height="60"
-                  placeholderStretch="aspectFill"
-                  placeholder="res://eskeleton"
-                  :src="`${item.images[0]}`"
-                  rounded="false"
-                  borderWidth=".5"
-                  borderColor="#4D4D4D"
+          <StackLayout padding="8 16" v-if="!loading && resumen && tipoEnvio.id == 4">
+            <Label text="Servicio de envío" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card"  padding="16">
+            
+              <Label fontSize="18" textWrap :text="servicioEnvio.label" margin="0" padding="0" />
+              <Label :text="servicioEnvio.price | moneda" fontWeight="800" fontSize="18" />
+              
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout padding="8 16" v-if="!loading && resumen && facturacion">
+            <Label text="Datos de facturación" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16">
+              <FlexboxLayout justifyContent="space-between">
+
+                <Label
+                  v-if="facturacion.billing_type == 'personal'" 
+                  text="Datos personales"  
+                  class="title"
+                  fontSize="20"
+                  fontWeight="900" 
+                  marginBottom="16"
                 />
-                <StackLayout marginLeft="8" width="100%" padding="0">
-                  <StackLayout paddingTop="0">
-                    <Label 
-                      :text="item.descripcion" 
-                      fontWeight="900"
-                      fontSize="18"
-                      padding="0"
-                      margin="0 0 4 0"
-                      textWrap
+                <Label
+                  v-else
+                  text="Datos empresa"  
+                  class="title"
+                  fontSize="20"
+                  fontWeight="900" 
+                  marginBottom="16"
+                />
+                <StackLayout>
+                  <FlexboxLayout 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    width="40" 
+                    height="40" 
+                    margin="0" 
+                    class="btn btn-icon"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                    @tap="editDatosFacturacion"
+                  >
+                    <Image 
+                      src="~/assets/icons/pencil.png" 
+                      width="25" 
+                      height="25" 
                     />
-                    <Label 
-                      v-if="item.precio" 
-                      :text="`Precio uni. desde ${item.precio} (${calculoPrendas(item.combinacion)})`" 
-                      fontWeight="200"
-                      fontSize="16"
-                      padding="0" 
-                      margin="0"
-                    />
+                  </FlexboxLayout>
+                </StackLayout>
+
+              </FlexboxLayout>
+
+              <Label :text="`${facturacion.first_name} ${facturacion.last_name}`" fontSize="16" fontWeight="600" />
+              <Label v-if="facturacion.billing_type == 'personal'"  :text="`DNI: ${facturacion.id_number}`" fontSize="16" fontWeight="600" />
+              <Label v-else  :text="`CUIT: ${facturacion.id_number}`" fontSize="16" fontWeight="600" />
+
+              <Label textWrap :text="`${facturacion.street_name} ${facturacion.street_number}, ${facturacion.location}, ${facturacion.state_name} - CP: ${facturacion.zipcode}`" fontSize="16" fontWeight="600" />
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout padding="8 16" v-if="!loading && resumen && metodoPago">
+            <Label text="Método de pago" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout class="card" padding="16">
+              <Label 
+                class="title"
+                fontSize="20"
+                fontWeight="900"
+                :text="metodoPago.name" 
+              />
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout padding="8 16" v-if="!loading && resumen">
+            <Label text="Prendas" marginBottom="8" fontSize="18" fontWeight="700" />
+            
+              <StackLayout
+                v-for="(item, key) in products"
+                :key="`product-${key}`"
+                marginBottom="8"
+                class="card">
+                <StackLayout width="100%" marginBottom="8" orientation="horizontal" >
+                  <ImageCache 
+                    stretch="aspectFill" 
+                    width="60"
+                    height="60"
+                    placeholderStretch="aspectFill"
+                    placeholder="res://eskeleton"
+                    :src="`${item.images[0]}`"
+                    rounded="false"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                  />
+                  <StackLayout marginLeft="8" width="100%" padding="0">
+                    <StackLayout paddingTop="0">
+                      <Label 
+                        :text="item.descripcion" 
+                        fontWeight="900"
+                        fontSize="18"
+                        padding="0"
+                        margin="0 0 4 0"
+                        textWrap
+                      />
+                      <Label 
+                        v-if="item.precio" 
+                        :text="`Precio uni. desde ${item.precio} (${calculoPrendas(item.combinacion)})`" 
+                        fontWeight="200"
+                        fontSize="16"
+                        padding="0" 
+                        margin="0"
+                      />
+                    </StackLayout>
                   </StackLayout>
                 </StackLayout>
+
+                <CombinacionesProduct
+                  v-if="item.combinacion && (item.precio != null)"
+                  v-model="item.combinacion"
+                  :product="item"
+                  :isProduct="false"
+                  :isEnabled="true"
+                  :isButtom="false"
+                />
+
               </StackLayout>
-
-              <CombinacionesProduct
-                v-if="item.combinacion && (item.precio != null)"
-                v-model="item.combinacion"
-                :product="item"
-                :isProduct="false"
-                :isEnabled="true"
-                :isButtom="false"
-              />
-
-            </StackLayout>
-          
-        </StackLayout>
-
-        <StackLayout padding="8 16" v-if="!loading && cupon">
-          <Label text="Cupón" marginBottom="8" fontSize="18" fontWeight="700" />
-          
-          <StackLayout class="card" padding="16">
-            <Label :text="cupon.amount | moneda" marginBottom="8" fontSize="18" fontWeight="900" />
-            <Label :text="`Expira: ${fecha(cupon.expire)}`"  marginBottom="8" fontSize="16" fontWeight="300" />
             
           </StackLayout>
-          
-        </StackLayout>
-          
-        <StackLayout padding="8 16" v-if="!loading && resumen">
-          <Label text="Detalle" marginBottom="8" fontSize="18" fontWeight="700" />
-          <StackLayout  class="card" padding="16">
-            <StackLayout orientation="horizontal" margin="0 0 8 0" padding="0">
-              <!-- <Label text="Resumen" textTransform="uppercase" fontWeight="800"  fontSize="16" /> -->
-              <Label :text="`(${carCheckout.prendas})`" fontWeight="200"  fontSize="14" />
-            </StackLayout>
-            <GridLayout 
-              columns="*, auto"
-              v-for="(i, key) in resumenn"
-              :key="`resumenn-${key}`"
-            >
-              <Label col="0" :text="i.concepto" fontWeight="800"/>
-              <Label col="1" textAlignment="right" :text="i.value | moneda"/>
-            </GridLayout>
-            <GridLayout 
-              columns="*, auto"
-            >
-              <Label col="0" text="Total" fontWeight="800"/>
-              <Label col="1" textAlignment="right" :text="total | moneda"/>
-            </GridLayout>
-          </StackLayout>
-        </StackLayout>
 
-      </StackLayout>
-    </ScrollView>
+          <StackLayout padding="8 16" v-if="!loading && cupon">
+            <Label text="Cupón" marginBottom="8" fontSize="18" fontWeight="700" />
+            
+            <StackLayout class="card" padding="16">
+              <Label :text="cupon.amount | moneda" marginBottom="8" fontSize="18" fontWeight="900" />
+              <Label :text="`Expira: ${fecha(cupon.expire)}`"  marginBottom="8" fontSize="16" fontWeight="300" />
+              
+            </StackLayout>
+            
+          </StackLayout>
+            
+          <StackLayout padding="8 16" v-if="!loading && resumen">
+            <Label text="Detalle" marginBottom="8" fontSize="18" fontWeight="700" />
+            <StackLayout  class="card" padding="16">
+              <StackLayout orientation="horizontal" margin="0 0 8 0" padding="0">
+                <!-- <Label text="Resumen" textTransform="uppercase" fontWeight="800"  fontSize="16" /> -->
+                <Label :text="`(${carCheckout.prendas})`" fontWeight="200"  fontSize="14" />
+              </StackLayout>
+              <GridLayout 
+                columns="*, auto"
+                v-for="(i, key) in resumenn"
+                :key="`resumenn-${key}`"
+              >
+                <Label col="0" :text="i.concepto" fontWeight="800"/>
+                <Label col="1" textAlignment="right" :text="i.value | moneda"/>
+              </GridLayout>
+              <GridLayout 
+                columns="*, auto"
+              >
+                <Label col="0" text="Total" fontWeight="800"/>
+                <Label col="1" textAlignment="right" :text="total | moneda"/>
+              </GridLayout>
+            </StackLayout>
+          </StackLayout>
+
+        </StackLayout>
+      </ScrollView>
      
     </layoutCheckout>
 

@@ -112,14 +112,14 @@
         </StackLayout>
     </StackLayout>
     <StackLayout padding="16" v-if="!data.length">
-        <StackLayout 
+        <!-- <StackLayout 
             class="label_skeleton"
             height="380"
             width="100%"
-        >
+        > -->
             <StackLayout 
                 horizontalAlignment="left"
-                class="item"
+                class="label_skeleton"
                 margin="8 0"
                 height="20"
                 width="140"
@@ -127,7 +127,7 @@
             <WrapLayout padding="0" margin="8" width="100%">
                 <StackLayout 
                   v-for="i in 2"
-                  class="item"
+                  class="label_skeleton"
                   borderWidth="2"
                   borderColor="#EEEEEE"
                   :key="`skeleto-bl-${i}}`" 
@@ -137,12 +137,12 @@
             </WrapLayout >
             <StackLayout 
                 horizontalAlignment="left"
-                class="item"
+                class="label_skeleton"
                 margin="8 0"
-                height="20"
-                width="100"
+                height="13"
+                width="100%"
             />
-        </StackLayout>
+        <!-- </StackLayout> -->
     </StackLayout>
 </StackLayout>
 
@@ -184,8 +184,8 @@
                     },
                     props:{
                         params:{
-                        search: '',
-                        section: bloque.value
+                            search: '',
+                            section: bloque.value
                         },
                     }
                     })

@@ -65,9 +65,18 @@
       </AbsoluteLayout>
 
       <StackLayout  paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
-        
         <label 
           marginTop="8"
+          v-if="product.code && product.code != ''"
+          :text="product.code"
+          fontSize="8"
+          fontWeight="300"
+          lineHeight="0"
+          padding="0"
+          marginBottom="0"
+        />
+        <label 
+          :marginTop="product.code && product.code != '' ? 0 : 8"
           textWrap
           :text="product.name"
           class="title_product"
