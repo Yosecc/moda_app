@@ -1,7 +1,7 @@
 import { NativeScriptConfig } from '@nativescript/core';
 
 export default {
-  id: 'com.modatex.app',
+  id: 'ar.com.modatex.app',
   appPath: 'app',
   appResourcesPath: 'App_Resources',
   android: {

@@ -1,9 +1,11 @@
 <template lang="html">
-  <Page actionBarHidden="true" >
-		<GridLayout rows="auto, *">
-			<HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" >
-        <Label col="1" fontWeight="900"  fontSize="16" padding="8 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Buscador" />
+  <Page actionBarHidden="false" >
+
+    <HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" :isBtnPromotions="true" >
+        <Label col="1" fontWeight="900"  fontSize="16" padding="0 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Buscador" />
       </HeaderCustom>
+		<GridLayout rows="auto, *">
+			
 			<GridLayout paddingTop="4" row="1" rows="auto,*">
 
         <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
@@ -53,9 +55,38 @@
                 ></ProductBox>
               </v-template>
             </RadListView>
-            <StackLayout :top="(alturaDispositivo - 240)" width="100%" left="0" padding="0" margin="0" v-if="isLoadingProducts" >
-              <ActivityIndicator busy="true" color="#DA0080"   horizontalAlignment="center" margin="16" />
+            <StackLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              v-if="products.length == 0"
+              padding="0 16"
+            >
+            <WrapLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              
+            >
+              <StackLayout 
+                v-for="i in 6"
+                class="label_skeleton"
+                :key="`skeleto-buscador-${i}}`" 
+                height="270" 
+                width="50%"
+                stretch="aspectFill" 
+              />
+            </WrapLayout >
             </StackLayout>
+            
+            <Loading
+              v-if="isLoadingProducts"
+              :top="(alturaDispositivo - 260)" 
+              left="0"
+            />
+            
           </AbsoluteLayout >
         </StackLayout>
         <GridLayout
@@ -114,6 +145,8 @@
   import { firebase } from '@nativescript/firebase';
   import storeMixin from '~/mixins/storeMixin.js'
   import { screen } from "@nativescript/core/platform";
+  import Loading from '~/components/Components/Loading.vue'
+
 
 	export default {
     mixins: [storeMixin],
@@ -127,7 +160,9 @@
       HeaderCustom,
       ProductBox,
       StoreBox,
-      recentlySeen
+      recentlySeen,
+      Loading
+
     },
     data() {
       return {

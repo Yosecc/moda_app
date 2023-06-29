@@ -79,7 +79,7 @@ export default {
           return
         }
 
-        console.log(this.item.redirect.route,this.options)
+        // console.log(this.item.redirect.route,this.options)
 
         this.$navigator.navigate(this.item.redirect.route,this.options)
       }

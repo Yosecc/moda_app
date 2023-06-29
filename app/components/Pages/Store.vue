@@ -1,62 +1,102 @@
 <template lang="html">
-  <Page actionBarHidden="true">
-    <GridLayout rows="auto,*">
-      <HeaderStore row="0" background="" :store="store" :back="true" :carro="carro" />
-      
-      <GridLayout paddingTop="4" row="1" rows="auto,*" >
-        <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
-          <SearchBar 
-            col="0"
-            class="inputForm" 
-            hint="Buscar productos"
-            width="100%"
-            height="40"
-            marginTop="0"
-            borderRadius="8"
-            v-model="filterName"
-            @submit="onSubmitBusqueda"
-          />
-          <Image 
-            col="1"
-            src="res://filter"
-            horizontalAlignment="right"
-            width="40"
-            height="40"
-            marginTop="0"
-            @tap="openFilter"
-          />
-        </GridLayout>
-        <StackLayout row="1" >
-          <AbsoluteLayout >
-            <RadListView 
-              ref="productsScroll"
-              layout="grid"
-              :items="products"
-              loadOnDemandMode="Auto"
-              loadOnDemandBufferSize="15"
-              scrollBarIndicatorVisible="true"
-              pullToRefresh="true"
-              scrollPositionProperty="right"
-              @loadMoreDataRequested="onLoadCargar"
-              @pullToRefreshInitiated="onPullToRefreshInitiated"
-              orientation="vertical"
-              top="0"
-              left="0"
-            >
-              <v-template key="product" >
-                <ProductBox
-                    :product="item"
-                ></ProductBox>
-              </v-template>
-            </RadListView>
-            <StackLayout :top="(alturaDispositivo - 240)" width="100%" left="0" padding="0" margin="0" v-if="isLoading" >
-              <ActivityIndicator busy="true" color="#DA0080"   horizontalAlignment="center" margin="16" />
-            </StackLayout>
-          </AbsoluteLayout >
-        </StackLayout>
+  <Page >
+    <HeaderStore row="0" background="" :store="store" :back="true" :carro="carro" />
+    
+    <GridLayout paddingTop="8" row="1" rows="auto,*" >
+      <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+        <SearchBar 
+          col="0"
+          class="inputForm" 
+          hint="Buscar productos"
+          width="100%"
+          height="40"
+          marginTop="0"
+          borderRadius="8"
+          v-model="filterName"
+          @submit="onSubmitBusqueda"
+        />
+        <Image 
+          col="1"
+          src="res://filter"
+          horizontalAlignment="right"
+          width="40"
+          height="40"
+          marginTop="0"
+          @tap="openFilter"
+        />
       </GridLayout>
+      <StackLayout row="1" >
+        <AbsoluteLayout >
+          <RadListView 
+            ref="productsScroll"
+            layout="grid"
+            :items="products"
+            loadOnDemandMode="Auto"
+            loadOnDemandBufferSize="15"
+            scrollBarIndicatorVisible="true"
+            pullToRefresh="true"
+            scrollPositionProperty="right"
+            @loadMoreDataRequested="onLoadCargar"
+            @pullToRefreshInitiated="onPullToRefreshInitiated"
+            orientation="vertical"
+            top="0"
+            left="0"
+          >
+            <v-template key="product" >
+              <ProductBox
+                  :product="item"
+              ></ProductBox>
+            </v-template>
+          </RadListView>
+          <StackLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              v-if="products.length == 0 && cargado == false"
+              padding="0 16"
+            >
+            <WrapLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              
+            >
+              <StackLayout 
+                v-for="i in 6"
+                class="label_skeleton"
+                :key="`skeleto-buscador-${i}}`" 
+                height="270" 
+                width="50%"
+                stretch="aspectFill" 
+              />
+            </WrapLayout >
+          </StackLayout>
+            
+            <Label 
+              v-if="products.length == 0 && cargado == true" 
+              text="No se encontraron productos"  
+              fontSize="20" 
+              fontWeight="100" 
+              marginTop="30" 
+              textAlignment="center" 
+              horizontalAlignment="center" 
+              top="0"
+              left="0" 
+              width="100%"
+              textWrap
+            />
+
+            <Loading
+              v-if="isLoading"
+              :top="(alturaDispositivo - 240)" 
+              left="0"
+            />
+        </AbsoluteLayout >
+      </StackLayout>
+    </GridLayout>
         
-    </GridLayout>    
   </Page>
 </template>
 
@@ -65,6 +105,7 @@ import Filters from "../Components/Filters.vue";
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
 import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
+import Loading from '~/components/Components/Loading.vue'
 
 import SlideCategories from "../Components/SlideCategories.vue";
 import Products from "../Components/Products.vue";
@@ -100,7 +141,8 @@ export default {
     HeaderStore,
     SlideCategories,
     Products,
-    ProductBox
+    ProductBox,
+    Loading
   },
   data() {
     return {
@@ -122,8 +164,8 @@ export default {
           data: []
         }
       ]),
-      alturaDispositivo: 0
-
+      alturaDispositivo: 0,
+      cargado: false
     };
   },
   watch:{
@@ -219,8 +261,10 @@ export default {
     ...mapActions('car',['getCart']),
     async onGetProducts(){
       this.isLoading = true
+      this.cargado = false
       await this.getProductsStoreRosa().then((response)=>{
         this.isLoading = false
+        this.cargado = true
         response.forEach((e)=>{
           this.products.push(e)
         })

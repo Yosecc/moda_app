@@ -1,160 +1,147 @@
 <template lang="html">
-  <Page actionBarHidden="true">
-    <GridLayout rows="auto,*">
-      <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" />
+  <Page >
+    <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" />
+    <RadSideDrawer row="1" @drawerClosed="onCloseDrawer" :gesturesEnabled="true" drawerContentSize="auto" borderRadius="16" :drawerLocation="currentLocation" ref="drawerProduct">
       
-      <RadSideDrawer row="1" @drawerClosed="onCloseDrawer" :gesturesEnabled="false" drawerContentSize="auto" :drawerLocation="currentLocation" ref="drawerProduct">
-        <StackLayout  ~drawerContent >
-          <SwipeCombinacion
-            top="0"
-            left="0"
-            row="2"
-            :show="openDrop"
-            :isNew="isNew"
-            :isProduct="true"
-            :models="models"
-            v-if="change"
-            @close="onshowDrop"
-            @addCombinacion="addCombinacion"
-            @editCombinacion="onEditCombinacion"
-            @deleteCombinacion="deleteCombinacion"
-          />
-        </StackLayout>
+      <SwipeCombinacion
+        ~drawerContent
+        top="0"
+        left="0"
+        row="2"
+        :show="openDrop"
+        :isNew="isNew"
+        :isProduct="true"
+        :models="models"
+        :product="producto ? {
+          image: producto.images.length ? producto.images[0]:'',
+          code: producto.code,
+          name: producto.name,
+          category: producto.category,
+        }:{
+          image: '',
+          code: '',
+          name: '',
+          category: ''
+        }"
+        v-if="change"
+        @close="onshowDrop"
+        @addCombinacion="addCombinacion"
+        @editCombinacion="onEditCombinacion"
+        @deleteCombinacion="deleteCombinacion"
+        borderRadius="16 16 0 0"
+      />
 
-        <GridLayout 
-          columns="*" 
-          rows="*,auto" 
-          ~mainContent
-        >
-          <ScrollView row="0" >
-            <StackLayout>
-              <AbsoluteLayout  row="0" height="380">
-                <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
-              </AbsoluteLayout >
-          
-              <StackLayout 
-                row="1" 
-                class="shadow-n1 card" 
-                borderTopLeftRadius="16"
-                borderTopRightRadius="16"
-                marginTop="8"
-                padding="0"
+      <GridLayout 
+        columns="*" 
+        rows="*,auto" 
+        ~mainContent
+      >
+        <ScrollView row="0" >
+          <StackLayout>
+            <AbsoluteLayout  row="0" height="380">
+              <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
+            </AbsoluteLayout >
+        
+            <StackLayout 
+              row="1" 
+              class="shadow-n1 card" 
+              borderTopLeftRadius="16"
+              borderTopRightRadius="16"
+              marginTop="8"
+              padding="0"
+            >
+
+              <GridLayout 
+                columns="*,auto"
               >
+                <StackLayout col="0" padding="16" >
+                  
+                  <Label 
+                    v-if="producto.code && producto.code != ''"
+                    :text="producto.code"
+                    fontWeight="200"
+                    marginLeft="0"
+                    marginBottom="0"
+                    marginRight="16"
+                    fontSize="12"
+                    padding="0"
+                  />
+                  <Label 
+                    v-if="producto.category"
+                    :text="producto.category"
+                    fontWeight="200"
+                    marginLeft="0"
+                    marginBottom="0"
+                    marginRight="16"
+                    fontSize="12"
+                    padding="0"
+                  />
 
-                <GridLayout 
-                  columns="*,auto"
-                >
-                  <StackLayout col="0" padding="16" >
-                    
-                    <Label 
-                      v-if="producto.code && producto.code != ''"
-                      :text="producto.code"
-                      fontWeight="200"
-                      marginLeft="0"
-                      marginBottom="0"
-                      marginRight="16"
-                      fontSize="12"
-                      padding="0"
-                    />
-                    <Label 
-                      v-if="producto.category"
-                      :text="producto.category"
-                      fontWeight="200"
-                      marginLeft="0"
-                      marginBottom="0"
-                      marginRight="16"
-                      fontSize="12"
-                      padding="0"
-                    />
+                  <Label 
+                    ref="nameProduct"
+                    :text="producto.name"
+                    fontWeight="800"
+                    marginLeft="0"
+                    marginBottom="0"
+                    marginRight="16"
+                    fontSize="18"
+                    @tap="textWrap = !textWrap"
+                    :textWrap="textWrap"
+                    padding="0"
+                  />
 
-                    <Label 
-                      ref="nameProduct"
-                      :text="producto.name"
-                      fontWeight="800"
-                      marginLeft="0"
-                      marginBottom="0"
-                      marginRight="16"
-                      fontSize="18"
-                      @tap="textWrap = !textWrap"
-                      :textWrap="textWrap"
-                      padding="0"
-                    />
-
-                    <price
-                      :price="producto.price"
-                      :prev_price="producto.prev_price"
-                      :priceOffert="producto.is_desc ? producto.is_desc:false"
-                      :isProduct="false"
-                    /> 
-                  </StackLayout>
-                  <StackLayout v-if="producto.isCart" col="1">
-                    <StackLayout orientation="horizontal" padding="16">
-                      <Image 
-                        top="4"
-                        left="4"
-                        verticalAlignment="center"
-                        horizontalAlignment="center"
-                        src="~/assets/icons/basket.png" 
-                        width="14" 
-                        height="14" />
-
-                      <Label 
-                        text="En el carrito" 
-                        padding="3 6 3 2" 
-                        borderRadius="3"  
-                        fontSize="11" 
-                        fontWeight="400" 
-                        color="black"  />
-                    </StackLayout>
-                  </StackLayout>
-
-                </GridLayout >
-
-                <StackLayout padding="0" margin="0" minHeight="140">
-                  <CombinacionesProduct
-                    padding="0 16 32 12"
-                    v-if="change && changeCombinaciones"
-                    v-model="combinaciones"
-                    :product="producto"
+                  <price
+                    :price="producto.price"
+                    :prev_price="producto.prev_price"
+                    :priceOffert="producto.is_desc ? producto.is_desc:false"
                     :isProduct="false"
-                    :isEnabled="loadCombinaciones"
-                    @openDropBottom="openDropBottomEvent"
-                  >
-                    <StackLayout v-if="combinaciones[0].talleActive != ''" >
-                      <StackLayout padding="0" orientation="horizontal">
-                        <label
-                            fontSize="10"
-                            fontWeight="300"
-                            color="black"
-                            :text="textPrendasLabelProduct"
-                            textAlignment="right"
-                            padding="0"
-                            marginRight="4"
-                        /> 
-                        <label
-                              fontSize="10"
-                              fontWeight="100"
-                              margin="0`"
-                              padding="0"
-                              color="black"
-                              text="(Precios sin IVA)"
-                              textAlignment="right"
-                          /> 
+                  /> 
+                </StackLayout>
+                <StackLayout v-if="producto.isCart" col="1">
+                  <StackLayout orientation="horizontal" padding="16">
+                    <Image 
+                      top="4"
+                      left="4"
+                      verticalAlignment="center"
+                      horizontalAlignment="center"
+                      src="~/assets/icons/basket.png" 
+                      width="14" 
+                      height="14" />
 
-                      </StackLayout>
+                    <Label 
+                      text="En el carrito" 
+                      padding="3 6 3 2" 
+                      borderRadius="3"  
+                      fontSize="11" 
+                      fontWeight="400" 
+                      color="black"  />
+                  </StackLayout>
+                </StackLayout>
 
-                      <StackLayout padding="0" >
+              </GridLayout >
 
-                        <label
-                            fontSize="20"
-                            fontWeight="900"
-                            color="black"
-                            margin="0"
-                            padding="0"
-                            :text="totalProduct | moneda"
-                            textAlignment="right"
-                        /> 
-                        <!-- <label
+              <StackLayout padding="0" margin="0" minHeight="140">
+                <CombinacionesProduct
+                  padding="0 16 32 12"
+                  v-if="change && changeCombinaciones"
+                  v-model="combinaciones"
+                  :product="producto"
+                  :isProduct="false"
+                  :isEnabled="loadCombinaciones"
+                  @openDropBottom="openDropBottomEvent"
+                >
+                  <StackLayout v-if="combinaciones[0].talleActive != ''" >
+                    <StackLayout padding="0" orientation="horizontal">
+                      <label
+                          fontSize="10"
+                          fontWeight="300"
+                          color="black"
+                          :text="textPrendasLabelProduct"
+                          textAlignment="right"
+                          padding="0"
+                          marginRight="4"
+                      /> 
+                      <label
                             fontSize="10"
                             fontWeight="100"
                             margin="0`"
@@ -162,194 +149,216 @@
                             color="black"
                             text="(Precios sin IVA)"
                             textAlignment="right"
-                        />  -->
-                      </StackLayout>
-                    </StackLayout>
-                  </CombinacionesProduct>
+                        /> 
 
-                  <StackLayout v-if="combinaciones[0].talleActive != ''" padding="0 16">
-
-                    <button 
-                      text="Ver carrito" 
-                      width="100%" 
-                      class="btn btn-primary btn-md outline" 
-                      textTransform="uppercase" 
-                      marginBottom="20"
-                      @tap="redirectCarro"
-                    ></button>
-
-                    <FlexboxLayout
-                      justifyContent="space-between"
-                      alignItems="center"
-                      v-if="textPrendasRestantesCar"
-                      marginBottom="8"
-                    >
-                      <label
-                        fontSize="11"
-                        fontWeight="300"
-                      
-                        color="black"
-                        :text="textPrendasRestantesCarLabel"
-                        textAlignment="center"
-                        padding="0"
-                      /> 
-
-                      <label
-                        fontSize="11"
-                        fontWeight="600"
-                        color="black"
-                        :text="`Total: ${textCarMonto}`"
-                        textAlignment="center"
-                        padding="0"
-                      /> 
-                    </FlexboxLayout>
-
-                    <button 
-                      :text="buttomComprar" 
-                      @tap="onNewProcessCheckout" 
-                      width="100%" 
-                      class="btn btn-primary  btn-md" 
-                      textTransform="uppercase" 
-                      :class="!isOrderMinStatus ? 'opacitybg' : '1'"
-                      :fontSize="!isOrderMinStatus ? '12':''"
-                      :fontWeight="!isOrderMinStatus ? '200':'600'"
-                      marginBottom="8"
-                      textWrap="true"
-                    ></button>
-
-                    <StackLayout orientation="horizontal" marginBottom="8">
-                      <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="10" margin="0 8 0 0" />
-                      
-                      <label textWrap="true" @tap="onMetodoPagos">
-                        <FormattedString>
-                          <span text="Pagá con Modapago" fontSize="11" marginRight="16" fontWeight="600" />
-                          <span text=" Ver métodos de pago" class="label_enlace" fontSize="11" marginLeft="16"  />
-                        </FormattedString>
-                      </label>
                     </StackLayout>
 
+                    <StackLayout padding="0" >
+
+                      <label
+                          fontSize="20"
+                          fontWeight="900"
+                          color="black"
+                          margin="0"
+                          padding="0"
+                          :text="totalProduct | moneda"
+                          textAlignment="right"
+                      /> 
+                      <!-- <label
+                          fontSize="10"
+                          fontWeight="100"
+                          margin="0`"
+                          padding="0"
+                          color="black"
+                          text="(Precios sin IVA)"
+                          textAlignment="right"
+                      />  -->
+                    </StackLayout>
                   </StackLayout>
-                </StackLayout>
-              </StackLayout>
+                </CombinacionesProduct>
 
-              <StackLayout width="100%" height="24"  class="degrade"></StackLayout>
+                <StackLayout v-if="combinaciones[0].talleActive != ''" padding="0 16">
 
-              <StackLayout  
-                class="" 
-                borderRadius="0" 
-                marginTop="0" 
-                paddingTop="16" 
-                row="2" 
-                borderWidth="0"
-                background="white"
-                :class="!productRelacionados.length ? '':'shadw-n1'"
-                :minHeight="!productRelacionados.length ? 500:''"
-                v-if="change"
-              >
-                <StackLayout v-show="productRelacionados.length">
+                  <button 
+                    text="Ver carrito" 
+                    width="100%" 
+                    class="btn btn-primary btn-md outline" 
+                    textTransform="uppercase" 
+                    marginBottom="20"
+                    @tap="redirectCarro"
+                  ></button>
 
-                  <FlexboxLayout @tap="onViewStore(product.store)" marginBottom="16" width="100%" justifyContent="space-between" alignItems="center">
+                  <FlexboxLayout
+                    justifyContent="space-between"
+                    alignItems="center"
+                    v-if="textPrendasRestantesCar"
+                    marginBottom="8"
+                  >
+                    <label
+                      fontSize="11"
+                      fontWeight="300"
+                    
+                      color="black"
+                      :text="textPrendasRestantesCarLabel"
+                      textAlignment="center"
+                      padding="0"
+                    /> 
 
-                    <label 
-                        text="Más productos de esta tienda"  
-                        margin="0 10" 
-                        fontSize="14" 
-                        fontWeight="900" />
-
-                    <label 
-                        text="Ver todos"  
-                        margin="0 10"
-                        fontSize="14"
-                        class="label_enlace"
-                        fontWeight="600" />
-
+                    <label
+                      fontSize="11"
+                      fontWeight="600"
+                      color="black"
+                      :text="`Total: ${textCarMonto}`"
+                      textAlignment="center"
+                      padding="0"
+                    /> 
                   </FlexboxLayout>
 
-                  <RadListView 
-                    ref="listView"
-                    for="item in productRelacionados"
-                    layout="grid"
-                    itemWidth="50%"
-                  >
-                    <v-template >
-                      <ProductBox
-                        :product="item"
-                        :isStore="true"
-                      ></ProductBox>
-                    </v-template>
-                  </RadListView>
+                  <button 
+                    :text="buttomComprar" 
+                    @tap="onNewProcessCheckout" 
+                    width="100%" 
+                    class="btn btn-primary  btn-md" 
+                    textTransform="uppercase" 
+                    :class="!isOrderMinStatus ? 'opacitybg' : '1'"
+                    :fontSize="!isOrderMinStatus ? '12':''"
+                    :fontWeight="!isOrderMinStatus ? '200':'600'"
+                    marginBottom="8"
+                    textWrap="true"
+                  ></button>
 
-                    <label 
-                        text="Ver más"  
-                        margin="16 0"
-                        fontSize="14"
-                        class="label_enlace"
-                        fontWeight="600"
-                        textAlignment="center"
-                        @tap="onViewStore(product.store)"
-                    />
+                  <StackLayout orientation="horizontal" marginBottom="8">
+                    <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="10" margin="0 8 0 0" />
+                    
+                    <label textWrap="true" @tap="onMetodoPagos">
+                      <FormattedString>
+                        <span text="Pagá con Modapago" fontSize="11" marginRight="16" fontWeight="600" />
+                        <span text=" Ver métodos de pago" class="label_enlace" fontSize="11" marginLeft="16"  />
+                      </FormattedString>
+                    </label>
+                  </StackLayout>
 
                 </StackLayout>
-              </StackLayout> 
-
-              <StackLayout 
-                class="card " 
-                borderRadius="0" 
-                marginTop="0" 
-                padding="24" 
-              >
-                <GridLayout
-                  columns="auto, *"
-                  alignItems="center"
-                  justifyContent="flex-start"
-                  v-if="producto.store"
-                  @tap="onViewStore(producto.store)"
-                >
-
-                  <ImageCache 
-                    placeholderStretch="aspectFill"
-                    placeholder="res://eskeleton"
-                    :src="producto.store.logo"
-                    width="120"
-                    height="120"
-                    stretch="aspectFill"
-                    marginRight="8"
-                    class="storeBox"
-                    col="0"
-                  /> 
-
-                  <StackLayout col="1" >
-                    <Label  horizontalAlignment="left" margin="0" padding="0" :text="product.store.name" textTransform="capitalize" fontWeight="900" fontSize="32" />
-                    <label
-                      margin="0" 
-                      padding="0" 
-                      horizontalAlignment="left" 
-                      fontWeight="300"
-                      fontSize="16"
-                      textWrap
-                    >
-                        <FormattedString>
-                          <span  text="Compra mínima: "></span>
-                          <span :text="producto.store.min | moneda " style="color: #DA0080"></span>
-                        </FormattedString>
-                    </label>
-                    <label 
-                        text="Ver la tienda"  
-                        margin="16 0"
-                        fontSize="14"
-                        class="label_enlace"
-                        fontWeight="400" 
-                    />
-                  </StackLayout>
-                </GridLayout  >
               </StackLayout>
-
             </StackLayout>
-          </ScrollView> 
 
-        </GridLayout>
-      </RadSideDrawer>
-    </GridLayout>
+            <StackLayout width="100%" height="24" background="" class="degrade"/>
+
+            <StackLayout  
+              class="" 
+              borderRadius="0" 
+              marginTop="0" 
+              paddingTop="16" 
+              row="2" 
+              borderWidth="0"
+              background="white"
+              :class="!productRelacionados.length ? '':'shadw-n1'"
+              :minHeight="!productRelacionados.length ? 500:''"
+              v-if="change"
+            >
+              <StackLayout v-show="productRelacionados.length">
+
+                <FlexboxLayout @tap="onViewStore(product.store)" marginBottom="16" width="100%" justifyContent="space-between" alignItems="center">
+
+                  <label 
+                      text="Más productos de esta tienda"  
+                      margin="0 10" 
+                      fontSize="14" 
+                      fontWeight="900" />
+
+                  <label 
+                      text="Ver todos"  
+                      margin="0 10"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="600" />
+
+                </FlexboxLayout>
+
+                <RadListView 
+                  ref="listView"
+                  for="item in productRelacionados"
+                  layout="grid"
+                  itemWidth="50%"
+                >
+                  <v-template >
+                    <ProductBox
+                      :product="item"
+                      :isStore="true"
+                    ></ProductBox>
+                  </v-template>
+                </RadListView>
+
+                  <label 
+                      text="Ver más"  
+                      margin="16 0"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="600"
+                      textAlignment="center"
+                      @tap="onViewStore(product.store)"
+                  />
+
+              </StackLayout>
+            </StackLayout> 
+
+            <StackLayout 
+              class="card " 
+              borderRadius="0" 
+              marginTop="0" 
+              padding="24" 
+            >
+              <GridLayout
+                columns="auto, *"
+                alignItems="center"
+                justifyContent="flex-start"
+                v-if="producto.store"
+                @tap="onViewStore(producto.store)"
+              >
+
+                <ImageCache 
+                  placeholderStretch="aspectFill"
+                  placeholder="res://eskeleton"
+                  :src="producto.store.logo"
+                  width="120"
+                  height="120"
+                  stretch="aspectFill"
+                  marginRight="8"
+                  class="storeBox"
+                  col="0"
+                /> 
+
+                <StackLayout col="1" >
+                  <Label  horizontalAlignment="left" margin="0" padding="0" :text="product.store.name" textTransform="capitalize" fontWeight="900" fontSize="32" />
+                  <label
+                    margin="0" 
+                    padding="0" 
+                    horizontalAlignment="left" 
+                    fontWeight="300"
+                    fontSize="16"
+                    textWrap
+                  >
+                      <FormattedString>
+                        <span  text="Compra mínima: "></span>
+                        <span :text="producto.store.min | moneda " style="color: #DA0080"></span>
+                      </FormattedString>
+                  </label>
+                  <label 
+                      text="Ver la tienda"  
+                      margin="16 0"
+                      fontSize="14"
+                      class="label_enlace"
+                      fontWeight="400" 
+                  />
+                </StackLayout>
+              </GridLayout  >
+            </StackLayout>
+
+          </StackLayout>
+        </ScrollView> 
+
+      </GridLayout>
+    </RadSideDrawer>
   </Page>
 </template>
 
@@ -550,6 +559,7 @@
         let id = this.producto.store.id  ? this.producto.store.id : this.producto.local_cd
         
         await this.getCart(id).then((response)=>{
+         
           if(Object.entries(response).length === 0){
             this.combinaciones = [
               { 
@@ -724,7 +734,11 @@
         this.openDrop = false
       },
       openDropBottomEvent({data, models, isNew}){
-        console.log('conmibacion', data)
+        // console.log('conmibacion', data)
+
+
+
+
         this.setCombinacion(data)
         // console.log('isNew',isNew)
         this.models = models
@@ -753,7 +767,7 @@
         
       },
       onSwipe(args) {
-        console.log("Swipe Direction: " + args.direction);
+        // console.log("Swipe Direction: " + args.direction);
       }
     }
     

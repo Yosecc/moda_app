@@ -1,12 +1,14 @@
 <template lang="html">
 
-    <!-- <ActionBar> -->
+    <ActionBar>
       
       <GridLayout
         columns="auto,*,auto" 
         rows="*" 
-        class="shadow card secondary"
-        borderRadius="0"
+        marginTop="10"
+        marginBottom="5"
+        paddingLeft="0"
+        height="50"
       >
         <BtnMenu
           v-show="!back" 
@@ -56,6 +58,8 @@
             horizontalAlignment="right"
           ></BtnCar>
           
+
+          <BtnPromotions  v-if="isBtnPromotions"></BtnPromotions>
           <!-- <Image 
             src="~/assets/icons/bell.png" 
             padding="0"
@@ -66,7 +70,7 @@
         </StackLayout>
       </GridLayout>
      
-    <!-- </ActionBar> -->
+    </ActionBar>
  
 </template>
 
@@ -77,6 +81,7 @@ import BtnBack from './BtnBack.vue'
 import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
 import BtnNotification from '~/components/Components/ActionBar/BtnNotification.vue'
+import BtnPromotions from '~/components/Components/ActionBar/BtnPromotions.vue'
 
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
@@ -106,12 +111,17 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean,
         default: true
       },
+      isBtnPromotions:{
+        type: Boolean,
+        default: false
+      },
     },
     components:{
       BtnMenu,
       BtnBack,
       BtnCar,
-      BtnNotification
+      BtnNotification,
+      BtnPromotions
     },
     data() {
       return {

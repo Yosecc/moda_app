@@ -2,41 +2,39 @@
 <template lang="html">
   <StackLayout  >
     <Label text="Combinaciones" marginLeft="4" fontWeight="300" fontSize="12" />
-    <WrapLayout 
-    paddingBottom="0" 
+    <!-- <WrapLayout 
+      paddingBottom="0" 
       marginBottom="0"
       borderBottomWidth="0"
       class="combinaciones"
     >
-      <StackLayout padding="4 4 4 4" width="37.5%">
         <label 
-              text="Talle"  
-              marginLeft="0" 
-              paddingLeft="0" 
-              fontSize="12" 
-              fontWeight="900" 
-            />
-      </StackLayout>
-      <StackLayout padding="4 4 4 4" width="37.5%">
+          text="Talle"  
+          marginLeft="0" 
+          paddingLeft="4" 
+          fontSize="12" 
+          fontWeight="900"
+          width="37.5%"
+        />
         <label 
           text="Color"  
           marginLeft="0"
-          paddingLeft="0" 
+          paddingLeft="4" 
           fontSize="12" 
           fontWeight="900" 
+          width="37.5%"
         />
-      </StackLayout>
-      <StackLayout padding="4 4 4 4" width="25%">
         <label 
           text="Cant."  
           marginLeft="0"
-          paddingLeft="0" 
+          paddingLeft="4" 
           fontSize="12" 
           fontWeight="900" 
+          width="25%"
         />
-      </StackLayout>
-
-    </WrapLayout>
+    
+    </WrapLayout> -->
+    
     <WrapLayout 
       v-for="(combinacion, key) in combination" 
       v-if="combinaciones.length"
@@ -47,107 +45,211 @@
       paddingBottom="8" 
       marginBottom="8" 
     >
-      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
-        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" height="55" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''"  width="100%">
-          <FlexboxLayout padding="0 8" width="100%" alignItems="center" justifyContent="space-between">
-            <StackLayout v-if="combinacion.talleActive != ''" padding="0" marginRight="0">
-              <FlexboxLayout padding="8" justifyContent="center" alignItems="center" height="30" minWidth="30"  borderRadius="4" borderWidth="1" borderColor="#8e8e8e" class="talleSelect" >
-                <Label :text="combinacion.talleActive" horizontalAlignment="center" fontSize="12" fontWeight="600" padding="0" margin="0" />
-              </FlexboxLayout>
-            </StackLayout>
-          </FlexboxLayout>
+    <StackLayout v-show="isEnabled" padding="4 4 4 4" width="37.5%">
+      <GridLayout 
+        padding="8"
+        borderRadius="8" 
+        height="55"
+        class="card secondary"
+        columns="*,auto"
+        rows="*,*"
+      >
+        <label 
+          text="Talle"  
+          margin="0"
+          padding="0" 
+          fontSize="12" 
+          fontWeight="900"
+          v-if="combinacion.talleActive != ''" 
+          col="0"
+          rowSpan="2"
+        />
+        <FlexboxLayout 
+          padding="8" 
+          justifyContent="center" 
+          alignItems="center" 
+          height="100%" 
+          minWidth="30"
+          borderRadius="4"
+          borderWidth="1" 
+          borderColor="#8e8e8e" 
+          class="taslleSelect" 
+          v-if="combinacion.talleActive != ''" 
+          col="1"
+          rowSpan="2"
+
+        >
+          <Label :text="combinacion.talleActive" horizontalAlignment="center" fontSize="12" fontWeight="600" padding="0" margin="0" />
+        </FlexboxLayout>
+          <label 
+            text="Talle"  
+            margin="0"
+            padding="0" 
+            fontSize="12" 
+            fontWeight="900"
+            v-if="combinacion.talleActive == ''"
+            col="0"
+            row="0"
+          />
           <label 
             v-if="combinacion.talleActive == ''"
             :text="'Elegí una opción'"  
             marginLeft="8" 
             fontSize="12" 
-            fontWeight="300" 
+            fontWeight="300"
+            col="0"
+            row="1"
           />
-        </FlexboxLayout>
-      </StackLayout>
-      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="37.5%">
-        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" background="" height="55" class="card secondary"  :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
-          <FlexboxLayout width="100%" padding="0 8" backgroundColor="" alignItems="center" justifyContent="space-between">           
-            <StackLayout v-if="combinacion.colorActive != ''" padding="0" horizontalAlignment="right">
-              <AbsoluteLayout>
-                <label
-                  left="0"
-                  top="0"
-                  width="30"
-                  height="30"
-                  :backgroundColor="combinacion.colorActive"
-                  opacity=".5"
-                  borderRadius="100%"
-                  borderColor="#808B96"
-                  borderWidth=".8"
-                  v-if="!combinacion.colorActive.includes('/')"
-                />
+      </GridLayout>
+    </StackLayout>
 
-                <label
-                  left="5"
-                  top="5"
-                  width="20"
-                  height="20"
-                  :backgroundColor="combinacion.colorActive"
-                  borderRadius="100%"
-                  v-if="!combinacion.colorActive.includes('/')"
-                />
-                <label
-                  left="5"
-                  top="5"
-                  borderWidth="1"
-                  borderColor="#DFDFDF"
-                  backgroundColor="#DFDFDF"
-                  padding="4"
-                  fontSize="12"
-                  :text="combinacion.colors.find((e)=> e.code == combinacion.colorActive).name"
-                  borderRadius="4"
-                  v-if="combinacion.colorActive.includes('/')"
-                />
-
-                <Image
-                  left="10"
-                  top="5"
-                  src="~/assets/icons/check_white.png" 
-                  width="10" 
-                  height="auto" 
-                  v-if="!combinacion.colorActive.includes('/')"
-                />
-              </AbsoluteLayout>
-            </StackLayout>
-            
-          </FlexboxLayout>
-          <label
-            v-if="combinacion.colorActive == ''"
-            :text="'Elegí una opción'"  
-            marginLeft="8" 
-            fontSize="12" 
-            fontWeight="300" 
-          />
-        </FlexboxLayout>
-      </StackLayout>
-      <StackLayout v-show="isEnabled" background="" padding="4 4 4 4" width="25%">
-        <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" padding="8" borderRadius="8" :height="combinacion.talleActive == '' ? '55':'55'" class="card secondary" :class="buttonDisabled ? 'shadow-none border-light':''" width="100%">
-          <FlexboxLayout padding="0 8" width="100%" justifyContent="space-between"  alignItems="center" >
-            
-            <label 
-              v-if="combinacion.talleActive != ''"
-              :text="combinacion.cantidad"  
-              marginLeft="8"
-              fontSize="16" 
-              fontWeight="900" 
+    <StackLayout v-show="isEnabled" padding="4 4 4 4" width="37.5%">
+      <GridLayout 
+        padding="8"
+        borderRadius="8" 
+        height="55"
+        class="card secondary"
+        columns="*,auto"
+        rows="*,*"
+      >
+        <label 
+          text="Color"  
+          margin="0"
+          padding="0" 
+          fontSize="12" 
+          fontWeight="900"
+          v-if="combinacion.colorActive != ''"
+          col="0"
+          rowSpan="2"
+        />
+        <FlexboxLayout 
+          justifyContent="center" 
+          alignItems="center"  
+          col="1" 
+          height="100%" 
+          v-if="combinacion.colorActive != ''" 
+          padding="0" 
+          rowSpan="2"
+        >
+          <AbsoluteLayout >
+            <label
+              left="0"
+              top="0"
+              width="30"
+              height="30"
+              :backgroundColor="combinacion.colorActive"
+              opacity=".5"
+              borderRadius="100%"
+              borderColor="#808B96"
+              borderWidth=".8"
+              v-if="!combinacion.colorActive.includes('/')"
             />
-          </FlexboxLayout>
+            <label
+              left="5"
+              top="5"
+              width="20"
+              height="20"
+              :backgroundColor="combinacion.colorActive"
+              borderRadius="100%"
+              v-if="!combinacion.colorActive.includes('/')"
+            />
+            <label
+              left="5"
+              top="5"
+              borderWidth="1"
+              borderColor="#DFDFDF"
+              backgroundColor="#DFDFDF"
+              padding="4"
+              fontSize="12"
+              :text="combinacion.colors.find((e)=> e.code == combinacion.colorActive).name"
+              borderRadius="4"
+              v-if="combinacion.colorActive.includes('/')"
+            />
+            <Image
+              left="10"
+              top="5"
+              src="~/assets/icons/check_white.png" 
+              width="10" 
+              height="auto" 
+              v-if="!combinacion.colorActive.includes('/')"
+            />
+          </AbsoluteLayout>
+        </FlexboxLayout>
+          <label 
+            text="Color"  
+            margin="0"
+            padding="0" 
+            fontSize="12" 
+            fontWeight="900"
+            v-if="combinacion.colorActive == ''"
+            col="0"
+            row="0"
+          />
+          <label 
+            v-if="combinacion.colorActive == ''"
+            :text="'Elegí una opción'"   
+            marginLeft="8" 
+            fontSize="12" 
+            fontWeight="300"
+            col="0"
+            row="1"
+          />
+      </GridLayout>
+    </StackLayout>
+
+    <StackLayout v-show="isEnabled" padding="4 4 4 4" width="25%">
+      <GridLayout 
+        padding="8"
+        borderRadius="8" 
+        height="55"
+        class="card secondary"
+        columns="*,auto"
+        rows="*,*"
+      >
+        <label 
+          text="Cant." 
+          margin="0"
+          padding="0" 
+          fontSize="12" 
+          fontWeight="900"
+          v-if="combinacion.talleActive != ''" 
+          col="0"
+          rowSpan="2"
+
+        />
+        <label 
+          :text="combinacion.cantidad" 
+          v-if="combinacion.talleActive != ''" 
+          margin="0"
+          padding="0"
+          fontSize="16" 
+          fontWeight="900" 
+          col="1"
+          rowSpan="2"
+
+        />
+        <label 
+          text="Cant." 
+          margin="0"
+          padding="0" 
+          fontSize="12" 
+          fontWeight="900"
+          v-if="combinacion.talleActive == ''"
+          col="0"
+          row="0"
+        />
           <label 
             v-if="combinacion.talleActive == ''"
-            :text="combinacion.cantidad"  
-            marginLeft="8"
+            :text="`1`" 
+            marginLeft="8" 
             fontSize="12" 
-            fontWeight="500" 
+            fontWeight="300"
+            col="0"
+            row="1"
           />
-        </FlexboxLayout>
-      </StackLayout>
-
+      </GridLayout>
+    </StackLayout>
+      
       <StackLayout v-show="!isEnabled" padding="4" width="37.5%" >
         <StackLayout class="label_skeleton" height="55" width="100%"></StackLayout>
       </StackLayout>

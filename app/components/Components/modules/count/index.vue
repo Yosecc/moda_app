@@ -1,21 +1,24 @@
 <template lang="html">
     
     <FlexboxLayout
-        
       alignItems="center"
+      justifyContent="flex-start"
       padding="8"
-      marginLeft="-4"
+      
     >
 
         <StackLayout
-          borderRadius="4"
-          width="24"
-          height="24"
+          borderRadius="8"
+          width="40"
+          height="40"
           @tap="onChange('minus')"
+          paddingTop="5"
+          borderWidth=".5" 
+          borderColor="#8e8e8e"
         >
             <Image
               src="~/assets/icons/minus.png"
-              width="22"
+              width="30"
               verticalAlignment="center"
               horizontalAlignment="center"
             />
@@ -26,21 +29,23 @@
           fontWeight="600"
           textAlignment="center"
           color="#4D4D4D"
-          paddingLeft="8"
-          paddingRight="8"
-          marginLeft="8"
-          marginRight="8"
-
+          padding="0 8"
+          margin="0 8"
+          fontSize="25"
+          
         />
         <StackLayout
-          borderRadius="4"
-          width="24"
-          height="24"
+          borderRadius="8"
+          width="40"
+          height="40"
           @tap="onChange('plus')"
+          paddingTop="5"
+          borderWidth=".5" 
+          borderColor="#8e8e8e"
         >
             <Image
               src="~/assets/icons/plus.png"
-              width="22"
+              width="30"
               verticalAlignment="center"
               horizontalAlignment="center"
             />

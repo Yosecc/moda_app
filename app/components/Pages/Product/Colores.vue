@@ -1,16 +1,18 @@
 <template lang="html">
   
-    <ScrollView scrollBarIndicatorVisible="true" orientation="horizontal">
-      <StackLayout 
-        orientation="horizontal"
-        class="scroll-container"
+    <!-- <ScrollView scrollBarIndicatorVisible="true" orientation="horizontal"> -->
+      <FlexboxLayout  
+        flexWrap="wrap"
+        justifyContent="flex-start"
+        
       >
         <AbsoluteLayout
-          marginRight="16"
+          paddingRight="14.5"
           v-for="(color, key) in colores"
           :key="key"
           @tap="color.disabled ? noloselecciones(color.code) : ChangeColor(color.code)"
           :opacity="color.disabled ? .2 : 1"
+          marginBottom="16"
         >
 
           <label
@@ -69,8 +71,8 @@
           />
 
         </AbsoluteLayout>
-      </StackLayout>
-    </ScrollView>
+      </FlexboxLayout >
+    <!-- </ScrollView> -->
   
  
 </template>
@@ -113,7 +115,7 @@
 
     },
     mounted(){
-      console.log('se monto los colores', this.colorChecked)
+      // console.log('se monto los colores', this.colorChecked)
       this.$forceUpdate()
     },
     methods:{

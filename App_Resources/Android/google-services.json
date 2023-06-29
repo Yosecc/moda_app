@@ -1,46 +1,31 @@
 {
-  "project_info": {
-    "project_number": "198583103200",
-    "project_id": "modatexappdev",
-    "storage_bucket": "modatexappdev.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:198583103200:android:b69ae812aa98c5800cea85",
-        "android_client_info": {
-          "package_name": "com.modatex.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "198583103200-b6q4n4oau87afdf8fvdn79uslfk74hl1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCCPyLvX7YzZ2UWjcGLyqfgPLN4TS2vjyM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "198583103200-b6q4n4oau87afdf8fvdn79uslfk74hl1.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "198583103200-esbqglrhnnlmn0huuuvr5p8sna97e0vn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.tns.NativeScriptApplication"
-              }
+    "project_info": {
+        "project_number": "626080560149",
+        "project_id": "modatex-e6ba5",
+        "storage_bucket": "modatex-e6ba5.appspot.com"
+    },
+    "client": [{
+        "client_info": {
+            "mobilesdk_app_id": "1:626080560149:android:233e29c094e00051838a1c",
+            "android_client_info": {
+                "package_name": "ar.com.modatex.app"
             }
-          ]
+        },
+        "oauth_client": [{
+            "client_id": "626080560149-5qmfli3758uo79a0iqqedarrn7gumo4f.apps.googleusercontent.com",
+            "client_type": 3
+        }],
+        "api_key": [{
+            "current_key": "AIzaSyBOcUH4D-CNbaFXQwST6jMzS4PvxDQ7weA"
+        }],
+        "services": {
+            "appinvite_service": {
+                "other_platform_oauth_client": [{
+                    "client_id": "626080560149-5qmfli3758uo79a0iqqedarrn7gumo4f.apps.googleusercontent.com",
+                    "client_type": 3
+                }]
+            }
         }
-      }
-    }
-  ],
-  "configuration_version": "1"
+    }],
+    "configuration_version": "1"
 }

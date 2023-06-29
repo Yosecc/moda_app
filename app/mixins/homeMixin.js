@@ -4,6 +4,8 @@ import cache from '@/plugins/cache'
 import { Http, ImageSource } from '@nativescript/core'
 import { messaging } from '@nativescript/firebase/messaging'
 import { firebase } from '@nativescript/firebase';
+import { LocalNotifications } from '@nativescript/local-notifications'
+
 export default {
     computed: {
         ...mapState('authentication', ['token']),
@@ -54,6 +56,10 @@ export default {
             )
         },
         configNofitificationPush() {
+
+            LocalNotifications.requestPermission()
+            LocalNotifications.addOnMessageReceivedCallback()
+
             firebase.subscribeToTopic("News")
             messaging.registerForPushNotifications({
                 onPushTokenReceivedCallback: (token) => {

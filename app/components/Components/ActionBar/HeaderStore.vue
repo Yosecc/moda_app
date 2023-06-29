@@ -1,14 +1,14 @@
 <template lang="html">
 
-    <!-- <ActionBar paddingLeft="0" margin="0" > -->
+    <ActionBar  >
       
       <GridLayout
         columns="auto,*,auto" 
         rows="*" 
-        class="shadow card secondary"
+        marginTop="10"
         marginBottom="5"
-        height="65"
-        borderRadius="0"
+        paddingLeft="0"
+        height="50"
       >
         <BtnMenu
           v-show="!back" 
@@ -21,6 +21,8 @@
           v-show="back"
           col="0"
           horizontalAlignment="left" 
+          
+          
         ></BtnBack>
 
         <FlexboxLayout 
@@ -94,6 +96,7 @@
             width="40"
             padding="0"
             @tap="redirect"
+            v-if="iscarro"
           >
 
             <AbsoluteLayout 
@@ -153,7 +156,7 @@
         </StackLayout>
       </GridLayout>
      
-    <!-- </ActionBar> -->
+    </ActionBar>
  
 </template>
 
@@ -181,6 +184,10 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       carro:{
         type: Object|Array,
         default: {}
+      },
+      iscarro:{
+        type: Boolean, 
+        default: true
       }
     },
     components:{

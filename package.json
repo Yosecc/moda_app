@@ -1,30 +1,31 @@
 {
-  "name": "com.modatex.app",
-  "main": "app/app.js",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@nativescript-community/ui-pulltorefresh": "^2.5.1",
-    "@nativescript/core": "8.4.2-next-11-30-2022-3587371319",
-    "@nativescript/facebook": "^2.1.3",
-    "@nativescript/firebase": "^11.1.3",
-    "@nativescript/theme": "~3.0.2",
-    "@nstudio/nativescript-carousel": "^8.0.3",
-    "@ticnat/nativescript-image-cache": "^1.0.7",
-    "moment": "^2.29.4",
-    "nativescript-facebook": "^4.2.1",
-    "nativescript-gif": "^5.0.0",
-    "nativescript-oauth2": "^3.0.10",
-    "nativescript-toast": "^2.0.0",
-    "nativescript-ui-listview": "^10.1.1",
-    "nativescript-ui-sidedrawer": "^10.0.2",
-    "nativescript-vue": "~2.9.0",
-    "nativescript-vue-navigator": "^1.2.0",
-    "vuex": "^3.6.2"
-  },
-  "devDependencies": {
-    "@nativescript/android": "8.4.0",
-    "@nativescript/webpack": "~5.0.6",
-    "nativescript-vue-template-compiler": "~2.9.0"
-  }
+    "name": "ar.com.modatex.app",
+    "main": "app/app.js",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "@nativescript-community/ui-pulltorefresh": "^2.5.1",
+        "@nativescript/core": "8.5.3",
+        "@nativescript/facebook": "^2.1.3",
+        "@nativescript/firebase": "^11.1.3",
+        "@nativescript/local-notifications": "^6.1.1",
+        "@nativescript/theme": "~3.0.2",
+        "@nstudio/nativescript-carousel": "^8.0.3",
+        "@ticnat/nativescript-image-cache": "^1.0.7",
+        "moment": "^2.29.4",
+        "nativescript-facebook": "^4.2.1",
+        "nativescript-gif": "^5.0.0",
+        "nativescript-oauth2": "^3.0.10",
+        "nativescript-toast": "^2.0.0",
+        "nativescript-ui-listview": "^10.1.1",
+        "nativescript-ui-sidedrawer": "^10.0.2",
+        "nativescript-vue": "~2.9.0",
+        "nativescript-vue-navigator": "^1.2.0",
+        "vuex": "^3.6.2"
+    },
+    "devDependencies": {
+        "@nativescript/android": "8.5.0",
+        "@nativescript/webpack": "~5.0.6",
+        "nativescript-vue-template-compiler": "~2.9.0"
+    }
 }

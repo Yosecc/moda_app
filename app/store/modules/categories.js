@@ -41,6 +41,16 @@ const state = {
         },
     ],
     categoriesBase: [{
+            id: 0,
+            name: 'Todo',
+            key: 'all',
+            icon: 'res://all',
+            color: "",
+            colSpan: 3,
+            col: 0,
+            row: 0,
+            left: 100,
+        }, {
 
             id: 1,
             name: 'Mujer',

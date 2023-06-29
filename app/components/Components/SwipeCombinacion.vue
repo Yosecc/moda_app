@@ -1,132 +1,121 @@
 <template lang="html">
-  <GridLayout   padding="0 16 8 16"  rows="auto,*, auto">
-    <!-- <label text="sjs" height="400" width="500" background="blue" @swipe="onSwipe" ref="hu" /> -->
-    <!-- <StackLayout
-      row="0"
-      marginTop="16"
-      backgroundColor="#8e8e8e" 
-      width="60" 
-      height="4" 
-      borderRadius="40" 
-      marginBottom="8"
-    /> -->
+  <ScrollView >
+  <GridLayout padding="16"  rows="*, auto">
 
-    <StackLayout row="0">
-          <Image 
-            src="~/assets/icons/plus.png"
-            width="40"
-            height="40"
-            horizontalAlignment="left"
-            rotate="45"
-            @tap="closeDropBottom()"
-          />
-    </StackLayout>
+    <StackLayout  row="0" marginTop="8" >
+      <StackLayout
+        width="100"
+        height="5"
+        borderRadius="100%"
+        background="#7B7B7B"
+        horizontalAlignment="center"
+        margin="0 0 16 8"
+      />
+     
 
-    <StackLayout  row="1" marginTop="8" >
-      <GridLayout columns="*,auto" height="50" backgroundColor="" >
+        <!-- <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" /> -->
 
-        <StackLayout orientation="horizontal"  col="0" v-if="combinacion">
-          <label :text="combinacion.descripcion" textWrap margin="10 0 0 0" paddingRight="24" fontSize="14" fontWeight="900" />
-        </StackLayout>
-
-        <StackLayout  col="0" v-if="!combinacion.sizes.length"  class="label_skeleton"  width="100%" height="20" />
-        
-        <FlexboxLayout 
-          v-if="combinacion.combinacion_key != null && edit" 
-          @tap="deleteCombinacion" 
-          col="1" 
-          
-          alignItems="center" 
-          justifyContent="center" 
-          width="40" 
-          height="40" 
-          margin="0" 
-          class="btn btn-icon"
-        >
-          <Image 
-            src="~/assets/icons/trash.png" 
-            width="25" 
-            height="25" 
-          />
-        </FlexboxLayout>
-
-        <!--  -->
-      </GridLayout>
+      <FlexboxLayout height="100%"  flexDirection="column" justifyContent="center" alignItems="space-between">
       
-      <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
-        <label text="Elegí un talle" margin="8 0 8 0" fontSize="12" fontWeight="900" />
-        <Talles
-          :talles="combinacion.sizes"
-          v-model="combinacion.talleActive"
-          ref="talles"
-        />
-      </StackLayout>
-
-        <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="0">
-          <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
-          <StackLayout orientation="horizontal">
-            <StackLayout
-              v-for="i in 4"
-              :key="`c${i}`"
-              class="label_skeleton" 
-              
-              height="40"
-              width="40"
-              marginRight="16"
-              borderRadius="5"
-            />
-          </StackLayout>
+        <StackLayout borderBottomWidth=".5" borderColor="#8e8e8e" padding="0 0 8 0" margin="0 8 16 8" width="100%" v-if="combinacion.sizes.length">
+          <label text="Elegí un talle" textWrap margin="0 16 24 0"  textAlignment="left" fontSize="16" fontWeight="200" />
+          <Talles
+            :talles="combinacion.sizes"
+            v-model="combinacion.talleActive"
+            ref="talles"
+          />
         </StackLayout>
 
-      <StackLayout padding="0" margin="0" height="80" v-if="combinacion.colors.length">
-        <label :text="`Elegí un color`" textWrap margin="8 0 8 0" fontSize="12" fontWeight="900" />
-        <Colores
-          row="2"
-          :colores="colores"
-          v-model="combinacion.colorActive"
-          @change="changeColor"
-          v-if="reloadColor"
-        />
-      </StackLayout>
+          <!-- <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="0">
+            <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
+            <StackLayout orientation="horizontal">
+              <StackLayout
+                v-for="i in 4"
+                :key="`c${i}`"
+                class="label_skeleton" 
+                
+                height="40"
+                width="40"
+                marginRight="16"
+                borderRadius="5"
+              />
+            </StackLayout>
+          </StackLayout> -->
 
-        <StackLayout v-if="!combinacion.colors.length" width="100%"  marginTop="24">
-          <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
-          <StackLayout orientation="horizontal">
-            <StackLayout
-              v-for="i in 5"
-              :key="`c${i}`"
-              class="label_skeleton" 
-              
-              height="40"
-              width="40"
-              marginRight="16"
-              borderRadius="100%"
-            />
-          </StackLayout>
+        <StackLayout ref="contentColores"  minHeight="120" borderBottomWidth=".5" borderColor="#8e8e8e" padding="8 0 0 0" margin="0 8 16 8" width="100%"  v-if="combinacion.colors.length">
+          <label :text="`Elegí un color`" textWrap margin="8 16 24 0" textAlignment="left" fontSize="16" fontWeight="200" />
+          <Colores
+            row="2"
+            :colores="colores"
+            v-model="combinacion.colorActive"
+            @change="changeColor"
+            v-if="reloadColor"
+          />
         </StackLayout>
+
+          <!-- <StackLayout v-if="!combinacion.colors.length" width="100%"  marginTop="24">
+            <StackLayout class="label_skeleton"  width="40%" height="20" marginBottom="8" horizontalAlignment="left" />
+            <StackLayout orientation="horizontal">
+              <StackLayout
+                v-for="i in 5"
+                :key="`c${i}`"
+                class="label_skeleton" 
+                
+                height="40"
+                width="40"
+                marginRight="16"
+                borderRadius="100%"
+              />
+            </StackLayout>
+          </StackLayout> -->
       
-        <FlexboxLayout justifyContent="space-between" alignItems="flex-end">
-          <StackLayout padding="0" margin="0" v-if="combinacion.sizes.length">
-            <label text="Elegí una cantidad" margin="16 0 8 0" fontSize="12" fontWeight="900" />
-            <Count v-if="reset" v-model="combinacion.cantidad" />
-          </StackLayout>
-          <label row="1" col="0" :text="`${$options.filters.moneda(calculaPrecio)} c/u`" v-if="calculaPrecio != ''"  margin="0 0 10 0" paddingRight="24" fontSize="14" fontWeight="900" color="#DA0080"/>
-        </FlexboxLayout>
-
-        <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="24">
+        <StackLayout padding="0" margin="8 8 24  8" width="100%" v-if="combinacion.sizes.length">
+          <label text="Elegí una cantidad" textWrap margin="8 16 24 0" textAlignment="left" fontSize="16" fontWeight="200" />
+          <Count v-if="reset" v-model="combinacion.cantidad" />
+        </StackLayout>
+      </FlexboxLayout>
+            
+        <!-- <StackLayout v-if="!combinacion.sizes.length" width="100%" marginTop="24">
           <StackLayout class="label_skeleton"  width="30%" height="20" marginBottom="8" horizontalAlignment="left" />
           <StackLayout class="label_skeleton"  width="40%" height="40" horizontalAlignment="left" />
-        </StackLayout>
+        </StackLayout> -->
 
     </StackLayout>
 
-    <StackLayout  row="2">
-      <button v-if="!edit"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
-      <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
-    </StackLayout>
-    <StackLayout row="3" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
+    <GridLayout columns="auto, *, auto" paddingLeft="8                        " row="1">
+     
+      <label 
+        col="0"
+        :text="`${$options.filters.moneda(calculaPrecio)}`" v-if="calculaPrecio != ''"  
+        fontSize="20" 
+        fontWeight="900" 
+        color="#DA0080"
+        marginRight="16"
+      />
+      
+      <StackLayout padding="0" margin="0" col="1">
+        <button v-if="!edit"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
+        <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
+      </StackLayout>
+
+      <FlexboxLayout
+        justifyContent="center"
+        alignItems="center"
+        width="40"
+        height="40"
+        col="2"
+        v-if="edit"
+        @tap="deleteCombinacion"
+      >
+        <image src="~/assets/icons/trash.png" stretch="aspectFit" width="30" margin="0" />
+      </FlexboxLayout>
+
+    </GridLayout>
+
+    <StackLayout row="2" v-if="!combinacion.sizes.length" class="label_skeleton"  width="100%" height="40" marginBottom="8" />
 
   </GridLayout>
+</ScrollView>
 </template>
 <script>
 
@@ -161,7 +150,17 @@
       models:{
         type: Array,
         default: []
-      }
+      },
+      product: {
+        type: Object, 
+        default: {
+          image: '',
+          code: '',
+          name: '',
+          category: ''
+        }
+      },
+      
     },
     components:{
       Talles,
@@ -197,7 +196,13 @@
           this.clearCombinacion()
         }
       },
-      
+      colores(){
+        if(this.combinacion.colors.length){
+          setTimeout(()=>{
+            console.log('cambiaron los colores', this.$refs.contentColores.nativeView)
+          },500)
+        }
+      }
     },
     data() {
       return {
@@ -290,6 +295,10 @@
           let price = this.talleSelect.properties[0].price
           if([0,null,undefined,'',false,'0'].includes(price)){
             price = this.talleSelect.price
+          }
+
+          if(this.combinacion.cantidad > 1){
+            price = price * this.combinacion.cantidad
           }
           return price
         }

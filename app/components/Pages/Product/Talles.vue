@@ -1,8 +1,8 @@
 <template lang="html">
-  <StackLayout
-    borderRadius="50%"
-    verticalAlignment="center"
-    orientation="horizontal"
+  <FlexboxLayout  
+    flexWrap="wrap" 
+    
+    justifyContent="flex-start"
   >
     <StackLayout
       v-for="(talle , key) in talles"
@@ -32,7 +32,7 @@
         padding="0"
       />
     </StackLayout>
-  </StackLayout>
+  </FlexboxLayout>
 </template>
 
 <script>
@@ -49,6 +49,15 @@
       },
       talleActive:{
         type: String
+      },
+      
+    },
+    watch:{
+      talleActive(to){
+        // console.log('cambio talle', to)
+       
+          this.talleChecked = to
+      
       }
     },
     components:{

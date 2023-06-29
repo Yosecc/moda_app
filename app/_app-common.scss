@@ -374,6 +374,9 @@ Switch.switch[checked=false] {
     border-radius: 6;
     @extend .shadow;
     width: 100%;
+    &.secondary {
+        background: #F4F6F6;
+    }
     &.active {
         // background-color: $modatexColor;
         // color: white;
@@ -655,12 +658,6 @@ Button {
             background-color: rgba(#8e8e8e, .2);
         }
     }
-    .card {
-        background: rgba($grey-background, .1);
-        .secondary {
-            background: #F4F6F6;
-        }
-    }
     .menuProfile {
         .label {
             background: rgba($grey-background, .2);
@@ -740,16 +737,6 @@ Button {
         }
         .talleSelect {
             background-color: rgba(#8e8e8e, .7);
-        }
-    }
-    .card {
-        background: rgba($primary, 1);
-        .secondary,
-        &.secondary {
-            background: rgba($charcoal, 1);
-        }
-        &.box-btn {
-            background-color: #303030;
         }
     }
     .menuProfile {
@@ -834,6 +821,10 @@ Button {
     background: linear-gradient(#F8F8F8, white);
 }
 
+.degrade-inverse {
+    background: linear-gradient(white, #F8F8F8);
+}
+
 .RadListView .tns-load-on-demand-status {
     width: 10;
     height: 10;
@@ -857,4 +848,12 @@ Button {
 
 ActionBar {
     padding-left: 0!important;
+}
+
+.ActivityIndicatorContent {
+    background: white;
+    width: 40;
+    height: 40;
+    border-radius: 100%;
+    @extend .shadow;
 }

@@ -84,7 +84,7 @@
               </GridLayout>
             </StackLayout>
           </StackLayout>
-          <Toast />
+          <Toast /> 
         </AbsoluteLayout>
         
       </GridLayout>
@@ -103,6 +103,7 @@
   import Car from '~/components/Pages/Car/index.vue'
   import moment from 'moment'
   import Toast from '~/components/Components/Toast'
+  import { LocalNotifications } from '@nativescript/local-notifications'
 
   export default {
     mixins:[ homeMixin ],
@@ -165,6 +166,8 @@
       }
 		},
     mounted(){
+      //console.log(android.os.Build.VERSION.SDK_INT)
+      
       setTimeout(()=>{
         if(this.isLogged){
 

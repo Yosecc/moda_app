@@ -123,6 +123,7 @@ export default {
         onRedirectCart(id = null) {
             // console.log('2', this.carro.id, id)
             if (this.carro) {
+
                 this.$navigator.navigate('/detail_car', {
                     props: {
                         car_id: this.carro.id,
@@ -130,7 +131,8 @@ export default {
                             logo: this.carro.logo,
                             name: this.carro.name,
                             local_cd: this.carro.id,
-                            min: this.carro.limit_price
+                            min: this.carro.limit_price,
+                            rep: this.carro.rep,
                         }
                     },
                     transition: {
@@ -157,6 +159,7 @@ export default {
                 logo: this.carro.logo,
                 name: this.carro.name,
                 min: this.carro.limit_price,
+                rep: this.carro.rep,
                 total: this.precioCar,
                 prendas: this.textPrendasLabel,
                 products: this.products

@@ -1,13 +1,13 @@
 <template lang="html">
-  <Page actionBarHidden="true" >
-		<GridLayout rows="auto, *">
-			<HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" >
-				<StackLayout  col="1" orientation="horizontal" padding="8 0 0 0" >
+  <Page  >
+    <HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" :isBtnPromotions="true" >
+				<StackLayout  col="1" orientation="horizontal" padding="0 0 0 0" >
 					<Label  horizontalAlignment="left" margin="0" padding="0" text="Categoría: " textTransform="uppercase" fontWeight="900" fontSize="16" />
 					<Label  horizontalAlignment="left" margin="0" padding="0" :text="categorieActiveGetters.name" textTransform="uppercase" fontWeight="900" fontSize="16" />
 				</StackLayout>
 			</HeaderCustom>
-      
+		
+		
 			<GridLayout  row="1" rows="auto, *">
 				
         <AbsoluteLayout padding="0" margin="0" row="1">
@@ -52,12 +52,17 @@
           <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
             <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
           </FlexboxLayout>
-          <StackLayout row="0" padding="0" margin="0" top="100" width="100%" left="0" >
-            <ActivityIndicator busy="true" color="#DA0080"  v-if="isLoadingProducts" horizontalAlignment="center" margin="16" row="1" />
-          </StackLayout>
+
+          <Loading
+            v-if="isLoadingProducts"
+            :top="(alturaDispositivo - 200)"  
+            left="0"
+          />
+
+
         </AbsoluteLayout>
 			</GridLayout>        
-		</GridLayout>     
+	    
   </Page>
 </template>
   
@@ -68,6 +73,8 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
   import { firebase } from '@nativescript/firebase';
+  import Loading from '~/components/Components/Loading.vue'
+  import { screen } from "@nativescript/core/platform";
 
 	export default {
     props:{
@@ -80,6 +87,7 @@
       HeaderCustom,
       ProductBox,
       StoreBox,
+      Loading
     },
     data() {
       return {
@@ -88,7 +96,8 @@
         isLoadingProducts: false,
         last_page: 0,
         viewArrowTop: false,
-        filterName: null
+        filterName: null,
+        alturaDispositivo: 0,
       };
     },
     watch:{
@@ -97,6 +106,8 @@
       ...mapGetters('categories',['categorieActiveGetters']),
     },
     mounted(){
+    this.alturaDispositivo = screen.mainScreen.heightDIPs
+
       firebase.analytics.setScreenName({
         screenName: "Filtro Categorias"
       });
@@ -119,7 +130,7 @@
               categorie_default: this.params.section
             },
             isCategorie: false
-          }
+          } 
         })
       },
       onSubmit(){

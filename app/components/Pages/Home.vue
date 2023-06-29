@@ -135,9 +135,12 @@
         <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
           <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
         </FlexboxLayout>
-        <StackLayout width="100%" height="100" row="1" padding="0" margin="0" :top="h" left="0" v-if="isLoadingProducts" >
-          <ActivityIndicator busy="true" color="#DA0080"  horizontalAlignment="center" margin="16" row="1" />
-        </StackLayout>
+        <Loading
+          v-if="isLoadingProducts"
+          :top="h" 
+          left="0"
+        />
+        
       </AbsoluteLayout>
       
     </GridLayout>
@@ -155,6 +158,7 @@
   import Marcas from '~/components/Components/Marcas.vue'
   import Bloques from '~/components/Components/Bloques/index.vue'
   import recentlySeen from '../Components/recentlySeen.vue'
+  import Loading from '~/components/Components/Loading.vue'
 
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
@@ -176,7 +180,8 @@
       ProductBox,
       StoreBox,
       Marcas,
-      Bloques
+      Bloques,
+      Loading
     },
     data() {
       return {     
@@ -257,19 +262,14 @@
       },
       cargaHome(){
         this.page = 1
-
+        console.log('llega')
         this.onGetProducts()
         this.getSliders({ slide_category: '0,1' }).then((response) => {
           this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
         })
         this.getStoreRosa().then((response) => {
           let arr = []
-          response.data.forEach((e, i) => {
-              if (i < 10) {
-                  arr.push(e)
-              }
-          })
-          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(arr)
+          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat( Object.values(response.data))
         })
         
         this.searchBloques()

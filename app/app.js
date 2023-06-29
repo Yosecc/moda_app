@@ -33,8 +33,8 @@ Vue.registerElement(
     () => require('@nativescript-community/ui-pulltorefresh').PullToRefresh
 );
 
-var auth_service_1 = require("./auth-service");
-auth_service_1.configureOAuthProviders();
+// var auth_service_1 = require("./auth-service");
+// auth_service_1.configureOAuthProviders();
 
 // import * as application from '@nativescript/core/application';
 // import { init } from "nativescript-facebook";
@@ -43,8 +43,8 @@ auth_service_1.configureOAuthProviders();
 //     init("451063223693260");
 // });
 
-import { LoginManager, AccessToken } from '@nativescript/facebook';
-LoginManager.init()
+// import { LoginManager, AccessToken } from '@nativescript/facebook';
+// LoginManager.init()
 
 import Theme from "@nativescript/theme";
 Theme.setMode(Theme.Light);
@@ -55,11 +55,18 @@ import { firebase } from '@nativescript/firebase';
 import { messaging } from '@nativescript/firebase/messaging'
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import cache from '@/plugins/cache'
+import { LocalNotifications } from '@nativescript/local-notifications'
+
+// if (android.os.Build.VERSION.SDK_INT >= 26) {
+//     const mChannel = new android.app.NotificationChannel(channelId, name,importance);
+//    }
 
 new Vue({
     render: h => h(App),
     store: store,
 }).$start()
+
+
 
 // console.log(this)
 firebase.init({
@@ -72,12 +79,36 @@ firebase.init({
             console.log('[Firebase] onMessageReceivedCallback:', { message });
             store._modules.root._rawModule.state.notification = message
 
-
+            LocalNotifications.schedule([{
+                id: 1, // generated id if not set
+                title: message.title,
+                body: message.body,
+                // ticker: 'The ticker',
+                color: '#DA0080',
+                badge: 1,
+                // groupedMessages: ['The first', 'Second', 'Keep going', 'one more..', 'OK Stop'], //android only
+                // groupSummary: 'Summary of the grouped messages above', //android only
+                // ongoing: true, // makes the notification ongoing (Android only)
+                icon: 'res://notification_icon',
+                // image: 'https://cdn-images-1.medium.com/max/1200/1*c3cQvYJrVezv_Az0CoDcbA.jpeg',
+                // thumbnail: true,
+                // interval: 'minute',
+                // channel: 'My Channel', // default: 'Channel'
+                sound: 'customsound',
+                // at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
+            }]).then(
+                scheduledIds => {
+                    console.log('Notification id(s) scheduled: ' + JSON.stringify(scheduledIds))
+                },
+                error => {
+                    console.log('scheduling error: ' + error)
+                }
+            )
 
         }
     })
     .then(() => {
-        console.log('[Firebase] Initialized');
+        // console.log('[Firebase] Initialized');
         // firebase.subscribeToTopic("news")
         // messaging.registerForPushNotifications({
         //     onPushTokenReceivedCallback: (token) => {

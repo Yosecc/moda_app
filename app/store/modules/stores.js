@@ -85,11 +85,11 @@ const actions = {
         return response
     },
     async getStoreRosa(context, params) {
-
-
         const qs = Object.keys(context.state.paramsStores)
             .map(key => `${key}=${context.state.paramsStores[key]}`)
             .join('&');
+
+        // console.log('qs', qs)
         const response = await Api.get(`rosa/stores?${qs}`)
         return response
     },
