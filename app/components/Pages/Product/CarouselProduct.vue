@@ -6,7 +6,7 @@
       width="100%" 
       @pageChanged="myChangePageEvent" 
       android:indicatorAnimation="slide" 
-      indicatorColor="#DA0080"
+      indicatorColor="#E9418A"
       indicatorColorUnselected="#EEEEEE"
       indicatorOffset="0, 20" 
       :showIndicator="true">

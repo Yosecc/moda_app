@@ -31,7 +31,7 @@
         left="24"
         width="10"
         height="10"
-        backgroundColor="#DA0080"
+        backgroundColor="#E9418A"
         borderRadius="100%"
         justifyContent="center"
         alignItems="center"

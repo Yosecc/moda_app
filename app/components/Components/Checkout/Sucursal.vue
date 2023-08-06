@@ -58,7 +58,7 @@
               />
               <StackLayout>
                 <Label fontSize="16" textWrap :text="sucursal.label" margin="0" padding="0" />
-                <Label :text="sucursal.price | moneda" fontWeight="800" fontSize="18" color="#DA0080"/>
+                <Label :text="sucursal.price | moneda" fontWeight="800" fontSize="18" color="#E9418A"/>
               </StackLayout>
             </StackLayout>
 
@@ -92,7 +92,7 @@
           <StackLayout 
             class="card" 
             :borderWidth="item.status ? 2:0"
-            :borderColor="item.status ? '#DA0080':''"
+            :borderColor="item.status ? '#E9418A':''"
           >
 
             <FlexboxLayout justifyContent="space-between" alignItems="flex-start">

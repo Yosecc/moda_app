@@ -39,7 +39,7 @@
           :fontSize="sizeSubLabel">
           <FormattedString>
             <span text="Precio mínimo de compra: "></span>
-            <span :text="limit_price | moneda " style="color: #DA0080"></span>
+            <span :text="limit_price | moneda " style="color: #E9418A"></span>
           </FormattedString>
         </label>
       </StackLayout>
@@ -131,7 +131,7 @@
         font-weight: 200;
       }
       &-mount{
-        color: #DA0080;
+        color: #E9418A;
         font-size: 20;
         font-weight: 900;
         padding: 0;

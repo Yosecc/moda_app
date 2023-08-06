@@ -2,7 +2,7 @@
 
   <StackLayout>
     <StackLayout v-if="loading" marginTop="24" marginBottom="24">
-      <ActivityIndicator busy="true" color="#DA0080" />
+      <ActivityIndicator busy="true" color="#E9418A" />
     </StackLayout>
 
     <StackLayout v-if="direcciones.length == 0 && !loading" padding="24">
@@ -34,7 +34,7 @@
               <FlexboxLayout  alignItems="center" justifyContent="space-between" >
                 <Label :text="item.name" fontSize="16" class="" /> 
                 <StackLayout  orientation="horizontal">
-                  <Label text="Dirección Principal" class="colorActive" color="#DA0080" fontSize="16" marginRight="8" fontWeight="800" /> 
+                  <Label text="Dirección Principal" class="colorActive" color="#E9418A" fontSize="16" marginRight="8" fontWeight="800" /> 
                   <image src="~/assets/icons/check.png" width="25" stretch="aspectFill" />
                 </StackLayout>
               </FlexboxLayout>

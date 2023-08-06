@@ -14,7 +14,7 @@
             <ActivityIndicator 
                 busy="true" 
                 margin="0" 
-                color="#DA0080" 
+                color="#E9418A" 
                 horizontalAlignment="center" 
                 verticalAlignment="center"
             />

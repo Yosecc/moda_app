@@ -7,8 +7,8 @@
       class="card bg "
       :class="active && checkout ? 'active-cupon-checkout':'active'"
       borderWidth="2"
-      borderColor="#DA0080"
-      :backgroundColor="active && checkout ?  '#DA0080':''"
+      borderColor="#E9418A"
+      :backgroundColor="active && checkout ?  '#E9418A':''"
       backgroundImage="~/assets/cupon_bg.png" 
     >
       	<FlexboxLayout  

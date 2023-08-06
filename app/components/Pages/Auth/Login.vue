@@ -39,7 +39,7 @@
             <StackLayout marginBottom="24">
               <ActivityIndicator 
                 :busy="isLoading"
-                color="#DA0080"
+                color="#E9418A"
                />
 
               <button 
@@ -69,7 +69,7 @@
 
             <ActivityIndicator 
               :busy="isLoading"
-              color="#DA0080"
+              color="#E9418A"
              />
             <!-- <StackLayout v-show="!isLoading" @tap="loginFacebook" marginBottom="16" borderWidth=".5" borderColor="#303030" background="#3b5998" borderRadius="6" padding="0 16">
               <FlexboxLayout padding="10" justifyContent="space-between" alignItems="center" width="60%" >

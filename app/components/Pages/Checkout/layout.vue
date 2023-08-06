@@ -26,7 +26,7 @@
           >
             <FormattedString>
               <span  text="Compra mínima en la tienda: "></span>
-              <span :text="carCheckout.min | moneda " style="color: #DA0080"></span>
+              <span :text="carCheckout.min | moneda " style="color: #E9418A"></span>
             </FormattedString>
           </label>
         </StackLayout>
@@ -61,7 +61,7 @@
           justifyContent="space-between" 
           alignItems="center" 
           padding="16" 
-          backgroundColor="#DA0080"
+          backgroundColor="#E9418A"
           height="80"
           @tap="onNext"
         >

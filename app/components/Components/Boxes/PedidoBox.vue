@@ -58,7 +58,7 @@
               <label fontSize="14" textWrap v-if="info && estado.descripcion2" :text="estado.descripcion2" marginTop="16" />
 
 
-              <ActivityIndicator :busy="!info" v-if="!info" color="#DA0080" />
+              <ActivityIndicator :busy="!info" v-if="!info" color="#E9418A" />
         </StackLayout>
 
         <StackLayout col="0" padding="0 0 8 0" row="2">

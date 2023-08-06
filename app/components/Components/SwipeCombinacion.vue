@@ -89,7 +89,7 @@
         :text="`${$options.filters.moneda(calculaPrecio)}`" v-if="calculaPrecio != ''"  
         fontSize="20" 
         fontWeight="900" 
-        color="#DA0080"
+        color="#E9418A"
         marginRight="16"
       />
       

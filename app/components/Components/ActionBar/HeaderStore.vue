@@ -3,10 +3,10 @@
     <ActionBar  >
       
       <GridLayout
+        v-if="true"
         columns="auto,*,auto" 
         rows="*" 
         marginTop="10"
-        marginBottom="5"
         paddingLeft="0"
         height="50"
       >
@@ -21,9 +21,10 @@
           v-show="back"
           col="0"
           horizontalAlignment="left" 
-          
-          
+          :isEvent="isBackEvent"
+          @onBack="onBack"
         ></BtnBack>
+
 
         <FlexboxLayout 
           col="1"
@@ -77,7 +78,7 @@
             >
                 <FormattedString>
                   <span  text="Compra mínima: "></span>
-                  <span :text="store.min | moneda " style="color: #DA0080"></span>
+                  <span :text="store.min | moneda " style="color: #E9418A"></span>
                 </FormattedString>
               </label>
               <!-- <label fontSize="10" :text="JSON.stringify(carro)" textWrap="true" /> -->
@@ -129,7 +130,7 @@
                 left="25"
                 width="15"
                 height="15"
-                backgroundColor="#DA0080"
+                backgroundColor="#E9418A"
                 borderRadius="100%"
                 justifyContent="center"
                 alignItems="center"
@@ -188,7 +189,11 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
       iscarro:{
         type: Boolean, 
         default: true
-      }
+      },
+      isBackEvent:{
+        type: Boolean, 
+        default: false
+      },
     },
     components:{
       BtnMenu,
@@ -230,6 +235,9 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
     },
     methods:{
       ...mapMutations(['changePage']),
+      onBack(){
+        this.$emit('onBack')
+      },
       onSearch(){
         // console.log('click')
         // this.changePage(1)

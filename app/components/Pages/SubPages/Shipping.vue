@@ -67,7 +67,7 @@
             :key="`envio-${key}`"
           >
             <StackLayout
-              backgroundColor="#DA0080"
+              backgroundColor="#E9418A"
               padding="18"
               borderRadius="6 6 0 0"
               marginBottom="16"
@@ -140,7 +140,7 @@
                       <Label 
                         v-if="transporte.oferta"
                         text="Precio rebajado" 
-                        color="#DA0080" 
+                        color="#E9418A" 
                         fontWeight="600"
                         fontSize="12"
                         textAlignment="center"
@@ -165,7 +165,7 @@
 
       </ScrollView>
       <StackLayout
-        backgroundColor="#DA0080"
+        backgroundColor="#E9418A"
         padding="24"
         margin="40 0"
       >
@@ -335,6 +335,6 @@ export default {
 
 .oferta{
   @extend .precio;
-  color: #DA0080;
+  color: #E9418A;
 }
 </style>

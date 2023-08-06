@@ -277,7 +277,7 @@
           :isEnabled="combinaciones[0].talleActive != ''"
           @tap="openDropBottom(null)"
         />
-        <ActivityIndicator v-if="!isEnabled" busy="true" color="DA0080"/>
+        <ActivityIndicator v-if="!isEnabled" busy="true" color="E9418A"/>
       </StackLayout>
       <StackLayout col="1">
         <slot></slot>

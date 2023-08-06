@@ -147,7 +147,6 @@
   import { screen } from "@nativescript/core/platform";
   import Loading from '~/components/Components/Loading.vue'
 
-
 	export default {
     mixins: [storeMixin],
     props:{
@@ -162,13 +161,11 @@
       StoreBox,
       recentlySeen,
       Loading
-
     },
     data() {
       return {
         page: 1,
         last_page: 6,
-        // =====
         isLoadingProducts: false,
         products: new ObservableArray([]),
         filterName: '',
@@ -287,14 +284,17 @@
         this.isLoadingProducts = true
         utils.ad.dismissSoftInput();
         await this.getSearch().then((response)=>{
+          console.log('response', response)
           this.isLoadingProducts = false
           this.products = new ObservableArray(response)
+        }).catch((error)=>{
+          console.log('error', error)
         })
       },
       async openFilter(){
-        const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isSubcategorias: false } })
+        const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isSubcategorias: false, noids: [0] } })
         this.page = 1
-        this.sections = data.id
+        this.sections = [data.id]
         this.setCategorieActive(data.id)
         this.onSubmit()
       },

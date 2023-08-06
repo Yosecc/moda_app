@@ -53,7 +53,7 @@
                 fontSize="12">
                 <FormattedString>
                   <span text="Precio mínimo de compra: "></span>
-                  <span :text="storeActive.limit_price | moneda " style="color: #DA0080"></span>
+                  <span :text="storeActive.limit_price | moneda " style="color: #E9418A"></span>
                 </FormattedString>
               </label>
             </StackLayout>

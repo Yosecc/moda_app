@@ -56,7 +56,7 @@
                     alignItems="center"
                     v-if="item.isAdd"
                   >
-                  <!-- <label text="Agregado" color="#DA0080" fontWeight="900" textTransform="uppercase" /> -->
+                  <!-- <label text="Agregado" color="#E9418A" fontWeight="900" textTransform="uppercase" /> -->
                   </FlexboxLayout >
                 </AbsoluteLayout>
                 <button 
@@ -71,7 +71,7 @@
                   class="btn btn-primary outline "
                   :class="item.isAdd ? 'disabled':''"
                 />
-                <ActivityIndicator v-else busy="true" marginTop="18" height="40"  color="#DA0080" />
+                <ActivityIndicator v-else busy="true" marginTop="18" height="40"  color="#E9418A" />
                 
               </FlexboxLayout>
             </WrapLayout>

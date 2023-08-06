@@ -1,7 +1,7 @@
 <template lang="html">
   <Page 
     xmlns="http://schemas.nativescript.org/tns.xsd"
-    androidStatusBarBackground="#DA0080"
+    androidStatusBarBackground="#E9418A"
   >
       <HeaderDefault
         :componentActive="componentActive"
@@ -58,7 +58,7 @@
               width="100%"
             >
               <StackLayout 
-                background="#DA0080"
+                background="#E9418A"
                 width="40"
                 height="40"
                 borderRadius="100%"

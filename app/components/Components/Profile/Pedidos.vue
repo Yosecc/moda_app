@@ -1,7 +1,7 @@
 <template lang="html">
   <StackLayout>
     <StackLayout v-if="loading" marginTop="24">
-      <ActivityIndicator busy="true" color="#DA0080" />
+      <ActivityIndicator busy="true" color="#E9418A" />
     </StackLayout>
     <StackLayout v-if="pedidosUnidos._array.length == 0 && !loading" padding="24">
 
@@ -28,7 +28,7 @@
       </v-template>
       
       <v-template name="footer">
-        <ActivityIndicator v-if="loadingMas" busy="true" color="#DA0080" />
+        <ActivityIndicator v-if="loadingMas" busy="true" color="#E9418A" />
         <Label 
           v-else
           text="Ver más"

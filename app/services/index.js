@@ -20,6 +20,7 @@ const Api = {
                 (response) => {
                     // Argument (response) is HttpResponse
                     if (response.statusCode == 200) {
+                        console.warn({ url: `${url_base}${url}`, res: response.content.toJSON() })
                         resolve(response.content.toJSON())
                     } else {
                         reject(response.content)
@@ -60,6 +61,7 @@ const Api = {
                 },
                 // content: JSON.stringify(data)
             }).then((res) => {
+                console.warn({ url: `${url_base}${url}`, res: res.content.toJSON() })
                 resolve(res.content.toJSON())
             }).catch((e) => {
                 // console.log('errowwWr get', e)
@@ -79,6 +81,7 @@ const Api = {
                 },
                 // content: JSON.stringify(data)
             }).then((res) => {
+                console.warn({ url: `${url_rosa}${params}`, res: res.content.toJSON() })
                 resolve(res.content.toJSON())
             }).catch((e) => {
                 // console.log('errowwWr get', e)

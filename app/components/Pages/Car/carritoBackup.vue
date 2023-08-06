@@ -23,7 +23,7 @@
               >
                 <FormattedString>
                   <span  text="Compra mínima: "></span>
-                  <span :text="store.min | moneda " style="color: #DA0080"></span>
+                  <span :text="store.min | moneda " style="color: #E9418A"></span>
                 </FormattedString>
               </label>
             </StackLayout>
@@ -240,7 +240,7 @@
             alignItems="center" 
             @tap="onProcessCheckout" 
             padding="16" 
-            :backgroundColor="!isOrderMinStatus ? '#CECECE':'#DA0080'"
+            :backgroundColor="!isOrderMinStatus ? '#CECECE':'#E9418A'"
             :opacity="!isOrderMinStatus ? '1' : '1'"
             height="80"
           >

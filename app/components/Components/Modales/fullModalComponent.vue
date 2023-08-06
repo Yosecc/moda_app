@@ -25,7 +25,7 @@
           <Carousel 
             row="0"
             ref="SliderFullModal"
-            indicatorColor="#DA0080" 
+            indicatorColor="#E9418A" 
             indicatorColorUnselected="rgba(0,0,0,.1)"
             :showIndicator="false" 
             indicatorOffset="200,60"
@@ -130,7 +130,7 @@
         config:{
             type: Object|Array,
             default: {
-                background: '#DA0080',
+                background: '#E9418A',
                 color: 'white'
             }
         },

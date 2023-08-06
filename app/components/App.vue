@@ -15,7 +15,7 @@
             <Navigator :defaultRoute="isLogged ? '/home':'/login'"  />
           </GridLayout >
           <StackLayout v-if="viewNotification" @tap="changeviewNotification(false)" top="0" left="0" width="100%"  padding="8 16">
-            <StackLayout borderColor="#DA0080" borderWidth=".5" borderRadius="16" class="card" >
+            <StackLayout borderColor="#E9418A" borderWidth=".5" borderRadius="16" class="card" >
               <GridLayout 
                 columns="auto,*,auto" 
                 rows="*, auto" 

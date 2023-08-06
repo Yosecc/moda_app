@@ -1,7 +1,7 @@
 <template lang="html">
   <Page >
     <HeaderDefault :back="false" />
-    <!-- <ScrollView> -->
+    <ScrollView>
       <GridLayout
         rows="auto,auto,*"
         padding="0"
@@ -9,13 +9,10 @@
       >
         <StackLayout
           row="0"
-          paddingTop="8"
-          paddingBottom="8"
-          paddingLeft="16"
-          paddingRight="16"
+          padding="8"
 
         >
-          <StackLayout padding="24 24 24 0" class="card bg bg-infoBox"   backgroundImage="~/assets/patron.png">
+          <StackLayout padding="24 24 24 0" class="card bg bg-infoBox">
             <StackLayout orientation="horizontal">
               <image src="~/assets/avatar.png" stretch="aspectFill" width="100" height="100" />
               <StackLayout marginTop="14">
@@ -31,16 +28,17 @@
         <StackLayout padding="0" margin="0 0 0 0" row="1">
           <StackLayout padding="0"  height="40">
             <RadListView  
+             padding="24"
               @itemTap="onItemTapMenu" 
               class="menuProfile"  
               orientation="horizontal" 
               for="(item, key) in menu"
               ref="listMenuProfile" >
               <v-template if="item.active == true">
-                <Label :marginLeft="key == 0 ? '16':''" :marginRight="key == (menu.length - 1) ? '16':''" class="label active" :text="item.label" />
+                <Label  class="label active" :text="item.label" />
               </v-template>
               <v-template if="item.active == false">
-                <Label :marginLeft="key == 0 ? '16':''" :marginRight="key == (menu.length - 1) ? '16':''" class="label" :text="item.label" />
+                <Label  class="label" :text="item.label" />
               </v-template>
             </RadListView>
           </StackLayout>
@@ -60,7 +58,7 @@
         </StackLayout>
         
       </GridLayout>
-    <!-- </ScrollView> -->
+    </ScrollView>
    </Page>
 
 </template>

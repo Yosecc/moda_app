@@ -340,7 +340,7 @@
                   >
                       <FormattedString>
                         <span  text="Compra mínima: "></span>
-                        <span :text="producto.store.min | moneda " style="color: #DA0080"></span>
+                        <span :text="producto.store.min | moneda " style="color: #E9418A"></span>
                       </FormattedString>
                   </label>
                   <label 

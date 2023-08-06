@@ -1,0 +1,53 @@
+ <!-- <StackLayout row="0" padding="15" @tap="$modal.close()" width="100%">
+            <Image 
+              src="~/assets/icons/plus.png"
+              width="40"
+              height="40"
+              horizontalAlignment="right"
+              rotate="45"
+            />
+          </StackLayout>
+        
+          <FlexboxLayout row="1" flexDirection="column" alignItems="center" padding="0" justifyContent="center" borderRadius="15" >
+            <StackLayout v-if="categoriesComputed.length" height="400" padding="0" >
+              <label text="Seleccione una categoría:" v-if="categoriesComputed.length > 1" fontWeight="100" fontSize="14" marginBottom="16" marginLeft="16" />
+              <SlideCategories 
+                :categories="categoriesComputed" 
+                :navigate="false"
+                :isViewActive="true"
+                :isStore="isStore"
+                verticalAlignment="center"
+                @ontapCategorie="ontapCategorie"
+              />
+            </StackLayout>
+            <StackLayout v-if="isSubcategorias" minHeight="250" width="100%" >
+              <GridLayout columns="*" rows="auto,*,auto">
+                <label text="Subcategorias"  row="0" col="0" textAlign="left" fontWeight="600" marginLeft="16" />
+                <label :text="subCategorieActive"  row="0" col="0" textAlign="left" fontWeight="900" marginLeft="16" />
+                <ScrollView row="1" col="0" marginLeft="16">
+                  <FlexboxLayout flexWrap="wrap" class="subcategorias" >
+                    <StackLayout v-for="(item, key) in subcategoriasComputed" :key="`sub${key}`">
+                      <label 
+                        @tap="onTapSubcategorie(item.id)" 
+                        :text="item.name" 
+                        :borderColor="statusSubcategorie(item.id)  ? '#E9418A':'#8e8e8e'"
+                        :borderWidth="statusSubcategorie(item.id)  ? 3:1"
+                        borderRaidus="4"
+                      />
+                    </StackLayout>
+                  </FlexboxLayout>
+                </ScrollView>
+                <StackLayout  row="2" col="0" padding="8">
+                  <button 
+                    text="Buscar"
+                    horizontalAlignment="center"
+                    class="btn-primary-default btn-sm"
+                    height="30"
+                    width="30%"
+                    @tap="$modal.close()"
+                  />
+                </StackLayout>
+              </GridLayout>
+            </StackLayout>
+
+          </FlexboxLayout > -->

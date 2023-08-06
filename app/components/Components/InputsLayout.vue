@@ -56,7 +56,7 @@
                           background="#C7C7C7"
                           text="Seleccionar" 
                           margin="0" 
-                          color="#DA0080"
+                          color="#E9418A"
                         />
                     </GridLayout>
                   </StackLayout>
@@ -197,7 +197,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
     //   border-bottom-color: rgba(#4D4D4D, .1);
     //   font-size: 14;
     //   &:focus{
-    //    border-bottom-color: #DA0080;
+    //    border-bottom-color: #E9418A;
     //   }
     //   &.input-control-select{
     //     .label{

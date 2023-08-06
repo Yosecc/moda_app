@@ -3,7 +3,7 @@
     <HeaderDefault :back="false" />
    
     <GridLayout  rows="*,auto">
-      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0" row="0"> 
+      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0"  row="0"> 
         <RadListView 
           ref="arrayHome"
           :items="arrayHome"
@@ -86,10 +86,10 @@
                   marginRight="16"
                   fontWeight="900"
                   row="0"
-                  v-if="item.data.length"
+                  
                 />
-                <StackLayout 
-                  v-else
+                <!-- <StackLayout 
+                  
                   class="label_skeleton"
                   width="150"
                   height="16"
@@ -99,9 +99,9 @@
                   fontWeight="900"
                   row="0"
                   horizontalAlignment="left"
-                />
+                /> -->
 
-                <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length">
+                <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length && !item.isFin">
                   <StackLayout 
                     v-for="i in 4"
                     class="label_skeleton"
@@ -111,6 +111,11 @@
                     stretch="aspectFill" 
                   />
                 </WrapLayout >
+
+                <StackLayout  padding="0 16 24 16" row="1" v-if="item.isFin" >
+                  <Label textAlignment="center" fontWeight="100" fontSize="16" flexWrap text="No se encontraron registros" />
+                </StackLayout>
+                
 
                 <RadListView 
                   ref="producsScroll"
@@ -126,9 +131,15 @@
                         height="340"
                     ></ProductBox>
                   </v-template>
+                  
                 </RadListView>
 
               </GridLayout>
+            </StackLayout>
+          </v-template>
+          <v-template name="foote" if="item.name == 'footer'" >
+            <StackLayout  padding="24" row="1" >
+              <Label v-if="item.data" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
             </StackLayout>
           </v-template>
         </RadListView>
@@ -217,10 +228,16 @@
           {
             name:'productos',
             data: new ObservableArray([]),
-            alturaBase: 350
-          },  
+            alturaBase: 350,
+            isFin: false
+          },
+          {
+            name:'footer',
+            data: false
+          },
         ]),
-        alturaDispositivo: 0
+        alturaDispositivo: 0,
+        isFin: false
       };
     },
     watch:{  
@@ -231,7 +248,7 @@
     computed:{
       ...mapState(['drawer','directionDrawer','sliders','ofertas','isLoadPage']),
       ...mapState('categories',['orderedCategories','categories','categorieActive']),
-      ...mapState('products',['products','productsRecentlySeen']),
+      ...mapState('products',['products','productsRecentlySeen','parametrosSearch']),
       ...mapState('stores',['storesPopular']),
       computedProducts(){
         if (this.categorieActive != 0) {
@@ -262,14 +279,14 @@
       },
       cargaHome(){
         this.page = 1
-        console.log('llega')
         this.onGetProducts()
         this.getSliders({ slide_category: '0,1' }).then((response) => {
           this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
         })
         this.getStoreRosa().then((response) => {
           let arr = []
-          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat( Object.values(response.data))
+          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(Object.values(response.data))
+          this.$refs.arrayHome.refresh()
         })
         
         this.searchBloques()
@@ -312,6 +329,18 @@
       },
       onScroll({ scrollOffset }){
         let scrollv = this.$refs.arrayHome.nativeView;
+        // console.log({
+        //   // a: scrollv.getActualSize().height,
+        //   // b: scrollv,
+        //   // c: scrollOffset
+        // })
+        if(this.arrayHome.find((e)=> e.name =='footer').data){
+          setTimeout(()=>{
+            this.arrayHome.find((e)=> e.name =='footer').data = false
+          },1000)
+        }
+      
+
         if((scrollv.getActualSize().height*2) < scrollOffset ){
           this.viewArrowTop = true
         }else{
@@ -327,6 +356,7 @@
             this.page = this.page + 1
             this.onGetProducts().then((response)=>{
               if(!response){
+                // this.isFin = true
                 args.returnValue = false;
                 args.object.notifyAppendItemsOnDemandFinished(0, true);
                 return 
@@ -342,6 +372,7 @@
         console.log('Pulling...');
         await this.$nextTick( async () => {
           await this.cargaHome()
+          // this.isFin = false
           object.refreshing = false;
           object.notifyPullToRefreshFinished();
           this.$refs.arrayHome.refresh()
@@ -364,17 +395,29 @@
       },
       async onGetProducts(){
         this.changeParamsProductsSearch({
-          menu: 'get_new_entry_products',
           sections:[1,3,6,4,2],
           search:'',
-          page: this.page,
-          offset:12,
+          start: this.arrayHome.find((e)=> e.name =='productos').data.length + 1,
+          length:15,
+          storeData:1,
+          inStock:1,
+          betweenDates: moment().format('YYYY-MM-DD')+','+  moment().add(1, 'd').format('YYYY-MM-DD'),
+          order:'register DESC',
+          cacheTime:1200
         })
         this.isLoadingProducts = true
+        this.arrayHome.find((e)=> e.name =='productos').isFin = false
+
+        
         await this.getUltimosproductos()
         .then((response)=>{
+          // console.log('response', response)
           if(response.length == 0){
             this.isLoadingProducts = false
+            this.isFin = true 
+            this.arrayHome.find((e)=> e.name =='footer').data = true
+            this.arrayHome.find((e)=> e.name =='productos').isFin = true
+            this.$refs.arrayHome.refresh()
             return false
           }
           this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)

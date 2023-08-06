@@ -16,7 +16,7 @@
     height="200" 
     width="100%" 
     ref="SliderPrincipal"
-    indicatorColor="#DA0080" 
+    indicatorColor="#E9418A" 
     indicatorColorUnselected="rgba(0,0,0,.1)"
     :showIndicator="false" 
     indicatorOffset="200,60"
@@ -29,6 +29,27 @@
     margin="0"
     padding="0"
   >
+  <CarouselItem 
+      
+      verticalAlignment="middle"
+      paddingRight="16"
+      paddingLeft="16"
+      paddingBottom="0"
+    
+    >
+      <ImageCache 
+        stretch="aspectFill"
+        placeholderStretch="aspectFit"
+        borderRadius="10"
+        placeholder=""
+        src="~/assets/prueba.jpeg"
+        height="100%"
+        class="imageCache"
+        rounded="false"
+       
+        ref="imageCache"
+      /> 
+    </CarouselItem>
     <CarouselItem 
       v-for="(i,key) in computedSliders" 
       :key="`slide-${key}`"
@@ -52,6 +73,7 @@
         ref="imageCache"
       /> 
     </CarouselItem>
+    
   </Carousel>
   <StackLayout 
     width="100%" 
@@ -62,7 +84,7 @@
     <StackLayout 
       width="0" 
       height="1" 
-      background="#DA0080" 
+      background="#E9418A" 
       padding="0" 
       margin="0"
       horizontalAlignment="left"

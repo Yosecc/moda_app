@@ -27,9 +27,18 @@
         type: Boolean, 
         default: false
       },
+      isEvent:{
+        type: Boolean, 
+        default: false
+      },
     },
     methods:{
       onTap(){
+        if(this.isEvent){
+          this.$emit('onBack')
+          return
+        }
+
         if(!this.isModal){
           this.$navigator.back()
         }else{

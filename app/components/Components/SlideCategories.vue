@@ -173,7 +173,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       // ...mapState('products',['count']),
       // ...mapState('stores',['storeCategorieActive']),
       // ...mapState('categories',['isLoadCategories','categorieActive','categoriesBase']),
-      // ...mapGetters('categories',['categorieActiveGetters']),
+      ...mapGetters('categories',['categorieActiveGetters']),
       // categoriesComputed(){
       //   if(this.categories.length){
       //     return this.categories
@@ -185,7 +185,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
       // ...mapActions('products',['getHome']),
       // ...mapMutations('categories',['setCategorieActive']),
       // ...mapMutations(['changeDrawer','changePage']),
-      // ...mapMutations('stores',['changeParamsStores','setStoreCategorieActive']),
+      ...mapMutations('stores',['changeParamsStores','setStoreCategorieActive']),
       // ...mapMutations('products',['changeParamsProducts','changeParamsProductsSearch']),
       onTap(item){
 
@@ -236,7 +236,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 
           }
         }else{
-
+          // console.log('pasa',{categorie: this.categorieActiveGetters })
           this.changeParamsStores({categorie: this.categorieActiveGetters.key })
           this.setStoreCategorieActive(item.id)
         }

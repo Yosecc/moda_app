@@ -24,7 +24,7 @@
             >
               <FormattedString>
                 <span  text="Compra mínima: "></span>
-                <span :text="store.min | moneda " style="color: #DA0080"></span>
+                <span :text="store.min | moneda " style="color: #E9418A"></span>
               </FormattedString>
             </label>
           </StackLayout>
@@ -49,7 +49,8 @@
             fontSize="18" 
             fontWeight="800"  
             paddingLeft="16"
-            marginBottom="8" 
+            marginBottom="8"
+            marginTop="8"
           />
         </v-template>
         <v-template >
@@ -228,7 +229,7 @@
           alignItems="center" 
           @tap="onProcessCheckout" 
           padding="16" 
-          :backgroundColor="!isOrderMinStatus ? '#CECECE':'#DA0080'"
+          :backgroundColor="!isOrderMinStatus ? '#CECECE':'#E9418A'"
           :opacity="!isOrderMinStatus ? '1' : '1'"
           height="80"
         >
@@ -446,6 +447,8 @@
       },
 
       onProcessCheckout(){
+
+        
         if(!this.isOrderMinStatus){
           this.changeToast({
               title: this.textMinOrden,
@@ -466,8 +469,9 @@
           products:    this.products
         })
 
+        console.log('pasa')
         this.processCart(this.car_id).then((response)=>{
-
+          console.log('responseeeee',response)
           firebase.analytics.logEvent({
             key: "process_cart",
             parameters: [ // optional

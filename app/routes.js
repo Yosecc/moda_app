@@ -46,6 +46,7 @@ import tiendasModal from './components/Components/Modales/tiendas.vue'
 import methodsPaymentsModal from './components/Components/Modales/methodsPayments.vue'
 import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue'
 import confirmCart from '~/components/Components/Modales/confirmCart.vue'
+import pastillaStore from '~/components/Components/Modales/pastillaStore.vue'
 
 import Nofitications from '~/components/Pages/Notifications/index.vue'
 import fullModal from '~/components/Components/Modales/fullModalComponent.vue'
@@ -53,6 +54,9 @@ import fullModal from '~/components/Components/Modales/fullModalComponent.vue'
 import Promotions from '~/components/Pages/Promotions/index.vue'
 
 export const routes = {
+    '/pastillaStore': {
+        component: pastillaStore
+    },
     '/promotions': {
         component: Promotions
     },

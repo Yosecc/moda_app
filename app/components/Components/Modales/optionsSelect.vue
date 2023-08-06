@@ -10,7 +10,7 @@
     />
     <Label :text="select.hint" margin="8 0" textAlignment="center" borderBottomWidth="1" borderColor="#E6E6E6" fontWeight="600" />
     <StackLayout v-if="datos.length == 0">
-       <ActivityIndicator busy="true" color="#DA0080" />
+       <ActivityIndicator busy="true" color="#E9418A" />
     </StackLayout>
     <RadListView v-else class="optionsSelect" ref="optionsSelect" :items="datos" >
       <v-template if="item.active == false" >
@@ -124,7 +124,7 @@
       border-width: 2;
       border-color: #7B7B7B;
       &.active{ 
-        background: #DA0080;
+        background: #E9418A;
       }
     }
   }

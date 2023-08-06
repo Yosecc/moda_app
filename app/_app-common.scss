@@ -1,7 +1,7 @@
 @import '@nativescript/theme/core';
 @import '@nativescript/theme/default';
 @import '@nativescript/theme/scss/variables/index';
-$modatexColor: #DA0080;
+$modatexColor: #E9418A;
 page {
     font-size: 16;
 }
@@ -220,7 +220,7 @@ Switch.switch[checked=false] {
 }
 
 .shadow-n1 {
-    box-shadow: 0 -1 4 rgba(0, 0, 0, .1);
+    box-shadow: 0 -1 10 rgba(0, 0, 0, .2);
 }
 
 .shadow-lg {
@@ -244,9 +244,10 @@ Switch.switch[checked=false] {
     border-radius: 4;
     margin-left: 0;
     margin-right: 0;
-    // height: 40;
     &:focus {
-        // border-width: 1;
+        border-color: rgba($modatexColor, 1);
+    }
+    &.active {
         border-color: rgba($modatexColor, 1);
     }
     &.inLine-Left {
@@ -571,7 +572,7 @@ Button {
     // background-color: red;
     padding: 8;
     &.active {
-        background-color: #DA0080;
+        background-color: #E9418A;
         .btn_header {
             color: white;
         }
@@ -580,7 +581,7 @@ Button {
         color: white;
     }
     .btn_header {
-        color: #DA0080;
+        color: #E9418A;
     }
 }
 
@@ -784,7 +785,7 @@ Button {
         }
     }
     .bg-infoBox {
-        background-color: #DA0080;
+        background-color: #E9418A;
     }
     .selectInput {
         color: white;
@@ -796,7 +797,7 @@ Button {
 }
 
 .active-cupon-checkout {
-    background-color: #DA0080;
+    background-color: #E9418A;
     color: white;
 }
 
@@ -819,6 +820,10 @@ Button {
 
 .degrade {
     background: linear-gradient(#F8F8F8, white);
+}
+
+.degrade2 {
+    background: linear-gradient(#EEEEEE, white);
 }
 
 .degrade-inverse {
@@ -856,4 +861,15 @@ ActionBar {
     height: 40;
     border-radius: 100%;
     @extend .shadow;
+}
+
+.pastillaStore {
+    // background: red;
+    padding: 8 4 8 4;
+    StackLayout {
+        background-color: white;
+        // padding: 8;
+        // border-radius: 8;
+        // @extend .shadow;
+    }
 }

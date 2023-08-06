@@ -1,5 +1,5 @@
 <template lang="html">
-  <Page actionBarHidden="true" backgroundColor="#DA0080">
+  <Page actionBarHidden="true" backgroundColor="#E9418A">
     <GridLayout rows="auto, *, *, auto">
       <StackLayout width="100%" marginTop="52" row="0">
         <image  src="~/assets/iconsuccess.png" width="128" stretch="aspectFill" />

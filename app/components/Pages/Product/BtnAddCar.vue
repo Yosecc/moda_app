@@ -19,7 +19,7 @@
             width="400"
             fontSize="24" 
             fontWeight="900" 
-            color="#DA0080"
+            color="#E9418A"
             margin="0"
             padding="0"
           />
@@ -44,7 +44,7 @@
 
       <label 
           text="Continuar"
-          color="#DA0080"
+          color="#E9418A"
           fontWeight="900"
           fontSize="24" 
           margin="0"
@@ -74,7 +74,7 @@
         />
 
       <FlexboxLayout col="1" v-else alignItems="center" justifyContent="center" width="160" padding="16 16 0 0">
-        <ActivityIndicator  busy="true" color="#DA0080" verticalAlignment="center" />
+        <ActivityIndicator  busy="true" color="#E9418A" verticalAlignment="center" />
       </FlexboxLayout> -->
   </GridLayout>
 

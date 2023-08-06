@@ -113,7 +113,7 @@
 						verticalAlignment="middle"
 						fontWeight="900"
 						color="white"
-						:backgroundColor="!isOrderMinStatus ? '#CECECE':'#DA0080'"
+						:backgroundColor="!isOrderMinStatus ? '#CECECE':'#E9418A'"
 						:opacity="!isOrderMinStatus ? '.2' : '1'"
 						@tap="onProcessCheckout"
 						v-if="!buttomLoading"
@@ -123,7 +123,7 @@
 						verticalAlignment="middle"
 						busy="true" 
 						v-else
-						color="#DA0080"
+						color="#E9418A"
 					/>
 				</FlexboxLayout>
 

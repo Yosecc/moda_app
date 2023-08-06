@@ -25,13 +25,17 @@ const state = {
         order: "manually",
     },
     parametrosSearch: {
-        menu: 'get_catalog_products',
-        date: moment().format('YYYY-MM-DD'),
-        type: 'search-box-input',
+
         sections: [],
         search: '',
-        page: 1,
-        offset: 15
+        start: 0,
+        length: 15,
+        storeData: 1,
+        inStock: 1,
+        // betweenDates: '',
+        // order:'register DESC',
+        cacheTime: 1200,
+
     },
     categories: [
         { name: 'woman', id: 1 },
@@ -126,14 +130,26 @@ const actions = {
         const response = await Api.get(`rosa/products_home?${qs}`)
         return response
     },
-    async getProductsStoreRosa(context) {
-        const qs = Object.keys(context.state.parametros)
-            .map(key => `${key}=${context.state.parametros[key]}`)
+    async getProductsStoreRosa(context, val = null) {
+        const data = context.state.parametros
+        if (val != null) {
+            data = val
+        }
+        for (var index in data) {
+            const element = data[index];
+            if (element === '') {
+                delete data[index]
+            }
+        }
+        const qs = Object.keys(data)
+            .map(key => `${key}=${data[key]}`)
             .join('&');
+
         const response = await Api.get(`rosa/products?${qs}`)
         return response
     },
     async getUltimosproductos(context) {
+
         let categoriesids = context.state.parametrosSearch.sections
 
         let d = []
@@ -148,7 +164,10 @@ const actions = {
             .map(key => `${key}=${context.state.parametrosSearch[key]}`)
             .join('&');
 
+
+
         const response = await Api.get(`rosa/search?${qs}`)
+
         return response
     },
     async getSearch(context) {

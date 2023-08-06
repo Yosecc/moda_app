@@ -1,72 +1,109 @@
 <template lang="html">
 
-    <Page actionBarHidden="true" background="transparent" id="filterCategorias" borderRadius="10">
-      <GridLayout columns="*" rows="auto, *">
-        <StackLayout row="0" padding="15" @tap="$modal.close()" width="100%">
-          <Image 
-            src="~/assets/icons/plus.png"
-            width="40"
+    <!-- <Page actionBarHidden="true" background="" id="filterCategorias" > -->
+    <StackLayout>
+      <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="40" @swipe="onSwipe" >
+        <StackLayout
+          width="100"
+          height="6"
+          borderRadius="10"
+          background="#7B7B7B"
+          row="0"
+        />
+      </FlexboxLayout>
+      <ScrollView>
+        <GridLayout padding="8 16 0 16" margin="0" columns="*" rows="auto, auto,auto,*, auto" row="1" col="0">
+          <SearchBar 
+            col="0"
+            row="0"    
+            class="inputForm" 
+            hint="Buscar productos"
+            width="100%"
             height="40"
-            horizontalAlignment="right"
-            rotate="45"
+            borderRadius="8"
+            v-model="filter"
+            @textChange="onTextChange"
+            @submit="onSubmitBusqueda"
           />
-        </StackLayout>
-      
-        <FlexboxLayout row="1" flexDirection="column" alignItems="center" padding="0" justifyContent="center" borderRadius="15" >
-          <StackLayout v-if="categoriesComputed.length" height="400" padding="0" >
-            <label text="Seleccione una categoría:" v-if="categoriesComputed.length > 1" fontWeight="100" fontSize="14" marginBottom="16" marginLeft="16" />
-            <SlideCategories 
-              :categories="categoriesComputed" 
-              :navigate="false"
-              :isViewActive="true"
-              :isStore="isStore"
-              verticalAlignment="center"
-              @ontapCategorie="ontapCategorie"
-            />
-          </StackLayout>
-          <StackLayout v-if="isSubcategorias" minHeight="250" width="100%" >
-            <GridLayout columns="*" rows="auto,*,auto">
-              <label text="Subcategorias"  row="0" col="0" textAlign="left" fontWeight="600" marginLeft="16" />
-              <label :text="subCategorieActive"  row="0" col="0" textAlign="left" fontWeight="900" marginLeft="16" />
-              <ScrollView row="1" col="0" marginLeft="16">
-                <FlexboxLayout flexWrap="wrap" class="subcategorias" >
-                  <StackLayout v-for="(item, key) in subcategoriasComputed" :key="`sub${key}`">
-                    <label 
-                      @tap="onTapSubcategorie(item.id)" 
-                      :text="item.name" 
-                      :borderColor="statusSubcategorie(item.id)  ? '#DA0080':'#8e8e8e'"
-                      :borderWidth="statusSubcategorie(item.id)  ? 3:1"
-                      borderRaidus="4"
-                    />
+              
+          <StackLayout row="1" margin="8 0" v-if="ultimasbusquedas.length">
+            <label text="Búsquedas recientes" fontSize="16" fontWeight="900" margin="16 0 0 0" />
+            <StackLayout>
+              <StackLayout 
+                v-for="(item, key) in ultimasbusquedas" 
+                :key="`sd-${key}}`" 
+                class="option" 
+                borderBottomWidth="1" 
+                padding="10 0 10 8"  
+                borderColor="#9E9E9E"
+                @tap="onUltimaBusqueda(item)"
+              >
+                <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                  <StackLayout orientation="horizontal">
+                    <image marginRight="16" src="~/assets/icons/search.png" width="20" height="20" stretch="aspectFill" />
+                    <label :text="item.data" margin="0" fontSize="14" fontWeight="100" />
                   </StackLayout>
+                  <image marginRight="16" src="~/assets/icons/linkarrow.png" width="20" height="20" stretch="aspectFill" />
                 </FlexboxLayout>
-              </ScrollView>
-              <StackLayout  row="2" col="0" padding="8">
-                <button 
-                  text="Buscar"
-                  horizontalAlignment="center"
-                  class="btn-primary-default btn-sm"
-                  height="30"
-                  width="30%"
-                  @tap="$modal.close()"
+              </StackLayout>
+            </StackLayout>
+          </StackLayout>
+
+          <StackLayout row="2">
+            <label text="Categorías" fontSize="16" fontWeight="900" margin="16 0 0 0" />
+            <ScrollView orientation="horizontal" :scrollBarIndicatorVisible="false">
+              <StackLayout orientation="horizontal" paddingLeft="16" paddingTop="16">
+                <StackLayout 
+                  background="white"
+                  borderRadius="8" 
+                  :borderWidth="item.id == categoriaActiveFilter ? 2 : 1" 
+                  :borderColor="item.id == categoriaActiveFilter ? '#E9418A' : '#4D4D4D'" 
+                  padding="8 12 8 8"
+                  marginRight="8"
+                  v-for="(item, key) in categoriesComputed" 
+                  :key="`categorie-store-${key}}`"
+                  orientation="horizontal"
+                  @tap="ontapCategorie(item)"
+                >
+                  <Image width="20" :src="item.icon" marginRight="4" verticalAlignment="middle" stretch="aspectFit" />
+                  <label :text="item.name" verticalAlignment="middle" fontSize="12" fontWeight="300" />
+                </StackLayout>
+              </StackLayout>
+            </ScrollView>
+          </StackLayout>
+
+          <StackLayout row="3" v-if="subcategoriasComputed.length">
+            <label text="Subcategorías" fontSize="16" fontWeight="900" margin="16 0 0 0" />
+            <FlexboxLayout flexWrap="wrap" class="subcategorias" >
+              <StackLayout v-for="(item, key) in subcategoriasComputed" :key="`sub${key}`">
+                <label 
+                  @tap="onTapSubcategorie(item.id)" 
+                  :text="item.name" 
+                  :borderColor="statusSubcategorie(item.id)  ? '#E9418A':'#8e8e8e'"
+                  :borderWidth="statusSubcategorie(item.id)  ? 3:1"
+                  borderRaidus="4"
+                  fontSize="12"
                 />
               </StackLayout>
-            </GridLayout>
+            </FlexboxLayout>
           </StackLayout>
 
-        </FlexboxLayout >
-
-        
-
-    </GridLayout>
-
-    </Page>
+          <StackLayout row="4" padding="8">
+            <label text="Limpiar filtro" @tap="limpiar" textAlignment="center" fontSize="14" fontWeight="200" class="label_enlace" />
+            <button text="Buscar" class="btn btn-primary" marginTop="16" @tap="onBuscarAvanced" />
+          </StackLayout>
+        </GridLayout>
+      </ScrollView>
+    </StackLayout>
+    <!-- </Page> -->
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   import SlideCategories from '~/components/Components/SlideCategories.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
+  import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
+  import cache from '@/plugins/cache'
   export default {
     mixins: [],
     props: {
@@ -78,9 +115,21 @@
         type: Boolean,
         default: false
       },
+      store:{
+        type: Object,
+        default: null
+      },
+      noids:{
+        type: Array,
+        default: []
+      },
+      categorieid:{
+        type: Number,
+        default: 1
+      }
     },
     components: {
-      SlideCategories
+      SlideCategories, HeaderNoActionBar
     },
     filters: {
       
@@ -88,18 +137,35 @@
     data() {
       return {
         copia: [],
-        categories: []
+        categories: [],
+        filter: '',
+        ultimasbusquedas: new ObservableArray([]),
+        categoriaIdSave: 1,
+        categoriaActiveFilter: 1
       };
     },
     watch:{
-   
+      categorieid(to){
+        this.categoriaActiveFilter = to
+      },
+      categoriaActiveFilter(){
+        this.resetStoreSubcategorieActive()
+      }
     },
     computed:{
+      /**
+       * COTEGORIES GLOBALES
+       */
       ...mapGetters('categories',['categorieActiveGetters','subcategories']),
-      ...mapState('categories',['categoriesBase','subCategorieActive']),
+      ...mapState('categories',['categoriesBase','subCategorieActive','categorieActive']),
+      /**
+       * CATEGORIAS STORE
+       */
       ...mapGetters('stores',['categoriesStoreGetters','subcategoriesStoreGetters']),
-      ...mapState('stores',['storeSubcategorieActive']),
-
+      ...mapState('stores',['storeSubcategorieActive','storeCategorieActive','categoriesStore']),
+      /**
+       * CALCULOS
+       */
       categoriesComputed(){
         let data = []
         if(this.isStore){
@@ -114,13 +180,22 @@
         }else{
           data = this.copia
         }
-
+        if(this.noids.length){
+          data = data.filter((e)=> !this.noids.includes(e.id) )
+        }
+        // console.log('data', data)
         return data
       },
       subcategoriasComputed(){
         let data = []
         if(this.isStore){
-          data = this.subcategoriesStoreGetters
+
+          this.categoriesStore.forEach((e) => {
+              if (this.categoriaActiveFilter == e.categoria.id) {
+                  data = e.subcategorias
+              }
+          })
+
         }else{
           data = this.subcategories
         }
@@ -129,49 +204,85 @@
     },
     mounted(){
       this.copia = JSON.parse(JSON.stringify(this.categoriesBase))
-
-      // this.copia.find((e)=>e.id == 1).colSpan = 2
-      // this.copia.find((e)=>e.id == 1).row = 0
-      this.copia.find((e)=>e.id == 1).marginBottom = 16
-      this.copia.find((e)=>e.id == 1).left = 90
-
-      // this.copia.find((e)=>e.id == 2).colSpan = 1
-      // this.copia.find((e)=>e.id == 2).row = 1
-      this.copia.find((e)=>e.id == 3).marginBottom = 16
-      
-      // this.copia.find((e)=>e.id == 3).colSpan = 1
-      // this.copia.find((e)=>e.id == 3).row = 1
-      this.copia.find((e)=>e.id == 6).marginBottom = 16
-      // this.copia.find((e)=>e.id == 3).left = 80
-
-      // this.copia.find((e)=>e.id == 4).colSpan = 1
-      // this.copia.find((e)=>e.id == 4).row = 2
-      this.copia.find((e)=>e.id == 4).marginBottom = 16
-      // this.copia.find((e)=>e.id == 4).left = 80
-
-      // this.copia.find((e)=>e.id == 5).colSpan = 1
-      // this.copia.find((e)=>e.id == 5).row = 2
-      this.copia.find((e)=>e.id == 2).marginBottom = 16
-      // this.copia.find((e)=>e.id == 5).left = 80
-
-
-
-
+      this.getCache()
     },
     methods:{
       // ...mapActions('stores',['getStoreRosa']),
+      /**
+       * Categorias globales
+       */
       ...mapMutations('categories',['setCategorieActive','setSubcategoriesActive']),
-      ...mapMutations('stores',['setStoreSubcategorieActive']),
+      /**
+       * categorias de la tienda
+       */
+      ...mapMutations('stores',['setCategoriesStore','resetStoreSubcategorieActive','setSubcategoriesStore','setStoreCategorieActive','setStoreSubcategorieActive']),
       ...mapActions(['getCategories']),
-      onGetCategories(){
-        this.getCategories().then((response)=>{
-          this.categories = new ObservableArray(response)
-        }) 
+      /**
+       * BUSCADOR
+       */
+      onBuscar(){
+        this.processUltimasBusquedas()
+        this.$emit('onSearch',{
+          filter: this.filter
+        })
       },
-      ontapCategorie(id){
-       
-        this.setSubcategoriesActive('')
-        this.$modal.close({id})
+      onBuscarAvanced(){
+        this.setStoreCategorieActive(this.categoriaActiveFilter)
+        this.onBuscar()
+      },
+      /**
+       * SearchBar
+       */
+      onTextChange(){
+        if(this.filter == ''){
+          this.$emit('onSearch',{
+            filter: this.filter,
+            noClose: true
+          })
+        }
+      },
+      onSubmitBusqueda(){
+        this.onBuscarAvanced()
+      },
+      /**
+       * BUSQUEDAS RECIENTES
+       */
+      onUltimaBusqueda(item){
+        this.filter = item.data
+        this.onBuscarAvanced()
+      },
+      /** 
+       * TODO MIXIN 
+       */
+      processUltimasBusquedas(){
+        let object = null
+        if(cache.get('last_search')){
+          object = JSON.parse(cache.get('last_search'))
+          if(!object.includes(this.filter)){
+            object.unshift(this.filter)
+          }
+          cache.set('last_search', JSON.stringify(object))
+        }else{
+          cache.set('last_search', JSON.stringify([this.filter]))
+        }
+        this.getCache()
+      },
+      getCache(){
+        this.ultimasbusquedas = new ObservableArray([])
+        if(cache.get('last_search')){
+          let data = JSON.parse(cache.get('last_search'))
+          data.forEach((e,i)=>{
+            if(e != '' && i <= 5 ){
+              this.ultimasbusquedas.push({ type:"cache", data: e })
+            }
+          })
+        }
+      },
+      /**
+       * CATEGOIRES Y SUBCATEGORIES
+       */
+      ontapCategorie(item){
+        this.categoriaActiveFilter = item.id
       },
       onTapSubcategorie(id){
         if(!this.isStore){
@@ -194,9 +305,25 @@
             return true
           }
         }
-        
         return false
       },
+      /**
+       * UTILIDADES
+       */
+      onSwipe(args){
+        if(args.direction == 8){
+          this.$emit('closeDrawer')
+        }
+      },
+      limpiar(){
+        this.filter = ''
+        this.categoriaActiveFilter = this.store.category_default
+        this.resetStoreSubcategorieActive()
+        this.onTextChange()
+      }
+     
+      
+      
     }
   };
 </script>

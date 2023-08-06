@@ -19,7 +19,7 @@
           top="2"
           left="0"
           :text="price | moneda"
-          fontSize="24"
+          :fontSize="fontSizePrice"
           fontWeight="800"
           :class="priceOffert ? 'product_text-mount':''"
           class="price" 
@@ -29,9 +29,9 @@
         <Label 
           v-if="isProduct"
           :text="price | moneda"
-          fontSize="24" 
+          :fontSize="fontSizePrice" 
           fontWeight="900" 
-          color="#DA0080"
+          color="#E9418A"
           margin="0"
           padding="0"
         />
@@ -69,6 +69,10 @@
         isProduct:{
           type: Boolean,
           default: false
+        },
+        fontSizePrice:{
+          type: Number,
+          default: 24
         }
     },
     filters: {

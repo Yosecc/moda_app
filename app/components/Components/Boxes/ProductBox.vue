@@ -27,6 +27,7 @@
             placeholderStretch="aspectFill"
             placeholder="res://eskeleton"
             :src="`${product.images[0]}`" 
+           
           />
         </StackLayout>
 
@@ -90,6 +91,7 @@
           :price="product.price"
           :prev_price="product.prev_price"
           :priceOffert="product.is_desc ? product.is_desc:false"
+          :fontSizePrice="fontSizePrice"
         />
       </StackLayout>
     </StackLayout>
@@ -131,6 +133,10 @@
         type: Boolean,
         default: true
       },
+      fontSizePrice:{
+        type: Number,
+        default: 24
+      }
       // borders_props:{
       //   type: Object,
       //   default: {

@@ -8,7 +8,7 @@
           text="Nuevo usuario" 
           fontSize="20"
           fontWeight="900"
-          color="#DA0080"
+          color="#E9418A"
           marginBottom="24"
         />
 
@@ -102,7 +102,7 @@
         <StackLayout orientation="horizontal">
           <CheckBox
             marginLeft="0"
-            :borderColor="'#DA0080'"
+            :borderColor="'#E9418A'"
             v-model="dataRegister.termsAndConditions"
             verticalAlignment="center"
           ></CheckBox>
@@ -132,7 +132,7 @@
 
         <ActivityIndicator 
           :busy="isLoading" 
-          color="#DA0080"
+          color="#E9418A"
           @busyChange="onBusyChanged" />
 
         <button 

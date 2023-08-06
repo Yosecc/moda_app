@@ -70,7 +70,7 @@
                 height="160" 
                 width="100%" 
                 ref="SliderBloque"
-                indicatorColor="#DA0080" 
+                indicatorColor="#E9418A" 
                 indicatorColorUnselected="rgba(0,0,0,.1)"
                 :showIndicator="false" 
                 indicatorOffset="200,60"

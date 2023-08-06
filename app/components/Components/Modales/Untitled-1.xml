@@ -1,0 +1,115 @@
+<!-- <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
+        <SearchBar 
+          col="0"
+          class="inputForm" 
+          hint="Buscar productos"
+          width="100%"
+          height="40"
+          marginTop="0"
+          borderRadius="8"
+          v-model="filterName"
+          @submit="onSubmitBusqueda"
+        />
+        <Image 
+          col="1"
+          src="res://filter"
+          horizontalAlignment="right"
+          width="40"
+          height="40"
+          marginTop="0"
+          @tap="openFilter"
+        />
+      </GridLayout> -->
+      <!-- <StackLayout row="1" > -->
+        <!-- <ScrollView orientation="horizontal">
+          <StackLayout paddingLeft="8" orientation="horizontal" >
+            
+            <StackLayout v-for="(item, key) in  pastillas" :key="`pastilla-${key}`" class="pastillaStore">
+              <StackLayout @tap="viewModalPastilla(item)">
+                <ImageCache 
+                  stretch="aspectFill"
+                  placeholderStretch="aspectFit"
+                  borderRadius="10"
+                  placeholder=""
+                  :src="item.pill_image"
+                  height="80"
+                  width="150"
+                  class="image shadow"
+                  rounded="false"
+                  
+                /> 
+               
+              </StackLayout>
+            </StackLayout>
+            
+          </StackLayout>
+        </ScrollView> -->
+        <!-- <AbsoluteLayout >
+          <RadListView 
+            ref="MainScroll"
+            layout="grid"
+            :items="products"
+            loadOnDemandMode="Auto"
+            loadOnDemandBufferSize="15"
+            scrollBarIndicatorVisible="true"
+            pullToRefresh="true"
+            scrollPositionProperty="right"
+            @loadMoreDataRequested="onLoadCargar"
+            @pullToRefreshInitiated="onPullToRefreshInitiated"
+            orientation="vertical"
+            top="0"
+            left="0"
+          >
+            <v-template key="product" >
+              <ProductBox
+                  :product="item"
+              ></ProductBox>
+            </v-template>
+          </RadListView>
+          <StackLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              v-if="products.length == 0 && cargado == false"
+              padding="0 16"
+            >
+            <WrapLayout
+              top="0"
+              left="0" 
+              width="100%"
+              height="100%"
+              
+            >
+              <StackLayout 
+                v-for="i in 6"
+                class="label_skeleton"
+                :key="`skeleto-buscador-${i}}`" 
+                height="270" 
+                width="50%"
+                stretch="aspectFill" 
+              />
+            </WrapLayout >
+          </StackLayout>
+            
+            <Label 
+              v-if="products.length == 0 && cargado == true" 
+              text="No se encontraron productos"  
+              fontSize="20" 
+              fontWeight="100" 
+              marginTop="30" 
+              textAlignment="center" 
+              horizontalAlignment="center" 
+              top="0"
+              left="0" 
+              width="100%"
+              textWrap
+            />
+
+            <Loading
+              v-if="isLoading"
+              :top="(alturaDispositivo - 240)" 
+              left="0"
+            />
+        </AbsoluteLayout > -->
+      <!-- </StackLayout> -->

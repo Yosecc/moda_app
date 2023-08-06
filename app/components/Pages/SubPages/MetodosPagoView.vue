@@ -122,6 +122,6 @@ export default {
 
 .oferta{
   @extend .precio;
-  color: #DA0080;
+  color: #E9418A;
 }
 </style>

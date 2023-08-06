@@ -17,7 +17,7 @@
             background="white"
             borderRadius="8" 
             :borderWidth="item.id == categorieActive ? 2 : 1" 
-            :borderColor="item.id == categorieActive ? '#DA0080' : '#4D4D4D'" 
+            :borderColor="item.id == categorieActive ? '#E9418A' : '#4D4D4D'" 
             padding="8 12 8 8"
             marginRight="8"
             v-for="(item, key) in categoriesComputed" 
@@ -326,12 +326,12 @@
       this.buscador = false
       this.numero = 1
       this.changeParamsStores({ search: '', page: 1, categorie: 'all' })
-      this.getStoreRosa().then((response)=>{
-        this.storess = new ObservableArray(response.data)
-        // console.log()
-        this.$refs.listStores.refresh();
-        this.loading = false
-      })
+      // this.getStoreRosa().then((response)=>{
+      //   this.storess = new ObservableArray(response.data)
+      //   // console.log()
+      //   this.$refs.listStores.refresh();
+      //   this.loading = false
+      // })
     },
     methods:{
       ...mapActions('stores',['getStoreRosa']),

@@ -24,7 +24,7 @@
             :width="wh_base"
             :height="wh_base"
             :borderRadius="sborderRadius"
-            backgroundColor="#DA0080"
+            backgroundColor="#E9418A"
         />
   </AbsoluteLayout>
 

@@ -33,7 +33,7 @@
               textAlignment="center" />
           </template> 
           <template slot="bottom">
-            <ActivityIndicator v-if="loading" marginTop="8" color="#DA0080" busy="true"  />
+            <ActivityIndicator v-if="loading" marginTop="8" color="#E9418A" busy="true"  />
             <Button 
               v-else
               class="btn btn-sm btn-info" 

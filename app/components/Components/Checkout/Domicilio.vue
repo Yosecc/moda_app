@@ -29,7 +29,7 @@
           <StackLayout 
             class="card" 
             :borderWidth="item.status ? 2:0"
-            :borderColor="item.status ? '#DA0080':''"
+            :borderColor="item.status ? '#E9418A':''"
           >
             <FlexboxLayout justifyContent="space-between" alignItems="flex-start">
               <StackLayout >
@@ -113,7 +113,7 @@
           <StackLayout 
             class="card" 
             :borderWidth="item.status ? 2:0"
-            :borderColor="item.status ? '#DA0080':''"
+            :borderColor="item.status ? '#E9418A':''"
           >
             <FlexboxLayout justifyContent="space-between" alignItems="center">
               

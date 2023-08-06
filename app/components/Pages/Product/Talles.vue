@@ -10,7 +10,7 @@
       @tap="ChangeTalle(talle)"
       minWidth="40"
       minHeight="40"
-      :background="talleChecked == talle ? '#DA0080':'white'" 
+      :background="talleChecked == talle ? '#E9418A':'white'" 
       borderRadius="8"
       verticalAlignment="center"
       horizontalAlignment="center"

@@ -38,13 +38,13 @@
           />
           <StackLayout>
             <Label fontSize="16" textWrap :text="item.label" margin="0" padding="0" />
-            <Label :text="item.price | moneda" fontWeight="800" fontSize="18" color="#DA0080"/>
+            <Label :text="item.price | moneda" fontWeight="800" fontSize="18" color="#E9418A"/>
           </StackLayout>
         </StackLayout>
       </v-template>
     </RadListView>
     <StackLayout row="1" v-else>
-      <ActivityIndicator marginTop="30" busy="true" color="#DA0080" v-if="loading"/>
+      <ActivityIndicator marginTop="30" busy="true" color="#E9418A" v-if="loading"/>
       <Label 
         v-if="message"
         :text="message"

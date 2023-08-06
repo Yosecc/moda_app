@@ -3,7 +3,7 @@
     <StackLayout
       class="card"
       :borderWidth="metodo.active ? 2:0"
-      :borderColor="metodo.active ? '#DA0080':''"
+      :borderColor="metodo.active ? '#E9418A':''"
     >
       
         <!--  -->
@@ -56,7 +56,7 @@
           }
         }else{
           if(!this.metodo.active){
-             return '#DA0080'
+             return '#E9418A'
           }else{
             return '#880E4F'
           }

@@ -299,7 +299,7 @@ const actions = {
 
     async processCart(context, id) {
         const response = await Api.post('car/process_cart', { local_cd: id })
-
+        console.log('axios', response)
         return response
     },
     openCar(context) {

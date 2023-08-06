@@ -19,7 +19,7 @@
       width="100%"
       :selectedPage="keySelected"
       android:indicatorAnimation="slide" 
-      indicatorColor="#DA0080"
+      indicatorColor="#E9418A"
       indicatorColorUnselected="#EEEEEE"
       >
         <CarouselItem 

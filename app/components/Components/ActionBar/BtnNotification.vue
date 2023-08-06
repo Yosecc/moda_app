@@ -30,7 +30,7 @@
         left="24"
         width="15"
         height="15"
-        backgroundColor="#DA0080"
+        backgroundColor="#E9418A"
         borderRadius="100%"
         v-show="notificationCount > 0"
         justifyContent="center"

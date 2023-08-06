@@ -103,7 +103,7 @@
         font-weight: 200;
       }
       &-mount{
-        color: #DA0080;
+        color: #E9418A;
         font-size: 20;
         font-weight: 900;
         padding: 0;

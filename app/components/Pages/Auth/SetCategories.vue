@@ -155,9 +155,9 @@
       width:          100%;
       border-radius:  30;
       &.active{
-        background: #DA0080;
+        background: #E9418A;
         color: white;
-        border-color: #DA0080;
+        border-color: #E9418A;
       }
     }
     // Custom styles

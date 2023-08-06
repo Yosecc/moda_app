@@ -31,7 +31,7 @@
           <StackLayout 
             class="card" 
             :borderWidth="item.status ? 2:0"
-            :borderColor="item.status ? '#DA0080':''"
+            :borderColor="item.status ? '#E9418A':''"
           >
             <GridLayout columns="*, auto">  
             

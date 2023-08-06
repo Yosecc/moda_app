@@ -58,6 +58,7 @@ export default {
         cache.delete('client')
         cache.delete('token')
         cache.clear()
+        this.$navigator.navigate('/login',this.options)
       }
       
       if(!this.item.disabled){

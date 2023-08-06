@@ -17,7 +17,7 @@
               hint="Ingrese el código del cupón" 
             />
             <button  v-if="!isLoadingCanje" @tap="onCanjearCupon" text="Enviar" marginTop="8" class="btn btn-primary btn-sm" />
-            <ActivityIndicator v-else busy="true" color="#DA0080" marginTop="8" />
+            <ActivityIndicator v-else busy="true" color="#E9418A" marginTop="8" />
           </StackLayout>
 
           <Label text="Tus cupones" fontWeight="900" fontSize="18" margin="16 0 8 0" />

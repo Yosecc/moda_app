@@ -7,7 +7,7 @@
           text="Recuperar contraseña" 
           fontSize="20"
           fontWeight="900"
-          color="#DA0080"
+          color="#E9418A"
           marginBottom="24"
         />
 

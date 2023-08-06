@@ -52,7 +52,7 @@
                     >
                       <FormattedString>
                         <span  text="Compra mínima en la tienda: "></span>
-                        <span :text="store.min | moneda " style="color: #DA0080"></span>
+                        <span :text="store.min | moneda " style="color: #E9418A"></span>
                       </FormattedString>
                     </label>
                   </StackLayout>
