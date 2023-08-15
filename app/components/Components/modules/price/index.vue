@@ -15,7 +15,7 @@
  -->
       <FlexboxLayout alignItems="flex-end"  col="0" row="0" >
         <label 
-          v-if="!isProduct"
+          v-if="price != null && !isProduct && priceForce==''"
           top="2"
           left="0"
           :text="price | moneda"
@@ -25,9 +25,36 @@
           class="price" 
           color="black"  
         />
+
+        <label 
+          v-if="priceForce!=''"
+          top="2"
+          left="0"
+          :text="priceForce | moneda"
+          :fontSize="fontSizePrice"
+          fontWeight="800"
+          :class="priceOffert ? 'product_text-mount':''"
+          class="price" 
+          color="black"  
+        />
+
+        <label 
+          v-if="price == null"
+          top="2"
+          left="0"
+          text="sin precio"
+          textTransform="uppercase"
+          fontSize="14"
+          fontWeight="800"
+          class="price" 
+          color="#a8a8a8"
+          background="#e6e6e6"
+          marginTop="8"
+        />
+       
        
         <Label 
-          v-if="isProduct"
+          v-if="isProduct && price!=null"
           :text="price | moneda"
           :fontSize="fontSizePrice" 
           fontWeight="900" 
@@ -38,7 +65,7 @@
         <label 
           col="0"
           row="0"
-          v-if="priceOffert && prev_price && (price < prev_price)"
+          v-if="prev_price != null && priceOffert && prev_price && (price < prev_price) && isPriceTachado"
           :text="prev_price | moneda" 
           class="price"
           fontSize="12"
@@ -73,6 +100,13 @@
         fontSizePrice:{
           type: Number,
           default: 24
+        },
+        isPriceTachado:{
+          type: Boolean,
+          default: true
+        },
+        priceForce:{
+          default: ''
         }
     },
     filters: {

@@ -29,27 +29,7 @@
     margin="0"
     padding="0"
   >
-  <CarouselItem 
-      
-      verticalAlignment="middle"
-      paddingRight="16"
-      paddingLeft="16"
-      paddingBottom="0"
-    
-    >
-      <ImageCache 
-        stretch="aspectFill"
-        placeholderStretch="aspectFit"
-        borderRadius="10"
-        placeholder=""
-        src="~/assets/prueba.jpeg"
-        height="100%"
-        class="imageCache"
-        rounded="false"
-       
-        ref="imageCache"
-      /> 
-    </CarouselItem>
+  
     <CarouselItem 
       v-for="(i,key) in computedSliders" 
       :key="`slide-${key}`"

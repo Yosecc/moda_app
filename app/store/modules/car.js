@@ -294,12 +294,12 @@ const actions = {
     },
     async deleteProduct(context, val) {
         const response = await Api.post('car/deleteProduct', { product_id: val })
+        console.log('response', response)
         return response
     },
 
     async processCart(context, id) {
         const response = await Api.post('car/process_cart', { local_cd: id })
-        console.log('axios', response)
         return response
     },
     openCar(context) {

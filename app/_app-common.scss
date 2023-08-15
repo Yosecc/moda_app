@@ -873,3 +873,41 @@ ActionBar {
         // @extend .shadow;
     }
 }
+
+.circle {
+    padding: 0;
+    margin: 0;
+    width: 20;
+    height: 20;
+    border-width: .7;
+    border-color: #dcdcdc;
+    border-radius: 100%;
+    font-size: 8;
+    font-weight: 800;
+    text-alignment: center;
+    text-align: center;
+    color: #efefef;
+    &.negativo {
+        margin-left: -8;
+    }
+    &.negro {
+        color: black;
+    }
+    &.talle {
+        background: white;
+        color: black;
+        &.cuadrado {
+            width: 40;
+        }
+        &.negativo {
+            margin-left: -7;
+        }
+    }
+    &.grid {
+        width: 30;
+        height: 30;
+        border-width: 1;
+        margin-right: 8;
+        margin-bottom: 8;
+    }
+}

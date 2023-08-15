@@ -1,7 +1,6 @@
 <template lang="html">
   <FlexboxLayout  
     flexWrap="wrap" 
-    
     justifyContent="flex-start"
   >
     <StackLayout

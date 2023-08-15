@@ -103,9 +103,12 @@
   import SlideCategories from '~/components/Components/SlideCategories.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
-  import cache from '@/plugins/cache'
+  
+  import helpersMixin from '~/mixins/helpersMixin'
+
+
   export default {
-    mixins: [],
+    mixins: [helpersMixin],
     props: {
       isSubcategorias:{
         type: Boolean,
@@ -254,30 +257,7 @@
       /** 
        * TODO MIXIN 
        */
-      processUltimasBusquedas(){
-        let object = null
-        if(cache.get('last_search')){
-          object = JSON.parse(cache.get('last_search'))
-          if(!object.includes(this.filter)){
-            object.unshift(this.filter)
-          }
-          cache.set('last_search', JSON.stringify(object))
-        }else{
-          cache.set('last_search', JSON.stringify([this.filter]))
-        }
-        this.getCache()
-      },
-      getCache(){
-        this.ultimasbusquedas = new ObservableArray([])
-        if(cache.get('last_search')){
-          let data = JSON.parse(cache.get('last_search'))
-          data.forEach((e,i)=>{
-            if(e != '' && i <= 5 ){
-              this.ultimasbusquedas.push({ type:"cache", data: e })
-            }
-          })
-        }
-      },
+      
       /**
        * CATEGOIRES Y SUBCATEGORIES
        */

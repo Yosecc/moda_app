@@ -1,5 +1,5 @@
 <template lang="html">
-  <Page background="#FDFDFD" @loaded="onLoaded" >
+  <Page background="#FDFDFD">
     <HeaderDefault :back="false" />
    
     <GridLayout  rows="*,auto">
@@ -12,11 +12,12 @@
           scrollPositionProperty="right"
           orientation="vertical"
           loadOnDemandMode="Auto"
-          :loadOnDemandBufferSize="4"
+          :loadOnDemandBufferSize="5"
           @pullToRefreshInitiated="onPullToRefreshInitiated"
           @loadMoreDataRequested="onLoadCargar"
           @scrollStarted="onScrolled"
           @scrolled="onScroll"
+          @scrollEnded="scrollEnded"
           top="0"
           left="0"
         >
@@ -85,21 +86,8 @@
                   marginLeft="16" 
                   marginRight="16"
                   fontWeight="900"
-                  row="0"
-                  
+                  row="0" 
                 />
-                <!-- <StackLayout 
-                  
-                  class="label_skeleton"
-                  width="150"
-                  height="16"
-                  marginBottom="0" 
-                  marginLeft="16" 
-                  marginRight="16"
-                  fontWeight="900"
-                  row="0"
-                  horizontalAlignment="left"
-                /> -->
 
                 <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length && !item.isFin">
                   <StackLayout 
@@ -120,7 +108,6 @@
                 <RadListView 
                   ref="producsScroll"
                   layout="grid"
-                  :height="item.alturaBase"
                   :items="item.data"
                   row="1"
                   v-show="item.data.length"
@@ -128,12 +115,11 @@
                   <v-template key="product">
                     <ProductBox
                         :product="item"
-                        height="340"
+                        
                     ></ProductBox>
                   </v-template>
                   
                 </RadListView>
-
               </GridLayout>
             </StackLayout>
           </v-template>
@@ -165,31 +151,24 @@
   import SliderComponent from '../Components/SliderComponent.vue'
   import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
   import SlideCategories from '../Components/SlideCategories.vue'
-  import Stores from '~/components/Components/Stores.vue'
   import Marcas from '~/components/Components/Marcas.vue'
   import Bloques from '~/components/Components/Bloques/index.vue'
-  import recentlySeen from '../Components/recentlySeen.vue'
   import Loading from '~/components/Components/Loading.vue'
-
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
-  import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
+
   import { firebase } from '@nativescript/firebase';
   import PromotionsComponent from '~/components/Components/PromotionsComponent.vue'
   import { screen } from "@nativescript/core/platform";
-
-  import Api from '~/services'
+  import moment from 'moment'
   export default {
     mixins:[ homeMixin, productMixin ],
     components:{
       SliderComponent,
       HeaderDefault,
       SlideCategories,
-      Stores,
       PromotionsComponent,
-      recentlySeen,
       ProductBox,
-      StoreBox,
       Marcas,
       Bloques,
       Loading
@@ -237,25 +216,16 @@
           },
         ]),
         alturaDispositivo: 0,
-        isFin: false
+        isFin: false,
+        conteo: 0,
       };
     },
     watch:{  
-      async sliders(to){
-        await this.$forceUpdate()
-      }
     },
     computed:{
-      ...mapState(['drawer','directionDrawer','sliders','ofertas','isLoadPage']),
-      ...mapState('categories',['orderedCategories','categories','categorieActive']),
-      ...mapState('products',['products','productsRecentlySeen','parametrosSearch']),
-      ...mapState('stores',['storesPopular']),
-      computedProducts(){
-        if (this.categorieActive != 0) {
-          return this.products.filter((element)=>element.categoria.id == this.categorieActive)
-        }
-        return this.products
-      },
+      /**
+       * CALCULOS
+       */
       h(){
         return this.alturaDispositivo  - 180
       }
@@ -268,64 +238,149 @@
       this.cargaHome()
     },
     methods:{
-      ...mapActions('products',['getProductsRosa','getUltimosproductos','getCategorieSearch','getSearch','getBloques']),
-      ...mapActions(['getHome', 'getSliders','getPromociones','getCategories']),
-      ...mapActions('stores', ['getStores', 'getStoreRosa']),
+     /**
+      * GET SLIDERS
+      * GET PROMOCIONES
+      * GET CATEGORIAS
+      * CHANGE LOADING BOOLEAN
+      */
+      ...mapActions(['getSliders','getPromociones','getCategories']),
       ...mapMutations(['changeisLoadPage']),
+      /**
+       * GET PRODUCTS SEARCH
+       * GET BLOQUES
+       * CHANGE PARAMS SEARCH PRODUCTS
+       */
+      ...mapActions('products',['getCategorieSearch','getSearch','getBloques']),
       ...mapMutations('products',['changeParamsProductsSearch']),
-      onLoaded({object}){
-        // const deviceHeightDP = ;
-        // alert("Altura del dispositivo en DP:" + this.alturaDispositivo);
-      },
+      /**
+       * GET STORE
+       */
+      ...mapActions('stores', ['getStoreRosa']),
+      /**
+       * GET PRODUCTS HOY
+       * GET SLIDERS
+       * GET STORES
+       */
       cargaHome(){
-        this.page = 1
-        this.onGetProducts()
-        this.getSliders({ slide_category: '0,1' }).then((response) => {
+        console.log('1')
+        // this.onGetProducts()
+        this.onGetSliders()
+        this.onGetStores()
+        this.onSearchBloques()
+        this.onGetPromociones()
+        this.onGetCategories()
+        this.defineHome()
+        this.$refs.arrayHome.refresh()
+      },
+
+      /** ACCIONES */
+      async onGetProducts(){
+        this.changeParamsProductsSearch({
+          sections:[1,3,6,4,2],
+          search:'',
+          start: this.arrayHome.find((e)=> e.name =='productos').data.length,
+          length:8,
+          storeData:1,
+          inStock:1,
+          betweenDates: moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD'),
+          order:'register DESC',
+          cacheTime:1200
+        })
+        this.isLoadingProducts = true
+        this.arrayHome.find((e)=> e.name =='productos').isFin = false
+        this.isFin = false 
+
+        await this.getSearch().then((response)=>{
+
+          if(response.length == 0){
+            this.isLoadingProducts = false
+            this.isFin = true 
+            this.arrayHome.find((e)=> e.name =='footer').data = true
+            this.arrayHome.find((e)=> e.name =='productos').isFin = true
+            this.$refs.arrayHome.refresh()
+            return false
+          }
+          
+          this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)
+          // this.arrayHome.find((e)=> e.name =='productos').alturaBase = (340*2) * this.page
+          this.isLoadingProducts = false
+          this.$refs.arrayHome.refresh()
+
+          return true
+        })
+
+
+      },
+      async onGetSliders(){
+        await this.getSliders({ slide_category: '0,1' }).then((response) => {
           this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
         })
-        this.getStoreRosa().then((response) => {
+      },
+      async onGetStores(){
+        await this.getStoreRosa().then((response) => {
           let arr = []
           this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(Object.values(response.data))
           this.$refs.arrayHome.refresh()
         })
-        
-        this.searchBloques()
-        this.onGetPromociones()
-        this.onGetCategories()
-        this.defineHome()
       },
-      onGetPromociones(){
-        this.arrayHome.forEach(element => {
-          if(element.name == 'promociones'){
-            this.getPromociones().then((response)=>{
-              element.data = new ObservableArray(response)
-            })
+      async onSearchBloques(){
+        await this.getBloques().then((response)=>{
+          this.arrayHome.find((e)=> e.name == 'bloques').data =  new ObservableArray(response)
+        })
+      },
+      async onGetPromociones(){
+        await this.getPromociones().then((response)=>{
+          this.arrayHome.find((e)=> e.name == 'promociones').data =  new ObservableArray(response)
+        })
+      },
+      async onGetCategories(){
+        await this.getCategories().then((response)=>{
+          this.arrayHome.find((e)=> e.name == 'categories').data =  new ObservableArray(response)
+        })
+      },
+      
+      /**
+       * ACTIONS RADLISTVIEW
+       */
+      async onLoadCargar(args){
+        this.conteo++
+        await this.onGetProducts()
+          if(this.isFin){
+            args.returnValue = false;
+            args.object.notifyAppendItemsOnDemandFinished(0, true);
+            return 
+          }else{
+            if( this.conteo > 1 ){
+              this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+            }
+            args.returnValue = true;
+            args.object.notifyAppendItemsOnDemandFinished(0, false);
           }
+      },   
+      async onPullToRefreshInitiated ({ object }) {
+        this.arrayHome.find((e)=> e.name =='productos').data = new ObservableArray([])
+        await this.$nextTick( async () => {
+          await this.cargaHome()
+          object.refreshing = false;
+          object.notifyPullToRefreshFinished();
+          this.$refs.arrayHome.refresh()
         });
       },
-      onGetCategories(){
-        this.arrayHome.forEach(element => {
-          if(element.name == 'categories'){
-            this.getCategories().then((response)=>{
-              element.data = new ObservableArray(response)
-            })
-          }
-        });
-      },
-      searchBloques()
-      {
-        this.arrayHome.forEach(element => {
-          if(element.name == 'bloques'){
-            this.getBloques().then((response)=>{
-              element.data = new ObservableArray(response)
-              this.$refs.arrayHome.refresh()
-            })
-          }
-        });
-      },
+      /**
+       * UTILIDADES
+       */
       arrowTop(){
         let scrollv = this.$refs.arrayHome.nativeView;
         scrollv.scrollToIndex(0,true)
+      },
+      scrollEnded(args){
+        if(this.$refs.arrayHome != undefined ){
+          this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
+        }
+        if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.arrayHome != undefined){
+          this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+        }
       },
       onScroll({ scrollOffset }){
         let scrollv = this.$refs.arrayHome.nativeView;
@@ -347,40 +402,9 @@
           this.viewArrowTop = false
         }
       },
-      onLoadCargar(args){
-          if(this.last_page > 0 && this.page > this.last_page){
-            args.returnValue = false;
-            args.object.notifyAppendItemsOnDemandFinished(0, true);
-            return
-          }else{
-            this.page = this.page + 1
-            this.onGetProducts().then((response)=>{
-              if(!response){
-                // this.isFin = true
-                args.returnValue = false;
-                args.object.notifyAppendItemsOnDemandFinished(0, true);
-                return 
-              }else{
-                args.returnValue = true;
-                args.object.notifyAppendItemsOnDemandFinished(0, false);
-              }
-            })
-              
-          }
-      },   
-      async onPullToRefreshInitiated ({ object }) {
-        console.log('Pulling...');
-        await this.$nextTick( async () => {
-          await this.cargaHome()
-          // this.isFin = false
-          object.refreshing = false;
-          object.notifyPullToRefreshFinished();
-          this.$refs.arrayHome.refresh()
-        });
-      },
       onScrolled (args) {
-        this.page = this.page + 1
-        this.onGetProducts()
+        // this.page = this.page + 1
+        // this.onGetProducts()
       
         // this.getCategorieSearch({val: 1, page: 1, product_paginate: 4}).then((response)=>{
         //   console.log(response)
@@ -393,40 +417,7 @@
         //   this.onGetProducts()
         // }
       },
-      async onGetProducts(){
-        this.changeParamsProductsSearch({
-          sections:[1,3,6,4,2],
-          search:'',
-          start: this.arrayHome.find((e)=> e.name =='productos').data.length + 1,
-          length:15,
-          storeData:1,
-          inStock:1,
-          betweenDates: moment().format('YYYY-MM-DD')+','+  moment().add(1, 'd').format('YYYY-MM-DD'),
-          order:'register DESC',
-          cacheTime:1200
-        })
-        this.isLoadingProducts = true
-        this.arrayHome.find((e)=> e.name =='productos').isFin = false
-
-        
-        await this.getUltimosproductos()
-        .then((response)=>{
-          // console.log('response', response)
-          if(response.length == 0){
-            this.isLoadingProducts = false
-            this.isFin = true 
-            this.arrayHome.find((e)=> e.name =='footer').data = true
-            this.arrayHome.find((e)=> e.name =='productos').isFin = true
-            this.$refs.arrayHome.refresh()
-            return false
-          }
-          this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)
-          this.arrayHome.find((e)=> e.name =='productos').alturaBase = (340*2) * this.page
-          this.isLoadingProducts = false
-          this.$refs.arrayHome.refresh()
-          return true
-        })
-      },
+      
       onNavigateSearch(){
         this.$navigator.navigate('/search',{
           transition: {

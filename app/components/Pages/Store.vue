@@ -44,6 +44,7 @@
             <v-template if="item.name == 'buscador'">
               <StackLayout
                 padding="16 16 8 16"
+                background="#EEEEEE"
               >
                 <FlexboxLayout 
                   alignItems="center"
@@ -84,9 +85,10 @@
                 top="0"
                 left="0"
                 width="100%"
-                padding="0"
-                margin="8 0"
+                padding="8 0"
+                margin="0"
                 v-show="item.data.length"
+                background="#EEEEEE"
               >
                 <Label 
                   text="Rebajas" 
@@ -99,6 +101,7 @@
                   ref="productsSscrollOfertas"
                   :items="item.data"
                   orientation="horizontal"
+                  margin="8 0 16 0"
                 >
                   <v-template key="productProferta"  >
                     <ProductBox 
@@ -109,6 +112,9 @@
                       :fontSizePrice="16"
                       :isStore="true"
                       :isBorders="false"
+                      background="white"
+                      marginRight="8"
+                      borderRadius="4"
                     ></ProductBox>
                   </v-template>
                 </RadListView>
@@ -118,14 +124,28 @@
                   padding="0 8 8 8"
                   margin="0 16"
                   justifyContent="space-between"
-                  >
+                  @tap="onViewOfertas"
+                 
+                >
                     <Label padding="0" text="Ver todas las rebajas" fontSize="12"  fontWeight="200" />
-                    <image src="res://arrow_right" height="12" opacity=".5" stretch="aspectFit" />
+                    <FlexboxLayout justifyContent="center" alignItems="center" padding="0" margin="0" height="20" width="20" >
+                      <image v-if="!item.loadRebajas" src="res://arrow_right" height="12"  opacity=".5" stretch="aspectFit" />
+                      <ActivityIndicator 
+                        v-if="item.loadRebajas" 
+                        busy="true" 
+                        margin="0"
+                        padding="-"
+                        height="20" width="20"
+                        color="#E9418A" 
+                        horizontalAlignment="center" 
+                        verticalAlignment="center"
+                      />
+                    </FlexboxLayout>
                   </FlexboxLayout>
               </StackLayout>
             </v-template>
             <v-template if="item.name == 'categories'">
-              <GridLayout columns="*, auto" rows="*" class="degrad" height="70">
+              <GridLayout columns="*, auto" rows="*" class="degrade2" height="70">
                 <ScrollView v-if="item.data.length" col="0" row="0" orientation="horizontal" padding="0" :scrollBarIndicatorVisible="false">
                   <StackLayout orientation="horizontal"  padding="16 0 16 16" background="" >
                     <StackLayout 
@@ -424,7 +444,8 @@ export default {
         {
           name: "ofertas",
           data: new ObservableArray([]),
-          cargado: false
+          cargado: false,
+          loadRebajas:false
         },
         {
           name: "categories",
@@ -570,20 +591,7 @@ export default {
   mounted(){
     this.alturaDispositivo = screen.mainScreen.heightDIPs
 
-    this.changeParamsProducts({
-      store: this.idStore,
-      categories: '', 
-      sections: this.section, 
-      start: 0, 
-      length: 16,
-      search: "",
-      no_product_id: null,
-      categorie: "",
-      plan: "",
-      years: 1,
-      order: "manually",
-      daysExpir: 365,
-    })
+    this.limpiarBuscador()
 
     this.onGetPromociones()
 
@@ -617,7 +625,7 @@ export default {
     
     /** LOAD BASIC PAGE */
     async onGetPromociones(){
-      await this.getPromociones(id).then((response)=>{
+      await this.getPromociones(this.idStore).then((response)=>{
         response.data.custom.forEach((e)=>{
           if(e.title != null){
             e.type = 'custom'
@@ -653,6 +661,7 @@ export default {
         start: 0, 
         length: 5,
       })
+      
       
       await this.getProductsStoreRosa().then((response)=>{
         response.forEach((e)=>{
@@ -738,11 +747,7 @@ export default {
 
         this.setStoreCategorieActive(this.store.category_default)
 
-        this.changeParamsProducts({ 
-          sections: this.section,  
-          start: 0, 
-          length: 15,
-        })
+        this.limpiarBuscador()
 
         await this.onGetProducts()
         this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Auto'
@@ -750,12 +755,11 @@ export default {
       });
     },
     onSearch(params){
-  
       this.setTextBuscador(params.filter)
-
-      this.updateCategoryPage()
-
+  
       this.busquedaSimple()
+      
+      this.updateCategoryPage()
 
       if(params.noClose && params.noClose===true){
         return
@@ -766,6 +770,31 @@ export default {
     },
 
     /** UTILIDADES */
+    async  onViewOfertas(){
+
+      let products = []
+      this.limpiarBuscador()
+      this.changeParamsProducts({ sections: 'ofertas' })
+
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'ofertas').loadRebajas = true
+      this.refreshList()
+      await this.getProductsStoreRosa().then((response)=>{
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'ofertas').loadRebajas = false
+      this.refreshList()
+        this.$navigator.modal('/gridProducts', { 
+          fullscreen: true, 
+          id: this.idStore+'ss', 
+          props: { 
+            products: response,
+            store: this.store
+          } 
+        })
+      }).catch((error)=>{
+        alert('error')
+      })
+
+      
+    },
     busquedaSimple(){
       this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data =  new ObservableArray([])
       this.arrayEstructuraStorePage.find((e)=> e.name == 'footer').data = false
@@ -864,6 +893,26 @@ export default {
         this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').iconFilter = 'res://filter_active'
       }
     },
+    limpiarBuscador()
+    {
+      this.resetStoreSubcategorieActive()
+      this.changeParamsProducts({
+        store: this.idStore,
+        categories: '', 
+        sections: this.section, 
+        start: 0, 
+        length: 15,
+        search: "",
+        no_product_id: null,
+        categorie: "",
+        plan: "",
+        years: 1,
+        order: "manually",
+        daysExpir: 365,
+      })
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'buscador').text = 'Buscar productos'
+      this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').iconFilter = 'res://filter'
+    }
    
 
     

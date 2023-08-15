@@ -133,7 +133,6 @@ export default {
       // console.log(storesCarsProductsB);
       return storesCarsProductsB
     }
-    
   },
   data() {
     return {

@@ -1,135 +1,146 @@
 <template lang="html">
   <Page actionBarHidden="false" >
-
     <HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" :isBtnPromotions="true" >
-        <Label col="1" fontWeight="900"  fontSize="16" padding="0 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Buscador" />
-      </HeaderCustom>
-		<GridLayout rows="auto, *">
-			
-			<GridLayout paddingTop="4" row="1" rows="auto,*">
-
-        <GridLayout row="0" columns="*,auto" rows="*" paddingLeft="16" paddingBottom="8" paddingRight="16">
-          <SearchBar 
-            col="0"
-            class="inputForm" 
-            hint="Buscar productos"
-            width="100%"
-            height="40"
-            marginTop="16"
-            borderRadius="8"
-            v-model="filterName"
-            @textChange="onTextChanged"
-            @submit="onSubmitBusqueda"
-          />
-          <Image 
-            col="1"
-            src="res://filter"
-            horizontalAlignment="right"
-            width="40"
-            height="40"
-            marginTop="16"
-            @tap="openFilter"
-          />
-        </GridLayout>
-				
-        <StackLayout  row="1" v-if="search">
-          <AbsoluteLayout >
-            <RadListView 
-              ref="productsScroll"
-              layout="grid"
-              :items="products"
-              loadOnDemandMode="Auto"
-              loadOnDemandBufferSize="15"
-              scrollBarIndicatorVisible="true"
-              pullToRefresh="true"
-              scrollPositionProperty="right"
-              @pullToRefreshInitiated="onPullToRefreshInitiated"
-              @loadMoreDataRequested="onLoadCargar"
-              orientation="vertical"
-              top="0"
-              left="0"
-            >
-              <v-template key="product" >
-                <ProductBox
-                    :product="item"
-                ></ProductBox>
-              </v-template>
-            </RadListView>
-            <StackLayout
-              top="0"
-              left="0" 
-              width="100%"
-              height="100%"
-              v-if="products.length == 0"
-              padding="0 16"
-            >
-            <WrapLayout
-              top="0"
-              left="0" 
-              width="100%"
-              height="100%"
-              
-            >
-              <StackLayout 
-                v-for="i in 6"
-                class="label_skeleton"
-                :key="`skeleto-buscador-${i}}`" 
-                height="270" 
-                width="50%"
-                stretch="aspectFill" 
-              />
-            </WrapLayout >
-            </StackLayout>
-            
-            <Loading
-              v-if="isLoadingProducts"
-              :top="(alturaDispositivo - 260)" 
-              left="0"
-            />
-            
-          </AbsoluteLayout >
-        </StackLayout>
-        <GridLayout
-          rows="*"
-          width="100%"
-          height="100%"
-          row="1"
-          v-if="!search"
+      <Label col="1" fontWeight="900"  fontSize="16" padding="0 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Buscador" />
+    </HeaderCustom>
+    
+      <GridLayout background="" padding="0" rows="*">
+        <RadListView 
+          ref="arraySearch"
+          :items="arraySearch"
+          scrollBarIndicatorVisible="true"
+          pullToRefresh="true"
+          top="0"
+          left="0"
+          row="0"
+          
+          padding="0"
         >
-          <RadListView 
-            class="listSelect"
-            ref="listUltimasBusquedas"
-            for="item in ultimasbusquedas"
-            row="1"
-          >
-            <v-template if="item.type == 'store'" >
-              <StackLayout @tap="onViewStore(item.data)" marginBottom="0"  class="option">
-                <FlexboxLayout justifyContent="space-between" alignItems="center" >
-                  <StackLayout orientation="horizontal">
-                    <ImageCache placeholder="res://eskeleton" marginRight="16" :src="item.data.logo" width="40" height="40" stretch="aspectFill" />
-                    <label :text="item.data.name" textTransform="uppercase" fontWeight="900" />
+          <v-template if="item.name == 'categories'">
+            <StackLayout padding="0" row="0">
+              <ScrollView orientation="horizontal" :scrollBarIndicatorVisible="false">
+                <StackLayout orientation="horizontal" padding="16 8 8 8">
+                  <StackLayout 
+                    background="white"
+                    borderRadius="8" 
+                    :borderWidth="item.id == categoriaActivaLocal ? 2 : 1" 
+                    :borderColor="item.id == categoriaActivaLocal ? '#E9418A' : '#4D4D4D'" 
+                    padding="8 12 8 8"
+                    marginRight="8"
+                    v-for="(item, key) in categoriesBase" 
+                    :key="`categorsie-store-${key}}`"
+                    orientation="horizontal"
+                    @tap="onTapCategories(item.id)"
+                  >
+                    <Image width="20" :src="item.icon" marginRight="4" verticalAlignment="middle" stretch="aspectFit" />
+                    <label :text="item.name" verticalAlignment="middle" fontSize="12" fontWeight="300" />
                   </StackLayout>
-                  <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
-                </FlexboxLayout>
-              </StackLayout>
-            </v-template>
-
-            <v-template if="item.type == 'cache'" >
-              <StackLayout @tap="setFilter(item.data)" class="option">
-                <FlexboxLayout justifyContent="space-between" alignItems="center" >
-                  <StackLayout orientation="horizontal">
-                    <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
-                    <label :text="item.data" />
+                </StackLayout>
+              </ScrollView>
+            </StackLayout>
+          </v-template>
+          <v-template if="item.name == 'buscador'">
+            <SearchBar 
+              col="0"
+              class="inputForm" 
+              hint="Buscar productos"
+              width="100%"
+              height="40"
+              borderRadius="8"
+              v-model="filter"
+              @textChange="onTextChanged"
+              @submit="onSubmitBusqueda"
+            />
+          </v-template>
+          <v-template if="item.name == 'products'">
+            <GridLayout background="" rows="*">
+              <AbsoluteLayout row="0" >
+                <RadListView 
+                  ref="producsScroll"
+                  layout="grid"
+                  :items="item.data"
+                  row="1"
+                  v-show="item.data.length"
+                >
+                  <v-template key="product" >
+                    <ProductBox
+                        :product="item"
+                    ></ProductBox>
+                  </v-template>
+                </RadListView>
+                <!-- <StackLayout
+                  top="0"
+                  left="0" 
+                  width="100%"
+                  height="100%"
+                  v-if="item.data.length == 0"
+                  padding="0 16"
+                >
+                <WrapLayout
+                  top="0"
+                  left="0" 
+                  width="100%"
+                  height="100%"
+                  
+                >
+                  <StackLayout 
+                    v-for="i in 6"
+                    class="label_skeleton"
+                    :key="`skeleto-buscador-${i}}`" 
+                    height="270" 
+                    width="50%"
+                    stretch="aspectFill" 
+                  />
+                </WrapLayout >
+                </StackLayout> -->
+                <Loading
+                  v-if="isLoadingProducts"
+                  :top="(alturaDispositivo - 260)" 
+                  left="0"
+                />
+              </AbsoluteLayout >
+            </GridLayout>
+          </v-template>
+          <v-template if="item.name == 'ultimasbusquedas'">
+            <GridLayout
+              rows="*"
+            >
+              <RadListView 
+                class="listSelect"
+                ref="listUltimasBusquedas"
+                :items="item.data"
+                row="1"
+              >
+                <v-template if="item.type == 'store'" >
+                  <StackLayout @tap="onViewStore(item.data)" marginBottom="0"  class="option">
+                    <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                      <StackLayout orientation="horizontal">
+                        <ImageCache placeholder="res://eskeleton" marginRight="16" :src="item.data.logo" width="40" height="40" stretch="aspectFill" />
+                        <label :text="item.data.name" textTransform="uppercase" fontWeight="900" />
+                      </StackLayout>
+                      <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
+                    </FlexboxLayout>
                   </StackLayout>
-                  <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
-                </FlexboxLayout>
-              </StackLayout>
-            </v-template>
-          </RadListView>
-        </GridLayout>
+                </v-template>
 
-			</GridLayout>        
-		</GridLayout>     
+                <v-template if="item.type == 'cache'" >
+                  <StackLayout @tap="setFilter(item.data)" class="option">
+                    <FlexboxLayout justifyContent="space-between" alignItems="center" >
+                      <StackLayout orientation="horizontal">
+                        <image marginRight="16" src="~/assets/icons/search.png" width="30" height="30" stretch="aspectFill" />
+                        <label :text="item.data" />
+                      </StackLayout>
+                      <image marginRight="16" src="~/assets/icons/linkarrow.png" width="30" height="30" stretch="aspectFill" />
+                    </FlexboxLayout>
+                  </StackLayout>
+                </v-template>
+              </RadListView>
+            </GridLayout>
+
+          </v-template>
+        </RadListView>
+      </GridLayout>     
+   
   </Page>
 </template>
   
@@ -146,9 +157,10 @@
   import storeMixin from '~/mixins/storeMixin.js'
   import { screen } from "@nativescript/core/platform";
   import Loading from '~/components/Components/Loading.vue'
+  import helpersMixin from '~/mixins/helpersMixin'
 
 	export default {
-    mixins: [storeMixin],
+    mixins: [storeMixin, helpersMixin],
     props:{
       params:{
         type: Object|Array,
@@ -168,16 +180,36 @@
         last_page: 6,
         isLoadingProducts: false,
         products: new ObservableArray([]),
-        filterName: '',
+        filter: '',
         search: false,
         ultimasbusquedas: new ObservableArray([]),
-        sections: [1,3,6,4,2],
+        sections: [1,2,3,4,6],
+        sectionsDefault: [1,2,3,4,6],
         storess: [],
-        alturaDispositivo: 0
+        alturaDispositivo: 0,
+        categoriaActivaLocal: 0,
+        arraySearch: new ObservableArray([
+          {
+            name: 'categories',
+            data: new ObservableArray([])
+          },
+          {
+            name: 'buscador',
+            data: ''
+          },
+          {
+            name: 'products',
+            data: new ObservableArray([])
+          },
+          {
+            name: 'ultimasbusquedas',
+            data: new ObservableArray([])
+          }
+        ])
       };
     },
     watch:{
-      filterName(to){
+      filter(to){
         // console.log('to', typeof to, to)
         if(to === '' ){
           // console.log('aja')
@@ -187,153 +219,124 @@
           if(this.$refs.listUltimasBusquedas == undefined || !this.$refs.listUltimasBusquedas){
             return
           }
-          this.$refs.listUltimasBusquedas.refresh()
+          // this.$refs.listUltimasBusquedas.refresh()
         }
       },
       ruta(to){
-        if(this.filterName == ''){
+        if(this.filter == ''){
           this.search = false
         }
+      },
+      ultimasbusquedas(to){
+        // this.arraySearch.find((e)=> e.name == 'ultimasbusquedas').data = new ObservableArray(to)
+        // this.$refs.arraySearch.refresh() 
       }
     },
     computed:{
       ...mapState('products',['parametros','productsRecentlySeen']),
+      ...mapState('categories',['categoriesBase','categorieActive']),
       ruta(){
         return this.$navigator.path
       },
     },
+    created(){
+      this.arraySearch.find((e)=> e.name == 'categories').data.push(this.categoriesBase)
+      
+      
+    },
     mounted(){
+
+      this.changeParamsProductsSearch({
+        start: 0,
+        length: 15,
+        storeData: 1,
+        inStock: 1,
+        daysExpir: 365,
+        search: '',
+        order: 'date DESC',
+        sections: [],
+        cacheTime: 15,
+        betweenDates:''
+      })
+
       this.alturaDispositivo = screen.mainScreen.heightDIPs
+      //@SET ULTIMAS BUSQUEDAS
 			this.getCache()
+      this.arraySearch.find((e)=> e.name == 'ultimasbusquedas').data = this.ultimasbusquedas
+      this.$refs.arraySearch.refresh() 
+      
       if(this.params.categorie_default != undefined){
         this.sections = this.params.categorie_default
       }
       if(this.params.section){
         this.sections = this.params.section
+        this.onTapCategories(this.params.section)
+        this.search = true
       }
       if(this.params.search){
-        this.filterName = this.params.search
+        this.filter = this.params.search
         this.onSubmitBusqueda()
       }
+      
       firebase.analytics.setScreenName({
         screenName: "Buscador"
       });
+
     },
     methods:{
-      ...mapActions('stores',['getStoreRosa']),
-      ...mapActions('products',['getSearch']),
+      /**
+       * @PARAMS SEARCH TIENDAS
+       * @GET TIENDAS
+       */
       ...mapMutations('stores',['changeParamsStores']),
+      ...mapActions('stores',['getStoreRosa']),
+      /**
+       * @PARAMS SEARCH PRODUCTS
+       * @GET PRODUCTS
+       */
       ...mapMutations('products',['changeParamsProductsSearch']),
+      ...mapActions('products',['getSearch']),
+      /**
+       * @SET CATEGORIE ACTIVE
+       * todo para que?
+       */
       ...mapMutations('categories',['setCategorieActive']),
-			async onPullToRefreshInitiated ({ object }) {
-        this.page = 1
-        await this.$nextTick( async () => {
-          await this.onSubmit()
-          	object.notifyPullToRefreshFinished();
-        });
-    	},
-      async onLoadCargar(args){
-				this.page = this.page + 1
-	 
-        this.changeParamsProductsSearch({
-          menu: 'get_catalog_products',
-          search:this.filterName,
-          page:this.page,
-          offset: 16,
-          sections: this.sections
-        })
-        this.isLoadingProducts = true
-        await this.getSearch().then((response)=>{
-          this.isLoadingProducts = false
-          if(response.length == 0){
-            args.returnValue = false;
-            args.object.notifyAppendItemsOnDemandFinished(0, true);
-            return
-          }
-          response.forEach((e)=>{
-            this.products.push(e)
-          })
-					args.returnValue = true;
-					args.object.notifyAppendItemsOnDemandFinished(0, false);
-        })
-      },
-      onSubmitBusqueda(){
-        this.onSubmit()
-        firebase.analytics.logEvent({ key: "on_search_custom", parameters: [
-          {
-            key: 'input',
-            value: this.filterName,
-          },
-          {
-            key: 'section',
-            value: JSON.stringify(this.sections)
-          }
-        ]})
-        
-      },
-      async onSubmit(){
+      /**
+       * 
+       * LOAD PRODUCTS
+       */
+      async onSubmit() // BUSQUEDA
+      {
         this.search = true
         this.processUltimasBusquedas()
+       
         this.changeParamsProductsSearch({
-          menu: 'get_catalog_products',
-          search:this.filterName,
-          page:this.page,
-          offset: 16,
+          search: this.filter,
+          start: 0,
+          length: 15,
           sections: this.sections
         })
+
         this.isLoadingProducts = true
         utils.ad.dismissSoftInput();
         await this.getSearch().then((response)=>{
-          console.log('response', response)
           this.isLoadingProducts = false
-          this.products = new ObservableArray(response)
+          // this.products = new ObservableArray(response)
+          this.arraySearch.find((e)=> e.name == 'products').data = new ObservableArray(response)
+          this.$refs.arraySearch.refresh() 
         }).catch((error)=>{
           console.log('error', error)
         })
       },
-      async openFilter(){
-        const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isSubcategorias: false, noids: [0] } })
-        this.page = 1
-        this.sections = [data.id]
-        this.setCategorieActive(data.id)
-        this.onSubmit()
-      },
-      getCache(){
-        this.ultimasbusquedas = new ObservableArray([])
-        if(cache.get('last_search')){
-          let data = JSON.parse(cache.get('last_search'))
-          data.forEach((e)=>{
-            if(e != ''){
-              this.ultimasbusquedas.push({ type:"cache", data: e })
-            }
-          })
-        }
-      },
-      processUltimasBusquedas(){
-        let object = null
-        if(cache.get('last_search')){
-          object = JSON.parse(cache.get('last_search'))
-          if(!object.includes(this.filterName)){
-            object.unshift(this.filterName)
-          }
-          cache.set('last_search', JSON.stringify(object))
-        }else{
-          cache.set('last_search', JSON.stringify([this.filterName]))
-        }
-        this.getCache()
-      },
-      setFilter(item){
-        this.filterName = item
-        this.page = 1
-        this.onSubmit()
-      },
-      async onTextChanged(){
-        if(this.filterName != '' || this.filterName != null || this.filterName != 'null' || this.filterName != ' '){
+      async onTextChanged() // SEARCH TIENDAS
+      { 
+        if(this.filter != '' || this.filter != null || this.filter != 'null' || this.filter != ' '){
 
-          this.changeParamsStores({ search: this.filterName , page: 1 })
+          this.changeParamsStores({ search: this.filter , page: 1, categorie: this.categoriesBase.find((e)=> e.id == this.categoriaActivaLocal).key })
          
           await this.getStoreRosa().then((response)=>{
             this.storess = []
+            
             this.ultimasbusquedas = this.ultimasbusquedas.filter((e)=> e.type == 'cache')
             for (const i in response.data) {
               this.storess.push({
@@ -355,10 +358,90 @@
 
           })
         }
-        if(this.filterName === ''){
+        if(this.filter === ''){
           this.ultimasbusquedas = this.ultimasbusquedas.filter((e)=> e.type == 'cache')
         }
-      }
+      },
+      onSubmitBusqueda() //SUBMIT TEXT FILTER
+      {
+        this.onSubmit()
+        firebase.analytics.logEvent({ key: "on_search_custom", parameters: [
+          {
+            key: 'input',
+            value: this.filter,
+          },
+          {
+            key: 'section',
+            value: JSON.stringify(this.sections)
+          }
+        ]}) 
+      },
+      // 
+			async onPullToRefreshInitiated ({ object }) {
+
+        this.changeParamsProductsSearch({
+          start: 0,
+          length: 15,
+          sections: [1,2,3,4,6],
+          search: '',
+        })
+        
+        await this.$nextTick( async () => {
+          await this.onSubmit()
+          	object.notifyPullToRefreshFinished();
+        });
+    	},
+      async onLoadCargar(args){
+        this.changeParamsProductsSearch({
+          start: this.products.length,
+          length: 15,
+          sections: this.sections,
+          search: this.filter,
+        })
+        
+        this.isLoadingProducts = true
+        await this.getSearch().then((response)=>{
+          this.isLoadingProducts = false
+          if(response.length == 0){
+            args.returnValue = false;
+            args.object.notifyAppendItemsOnDemandFinished(0, true);
+            return
+          }
+          response.forEach((e)=>{
+            this.products.push(e)
+          })
+					args.returnValue = true;
+					args.object.notifyAppendItemsOnDemandFinished(0, false);
+        })
+      },
+      onTapCategories(id)
+      {
+        this.categoriaActivaLocal = id
+        if(id == 0){
+          this.sections = this.sectionsDefault
+        }else{
+          this.sections = [this.categoriaActivaLocal]
+        }
+        this.onTextChanged()
+        this.onSubmit()
+        // this.setCategorieActive(id)
+      },
+      /**
+       * UTILIDADES
+       */
+      async openFilter(){
+        const data = await this.$navigator.modal('/filter_categorias', { fullscreen: true, id: 'filterCategorias', props: { isSubcategorias: false, noids: [0] } })
+        this.page = 1
+        this.sections = [data.id]
+        this.setCategorieActive(data.id)
+        this.onSubmit()
+      },
+      setFilter(item){
+        this.filter = item
+        this.page = 1
+        this.onSubmit()
+      },
+      
     }
   };
 </script>  

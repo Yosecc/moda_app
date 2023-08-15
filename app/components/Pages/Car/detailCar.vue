@@ -1,36 +1,6 @@
 <template lang="html">
   <Page>
-    <HeaderStore row="0" background="" :store="store" :iscarro="false" :back="true" :carro="carro" />
-    <!-- <HeaderCustom background="" marginBottom="8" row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="false" >
-        <FlexboxLayout @tap="onTapViewStore" background="" col="1" alignItems="center" justifyContent="flex-start">
-          <ImageCache 
-            placeholderStretch="aspectFill"
-            placeholder="res://eskeleton"
-            :src="store.logo"
-            width="40"
-            height="40"
-            stretch="aspectFill"
-            marginRight="8"
-          /> 
-          <StackLayout>
-            <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="store.name" />
-            <label
-              margin="0" 
-              padding="0"
-              marginBottom="0" 
-              horizontalAlignment="left" 
-              fontWeight="300"
-              fontSize="10"
-            >
-              <FormattedString>
-                <span  text="Compra mínima: "></span>
-                <span :text="store.min | moneda " style="color: #E9418A"></span>
-              </FormattedString>
-            </label>
-          </StackLayout>
-        </FlexboxLayout>
-      </HeaderCustom> -->
- 
+    <HeaderStore row="0" background="" :store="store" :iscarro="false" :back="true" :carro="carro" /> 
     <GridLayout   padding="0" rows="*, auto">
       <RadListView 
         v-if="products.length && !isLoading"
@@ -48,9 +18,7 @@
             textTransform="uppercase" 
             fontSize="18" 
             fontWeight="800"  
-            paddingLeft="16"
-            marginBottom="8"
-            marginTop="8"
+            padding="16"
           />
         </v-template>
         <v-template >
@@ -60,7 +28,6 @@
               :backgroundColor="item.precio == null ? '#E57373':''" 
               class="card"
             >
-
               <StackLayout width="100%" padding="0" orientation="horizontal" >
                 <ImageCache 
                   stretch="aspectFill" 
@@ -145,45 +112,46 @@
                 </FlexboxLayout>
               </GridLayout>
              
-              
-              
-              
             </StackLayout>
           </StackLayout>
         </v-template>
         
       </RadListView>
-      
+    
+      <WrapLayout row="0" v-if="isLoading" marginTop="16" padding="0 16">
 
-      <WrapLayout row="0" v-if="isLoading" marginTop="40" padding="0 16">
+        <StackLayout horizontalAlignment="left" width="100" height="25" borderRadius="4" class="label_skeleton" marginBottom="16" />
+
         <StackLayout 
           v-for="i in 4"
           :key="`eskeleton-${i}`"
           width="100%"
-          height="260"
+          height="130"
           class="label_skeleton"
           marginBottom="8"
-          padding="16"
+          padding="8"
         >
           <StackLayout orientation="horizontal">
             <StackLayout horizontalAlignment="left" width="60" height="60"  class="item" />
             <StackLayout>
-              <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="16" />
-              <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="16" />
+              <StackLayout horizontalAlignment="left" width="70%" height="25" marginBottom="10" borderRadius="4" class="item" marginLeft="8" />
+              <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginLeft="8" />
             </StackLayout>
           </StackLayout>
 
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="36"/>
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
+          <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" class="item" marginTop="20"/>
+          <!-- <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
+          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/> -->
         </StackLayout>
       </WrapLayout>
 
       <StackLayout row="0" v-if="!products.length && !isLoading" marginTop="48">
         <Label 
-          text="Productos no disponibles"
+          text="No posee productos en este carrito"
           fontWeight="100"
+          textWrap
           fontSize="30"
+          color="black"
           textAlignment="center"
         />
 
@@ -363,8 +331,10 @@
           }
           this.carro = response
         })
+        console.log('pasa por aqui')
 
         await this.getProductsCart(this.car_id).then((response)=>{
+          console.log('response..', response)
           if(response.products.length == 0){
             this.getCar()
             return 
@@ -436,12 +406,15 @@
       },
       ondeleteProduct(product_id){
         let index = this.products._array.findIndex((e)=> e.id == product_id)
-        // console.log(index)
+        
         if(index != -1){
           this.products._array.splice(index, 1)
         }
-        this.$refs.productsCar.refresh()
-        // this.isLoading = true
+        if(this.products.length > 0){
+          this.$refs.productsCar.refresh()
+          // this.isLoading = true
+        }
+        // console.log('products', product_id, index, this.products.length)
         this.deleteProduct(product_id)
         this.loadCart()
       },

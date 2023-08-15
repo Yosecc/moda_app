@@ -50,10 +50,18 @@ import pastillaStore from '~/components/Components/Modales/pastillaStore.vue'
 
 import Nofitications from '~/components/Pages/Notifications/index.vue'
 import fullModal from '~/components/Components/Modales/fullModalComponent.vue'
+import gridProducts from '~/components/Components/Modales/gridProducts.vue'
 
 import Promotions from '~/components/Pages/Promotions/index.vue'
+import modalColorsTalles from '~/components/Components/Modales/modalColorsTalles.vue'
 
 export const routes = {
+    '/modalColorsTalles': {
+        component: modalColorsTalles
+    },
+    '/gridProducts': {
+        component: gridProducts
+    },
     '/pastillaStore': {
         component: pastillaStore
     },

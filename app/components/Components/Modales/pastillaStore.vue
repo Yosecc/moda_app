@@ -4,8 +4,7 @@
         background="transparent" 
         height="auto"
     >
-    
-        <GridLayout columns="" rows="auto, auto, *" >
+        <GridLayout columns="" rows="auto, auto,auto, *" >
             <GridLayout row="0" padding="16" columns="*, auto" rows="" >
                 <Label col="0" :text="item.title" textWrap padding="0" margin="0" fontWeight="900"  />
                 <FlexboxLayout col="1" @tap="$modal.close()"  justifyContent="flex-end" >
@@ -31,24 +30,21 @@
                 class="image"
                 rounded="false"
             /> 
-            <StackLayout v-if="item.images && item.images.length">
-              <!-- <ImageCache 
-                v-for="(i, key) in item.images"
-                :key="`image-pastilla${key}`"
+            <StackLayout row="2" v-if="item.images && item.images.length">
+              <image 
+                  v-for="(i, key) in item.images"
+                  :key="`image-pastilla${key}`"
                   row="1"
                   stretch="aspectFill"
-                  placeholderStretch="aspectFit"
-                  borderRadius="10"
-                  placeholder=""
+                  placeholderStretch="aspectFill"
                   :src="i"
-                  height="200"
                   width="100%"
                   class="image"
                   rounded="false"
-              />  -->
+              /> 
             </StackLayout>
-            <StackLayout padding="8" row="2">
-                <HtmlView row="2" :html="item.text" />
+            <StackLayout padding="8" row="3">
+                <HtmlView row="2" :html="item.textStripped" />
             </StackLayout>
         </GridLayout >
     </Page>

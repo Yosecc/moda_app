@@ -14,7 +14,7 @@ const state = {
     ultimosproductos: new ObservableArray([]),
     parametros: {
         categorie: "woman",
-        plan: "black",
+        plan: "",
         start: 0,
         length: 15,
         store: "",
@@ -25,24 +25,22 @@ const state = {
         order: "manually",
     },
     parametrosSearch: {
-
-        sections: [],
-        search: '',
         start: 0,
         length: 15,
         storeData: 1,
         inStock: 1,
-        // betweenDates: '',
-        // order:'register DESC',
-        cacheTime: 1200,
-
+        daysExpir: 365,
+        search: '',
+        order: 'date DESC',
+        sections: [],
+        cacheTime: 15,
     },
     categories: [
         { name: 'woman', id: 1 },
-        { name: 'man', id: 3 },
-        { name: 'xl', id: 6 },
-        { name: 'kids', id: 4 },
         { name: 'accessories', id: 2 },
+        { name: 'man', id: 3 },
+        { name: 'kids', id: 4 },
+        { name: 'xl', id: 6 },
     ],
 };
 
@@ -164,15 +162,13 @@ const actions = {
             .map(key => `${key}=${context.state.parametrosSearch[key]}`)
             .join('&');
 
-
-
         const response = await Api.get(`rosa/search?${qs}`)
 
         return response
     },
     async getSearch(context) {
 
-        // console.log('por aqui', context.state.parametrosSearch)
+        // console.warn('por aqui', context.state.parametrosSearch)
         let categoriesids = context.state.parametrosSearch.sections
 
         let d = []

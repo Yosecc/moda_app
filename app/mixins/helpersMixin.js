@@ -1,5 +1,7 @@
 import { mapMutations, mapActions } from 'vuex'
+import { ObservableArray } from '@nativescript/core/data/observable-array';
 
+import cache from '@/plugins/cache'
 export default {
     data() {
         return {
@@ -25,6 +27,30 @@ export default {
 
     },
     methods: {
+        processUltimasBusquedas() {
+            let object = null
+            if (cache.get('last_search')) {
+                object = JSON.parse(cache.get('last_search'))
+                if (!object.includes(this.filter)) {
+                    object.unshift(this.filter)
+                }
+                cache.set('last_search', JSON.stringify(object))
+            } else {
+                cache.set('last_search', JSON.stringify([this.filter]))
+            }
+            this.getCache()
+        },
+        getCache() {
+            this.ultimasbusquedas = new ObservableArray([])
+            if (cache.get('last_search')) {
+                let data = JSON.parse(cache.get('last_search'))
+                data.forEach((e, i) => {
+                    if (e != '' && i <= 5) {
+                        this.ultimasbusquedas.push({ type: "cache", data: e })
+                    }
+                })
+            }
+        },
         prepareData(inputs, isAlert = true) {
             let data = {}
             inputs.forEach((input) => {

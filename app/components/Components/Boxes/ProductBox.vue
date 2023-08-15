@@ -8,6 +8,7 @@
       
     >
       <AbsoluteLayout >
+
         <StackLayout
           width="100%"
           v-if="product.images && product.images.length"
@@ -27,7 +28,6 @@
             placeholderStretch="aspectFill"
             placeholder="res://eskeleton"
             :src="`${product.images[0]}`" 
-           
           />
         </StackLayout>
 
@@ -94,6 +94,10 @@
           :fontSizePrice="fontSizePrice"
         />
       </StackLayout>
+        <GridLayout columns="*,*" background="" padding="0 8 8 8" @tap="openModal()">
+          <colorsCircle col="0" :product_id="product.id" v-if="product && product.colors" :colors="product.colors" />
+          <tallesCircle col="1" :product_id="product.id" v-if="product && product.sizes" :talles="product.sizes" horizontalAlignment="right" />
+        </GridLayout>
     </StackLayout>
 
 </template>
@@ -106,7 +110,9 @@
   import productMixin from '~/mixins/productMixin.js'
   import price from '~/components/Components/modules/price'
   import { URL_IMAGE } from '~/services'
-  
+  import colorsCircle from '~/components/Components/modules/colors_circle'
+  import tallesCircle from '~/components/Components/modules/talles_circle'
+
   export default {
     mixins: [productMixin],
     props:{
@@ -147,7 +153,9 @@
     },
     components:{
       price,
-      StoreBox
+      StoreBox,
+      colorsCircle,
+      tallesCircle
     },
     filters: {
     },
@@ -167,7 +175,7 @@
           return this.product.mountOffert.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.');
         }
         return null
-      }
+      },
     },
     methods:{
       loaded({object}){
@@ -184,6 +192,18 @@
           },
           e => {}
         )
+      },
+      openModal(){
+        const data = this.$navigator.modal('/modalColorsTalles', { 
+            fullscreen: false, 
+            id: 'color_talles', 
+            props: { 
+              colors: this.product.colors,
+              talles: this.product.sizes,
+              product_id: this.product.id,
+              product_name: this.product.name
+            } 
+        })
       }
     }
   }

@@ -1,7 +1,7 @@
 <template lang="html">
   <Page >
     <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" />
-    <RadSideDrawer row="1" @drawerClosed="onCloseDrawer" :gesturesEnabled="true" drawerContentSize="auto" borderRadius="16" :drawerLocation="currentLocation" ref="drawerProduct">
+    <RadSideDrawer row="1" @drawerClosed="onCloseDrawer"  :gesturesEnabled="false" drawerContentSize="auto" borderRadius="16" :drawerLocation="currentLocation" ref="drawerProduct">
       
       <SwipeCombinacion
         ~drawerContent
@@ -17,11 +17,18 @@
           code: producto.code,
           name: producto.name,
           category: producto.category,
+          price: producto.price,
+          prev_price: producto.prev_price,
+          is_desc: producto.is_desc,
         }:{
           image: '',
           code: '',
           name: '',
-          category: ''
+          category: '',
+          price: '',
+          prev_price: '',
+          is_desc: '',
+
         }"
         v-if="change"
         @close="onshowDrop"
@@ -197,7 +204,6 @@
                     <label
                       fontSize="11"
                       fontWeight="300"
-                    
                       color="black"
                       :text="textPrendasRestantesCarLabel"
                       textAlignment="center"

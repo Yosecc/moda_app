@@ -8,7 +8,9 @@ const state = {
     storesPopular: [],
     store: {},
     storeActive: null,
-    paramsStores: { categorie: 'woman', plan: "black", search: '', page: 1 },
+
+    paramsStores: { categorie: 'all', plan: "", search: '', page: 1 },
+
     categories: ['woman', 'man', 'xl', 'kids', 'accessories'],
     planes: ['black', 'platinum', 'gold', 'blue'],
     categoriesStore: [],
@@ -37,19 +39,19 @@ const getters = {
     namesSubcategoriesActives(state) {
         let subcategories = []
         state.categoriesStore.forEach((e) => {
-            if (state.storeCategorieActive == e.categoria.id) {
-                subcategories = e.subcategorias
-            }
-        })
-        console.log('==== s', subcategories)
+                if (state.storeCategorieActive == e.categoria.id) {
+                    subcategories = e.subcategorias
+                }
+            })
+            // console.log('==== s', subcategories)
         let data = []
         state.storeSubcategorieActive.forEach((e) => {
-            let h = subcategories.find((i) => i.id == e)
-            if (h != undefined) {
-                data.push(h.name)
-            }
-        })
-        console.log('==== as', state.storeSubcategorieActive, data)
+                let h = subcategories.find((i) => i.id == e)
+                if (h != undefined) {
+                    data.push(h.name)
+                }
+            })
+            // console.log('==== as', state.storeSubcategorieActive, data)
 
         return data
 

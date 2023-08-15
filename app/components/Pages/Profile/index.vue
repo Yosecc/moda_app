@@ -93,21 +93,21 @@
     data() {
       return {
         menu:new ObservableArray([
-          {
-            label: 'Pedidos',
-            component: 'Pedidos',
-            active: true
-          },
+          // {
+          //   label: 'Pedidos',
+          //   component: 'Pedidos',
+          //   active: true
+          // },
           {
             label: 'Direcciones',
             component: 'Direcciones',
             active: false
           },
-          {
-            label: 'Cupones',
-            component: 'Coupons',
-            active: false
-          },
+          // {
+          //   label: 'Cupones',
+          //   component: 'Coupons',
+          //   active: false
+          // },
           {
             label: 'Informacion Personal',
             component: 'infoPersonal',
@@ -119,7 +119,7 @@
             active: false
           }
         ]),
-        menuActive: 'Pedidos'
+        menuActive: 'Direcciones'
       };
     },
     watch:{
