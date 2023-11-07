@@ -11,28 +11,19 @@
 
     <RadListView 
       ref="listStores"
-      id="listStores"
-      for="store in stores"
+      :items="stores"
       layout="grid"
       itemWidth="50%"
       :pullToRefresh="true"
     >
-      <v-template if="store.logo != null">
+      <v-template if="item.logo != null">
         <StackLayout 
-          padding="8" @tap="onTapViewStore(store)">
+          padding="8" @tap="onTapViewStore(item)">
           <StackLayout 
             padding="8"
             class="card"
             alignItems="center"
           >
-            <!-- <Image
-              :src="store.logo"
-              width="80"
-              height="80"
-              borderRadius="8"
-              verticalAlignment="top"
-              marginRight="8"
-            /> -->
 
             <ImageCache 
                   stretch="aspectFill" 
@@ -40,7 +31,7 @@
                   height="80"
                   placeholderStretch="aspectFill"
                   placeholder="res://eskeleton"
-                  :src="store.logo"
+                  :src="item.logo"
                   marginRight="8"
                   verticalAlignment="top"
                 />
@@ -53,7 +44,7 @@
                 fontSize="12">
                 <FormattedString>
                   <span text="Precio mínimo de compra: "></span>
-                  <span :text="store.limit_price |moneda " style="color: #E9418A"></span>
+                  <span :text="item.min |moneda " style="color: #E9418A"></span>
                 </FormattedString>
               </label>
             </StackLayout>
@@ -61,7 +52,7 @@
         </StackLayout>
       </v-template>
 
-      <v-template if="store.logo == null" >
+      <v-template if="item.logo == null" >
         <StackLayout 
           width="100%"
           height="100%" 
@@ -93,7 +84,7 @@
     mixins: [storeMixin],
     props: {
       stores:{
-        type: Array,
+        // type: Array|Object,
         default: []
       }
     },

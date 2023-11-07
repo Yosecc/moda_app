@@ -212,7 +212,7 @@ Switch.switch[checked=false] {
 }
 
 .shadow {
-    box-shadow: 1 1 2 rgba(0, 0, 0, .3);
+    box-shadow: 1 1 2 rgba(0, 0, 0, .2);
 }
 
 .shadow-xs {
@@ -909,5 +909,95 @@ ActionBar {
         border-width: 1;
         margin-right: 8;
         margin-bottom: 8;
+    }
+}
+
+.h1 {
+    font-size: 32;
+    font-weight: 900;
+}
+
+.h2 {
+    font-size: 24;
+    font-weight: 900;
+}
+
+.h3 {
+    font-size: 18;
+    font-weight: 900;
+}
+
+.h4 {
+    font-size: 12;
+    font-weight: 900;
+}
+
+.col-12 {
+    width: 100%;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-4 {
+    width: 33.33%;
+}
+
+.col-2 {
+    width: 16.666667%;
+}
+
+.offset-1 {
+    margin-left: 8.333333%;
+}
+
+.offset-2 {
+    margin-left: 16.666667%;
+}
+
+.offset-3 {
+    margin-left: 25%;
+}
+
+.offset-4 {
+    margin-left: 33.333333%;
+}
+
+.offset-5 {
+    margin-left: 41.666667%;
+}
+
+.offset-6 {
+    margin-left: 50%;
+}
+
+.offset-7 {
+    margin-left: 58.333333%;
+}
+
+.offset-8 {
+    margin-left: 66.666667%;
+}
+
+.offset-9 {
+    margin-left: 75%;
+}
+
+.offset-10 {
+    margin-left: 83.333333%;
+}
+
+.offset-11 {
+    margin-left: 91.666667%;
+}
+
+.col-12 {
+    margin-left: 0;
+}
+
+.col-4 {
+    &.offset-5 {
+        margin-left: 33.333333%;
     }
 }

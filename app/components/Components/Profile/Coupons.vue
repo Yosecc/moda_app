@@ -1,34 +1,40 @@
 <template lang="html">
-
-  <GridLayout rows="*">
-    
-    <RadListView row="1" :items="coupons" @itemTap="onItemTap">
-      <v-template name="header">
-        <StackLayout row="0" padding="8 16 8 16">
-          <!--  -->
-          <StackLayout class="card">
-            <label text="Canjeá cupones acá" textAlignment="center" marginBottom="8" fontWeight="900" />
-            <TextField 
-              textTransform="uppercase" 
-              autocapitalizationType="none"
-              textAlignment="center" 
-              v-model="code" 
-              class="inputForm" 
-              hint="Ingrese el código del cupón" 
-            />
-            <button  v-if="!isLoadingCanje" @tap="onCanjearCupon" text="Enviar" marginTop="8" class="btn btn-primary btn-sm" />
-            <ActivityIndicator v-else busy="true" color="#E9418A" marginTop="8" />
-          </StackLayout>
-
-          <Label text="Tus cupones" fontWeight="900" fontSize="18" margin="16 0 8 0" />
+  <ScrollView>
+    <GridLayout rows="auto,*">
+      <StackLayout row="0" padding="8 16 8 16">
+        <StackLayout class="card">
+          <label text="Canjeá cupones acá" textAlignment="center" marginBottom="8" fontWeight="900" />
+          <TextField 
+            textTransform="uppercase" 
+            autocapitalizationType="none"
+            textAlignment="center" 
+            v-model="code" 
+            class="inputForm" 
+            hint="Ingrese el código del cupón" 
+          />
+          <button  v-if="!isLoadingCanje" @tap="onCanjearCupon" text="Enviar" marginTop="8" class="btn btn-primary btn-sm" />
+          <ActivityIndicator v-else busy="true" color="#E9418A" marginTop="8" />
         </StackLayout>
-      </v-template>
-      <v-template >
-        <CuponBox :item="item" />
-      </v-template>
-    </RadListView>
-  </GridLayout>
-       
+
+        <Label text="Tus cupones" fontWeight="900" fontSize="18" margin="16 0 8 0" />
+      </StackLayout>
+      <RadListView ref="list" row="1" :items="coupons" @itemTap="onItemTap">
+        <v-template >
+          <CuponBox :item="item" />
+        </v-template>
+      </RadListView>
+      <StackLayout 
+        top="0"
+        left="0"
+        width="100%"  
+        v-if="!coupons.length && cargado" 
+        padding="24"
+        row="1"
+      >
+        <Label text="No tenés cupones" textAlignment="center" fontWeight="100" fontSize="24" flexWrap />
+      </StackLayout>
+    </GridLayout>
+  </ScrollView> 
   
 </template>
 
@@ -52,7 +58,7 @@
       return {
         code: '',
         isLoadingCanje: false,
-
+        cargado: false
       };
     },
     watch:{
@@ -62,28 +68,51 @@
       ...mapState('profile',['coupons']),
     },
     mounted(){
-      this.getCoupons()
+      
+      this.getCoupons().then((respoinse)=>{
+        this.cargado = true
+      }).catch((error)=>{
+        this.cargado = true
+      })
     },
     methods:{
       ...mapActions('profile',['getCoupons']),
       ...mapActions(['canjearCupon']),
+      ...mapMutations(['changeToast']),
       onCanjearCupon(){
         if(this.code == ''){
-          alert('Código requerido')
+          this.changeToast({
+            title: 'Código requerido',
+            status: true,
+            type: 'danger',
+            message: ''
+          })
           return
         }
         this.isLoadingCanje = true
+        this.$refs.list.refresh()
         this.canjearCupon(this.code).then((response)=>{
           // console.log(response)
           this.isLoadingCanje = false
           this.getCoupons()
-          alert(response)
+          this.changeToast({
+            title: response,
+            status: true,
+            type: 'success',
+            message: ''
+          })
+          this.$refs.list.refresh()
           
         }).catch((error)=>{
-          // console.log(error)
+          // console.log(error) 
           this.isLoadingCanje = false
-          alert(error)
-
+          this.changeToast({
+            title: error,
+            status: true,
+            type: 'danger',
+            message: ''
+          })
+          this.$refs.list.refresh()
         })
 
       },

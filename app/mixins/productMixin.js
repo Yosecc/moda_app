@@ -92,6 +92,7 @@ export default {
                 }]
             })
 
+            console.log('this.options', this.options)
             this.$forceUpdate()
             this.$navigator.navigate('/product', this.options)
         },

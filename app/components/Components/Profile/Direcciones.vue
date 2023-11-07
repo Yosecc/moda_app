@@ -25,7 +25,6 @@
 
       <RadListView v-else ref="listDirecciones" :items="direcciones" >
 
-        <!-- <v-template > -->
         <v-template if="item.default == true">
           <StackLayout
             padding="8 16 8 16"
@@ -48,7 +47,6 @@
           </StackLayout>
         </v-template>
 
-        <!-- <v-template> -->
         <v-template if="item.default == false">
           <StackLayout
              padding="8 16 8 16"
@@ -74,18 +72,15 @@
             </StackLayout>
           </StackLayout>
         </v-template>
-
-        <v-template name="footer">
-          <StackLayout padding="16">
-            <Button 
-              class="btn btn-info btn-sm" 
-              text="Agregar dirección"
-              @tap="onAddDirection"
-            />
-          </StackLayout>
-        </v-template>
         
       </RadListView>
+      <StackLayout padding="16">
+        <Button 
+          class="btn btn-info btn-sm" 
+          text="Agregar dirección"
+          @tap="onAddDirection"
+        />
+      </StackLayout>
   </StackLayout>
   
 </template>

@@ -1,7 +1,13 @@
 <template lang="html">
   <Page >
     <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" />
-    <RadSideDrawer row="1" @drawerClosed="onCloseDrawer"  :gesturesEnabled="false" drawerContentSize="auto" borderRadius="16" :drawerLocation="currentLocation" ref="drawerProduct">
+    <RadSideDrawer row="1" 
+      @drawerClosed="onCloseDrawer"  
+      :gesturesEnabled="false"
+      drawerContentSize="auto" 
+      borderRadius="16" 
+      :drawerLocation="currentLocation" 
+      ref="drawerProduct">
       
       <SwipeCombinacion
         ~drawerContent
@@ -12,7 +18,7 @@
         :isNew="isNew"
         :isProduct="true"
         :models="models"
-        :product="producto ? {
+        :product="producto && producto.images!=undefined ? {
           image: producto.images.length ? producto.images[0]:'',
           code: producto.code,
           name: producto.name,
@@ -43,7 +49,7 @@
         rows="*,auto" 
         ~mainContent
       >
-        <ScrollView row="0" >
+        <ScrollView v-if="changed" row="0" >
           <StackLayout>
             <AbsoluteLayout  row="0" height="380">
               <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
@@ -445,7 +451,8 @@
         isNew: null,
         // carro: null,
         changeCombinaciones: true,
-        products: []
+        products: [],
+        changed: true,
       }; 
     },
     watch:{
@@ -461,6 +468,7 @@
       },
       ruta(to){
         // console.log('cambio ruta', to)
+       
         this.onLoadProduct()
         this.onLoadCarro()
       }
@@ -523,6 +531,8 @@
       firebase.analytics.setScreenName({
         screenName: `Product: ${this.producto.id}`
       });
+      
+      // console.log('llega')
       this.onLoadProduct()
       this.onLoadCarro()
       this.onLoadProductosRelacionados()
@@ -558,6 +568,7 @@
           this.producto.isCart = response[0].isCart;
           this.producto.store = response[0].store
           this.producto.images = response[0].images
+          // this.changed = true
           return true
         })
       },

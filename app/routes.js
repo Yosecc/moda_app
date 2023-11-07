@@ -55,7 +55,14 @@ import gridProducts from '~/components/Components/Modales/gridProducts.vue'
 import Promotions from '~/components/Pages/Promotions/index.vue'
 import modalColorsTalles from '~/components/Components/Modales/modalColorsTalles.vue'
 
+import CMS from '~/components/Pages/Cms/index.vue'
+
+
+
 export const routes = {
+    '/cms': {
+        component: CMS
+    },
     '/modalColorsTalles': {
         component: modalColorsTalles
     },

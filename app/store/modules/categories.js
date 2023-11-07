@@ -120,6 +120,7 @@ const state = {
 
 const getters = {
     subcategories(state) {
+        // NamedNodeMap
         let subs = []
         if (state.categorieActive == 0) {
             if (state.categories.length > 7) {

@@ -201,7 +201,7 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
                 }
             );
 
-            // if(item.type && item.type == 'search'){
+            if(item.type && item.type == 'search'){
 
               this.$navigator.navigate('/search',{
                 transition: {
@@ -218,7 +218,27 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
                 }
               })
               return
-            // }
+            }
+
+            if(item.type && item.type == 'page'){
+              if(item.editor==undefined){
+                return
+              }
+              this.$navigator.navigate('/cms',{
+                transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                },
+                props:{
+                  page:{
+                    name: item.name,
+                    editor: item.editor,
+                  },
+                }
+              })
+              return
+            }
 
             // this.$navigator.navigate('/categories',{
             //   transition: {

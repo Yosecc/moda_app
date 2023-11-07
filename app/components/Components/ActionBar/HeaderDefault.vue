@@ -24,7 +24,9 @@
           <BtnBack
             v-show="back"
             col="0"
-            horizontalAlignment="left" 
+            horizontalAlignment="left"
+            :isEvent="isEvent"
+            @onBack="onBack"
           ></BtnBack>
 
           <Image 
@@ -57,7 +59,7 @@
             horizontalAlignment="right"
           ></BtnCar>
           
-          <BtnPromotions></BtnPromotions>
+          <BtnPromotions v-if="isBtnPromotions"></BtnPromotions>
 
           <!-- <StackLayout v-else width="40"> </StackLayout> -->
 
@@ -100,6 +102,14 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean,
         default: true
       },
+      isEvent:{
+        type: Boolean, 
+        default: false
+      },
+      isBtnPromotions:{
+        type: Boolean,
+        default: true
+      },
     },
     components:{
       BtnMenu,
@@ -129,6 +139,9 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
     },
     methods:{
       ...mapMutations(['changePage']),
+      onBack(){
+        this.$emit('onBack')
+      },
       onSearch(){
         // console.log('click')
         // this.changePage(1)

@@ -19,6 +19,8 @@ const Api = {
             }).then(
                 (response) => {
                     // Argument (response) is HttpResponse
+                    // console.log('udddl', response)
+
                     if (response.statusCode == 200) {
                         console.warn({ url: `${url_base}${url}`, res: response.content.toJSON() })
                         resolve(response.content.toJSON())
@@ -27,7 +29,7 @@ const Api = {
                     }
                 },
                 (e) => {
-                    // console.log('ul',e)
+                    // console.log('ul', e)
                 }
             ).catch((e) => {
                 // console.log('ij', e)
@@ -64,7 +66,7 @@ const Api = {
                 console.warn({ url: `${url_base}${url}`, res: res.content.toJSON() })
                 resolve(res.content.toJSON())
             }).catch((e) => {
-                // console.log('errowwWr get', e)
+                console.log('errowwWr get', e)
                 reject(new Error(e))
             });
         });

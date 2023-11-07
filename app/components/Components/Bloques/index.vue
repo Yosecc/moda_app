@@ -175,37 +175,46 @@
           },
           methods:{
             onTapVerMas(bloque){
-                if(bloque.type =='categorie'){
-                    this.$navigator.navigate('/categories',{
-                    transition: {
-                        name: 'slideLeft',
-                        duration: 300,
-                        curve: 'easeIn'
-                    },
-                    props:{
-                        params:{
-                            search: '',
-                            section: bloque.value
-                        },
+                // if(bloque.type =='categorie'){
+                //     this.$navigator.navigate('/categories',{
+                //     transition: {
+                //         name: 'slideLeft',
+                //         duration: 300,
+                //         curve: 'easeIn'
+                //     },
+                //     props:{
+                //         params:{
+                //             search: '',
+                //             section: bloque.value
+                //         },
+                //     }
+                //     })
+                // }
+                
+                    let options = {}
+                    if(bloque.type == 'filter'){
+                        options.search = bloque.value
+                        // options.section = []
                     }
-                    })
-                }
-                if(bloque.type == 'filter'){
+
+                    if(bloque.type =='categorie'){
+                        options.search = ''
+                        options.section = bloque.value
+                    }
+
+
                     this.$navigator.navigate('/search',{
-                    transition: {
-                        name: 'slideLeft',
-                        duration: 300,
-                        curve: 'easeIn'
-                    },
-                    props:{
-                        params:{
-                        search: bloque.value,
-                        section: []
+                        transition: {
+                            name: 'slideLeft',
+                            duration: 300,
+                            curve: 'easeIn'
                         },
-                    }
+                        props:{
+                            params: options,
+                        }
                     })
                     return
-                }
+                
             },
             onTapPromotion(i){    
                 if(i.action){

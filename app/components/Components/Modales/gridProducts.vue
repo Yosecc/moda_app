@@ -7,7 +7,6 @@
                 @tap="onViewStore(store)"
                 col="1"
             >
-
                 <ImageCache 
                     placeholderStretch="aspectFill"
                     placeholder="res://eskeleton"
@@ -18,15 +17,11 @@
                     marginRight="8"
                     class="storeBox"
                 /> 
-
-                
-
                 <Label col="1" fontWeight="900"  fontSize="16" padding="0 0 0 0" margin="0" textTransform="uppercase" textAlignment="left" text="Ofertas" />
-               
-
             </FlexboxLayout >
         </HeaderCustom>
         <GridLayout columns="" background="red" rows="*" >
+          <ScrollView row="0">
             <AbsoluteLayout row="0"  padding="0" background="white" margin="0" width="100%">
                 <StackLayout 
                     top="0"
@@ -51,12 +46,12 @@
                 </StackLayout>
 
                 <StackLayout
-                top="0"
-                left="0" 
-                width="100%"
-                height="100%"
-                v-show="!products.length"
-                padding="8 16"
+                  top="0"
+                  left="0" 
+                  width="100%"
+                  height="100%"
+                  v-show="!products.length"
+                  padding="8 16"
                 >
                     <WrapLayout
                         top="0"
@@ -78,6 +73,7 @@
               
 
             </AbsoluteLayout>
+          </ScrollView>
         </GridLayout >
     </Page>
   </template>

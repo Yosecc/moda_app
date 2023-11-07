@@ -65,32 +65,34 @@
       },
       methods:{
         onTapPromotion(i){
-          if(i.action){
-              if(i.action.redirect){
-                  this.$navigator.navigate(i.action.redirect.route,{
-                  transition: {
-                      name: 'slideLeft',
-                      duration: 300,
-                      curve: 'easeIn'
-                  },
-                  props: i.action.redirect.params
-                  })
+          // if(i.action){
+          //     if(i.action.redirect){
+          //         this.$navigator.navigate(i.action.redirect.route,{
+          //         transition: {
+          //             name: 'slideLeft',
+          //             duration: 300,
+          //             curve: 'easeIn'
+          //         },
+          //         props: i.action.redirect.params
+          //         })
 
-                  return
-              }   
-          }
-          if(!Object.entries(i.data).length){
-              return;
-          }
+          //         return
+          //     }   
+          // }
+          // if(!Object.entries(i.data).length){
+          //     return;
+          // }
 
-          this.$navigator.navigate('/promotion',{
+          console.log('i', i)
+
+          this.$navigator.navigate('/cms',{
               transition: {
                   name: 'slideLeft',
                   duration: 300,
                   curve: 'easeIn'
               },
               props:{
-                  data: i.data,
+                  page: i,
               }
           })
         }

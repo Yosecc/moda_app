@@ -1,100 +1,96 @@
 <template lang="html">
- <!-- <MultiDrawer ref="drawerInput"  v-model="drawerInput"> -->
   <StackLayout>
-      <ScrollView >
-        <StackLayout padding="16" >
-           
-          <slot name="top"></slot>
+    <ScrollView >
+      <StackLayout padding="8 16 16 16" >
+          
+        <slot name="top"></slot>
 
-          <StackLayout
-            class="card"
-            :class="clases"
-            padding="16"
-          >
-            <WrapLayout>
+        <StackLayout
+          class="card"
+          :class="clases"
+          padding="0"
+        >
+          <WrapLayout>
+            <StackLayout
+              v-for="(e,i) in inputs"
+              :key="`inputs-${i}`"
+              class="input-group"
+              :width="e.width ? e.width :'100%'"
+              :paddingRight="e.paddingRight ? e.paddingRight :''"
+              :class="e.typeInput == 'select' ? 'input-group-select':''"
+            >
+            <StackLayout margin="0" padding="0" v-if="e.isLabel == false ? e.isLabel:true" orientation="horizontal">
+              
+              <Label  :text="e.label" class="label" margin="0" padding="0" />
+              <Label  v-if="e.required" text="*" :color="e.label != '' ? 'red':'transparent'" margin="0 0 0 2" padding="0" />
+
+            </StackLayout>
+
               <StackLayout
-                v-for="(e,i) in inputs"
-                :key="`inputs-${i}`"
-                class="input-group"
-                :width="e.width ? e.width :'100%'"
-                :paddingRight="e.paddingRight ? e.paddingRight :''"
-                :class="e.typeInput == 'select' ? 'input-group-select':''"
+                v-show="[undefined, 'number','email','phone'].includes(e.typeInput)"
               >
-              <StackLayout margin="0" padding="0" v-if="e.isLabel == false ? e.isLabel:true" orientation="horizontal">
-                
-                <Label  :text="e.label" class="label" margin="0" padding="0" />
-                <Label  v-if="e.required" text="*" :color="e.label != '' ? 'red':'transparent'" margin="0 0 0 2" padding="0" />
+                <TextField 
+                  :text="e.model" 
+                  v-model="e.model"
+                  class="inputForm"
+                  :secure="e.secure ? e.secure : false"
+                  :class="e.error ? 'input-control-error':''"
+                  :hint="e.hint"
+                  :keyboardType="e.typeInput" />
+
+                <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="10" fontWeight="300" />
 
               </StackLayout>
 
+              <StackLayout  v-if="e.typeInput == 'select'" margin="0" padding="0">
                 <StackLayout
-                  v-show="[undefined, 'number','email','phone'].includes(e.typeInput)"
+                  class="selectForm"
+                  @tap="e.onTap(e)"
                 >
-                  <TextField 
-                    :text="e.model" 
-                    v-model="e.model"
-                    class="inputForm"
-                    :secure="e.secure ? e.secure : false"
-                    :class="e.error ? 'input-control-error':''"
-                    :hint="e.hint"
-                    :keyboardType="e.typeInput" />
-
-                  <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="10" fontWeight="300" />
-
+                  <GridLayout columns="*, auto">
+                      <Label col="0" class="selectInput" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
+                      <button 
+                        col="1"
+                        class="btn btn-text btn-sm"
+                        background="#C7C7C7"
+                        text="Seleccionar" 
+                        margin="0" 
+                        color="#E9418A"
+                      />
+                  </GridLayout>
                 </StackLayout>
-
-                <StackLayout  v-if="e.typeInput == 'select'" margin="0" padding="0">
-                  <StackLayout
-                    class="selectForm"
-                    @tap="e.onTap(e)"
-                  >
-                    <GridLayout columns="*, auto">
-                        <Label col="0" class="selectInput" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
-                        <button 
-                          col="1"
-                          class="btn btn-text btn-sm"
-                          background="#C7C7C7"
-                          text="Seleccionar" 
-                          margin="0" 
-                          color="#E9418A"
-                        />
-                    </GridLayout>
-                  </StackLayout>
-                  <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="13" fontWeight="300" />
-                </StackLayout>
-
-                <FlexboxLayout 
-                  v-if="e.typeInput == 'switch'"
-                  class="switchFrom"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Label :text="e.hint" class="label" />
-                  <Switch class="switch"  :checked="e.model == 2000 ? true:false" @checkedChange="e.change" />
-                </FlexboxLayout >
-
-                <StackLayout  v-if="e.typeInput == 'textarea'">
-                  <TextView 
-                    v-model="e.model" 
-                    class="inputForm" 
-                    :class="e.error ? 'input-control-error':''" 
-                    :hint="e.hint" 
-                  />
-                </StackLayout>
-                  
-
+                <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="13" fontWeight="300" />
               </StackLayout>
-            </WrapLayout>
-          </StackLayout>
 
-           <slot name="bottom"></slot>
+              <FlexboxLayout 
+                v-if="e.typeInput == 'switch'"
+                class="switchFrom"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Label :text="e.hint" class="label" />
+                <Switch class="switch"  :checked="e.model == 2000 ? true:false" @checkedChange="e.change" />
+              </FlexboxLayout >
 
+              <StackLayout  v-if="e.typeInput == 'textarea'">
+                <TextView 
+                  v-model="e.model" 
+                  class="inputForm" 
+                  :class="e.error ? 'input-control-error':''" 
+                  :hint="e.hint" 
+                />
+              </StackLayout>
+                
+
+            </StackLayout>
+          </WrapLayout>
         </StackLayout>
-      </ScrollView>
-</StackLayout>
-    <!-- </MultiDrawer> -->
 
+        <slot name="bottom"></slot>
 
+      </StackLayout>
+    </ScrollView>
+  </StackLayout>
 </template>
 
 <script>

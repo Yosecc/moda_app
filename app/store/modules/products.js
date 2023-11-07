@@ -37,6 +37,7 @@ const state = {
     },
     categories: [
         { name: 'woman', id: 1 },
+        // { name: 'all', id: 0 },
         { name: 'accessories', id: 2 },
         { name: 'man', id: 3 },
         { name: 'kids', id: 4 },
@@ -153,7 +154,11 @@ const actions = {
         let d = []
 
         context.state.parametrosSearch.sections.forEach((e) => {
-            d.push(context.state.categories.find((i) => i.id == e).name)
+            let h = context.state.categories.find((i) => i.id == e)
+            if (h != undefined) {
+
+                d.push(h.name)
+            }
         })
 
         context.state.parametrosSearch.sections = d

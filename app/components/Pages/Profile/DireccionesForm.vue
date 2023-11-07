@@ -1,8 +1,9 @@
 <template lang="html">
-  
-    
-  <Page >
-    <HeaderDefault backgroundColor="white" :back="true" />
+  <Page>
+    <HeaderDefault :logoCenter="false" :back="true" :isCar="false" :isNotification="false" :isEvent="true" :isBtnPromotions="false" @onBack="onBack" >
+      <Label col="1" v-if="type == 'create'" fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Agregar nueva dirección" />
+      <Label col="1" v-if="type == 'edit'" fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Editar dirección" />
+    </HeaderDefault>
     <RadSideDrawer 
       ref="drawerSelect"
       @drawerClosed="onDrawerClosed()"
@@ -23,7 +24,7 @@
           :clases="'shadow-none'"
           :inputs="inputs"
         >
-          <template slot="top">
+          <!-- <template slot="top">
             <Label 
               v-if="type == 'create'" 
               marginBottom="16" 
@@ -31,7 +32,7 @@
               fontSize="18" 
               fontWeight="700" 
               textAlignment="center" />
-          </template> 
+          </template>  -->
           <template slot="bottom">
             <ActivityIndicator v-if="loading" marginTop="8" color="#E9418A" busy="true"  />
             <Button 
@@ -60,6 +61,8 @@
   import { mapState, mapMutations, mapActions } from 'vuex'
   import optionsSelect from '~/components/Components/Modales/optionsSelect.vue'
   import {provincias} from '~/data/provinciasData.js'
+  import { Dialogs } from '@nativescript/core'
+  import * as utils from "@nativescript/core/utils";
   export default {
     mixins: [helpersMixin],
     props: {
@@ -100,7 +103,7 @@
             required: true,
           },
           {
-            typeInput: undefined,
+            typeInput: 'number',
             name: 'CALLE_NUM',
             model: '',
             label: 'Altura',
@@ -187,7 +190,8 @@
           // },
         ],
         loading: false,
-        select: null
+        select: null,
+        isOpenDrawer: false
       }
     },
     watch:{
@@ -224,7 +228,9 @@
       ...mapActions(['getStates']),
       ...mapMutations(['changeToast']),
       opendDrwer(input){
+        utils.ad.dismissSoftInput();
         this.select = input
+        this.isOpenDrawer = true
         this.$refs.drawerSelect.showDrawer();
         // alert(input.title)
       },
@@ -238,7 +244,6 @@
             await this.updateDireccion({ data: data, id: this.item.id })
           }else{
             title = 'Registro creado'
-
             await this.addDireccion(data)
           }
           this.changeToast({
@@ -253,12 +258,47 @@
         }
       },
       onDrawerClosed(){
+        this.isOpenDrawer = false
         // this.changeDrawer('close')
       },
       change(value){
         setTimeout(()=>{
           this.$refs.drawerSelect.closeDrawer(); 
         }, 500)
+      },
+      onBack(){
+        if(this.isOpenDrawer){
+          this.$refs.drawerSelect.closeDrawer();
+          return
+        }
+        let vacios = []
+        this.inputs.forEach((e)=>{
+          if(e.model != ''){
+            vacios.push(e)
+          }
+        })
+
+        if(!vacios.length){
+          this.$navigator.back()
+        }else{
+          if(this.type == 'create'){
+            const confirmOptions = {
+              title: '¿Desea salir de esta página? ',
+              message: 'Se perderán los cambios realizados',
+              okButtonText: 'Si',
+              cancelButtonText: 'No',
+              neutralButtonText: 'Cancel'
+            }
+
+            Dialogs.confirm(confirmOptions).then((result) => {
+              if(result === true){
+                this.$navigator.back()
+              }
+            })
+          }else{
+            this.$navigator.back()
+          }
+        }
       }
     }
     

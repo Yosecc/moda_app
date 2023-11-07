@@ -8,7 +8,7 @@
       :class="active && checkout ? 'active-cupon-checkout':'active'"
       borderWidth="2"
       borderColor="#E9418A"
-      :backgroundColor="active && checkout ?  '#E9418A':''"
+      :backgroundColor="active && checkout ?  '#E9418A':'#EEEEEE'"
       backgroundImage="~/assets/cupon_bg.png" 
     >
       	<FlexboxLayout  
@@ -24,7 +24,7 @@
               fontWeight="600"
               padding="0"
               margin="0"
-              :text="typeCupon" 
+              :text="item.coupon_name" 
             />
             <Label 
               fontSize="14"
@@ -42,11 +42,11 @@
             <Label 
               fontSize="12"
               horizontalAlignment="right"
-              :text="`Expira: ${fecha(item.expire_date)}`" 
+              :text="`Expira: ${item.expire_date}`" 
             />
             
             <Label 
-            v-if="!checkout"
+              v-if="!checkout"
               class="label_enlace"
               fontSize="12"
               textAlignment="right"
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+  import { ObservableArray } from '@nativescript/core/data/observable-array';
 
 	import { mapState, mapMutations } from 'vuex'
   import moment from 'moment'
@@ -182,6 +183,7 @@
         return moment(value).lang("es").format('LL')
       },
       async openModal(){
+        
         const data = await this.$navigator.modal('/tiendas_modal', { 
           fullscreen: true, 
           id: 'tiendasModal', 

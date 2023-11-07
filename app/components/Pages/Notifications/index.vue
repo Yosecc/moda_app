@@ -4,6 +4,15 @@
       <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Notificaciones" />
     </HeaderDefault>
     <StackLayout padding="16">
+      <StackLayout 
+        top="0"
+        left="0"
+        width="100%"  
+        v-if="!notifications.length && cargado" 
+        padding="24"
+      >
+        <Label text="No tenés notificaciones" textAlignment="center" fontWeight="100" fontSize="24" flexWrap />
+      </StackLayout>
       <RadListView 
         class="listNotifications"
         ref="listNotifications"
@@ -86,6 +95,8 @@
           </GridLayout>
         </v-template>
       </RadListView>
+      
+      
     </StackLayout>
   </Page> 
 </template>
@@ -109,7 +120,7 @@
     },
     data() {
       return {     
-
+        cargado: false
       };
     },
     watch:{  
@@ -136,8 +147,11 @@
         })
         // console.log('data',data)
         this.setNotifications(data)
+        this.cargado = true
         this.$ref.listNotifications.refresh()
         // console.log(this.notifications)
+      }).catch((error)=>{
+        this.cargado = true
       })
 
     },

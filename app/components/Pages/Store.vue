@@ -768,7 +768,6 @@ export default {
       this.onCloseDrawer()
 
     },
-
     /** UTILIDADES */
     async  onViewOfertas(){
 
@@ -864,7 +863,6 @@ export default {
         this.busquedaSimple()
       }
     },
-
     /** AYUDANTES */
     updateCategoryPage(){
       if(this.parametros.sections != ''){

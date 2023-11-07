@@ -73,9 +73,9 @@ export default {
         }
         
         if(this.item.redirect == undefined){
-          this.options.props = { data: this.item.data }
+          this.options.props = {page: this.item}
           // alert(JSON.stringify(this.options))
-          this.$navigator.navigate('/promotion',this.options)
+          this.$navigator.navigate('/cms',this.options)
 
           return
         }

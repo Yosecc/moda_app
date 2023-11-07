@@ -115,7 +115,6 @@
                   <v-template key="product">
                     <ProductBox
                         :product="item"
-                        
                     ></ProductBox>
                   </v-template>
                   
