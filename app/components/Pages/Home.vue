@@ -244,7 +244,7 @@
       * CHANGE LOADING BOOLEAN
       */
       ...mapActions(['getSliders','getPromociones','getCategories']),
-      ...mapMutations(['changeisLoadPage']),
+      ...mapMutations(['changeisLoadPage','setPageCMSPromotion']),
       /**
        * GET PRODUCTS SEARCH
        * GET BLOQUES
@@ -256,6 +256,7 @@
        * GET STORE
        */
       ...mapActions('stores', ['getStoreRosa']),
+      
       /**
        * GET PRODUCTS HOY
        * GET SLIDERS
@@ -330,7 +331,8 @@
       },
       async onGetPromociones(){
         await this.getPromociones().then((response)=>{
-          this.arrayHome.find((e)=> e.name == 'promociones').data =  new ObservableArray(response)
+          this.arrayHome.find((e)=> e.name == 'promociones').data =  new ObservableArray(response.carousel_home)
+          this.setPageCMSPromotion(response.promotion_page)
         })
       },
       async onGetCategories(){

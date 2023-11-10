@@ -35,6 +35,12 @@ export default {
                 style: style
             }
         },
+        configTuneIsView(tunes) {
+            if (tunes.categoriaTune != undefined) {
+                return !tunes.categoriaTune.ocultarApp
+            }
+            return true
+        },
         configTuneBackground(tunes, type = 'code') {
             if (tunes.configTune.backgroundColor != undefined) {
 

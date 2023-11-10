@@ -65,7 +65,7 @@
         };
       }, 
       computed:{
-        ...mapState(['isNewPromotions'])
+        ...mapState(['isNewPromotions','pageCMSPromotion'])
       },
       watch:{
   
@@ -73,7 +73,19 @@
       methods:{
         // ...mapActions(['']),
         onTap(){
-          this.$navigator.navigate('/promotions')
+          // this.$navigator.navigate('/promotions')
+          this.$navigator.navigate('/cms',{
+            options: {
+              transition: {
+                name: 'slideLeft',
+                duration: 300,
+                curve: 'easeIn'
+              }
+            },
+            props: {
+              page: this.pageCMSPromotion
+            }
+          })
         }
       }
     }

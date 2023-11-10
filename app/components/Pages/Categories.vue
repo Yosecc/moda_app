@@ -111,9 +111,12 @@
       firebase.analytics.setScreenName({
         screenName: "Filtro Categorias"
       });
-			this.setCategorieActive(this.params.section)
+      
+			this.setCategorieActive(this.params.section) //#id categoria ref. store.categories.categoriesBase
+      
 			this.isLoadingProducts = true 
 			this.ongetCategorieSearch(this.params.section)
+      
     },
     methods:{
       ...mapActions('products',['getCategorieSearch']),
@@ -168,11 +171,15 @@
 					args.object.notifyAppendItemsOnDemandFinished(0, false);
       },
       async ongetCategorieSearch(categorie_id){      
+        // console.log('pasa 1.5', {val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3})
         await this.getCategorieSearch({val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3}).then((response)=>{
+          // console.log('pasa fin', response)
           this.last_page = response.products.last_page
           this.productsCategorie = this.productsCategorie.concat(Object.values(response.products.data))
           this.isLoadingProducts = false
           return true
+        }).catch((error)=>{
+          // console.log('erorr', error)
         })
       },      
     }

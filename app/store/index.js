@@ -75,6 +75,7 @@ export default new Vuex.Store({
             time: 3000
         },
         isNewPromotions: false,
+        pageCMSPromotion: {},
         notification: null,
         menuList: []
     },
@@ -84,6 +85,9 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setPageCMSPromotion(state, val) {
+            state.pageCMSPromotion = val
+        },
         setMenuList(state, val) {
             state.menuList = val
         },

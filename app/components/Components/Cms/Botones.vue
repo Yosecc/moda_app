@@ -30,8 +30,9 @@
             justifyContent="center" 
             width="inherit" 
             class="btn btn-primary" 
-            padding="16" 
+            padding="10" 
             textAlignment="center"  
+            margin="0 4"
           >
             <label textWrap :text="item.textoT" />
             <!-- <label textWrap :text="JSON.stringify(block.tunes)" /> -->

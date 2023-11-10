@@ -69,6 +69,14 @@
             :block="item"
            />
           </v-template>
+          <v-template if="item.type == 'Contador'" >
+           <Contador
+            :block="item"
+           />
+          </v-template>
+          <v-template if="item.type == 'CanjeCupon'" >
+            <formCanjeCupon :placeholder="item.data.form.placeholder" :button="item.data.form.button" />
+          </v-template>
           <v-template  >
             <label :text="JSON.stringify(item.type)" />
           </v-template>
@@ -89,6 +97,10 @@
     import Marcas from '~/components/Components/Cms/Marcas.vue'
     import Portadas from '~/components/Components/Cms/Portadas.vue'
     import Productos from '~/components/Components/Cms/Productos.vue'
+    import Contador from '~/components/Components/Cms/Contador.vue'
+
+    import formCanjeCupon from '~/components/Components/Profile/formCanjeCupon.vue'
+
     import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
 
     export default {
@@ -108,7 +120,9 @@
         Cupones,
         Marcas,
         Portadas,
-        Productos
+        Productos,
+        formCanjeCupon,
+        Contador
       },
       data() {
         return {     

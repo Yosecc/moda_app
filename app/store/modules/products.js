@@ -197,6 +197,7 @@ const actions = {
         return response
     },
     async getCategorieSearch(context, obj = { val: '', page: 1, product_paginate: 16, product_for_store: 3 }) {
+        console.log('action')
         const response = await Api.get(`getCategorieSearch/${obj.val}?page=${obj.page}&product_paginate=${obj.product_paginate}&product_for_store=${obj.product_for_store}`)
         return response
     },

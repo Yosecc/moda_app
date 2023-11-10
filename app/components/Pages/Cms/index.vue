@@ -41,16 +41,17 @@
         
       },
       mounted(){
-        // console.log('this.page',this.page)
+        // console.log('LLEGA this.page',this.page)
         firebase.analytics.setScreenName({
           screenName: this.page.name
         });
         try {
           this.editor = JSON.parse(this.page.editor)
+          // console.log('NJS',this.editor)
           this.editor.blocks.forEach(element => {
             this.blocks.push(element)
           });
-          console.log('this.editor',this.editor)
+          // console.log('this.editor',this.editor)
         } catch (error) {
           console.log('érror',error) 
         }

@@ -1,10 +1,12 @@
 <template lang="html">
     <StackLayout 
+      :backgroundColor="configTuneBackground(block.tunes)"
       :marginTop="configMargin(block.tunes).top"
       :marginRight="configMargin(block.tunes).right"
       :marginBottom="configMargin(block.tunes).bottom"
       :marginLeft="configMargin(block.tunes).left" 
-      :padding="configTuneExapandir(block.tunes) ? 0 : ''">
+      :padding="configTuneExapandir(block.tunes) ? 0 : '0 8'"
+      >
        <Image  :src="block.data.url" stretch="aspectFit"  />
    </StackLayout>
 </template>

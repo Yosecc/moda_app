@@ -1,5 +1,7 @@
 <template lang="html">
-    <WebView  :src="html" />
+
+    <WebView marginTop="16" :src="html" v-if="configTuneIsView(block.tunes)" />
+
 </template>
   
   <script>

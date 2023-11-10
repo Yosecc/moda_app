@@ -176,12 +176,11 @@ export default {
                         break;
                     case 'page':
                         route = 'cms'
+                            // console.log(redirect)
                         this.getCMS(redirect.params.id).then((response) => {
+                            // console.log('response', response.data_json)
                             params = {
-                                page: {
-                                    name: response.title,
-                                    editor: response.data_json
-                                }
+                                page: response
                             }
                             resolve({
                                 route: route,

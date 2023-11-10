@@ -240,19 +240,19 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
               return
             }
 
-            // this.$navigator.navigate('/categories',{
-            //   transition: {
-            //     name: 'slideLeft',
-            //     duration: 300,
-            //     curve: 'easeIn'
-            //   },
-            //   props:{
-            //     params:{
-            //       search: '',
-            //       section: item.id
-            //     },
-            //   }
-            // })
+            this.$navigator.navigate('/categories',{
+              transition: {
+                name: 'slideLeft',
+                duration: 300,
+                curve: 'easeIn'
+              },
+              props:{
+                params:{
+                  search: '',
+                  section: item.id
+                },
+              }
+            })
 
 
           }
