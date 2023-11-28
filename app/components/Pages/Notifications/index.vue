@@ -27,6 +27,7 @@
             :borderRadius="item.new ? 16:0"
             padding="8"
             :background="item.new ? '#ECF0F1':''"
+            @tap="onRedirect(item.redirect)"
           >
 
           <FlexboxLayout  
@@ -91,6 +92,7 @@
               marginTop="0"
               padding="0"
             />
+            
 
           </GridLayout>
         </v-template>
@@ -107,8 +109,9 @@
   import moment from 'moment'
   import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
   import { firebase } from '@nativescript/firebase';
+  import redirectMixin from '~/mixins/redirectMixin'
   export default {
-    mixins:[  ],
+    mixins:[ redirectMixin  ],
     props:{
       count:{
         type: Number,
@@ -116,7 +119,7 @@
       }
     },
     components:{
-      HeaderDefault
+      HeaderDefault,
     },
     data() {
       return {     
@@ -127,8 +130,8 @@
 
     },
     computed:{
-      ...mapState(['notifications'])
-
+      ...mapState(['notifications']),
+      ...mapState('categories',['categoriesBase'])
     },
     mounted(){
       firebase.analytics.setScreenName({
@@ -159,7 +162,16 @@
       ...mapActions(['getNotifications']),
       ...mapMutations(['setNotifications']),
       setFecha(fecha){
-        return moment(fecha).format('DD/MM')
+        let date = moment(fecha).format('DD/MM') 
+        // console.log(date)
+        if(date == 'Invalid date'){
+          return ''
+        }
+        return date
+      },
+      onRedirect(redirect){
+        console.log('redirect1', this.categoriesBase)
+        this.redirect(redirect)
       }
     }
   }

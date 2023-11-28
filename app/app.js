@@ -51,7 +51,6 @@ Theme.setMode(Theme.Light);
 
 import Api from './services'
 import { firebase } from '@nativescript/firebase';
-// var firebase = require("@nativescript/firebase").firebase;
 import { messaging } from '@nativescript/firebase/messaging'
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import cache from '@/plugins/cache'
@@ -61,19 +60,12 @@ import { LocalNotifications } from '@nativescript/local-notifications'
 //     const mChannel = new android.app.NotificationChannel(channelId, name,importance);
 //    }
 
-
-
-
-
-// console.log(this)
 firebase.init({
         showNotifications: true,
         showNotificationsWhenInForeground: true,
-        // onPushTokenReceivedCallback: (token) => {
-        //     console.log('[Firebase] onPushTokenReceivedCallback:', { token });
-        // },
         onMessageReceivedCallback: (message) => {
-            console.log('[Firebase] onMessageReceivedCallback:', { message });
+            console.log('[Firebase] onMessageReceivedCallbackdddddd:', { message });
+
             store._modules.root._rawModule.state.notification = message
 
             if (message.foreground) {
@@ -84,11 +76,12 @@ firebase.init({
                     // ticker: 'The ticker',
                     color: '#E9418A',
                     badge: 1,
+                    data: message.data,
                     // groupedMessages: ['The first', 'Second', 'Keep going', 'one more..', 'OK Stop'], //android only
                     // groupSummary: 'Summary of the grouped messages above', //android only
                     // ongoing: true, // makes the notification ongoing (Android only)
                     icon: 'res://notification_icon',
-                    // image: 'https://cdn-images-1.medium.com/max/1200/1*c3cQvYJrVezv_Az0CoDcbA.jpeg',
+                    image: message.data.image != undefined ? message.data.image : '',
                     // thumbnail: true,
                     // interval: 'minute',
                     // channel: 'My Channel', // default: 'Channel'
@@ -96,7 +89,7 @@ firebase.init({
                     // at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
                 }]).then(
                     scheduledIds => {
-                        console.log('Notification id(s) scheduled: ' + JSON.stringify(scheduledIds))
+                        console.log('Notification id(s) ssssscheduled: ' + JSON.stringify(scheduledIds))
                     },
                     error => {
                         console.log('scheduling error: ' + error)
@@ -106,47 +99,10 @@ firebase.init({
 
         }
     })
-    .then(() => {
-        // console.log('[Firebase] Initialized');
-        // firebase.subscribeToTopic("news")
-        // messaging.registerForPushNotifications({
-        //     onPushTokenReceivedCallback: (token) => {
-        //         console.log("Firebase plugin received a push token: " + token);
-        //         if (cache.get('firebaseToken') == undefined) {
-        //             cache.set('firebaseToken', token)
-        //             Api.post('notifications_push/save_token', { token: token }).then((response) => {
-        //                 // console.log('token enviado', response)
-        //             })
-        //         }
+    .then(() => {})
+    .catch(error => {});
 
-        //         if (cache.get('firebaseToken') != token) {
-        //             cache.set('firebaseToken', token)
-        //             Api.post('notifications_push/save_token', { token: token }).then((response) => {
-        //                 // console.log('token enviado', response)
-        //             })
-        //         }
-        //     },
-        //     onMessageReceivedCallback: (message) => {
-        //         // console.log("Push message received: ", { message });
 
-        //         Api.get('notifications_push/get_notifications').then((response) => {
-        //             store._modules.root._rawModule.state.notifications = new ObservableArray(response)
-        //             let notificationCount = store._modules.root._rawModule.state.notificationCount
-        //             store._modules.root._rawModule.state.notificationCount = notificationCount + 1
-
-        //             store._modules.root._rawModule.state.viewNotification = true
-        //             setTimeout(() => {
-        //                 store._modules.root._rawModule.state.viewNotification = false
-        //             }, 8000)
-        //         })
-        //     },
-        //     showNotifications: true,
-        //     showNotificationsWhenInForeground: true
-        // })
-    })
-    .catch(error => {
-        // console.log('[Firebase] Initialize', { error });
-    });
 
 new Vue({
     render: h => h(App),

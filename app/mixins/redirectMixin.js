@@ -15,35 +15,37 @@ export default {
         // ...mapActions('products', ['getProduct']),
 
         redirect(redirect) {
+            // console.log('redirectsss', redirect.route, redirect)
             if (redirect.route == undefined) {
                 return
             }
-
             this.asyncRedirect(redirect).then((e) => {
-                    this.$navigator.navigate(`/${e.route}`, {
-                        transition: {
-                            name: 'slideLeft',
-                            duration: 300,
-                            curve: 'easeIn'
-                        },
-                        props: e.params
-                    })
+                this.$navigator.navigate(`/${e.route}`, {
+                    transition: {
+                        name: 'slideLeft',
+                        duration: 300,
+                        curve: 'easeIn'
+                    },
+                    props: e.params
                 })
-                // console.log('redirect', redirect, this.categoriesBase)
-                //     // return
-                /**
-                 * creo que todo debo convertirlo en una promesa
-                 */
-
-
-
+            })
         },
         getCategorie(categoria) {
+            // console.log('categoria', typeof categoria.section, this.categoriesBase)
+            let obj = { id: 0 }
             if (categoria == undefined) {
-                return { id: 0 }
+                return obj
+            }
+            if (categoria.key != undefined) {
+                return this.categoriesBase.find((e) => e.key == categoria.key)
             }
 
-            return this.categoriesBase.find((e) => e.key == categoria.key)
+            if (categoria.section != undefined && (typeof categoria.section == 'string' || typeof categoria.section == 'number')) {
+                let c = this.categoriesBase.find((e) => e.id == categoria.section)
+
+                return c == undefined ? { id: 0 } : c
+            }
+            return obj
         },
         construccionRuta(queryString) {
             // La cadena de consulta
@@ -108,10 +110,22 @@ export default {
             const response = await Api.get(`cms/get/${val}`)
             return response
         },
+        caseCategorie(redirect) {
+            // console.log('r', redirect, this.getCategorie(redirect.params))
+            const obj = {
+                params: {
+                    search: redirect.params.search == undefined ? '' : redirect.params.search,
+                    section: [this.getCategorie(redirect.params).id],
+                    auto: true
+                },
+            }
+            return obj
+        },
         asyncRedirect(redirect) {
             return new Promise((resolve, reject) => {
                 let params = {}
                 let route = redirect.route
+                    // console.log('route', route)
                 switch (redirect.route) {
                     case 'search':
                         /**
@@ -162,13 +176,18 @@ export default {
                         break;
                     case 'categorie':
                         route = 'search'
-                        params = {
-                            params: {
-                                search: redirect.params.search == undefined ? '' : redirect.params.search,
-                                section: this.getCategorie(redirect.params).id,
-                                auto: true
-                            },
-                        }
+                        params = this.caseCategorie(redirect)
+                        resolve({
+                            route: route,
+                            params: params
+                        })
+                        break;
+                    case "/categories":
+                        route = 'search'
+                            // console.log('pe', redirect)
+
+                        params = this.caseCategorie(redirect)
+                            // console.log('pa', params)
                         resolve({
                             route: route,
                             params: params
@@ -198,7 +217,7 @@ export default {
 
                         const objectRuta = this.construccionRuta(redirect.params)
 
-                        console.log('objectRuta', objectRuta)
+                        // console.log('objectRuta', objectRuta)
 
                         // objectRuta.hash
 

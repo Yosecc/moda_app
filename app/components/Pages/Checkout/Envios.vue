@@ -2,27 +2,57 @@
   <Page actionBarHidden="true">
   
   <layoutCheckout
-    title=""
+    title="Datos de envío"
     subTitle=""
     nextPage="/envios_detail"
+    :viewBottomDetail="true"
     :nextStatus="nextStatus"
     :loading="buttonLoading"
     @onAction="onselectMethodEnvio"
   >
-    <StackLayout  paddingRight="8" paddingLeft="8">
+    <StackLayout paddingRight="8" background="" paddingLeft="8">
       <RadListView 
-        for="item in envios"
+        :items="arrayPage"
         ref="listEnvios"
-        @itemTap="onItemTap"
-        
       >
-        <v-template name="header">
+        <v-template if="item.name == 'headers'" >
           <StackLayout paddingLeft="16" paddingRight="16">
-            <Label class="title_product" text="Tipos de envío" />
-            <Label textWrap text="A continuación podés seleccionar el tipo de envío con el cual querés recibir tu paquete." />
+            <!-- <Label class="title_product" :text="item.data.title" /> -->
+            <Label textWrap :text="item.data.text" />
           </StackLayout>
         </v-template>
-        <v-template if="item.active == false">
+        <v-template if="item.name == 'listEnvios'">
+          <!-- <Label :text="JSON.stringify(item.data)" /> -->
+          <RadListView 
+            :items="item.data"
+            ref="listEnviosData"
+            @itemTap="onItemTap"
+          >
+            <v-template key="cardenvio">
+              <CardEnvio
+                :envio="item"
+              />
+            </v-template>
+            
+          </RadListView>
+        </v-template>
+      </RadListView>
+       
+        <!-- <v-template if="item.active == false">
+                <RadListView 
+                  ref="producsScroll"
+                  layout="grid"
+                  :items="item.data"
+                  row="1"
+                  v-show="item.data.length"
+                >
+                  <v-template key="product">
+                    <ProductBox
+                        :product="item"
+                    ></ProductBox>
+                  </v-template>
+                  
+                </RadListView>
           <CardEnvio
             :envio="item"
           />
@@ -31,9 +61,10 @@
           <CardEnvio
             :envio="item"
           />
-        </v-template>
-      </RadListView>
-      <StackLayout v-if="!envios.length">
+        </v-template> -->
+
+      
+      <!-- <StackLayout v-if="!envios.length">
         <StackLayout class="label_skeleton" marginBottom="8" width="40%" horizontalAlignment="left" height="30"  />
         <StackLayout class="label_skeleton" marginBottom="8" width="100%" height="30"  />
         <StackLayout
@@ -46,7 +77,7 @@
         >
           
         </StackLayout>
-      </StackLayout>
+      </StackLayout> -->
     </StackLayout>
   </layoutCheckout>
 </Page>
@@ -76,7 +107,20 @@
     },
     data() {
       return {
-        buttonLoading: false
+        buttonLoading: false,
+        arrayPage: new ObservableArray([
+          {
+            name: 'headers',
+            data: {
+              title: 'Tipos de envío',
+              text: 'A continuación podés seleccionar el tipo de envío con el cual querés recibir tu paquete.'
+            }
+          },
+          {
+            name: 'listEnvios',
+            data: new ObservableArray([])
+          }
+        ])
       };
     },
     watch:{
@@ -103,6 +147,7 @@
         group_id: this.group_id
       }).then((response)=>{
         this.setEnvios(response)
+        this.arrayPage.find((e)=> e.name == 'listEnvios').data = new ObservableArray(response)
         this.$refs.listEnvios.refresh()
       })
       this.addCostoEnvio([])

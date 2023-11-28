@@ -2,8 +2,19 @@
   
     <GridLayout
       rows="auto,*,auto"
+      background="#FDFDFD"
     >
-    <HeaderCustom  class="card secondary" marginBottom="8" row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="false" >
+    <HeaderNoActionBar  
+      class="card secondary" 
+      marginBottom="8" 
+      row="0" padding="8" 
+      :logoCenter="false" 
+      :back="true" 
+      :isCar="false" 
+      :isModal="false" 
+      :isNotification="false"
+      :isBtnPromotions="false"
+    >
       <FlexboxLayout background="" col="1" alignItems="center" justifyContent="flex-start">
         <ImageCache 
           placeholderStretch="aspectFill"
@@ -16,7 +27,8 @@
         /> 
         <StackLayout>
           <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="carCheckout.name" />
-          <label
+          <Label margin="0" padding="0" fontWeight="900" fontSize="14" :text="title" />
+          <!-- <label
             margin="0" 
             padding="0"
             marginBottom="0" 
@@ -28,19 +40,19 @@
               <span  text="Compra mínima en la tienda: "></span>
               <span :text="carCheckout.min | moneda " style="color: #E9418A"></span>
             </FormattedString>
-          </label>
+          </label> -->
         </StackLayout>
       </FlexboxLayout>
-    </HeaderCustom>
+    </HeaderNoActionBar>
 
 
       <StackLayout
         row="1"
       >
-        <StackLayout paddingLeft="16" v-if="title" paddingRight="16">
+        <!-- <StackLayout paddingLeft="16" v-if="title" paddingRight="16">
           <Label class="title_product" :text="title" />
           <Label textWrap :text="subTitle" />
-        </StackLayout>
+        </StackLayout> -->
         <StackLayout>
           <slot/>
         </StackLayout>
@@ -119,7 +131,7 @@
 <script>
   import * as utils from "@nativescript/core/utils";
 
-  import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
+  import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapState, mapMutations } from 'vuex'
   export default {
@@ -163,7 +175,7 @@
       }
     },
     components: {
-      HeaderCustom
+      HeaderNoActionBar
     },
     filters: {
       moneda: function (value) {

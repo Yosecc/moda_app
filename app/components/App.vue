@@ -14,76 +14,7 @@
           <GridLayout  height="100%" width="100%"  top="0" left="0">
             <Navigator :defaultRoute="isLogged ? '/home':'/login'"  />
           </GridLayout >
-          <StackLayout v-if="viewNotification" @tap="changeviewNotification(false)" top="0" left="0" width="100%"  padding="8 16">
-            <StackLayout borderColor="#E9418A" borderWidth=".5" borderRadius="16" class="card" >
-              <GridLayout 
-                columns="auto,*,auto" 
-                rows="*, auto" 
-              >
-                <FlexboxLayout  
-                  rowSpan="2"
-                  col="0"
-                  row="0"
-                  justifyContent="center"
-                  alignItems="center"
-                  height="100%"
-
-                >
-                  <image 
-                    v-if="notificationActive.image != '' && notificationActive.image != null"
-                    :src="notificationActive.image" 
-                    stretch="aspectFill" 
-                    width="60"
-                  />
-
-                  <image 
-                    v-else
-                    src="~/assets/icons/notification.png" 
-                    stretch="aspectFill" 
-                    width="60"
-
-                  />
-
-                
-                </FlexboxLayout >
-                <label 
-                  :text="notificationActive.title" 
-                  row="0" 
-                  col="1"
-                  fontWeight="900"
-                  fontSize="16"
-                  textWrap
-                  marginLeft="8"
-                  marginBottom="0"
-                  padding="0"
-                  marginTop="0"
-                />
-                <label 
-                  :text="setFecha(notificationActive.created_at)" 
-                  row="0" 
-                  col="2"
-                  fontWeight="100"
-                  fontSize="10"
-                  marginBottom="0"
-                  padding="0"
-                  marginTop="0"
-                />
-                <label 
-                  :text="notificationActive.body" 
-                  row="1" 
-                  col="1"
-                  fontWeight="200"
-                  textWrap
-                  colSpan="2"
-                  fontSize="14"
-                  marginLeft="8"
-                  marginBottom="0"
-                  marginTop="0"
-                  padding="0"
-                />
-              </GridLayout>
-            </StackLayout>
-          </StackLayout>
+          
           <Toast /> 
         </AbsoluteLayout>
         
@@ -98,6 +29,7 @@
 	import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
   import Menu from './Components/Menu'
   import homeMixin from '~/mixins/homeMixin.js'
+  import redirectMixin from '~/mixins/redirectMixin.js'
   import templateProductDrawer from '~/components/Components/templateProductDrawer.vue'
   import templateProduct from '~/components/Pages/Product/templateProduct.vue'
   import Car from '~/components/Pages/Car/index.vue'
@@ -106,7 +38,7 @@
   import { LocalNotifications } from '@nativescript/local-notifications'
 
   export default {
-    mixins:[ homeMixin ],
+    mixins:[ homeMixin, redirectMixin],
     components: {
       Menu,
       templateProductDrawer,
@@ -123,23 +55,10 @@
         }
       },
       notification(to){
-        
-        if(Object.keys(to.data).length > 0){
-          if(typeof to.data.redirect == 'string'){
-            let redirect = JSON.parse(to.data.redirect)
-            if(Object.keys(redirect).length > 0){
-              this.$navigator.navigate( redirect.route ,{
-                transition: {
-                  name: 'slideLeft',
-                  duration: 300,
-                  curve: 'easeIn'
-                },
-                props: redirect.params
-              })
-            }
-          }
+        console.log('to',to)
+        if(!to.foreground && to.data!=undefined && to.data.redirect!=undefined){
+          this.redirect(JSON.parse(to.data.redirect))
         }
-        // console.log('notification cambios',to.data)
       }
     },
     data(){
@@ -150,7 +69,7 @@
     computed:{
       ...mapState(['drawer','directionDrawer','isLoadPage','viewNotification','notifications']),
       ...mapGetters('authentication',['isLogged']),
-      ...mapState('categories',['openFilter']),
+      ...mapState('categories',['openFilter','categoriesBase']),
       ...mapState(['notification']),
       notificationActive(){
         if(this.viewNotification){
@@ -167,6 +86,14 @@
 		},
     mounted(){
       //console.log(android.os.Build.VERSION.SDK_INT)
+
+      LocalNotifications.addOnMessageReceivedCallback((notification) => {
+          if (notification.foreground) {
+            if(notification.data != undefined){
+              this.redirect(JSON.parse(notification.data.redirect))
+            }
+          }
+      });
       
       setTimeout(()=>{
         if(this.isLogged){

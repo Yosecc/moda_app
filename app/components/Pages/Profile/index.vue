@@ -94,15 +94,15 @@
     data() {
       return {
         menu:new ObservableArray([
-          // {
-          //   label: 'Pedidos',
-          //   component: 'Pedidos',
-          //   active: true
-          // },
+          {
+            label: 'Pedidos',
+            component: 'Pedidos',
+            active: true
+          },
           {
             label: 'Direcciones',
             component: 'Direcciones',
-            active: true
+            active: false
           },
           {
             label: 'Cupones',
@@ -120,7 +120,7 @@
             active: false
           }
         ]),
-        menuActive: 'Direcciones'
+        menuActive: 'Pedidos'
       };
     },
     watch:{

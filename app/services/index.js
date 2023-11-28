@@ -66,7 +66,7 @@ const Api = {
                 console.warn({ url: `${url_base}${url}`, res: res.content.toJSON() })
                 resolve(res.content.toJSON())
             }).catch((e) => {
-                console.log('errowwWr get', e)
+                console.log(`errowwWr get ${url}`, e)
                 reject(new Error(e))
             });
         });

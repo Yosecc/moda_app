@@ -3,7 +3,8 @@
 
     <StackLayout 
       marginBottom="8" 
-      :backgroundColor="envio.active ? envio.color:''"
+      :borderWidth="envio.active ? 2:0"
+      :borderColor="envio.active ? '#E9418A':''"
       class="card"
 
     >
@@ -16,7 +17,7 @@
             top="16"
             left="64"
             width="35"
-            :src="envio.active ? `${envio.icon}_white`:envio.icon" 
+            :src="envio.icon" 
             stretch="aspectFill" 
           /> 
 
@@ -26,7 +27,7 @@
             fontWeight="900"
             margin="0 0 0 6"
             padding="0"
-            :color="envio.active ? 'white':''"
+            
             :text="envio.title" 
           />
 
@@ -37,7 +38,6 @@
           fontWeight="600"
           textWrap="true"
           :marginBottom="envio.precios.length ? 16:''"
-          :color="envio.active ? 'white':''"
           :text="envio.description" 
         />
 
@@ -50,7 +50,7 @@
           textWrap="true"
           margin="0 0 8 16"
           padding="0"
-          :color="envio.active ? 'white':''"
+ 
           :text="precio" 
         />
 
@@ -61,7 +61,7 @@
           fontWeight="300"
           textWrap="true"
           marginTop="8"
-          :color="envio.active ? 'white':''"
+   
           :text="envio.description2" 
         />
 

@@ -411,9 +411,11 @@
       },
       onComprar(){
         this.buttonLoading = true
+        console.log('llea')
         this.confirmarCompra({
           group_id: this.group_id
         }).then((response)=>{
+          console.log('sisji', response)
           this.setnumeroPedido(response.purchase_id)
           firebase.analytics.logEvent({
             key: "checkout_success",
@@ -427,8 +429,10 @@
                 value: response.purchase_id
               }]
           })
-          this.$navigator.navigate('/success')
+
+          this.$navigator.navigate('/success',{backstackVisible: false, clearHistory: true})
         }).catch((error)=>{
+          console.log('error',error.toJSON())
           this.buttonLoading = false
         })
       },

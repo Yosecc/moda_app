@@ -56,7 +56,7 @@
             </StackLayout>
           </v-template>
           <v-template if="item.name == 'slider'">
-            <SliderComponent :sliders="item.data" />              
+            <SliderComponent :sliders="item.data" :categoriesBase="categoriesBase" :cargado="item.cargado" />              
           </v-template>
           <v-template if="item.name == 'categories'">
             <StackLayout padding="16 0 0 0" >
@@ -222,6 +222,7 @@
     watch:{  
     },
     computed:{
+      ...mapState('categories',['categoriesBase']),
       /**
        * CALCULOS
        */
@@ -263,7 +264,7 @@
        * GET STORES
        */
       cargaHome(){
-        console.log('1')
+        // console.log('1')
         // this.onGetProducts()
         this.onGetSliders()
         this.onGetStores()
@@ -313,7 +314,12 @@
 
       },
       async onGetSliders(){
+        this.arrayHome.find((e)=> e.name =='slider').cargado = false
+        this.$refs.arrayHome.refresh()
+         
         await this.getSliders({ slide_category: '0,1' }).then((response) => {
+          // console.log('response', response, typeof response)
+          this.arrayHome.find((e)=> e.name =='slider').cargado = true
           this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
         })
       },

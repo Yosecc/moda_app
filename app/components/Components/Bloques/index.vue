@@ -109,6 +109,11 @@
                 
             </Carousel>
             </StackLayout>
+
+            <!-- <StackLayout v-if="['modal'].includes(bloque.type)">
+
+            </StackLayout> -->
+
         </StackLayout>
     </StackLayout>
     <StackLayout padding="16" v-if="!data.length">
@@ -154,24 +159,52 @@
         import { mapGetters, mapState } from 'vuex'
         export default {
             props:{
-            data:{
-              type: Array|Object,
-              default:[]
+                data:{
+                    type: Array|Object,
+                    default:[]
+                },
             },
-          },
-          components:{
-            ProductBox
-          },
-          computed:{
-            
-          },
-          data() {
-            return {
-              
-            };
-          },
+            watch:{
+                data(to){
+                    const editores = to.find((e)=> e.name == 'modal')?.editores
+
+                    if(editores!=undefined){
+                        const editorArray = editores.map(element => element = JSON.parse(element))
+                        this.$navigator.modal('/fullModal', 
+                            { 
+                                fullscreen: true, 
+                                props:{ editores: editorArray } 
+                            }
+                        )
+                    }
+                }
+            },
+            components:{
+                ProductBox
+            },
+            computed:{
+                
+            },
+            data() {
+                return {
+                
+                };
+            },
           mounted(){
-      
+            // const editores = this.data.find((e)=> e.name == 'modal')?.editores
+            // console.log('editores',this.data,editores)
+            // if(editores!=undefined){
+                // this.$navigator.modal('/fullModal', { 
+                // fullscreen: true, 
+                // props:{ 
+                //     editores: editores
+                //     // config : {
+                //         //     background: 'red',
+                //         //     color: 'white'
+                //         // }  
+                //     } 
+                // })
+            // }
           },
           methods:{
             onTapVerMas(bloque){

@@ -155,6 +155,11 @@
               </GridLayout>
 
             </v-template>
+            <v-template name="foote" if="item.name == 'footer'" >
+              <StackLayout v-show="item.data" padding="24" row="1" >
+                <Label v-if="item.data" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
+              </StackLayout>
+            </v-template>
             <v-template name="loadondemand">
               <Label text=""/>
             </v-template>
@@ -168,6 +173,7 @@
             left="0"
           />
         </AbsoluteLayout>
+        
       </GridLayout>     
    
   </Page>
@@ -236,7 +242,11 @@
           {
             name: 'ultimasbusquedas',
             data: new ObservableArray([])
-          }
+          },
+          {
+            name:'footer',
+            data: false
+          },
         ]),
         conteo: 0,
         viewArrowTop: false,
@@ -273,6 +283,15 @@
       ruta(){
         return this.$navigator.path
       },
+      isSection(){
+        return (this.params.section != null && this.params.section != undefined && this.params.section !== '')
+      },
+      isSearch(){
+        return (this.params.search && this.params.search != '')
+      },
+      isRedirect(){
+        return (this.params.redirect != undefined && this.params.redirect)
+      }
     },
     created(){
       this.arraySearch.find((e)=> e.name == 'categories').data.push(this.categoriesBase)
@@ -302,12 +321,13 @@
       firebase.analytics.setScreenName({
         screenName: "Buscador"
       });
-      
+
+      console.log('this.params',this.params)
+
       if(this.params.categorie_default != undefined){
         this.sections = this.params.categorie_default
       }
-
-      if(this.params.redirect != undefined && this.params.redirect){
+      if(this.isRedirect){
 
         utils.ad.dismissSoftInput();
         this.arrowTop()
@@ -327,7 +347,7 @@
         this.onSubmitBusqueda()
         return 
       }
-      if(this.params.section != null && this.params.section != undefined && this.params.section !== ''){
+      if(this.isSection && !this.isSearch){
         this.isBuscador = false
         this.noultimasbusquedas = true
         this.arrowTop()
@@ -339,8 +359,9 @@
         this.$refs.arraySearch.refresh()
         this.arrowTop()
         this.onTapCategories(this.params.section)
+        return
       }
-      if(this.params.search && this.params.search != ''){
+      if(this.isSearch && !this.isSection ){
         this.filter = this.params.search
         this.noultimasbusquedas = true
         this.isBuscador = false
@@ -349,14 +370,26 @@
             utils.ad.dismissSoftInput();
           },100)
         this.onSubmitBusqueda()
+        return
       }
 
-      // setTimeout(()=>{
-      //   this.isBuscador = true
-      // },1000)
-      
-      
+      if(this.isSearch && this.isSection ){
+        this.filter = this.params.search
+        this.noultimasbusquedas = true
+        this.isBuscador = false
+        this.categoriaActivaLocal = this.params.section
+        this.sections = this.params.section
+        
+        if(this.params.section.includes(0)){
+          this.sections = this.sectionsDefault
+        }
 
+        this.arrowTop()
+        // setTimeout(()=>{
+            utils.ad.dismissSoftInput();
+          // },100)
+        this.onSubmitBusqueda()
+      }
     },
     methods:{
       /**
@@ -391,7 +424,12 @@
         
         this.$refs.arraySearch.refresh()
         this.cargado = false
-        // console.log('submit',this.sections)
+        console.log('submit',{
+          search: this.filter,
+          start: this.arraySearch.find((e)=> e.name == 'products').data.length,
+          length: 10,
+          sections: this.sections
+        })
         this.changeParamsProductsSearch({
           search: this.filter,
           start: this.arraySearch.find((e)=> e.name == 'products').data.length,
@@ -404,6 +442,11 @@
           setTimeout(()=>{
             utils.ad.dismissSoftInput();
           },100)
+          if(!response.length){
+            this.arraySearch.find((e)=> e.name =='footer').data = true
+          }else{
+            this.arraySearch.find((e)=> e.name =='footer').data = false
+          }
           this.isLoadingProducts = false
           this.cargado = true
           this.arraySearch.find((e)=> e.name == 'products').data = new ObservableArray(response)
@@ -505,10 +548,16 @@
           this.cargado = true
           this.isLoadingProducts = false
           if(response.length == 0){
+            
+            this.arraySearch.find((e)=> e.name =='footer').data = true
+            
             args.returnValue = false;
             args.object.notifyAppendItemsOnDemandFinished(0, true);
             this.$refs.arraySearch.refresh() 
             return
+          }else{
+            this.arraySearch.find((e)=> e.name =='footer').data = false
+
           }
           response.forEach((e)=>{
             this.arraySearch.find((e)=> e.name == 'products').data.push(e)

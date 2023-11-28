@@ -1,91 +1,98 @@
 <template >
-<StackLayout  padding="0">
-  <StackLayout height="200"  width="100%" v-if="!sliders.length" padding="8 16"  >
-    <StackLayout 
-      v-for="i in 1"
-      class="label_skeleton"
-      :key="`skeleto-marca-${i}}`" 
-      height="100%" 
-      width="100%" 
-      stretch="aspectFill"
-    />
-  </StackLayout>
-  <!-- <Label :text="JSON.stringify(fr)" /> -->
-  <Carousel 
-    v-if="recharge && sliders.length"
-    height="200" 
-    width="100%" 
-    ref="SliderPrincipal"
-    indicatorColor="#E9418A" 
-    indicatorColorUnselected="rgba(0,0,0,.1)"
-    :showIndicator="false" 
-    indicatorOffset="200,60"
-    finite="true" 
-    bounce="false" 
-    android:indicatorAlignment="bottom"
-    verticalAlignment="top"  
-    horizontalAlignment="center"   
-    :selectedPage="page"
-    margin="0"
-    padding="0"
-  >
-  
-    <CarouselItem 
-      v-for="(i,key) in computedSliders" 
-      :key="`slide-${key}`"
-      :id="`slide-${key}`" 
-      verticalAlignment="middle"
-      paddingRight="16"
-      paddingLeft="16"
-      paddingBottom="0"
-      @tap="onTap(i)"
-    >
-      <ImageCache 
+  <StackLayout  padding="0">
+    <StackLayout height="200"  width="100%" v-if="!sliders.length && !cargado" padding="8 16"  >
+      <StackLayout 
+        v-for="i in 1"
+        class="label_skeleton"
+        :key="`skeleto-marca-${i}}`" 
+        height="100%" 
+        width="100%" 
         stretch="aspectFill"
-        placeholderStretch="aspectFit"
-        borderRadius="10"
-        placeholder=""
-        :src="i.img"
-        height="100%"
-        class="imageCache"
-        rounded="false"
-        @isLoading="isLoading"
-        ref="imageCache"
-      /> 
-    </CarouselItem>
-    
-  </Carousel>
-  <StackLayout 
-    width="100%" 
-    height="1" 
-    padding="0 16"
-    margin="-2 0 0 0" 
-  >
-    <StackLayout 
-      width="0" 
-      height="1" 
-      background="#E9418A" 
-      padding="0" 
+      />
+    </StackLayout>
+    <Carousel 
+      v-if="recharge && sliders.length"
+      height="200" 
+      width="100%" 
+      ref="SliderPrincipal"
+      indicatorColor="#E9418A" 
+      indicatorColorUnselected="rgba(0,0,0,.1)"
+      :showIndicator="false" 
+      indicatorOffset="200,60"
+      finite="true" 
+      bounce="false" 
+      android:indicatorAlignment="bottom"
+      verticalAlignment="top"  
+      horizontalAlignment="center"   
+      :selectedPage="page"
       margin="0"
-      horizontalAlignment="left"
-      borderRadius="5"
-      ref="barload"
-    ></StackLayout>
-  </StackLayout>
-</StackLayout >
+      padding="0"
+    >
+    
+      <CarouselItem 
+        v-for="(i,key) in computedSliders" 
+        :key="`slide-${key}`"
+        :id="`slide-${key}`" 
+        verticalAlignment="middle"
+        paddingRight="16"
+        paddingLeft="16"
+        paddingBottom="0"
+        @tap="onTap(i)"
+      >
+        <ImageCache 
+          stretch="aspectFill"
+          placeholderStretch="aspectFit"
+          borderRadius="10"
+          placeholder=""
+          :src="i.img"
+          height="100%"
+          class="imageCache"
+          rounded="false"
+          @isLoading="isLoading"
+          ref="imageCache"
+        /> 
+      </CarouselItem>
+      
+    </Carousel>
+    <StackLayout 
+      width="100%" 
+      height="1" 
+      padding="0 16"
+      margin="-2 0 0 0" 
+    >
+      <StackLayout 
+        width="0" 
+        height="1" 
+        background="#E9418A" 
+        padding="0" 
+        margin="0"
+        horizontalAlignment="left"
+        borderRadius="5"
+        ref="barload"
+      ></StackLayout>
+    </StackLayout>
+  </StackLayout >
 </template>
 
 <script>
   import { Http, ImageSource } from '@nativescript/core'
   import { screen } from "@nativescript/core/platform"
   import { mapState, mapMutations } from 'vuex'
+  import redirectMixin from '~/mixins/redirectMixin.js'
 
   export default {
+    mixins:[redirectMixin],
+
     props:{
       sliders:{
         type: Array|Object,
         default:[]
-      }
+      },
+      cargado:{
+        type: Boolean,
+        default: false
+      },
+      categoriesBase: null
     },
     components:{
     },
@@ -104,12 +111,8 @@
           },this.tiempo)
       },
       page(to){
-
-        // console.log(to)
       }
-      // imageCacheComputed(to){
-      //   console.log(to)
-      // }
+
     },
     data() {
       return {
@@ -117,34 +120,14 @@
         recharge: true,
         page:0,
         automaticPage: null,
-        tiempo: 10000
+        tiempo: 10000,
+        categoriesBas: this.categoriesBase,
       };
     },
     computed:{
-      ...mapState(['isLoadPage']),
-    
       computedSliders(){
-        // this.sliders.forEach((e)=>{
-        //   this.getImage(e.img)
-        // })
-        if(this.$refs.imageCache && this.$refs.imageCache.length){
-          this.$refs.imageCache.forEach((e)=>{
-          //   console.log(e.nativeView.android.borderRadius = 80)
-          // console.log(e.nativeView.animate({
-          //   borderRadius: 80,
-          //   duration: 250
-          // }))
-          
-          // console.log(e.nativeView.borderWidth = 13)
-        })
-        }
-        
         return this.sliders
       },
-
-      // widthSlider(){
-      //   return screen.mainScreen.widthDIPs
-      // }
     },
     mounted(){
       if(this.sliders.length){
@@ -155,7 +138,6 @@
     methods:{
       ...mapMutations('products',['changeParamsProductsSearch']),
       fd(d){
-        // console.log(d)
       },
       baranimation(){
         let view = this.$refs.barload.nativeView
@@ -176,32 +158,13 @@
         // console.log('Page changed to index: ' + args.index);
       },
       onTap(item){
-        let enlace = item.url
-        if(enlace.includes('/catalog')){
+        let redirect = item.redirect
 
-          this.$navigator.navigate('/search',{
-            transition: {
-              name: 'slideLeft',
-              duration: 300,
-              curve: 'easeIn'
-            },
-            props:{
-              params: item.query
-            }
-          })
+        if(redirect!=undefined){
+          this.redirect(redirect)
 
-        }else{
-          // this.$navigator.navigate('/web_view',{
-          //   transition: {
-          //     name: 'slideLeft',
-          //     duration: 300,
-          //     curve: 'easeIn'
-          //   },
-          //   props: {
-          //     link: 'https://www.modatex.com.ar'+item.url
-          //   }
-          // })
         }
+        
       },
       getImage(img){
         // Http.getImage(img).then(
