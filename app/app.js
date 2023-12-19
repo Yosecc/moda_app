@@ -21,6 +21,7 @@ Vue.use(Navigator, { routes })
 Vue.config.silent = false
 
 Vue.registerElement('ImageCache', () => require('@ticnat/nativescript-image-cache').ImageCache); // now add this
+Vue.registerElement('ImageZoom', () => require('@triniwiz/nativescript-image-zoom').ImageZoom); // now add this
 
 Vue.registerElement('Carousel', () => require('@nstudio/nativescript-carousel').Carousel);
 Vue.registerElement('CarouselItem', () => require('@nstudio/nativescript-carousel').CarouselItem);

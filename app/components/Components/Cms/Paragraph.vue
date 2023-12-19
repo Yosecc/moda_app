@@ -1,7 +1,7 @@
 <template lang="html">
   <!-- <StackLayout padding="0" borderColor="blue" borderWidth="1"> -->
     <!-- <label :text="JSON.stringify(configTunes(block.tunes).style)" /> -->
-    <WebView :src="html" />
+    <WebView :src="html" disableZoom="true"/>
   <!-- </StackLayout> -->
 </template>
   

@@ -1,6 +1,6 @@
 <template lang="html">
   <Page >
-    <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" />
+    <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" :isLoading="onIsLoading" />
     <RadSideDrawer row="1" 
       @drawerClosed="onCloseDrawer"  
       :gesturesEnabled="false"
@@ -133,7 +133,7 @@
 
               </GridLayout >
 
-              <StackLayout padding="0" margin="0" minHeight="140">
+              <StackLayout v-if="producto.has_stock" padding="0" margin="0" minHeight="140">
                 <CombinacionesProduct
                   padding="0 16 32 12"
                   v-if="change && changeCombinaciones"
@@ -252,6 +252,11 @@
 
                 </StackLayout>
               </StackLayout>
+
+              <StackLayout v-if="!producto.has_stock" padding="0" margin="0" minHeight="140" >
+                <Label textAlignment="center" fontWeight="100" fontSize="24" flexWrap  text="Sin Stock" />
+              </StackLayout>
+
             </StackLayout>
 
             <StackLayout width="100%" height="24" background="" class="degrade"/>
@@ -269,6 +274,7 @@
               v-if="change"
             >
               <StackLayout v-show="productRelacionados.length">
+                
 
                 <FlexboxLayout @tap="onViewStore(product.store)" marginBottom="16" width="100%" justifyContent="space-between" alignItems="center">
 
@@ -453,6 +459,7 @@
         changeCombinaciones: true,
         products: [],
         changed: true,
+        onIsLoading: false,
       }; 
     },
     watch:{
@@ -486,8 +493,17 @@
       },
       totalProduct(){
         let total = 0
+        // console.log('computed',this.combinaciones,this.product)
         this.combinaciones.forEach((e)=>{
+          console.log('uyu', e.talleActive, e.colorActive)
           let p = e.price ? e.price : this.product.price
+
+          const model = this.product.models.find((i)=> i.size == e.talleActive)
+          // console.log('momdel compute', model)
+          if(model!=undefined){
+            let pr = parseInt(model.price)
+            p = pr != 0 ? pr : p
+          }
           total += p * e.cantidad
         })
         return total
@@ -574,7 +590,7 @@
       },
       async onLoadCarro(){
         let id = this.producto.store.id  ? this.producto.store.id : this.producto.local_cd
-        
+        this.onIsLoading = true
         await this.getCart(id).then((response)=>{
          
           if(Object.entries(response).length === 0){
@@ -589,6 +605,7 @@
               }
             ]
             this.setCarro(response)
+            this.onIsLoading = false
             return
           }
           this.loadCombinaciones = false
@@ -607,16 +624,20 @@
                   colorActive: '',
                   cantidad: 0,
                   combinacion_key: -1,
-                  
                 }
               ]
             }
             this.loadCombinaciones = true
+            this.onIsLoading = false
             // this.$refs.productEsq.refresh()
+          }).catch((error)=>{
+            console.log('ssssoo',error)
           })
         })
       },
       async addCombinacion(data){
+        // console.log('rrr',data)
+        this.onIsLoading = true
         if(data.combinacion_key != null){
           this.combinaciones[data.combinacion_key] = data
         }else{
@@ -627,6 +648,7 @@
             this.combinaciones.push(data) 
           }
         }
+        // console.log('sss',this.combinaciones)
         firebase.analytics.logEvent({
           key: "add_combinacion_product",
           parameters: [
@@ -656,7 +678,7 @@
         this.$refs.drawerProduct.closeDrawer();
       },
       async onEditCombinacion(combinacion){
-        
+        this.onIsLoading = true
         if(combinacion.colorActive == '' ){
           this.changeToast({
             title: 'Seleccione un color para continuar',
@@ -682,8 +704,10 @@
         let size_id = product.models.find((e)=> e.size == combinacion.talleActive).size_id
         let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
 
-        let modelo   = product.models.find( (x) => x.size_id == size_id ).properties.find( (y) => y.color_id == color_id)
+        let modelo   = product.models.find( (x) => x.size_id == size_id )
+                        .properties.find( (y) => y.color_id == color_id)
         
+                       
         if(modelo == undefined ){
           this.changeToast({
             title: 'Combinación no disponible',
@@ -698,14 +722,19 @@
         
         let c = product.models.find((e)=> e.size == combinacion.talleActive).price
         
-        if(modelo.price != null && modelo.price > 0){
-          modelo_price =  modelo.price
-        }else if(c != '' || c != '0' || c > 0){
-          modelo_price = c
-        }else{
-          modelo_price = product.models.price
-        }
+        c = parseInt(c)
+        // console.log('obc', c, modelo)
 
+        // if(modelo.price != null && modelo.price > 0){
+        //   modelo_price =  modelo.price
+        // }else 
+        if(c != '' || c != '0' || c > 0){
+          modelo_price = c
+        }
+        else{
+          // modelo_price = product.models.price
+        }
+        
         let id = product.store.id  ? product.store.id : product.local_cd
 
         let obj = {
@@ -721,7 +750,7 @@
           total_price : modelo_price*combinacion.cantidad
         }
 
-        // console.log('obj', obj)
+
 
         await this.updatedCar(obj)
         await this.onLoadCarro()
@@ -734,6 +763,7 @@
         this.$refs.drawerProduct.closeDrawer();    
       },
       async deleteCombinacion(combinacion){
+        this.onIsLoading = true
         await this.deleteModelo({
           product_id: this.producto.id,
           modelo: combinacion.modelo

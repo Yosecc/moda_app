@@ -47,7 +47,8 @@
           letterSpacing="0"
           verticalAlignment="center"
           horizontalAlignment="center"
-         />   
+         />  
+         <!-- <ActivityIndicator busy="true" />  -->
 
       </FlexboxLayout>
 

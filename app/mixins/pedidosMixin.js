@@ -16,16 +16,49 @@ export default {
     },
     data() {
         return {
-            traduccionstado: [{
-                key: 'initiated',
-                name: 'Ingresado',
-                color: 'green'
-            }, ]
+
+
         };
     },
     computed: {
+        tiposEnvios() {
+            return [{
+                    name: 'Oca a' + this.item.deliv_price_data.service_type,
+                    key: 'OCA',
+                    icon: '~/assets/oca.png'
+                },
+                {
+                    name: 'Pick up by depot',
+                    key: 'RD',
+                    icon: ''
+                },
+                {
+                    name: 'Correo Argentino a ' + this.item.deliv_price_data.service_type,
+                    key: 'CA',
+                    icon: '~/assets/pngcorreo_argentino.png'
+                },
+                {
+                    name: 'Integral Pack',
+                    key: 'IP',
+                    icon: '~/assets/integralpack.png'
+                },
+                {
+                    name: 'Moto',
+                    key: 'MOTO',
+                    icon: '~/assets/moto.png'
+                },
+                {
+                    name: 'Transporte tradicional de la empresa ' + this.item.deliv_price_data.service_name,
+                    key: 'OTHER',
+                    icon: ''
+                },
+            ]
+        },
+        tipoEnvio() {
+            return this.tiposEnvios.find((e) => e.key == this.item.deliv_price_data.type)
+        },
         status() {
-            return this.traduccionstado.find((e) => e.key == this.item.status)
+            return this.item.estado_calculado
         },
         statusColor() {
             return this.status != undefined ? this.status.color : 'black'
@@ -34,18 +67,11 @@ export default {
             return this.status != undefined ? this.status.name : this.item.status
         },
         logoSucursal() {
-            let ruta = ''
-
-            switch (this.item.deliv_price_data.type) {
-                case 'OCA':
-                    ruta = '~/assets/oca.png'
-                    break;
-
-                default:
-                    break;
+            if (this.tipoEnvio == undefined) {
+                return ''
             }
 
-            return ruta
+            return this.tipoEnvio.icon
         },
         metodoPago() {
             let name = ''

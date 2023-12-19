@@ -1,29 +1,10 @@
 <template lang="html">
-  <GridLayout 
-    columns="*,auto" 
-    rows="*"
-    marginTop="16"
-    class="h-100 shadow-none" 
-    @tap="onViewProfile()"
-    background=""
-  >
-   <!--  <image 
-      src="~/assets/icons/avatar.png"
-      col="0"
-      row="0"
-      verticalAlignment="center"
-      width="32"
-      height="32"
-    /> -->
-
     <StackLayout
-      col="0"
-      row="0"
       verticalAlignment="center"
-      background=""
+      padding="16 0"
     >
-    <StackLayout orientation="horizontal" background="">
-      <image src="~/assets/avatar.png" stretch="aspectFill" :marginLeft="-6" width="45" height="45" />
+      <StackLayout orientation="horizontal" background="">
+        <image src="~/assets/avatar.png" stretch="aspectFill" background="" width="45" height="45" />
         <StackLayout >
           <label 
             fontWeight="900"
@@ -41,20 +22,29 @@
             margin="0"
             padding="0"
           />
+          
         </StackLayout>
       </StackLayout>
+      <StackLayout margin="8 0 0 8" @tap="onViewProfile()" orientation="horizontal">
+            <label
+              fontWeight="600"
+              fontSize="14"
+              text="Mi Perfil"
+              margin="0 8 0 0"
+              padding="0"
+            />
+                <image 
+                  src="~/assets/arrow_right.png"
+                  col="1"
+                  row="0"
+                  verticalAlignment="center"
+                  width="6"
+                  height="auto"
+                />
+          </StackLayout>
     </StackLayout>
 
-    <image 
-      src="~/assets/arrow_right.png"
-      col="1"
-      row="0"
-      verticalAlignment="center"
-      width="8"
-      height="auto"
-    />
 
-  </GridLayout>
 </template>
 
 <script>

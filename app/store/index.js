@@ -153,6 +153,10 @@ export default new Vuex.Store({
             const response = await Api.get(`sliders?slide_category=${params.slide_category}`)
             return response
         },
+        async likeStore(context, obj) {
+            const response = await Api.post(`likeStore`, obj)
+            return response
+        },
         async descuentosExclusivos(context, params = { slide_category: '0,1' }) {
             const response = await Api.get('descuentosExclusivos')
             return response

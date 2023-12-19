@@ -1,6 +1,6 @@
 <template lang="html">
 <Page background="#F6F6F6" >
-	<WebView src="https://www.modatex.com.ar/index.php?page=161" />
+	<WebView src="https://www.modatex.com.ar/index.php?page=161" disableZoom="true" />
 	
 </Page>
 </template>

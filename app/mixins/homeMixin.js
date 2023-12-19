@@ -32,9 +32,6 @@ export default {
             }).catch((error) => {
                 console.log('error menu', menu)
             })
-
-
-
             return await true
         },
         async defineCar() {

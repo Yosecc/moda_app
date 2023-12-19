@@ -94,7 +94,7 @@
         methods:{
             onViewTap(){
 
-                this.$navigator.modal('/pedido', { 
+                this.$navigator.navigate('/pedido', { 
                         fullscreen: true, 
                         id: 'pedido', 
                         props:{

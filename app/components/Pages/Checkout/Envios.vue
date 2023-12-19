@@ -1,5 +1,5 @@
 <template lang="html">
-  <Page actionBarHidden="true">
+  <Page actionBarHidden="true" >
   
   <layoutCheckout
     title="Datos de envío"
@@ -10,19 +10,17 @@
     :loading="buttonLoading"
     @onAction="onselectMethodEnvio"
   >
-    <StackLayout paddingRight="8" background="" paddingLeft="8">
+    <StackLayout paddingRight="8" paddingLeft="8">
       <RadListView 
         :items="arrayPage"
         ref="listEnvios"
       >
         <v-template if="item.name == 'headers'" >
           <StackLayout paddingLeft="16" paddingRight="16">
-            <!-- <Label class="title_product" :text="item.data.title" /> -->
             <Label textWrap :text="item.data.text" />
           </StackLayout>
         </v-template>
         <v-template if="item.name == 'listEnvios'">
-          <!-- <Label :text="JSON.stringify(item.data)" /> -->
           <RadListView 
             :items="item.data"
             ref="listEnviosData"
@@ -38,46 +36,6 @@
         </v-template>
       </RadListView>
        
-        <!-- <v-template if="item.active == false">
-                <RadListView 
-                  ref="producsScroll"
-                  layout="grid"
-                  :items="item.data"
-                  row="1"
-                  v-show="item.data.length"
-                >
-                  <v-template key="product">
-                    <ProductBox
-                        :product="item"
-                    ></ProductBox>
-                  </v-template>
-                  
-                </RadListView>
-          <CardEnvio
-            :envio="item"
-          />
-        </v-template>
-        <v-template if="item.active == true">      
-          <CardEnvio
-            :envio="item"
-          />
-        </v-template> -->
-
-      
-      <!-- <StackLayout v-if="!envios.length">
-        <StackLayout class="label_skeleton" marginBottom="8" width="40%" horizontalAlignment="left" height="30"  />
-        <StackLayout class="label_skeleton" marginBottom="8" width="100%" height="30"  />
-        <StackLayout
-          v-for="i in 5"
-          :key="`sl-${i}`"
-          class="label_skeleton"
-          height="200"
-          width="100%"
-          marginBottom="8"
-        >
-          
-        </StackLayout>
-      </StackLayout> -->
     </StackLayout>
   </layoutCheckout>
 </Page>

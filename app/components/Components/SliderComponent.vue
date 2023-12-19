@@ -100,7 +100,9 @@
       async sliders(to) {
         await this.$nextTick()
           this.$forceUpdate()
-          this.$refs.SliderPrincipal.nativeView.refresh();
+          if(this.$refs.SliderPrincipal!=undefined){
+            this.$refs.SliderPrincipal.nativeView.refresh();
+          }
           this.baranimation()
           setInterval(()=>{
             this.page++

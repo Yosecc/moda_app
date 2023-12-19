@@ -2,57 +2,61 @@
   
     <GridLayout
       rows="auto,*,auto"
+      padding="0"
       background="#FDFDFD"
     >
-    <HeaderNoActionBar  
-      class="card secondary" 
-      marginBottom="8" 
-      row="0" padding="8" 
-      :logoCenter="false" 
-      :back="true" 
-      :isCar="false" 
-      :isModal="false" 
-      :isNotification="false"
-      :isBtnPromotions="false"
-    >
-      <FlexboxLayout background="" col="1" alignItems="center" justifyContent="flex-start">
-        <ImageCache 
-          placeholderStretch="aspectFill"
-          placeholder="res://eskeleton"
-          :src="carCheckout.logo"
-          width="40"
-          height="40"
-          stretch="aspectFill"
-          marginRight="8"
-        /> 
-        <StackLayout>
-          <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="carCheckout.name" />
-          <Label margin="0" padding="0" fontWeight="900" fontSize="14" :text="title" />
-          <!-- <label
-            margin="0" 
-            padding="0"
-            marginBottom="0" 
-            horizontalAlignment="left" 
-            fontWeight="300"
-            fontSize="10"
-          >
-            <FormattedString>
-              <span  text="Compra mínima en la tienda: "></span>
-              <span :text="carCheckout.min | moneda " style="color: #E9418A"></span>
-            </FormattedString>
-          </label> -->
-        </StackLayout>
-      </FlexboxLayout>
-    </HeaderNoActionBar>
+      <HeaderNoActionBar  
+        class="card"
+        marginTop="0"
+        marginBottom="8" 
+        row="0" 
+        padding="8" 
+        borderRadius="0"
+        :logoCenter="false" 
+        :back="true" 
+        :isCar="false" 
+        :isModal="false" 
+        :isNotification="false"
+        :isBtnPromotions="false"
+      >
+        <FlexboxLayout background="" col="1" alignItems="center" justifyContent="flex-start">
+          <ImageCache 
+            placeholderStretch="aspectFill"
+            placeholder="res://eskeleton"
+            :src="carCheckout.logo"
+            width="40"
+            height="40"
+            stretch="aspectFill"
+            marginRight="8"
+          /> 
+          <StackLayout>
+            <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="carCheckout.name" />
+            <Label margin="0" padding="0" fontWeight="900" fontSize="14" :text="title" />
+            <!-- <label
+              margin="0" 
+              padding="0"
+              marginBottom="0" 
+              horizontalAlignment="left" 
+              fontWeight="300"
+              fontSize="10"
+            >
+              <FormattedString>
+                <span  text="Compra mínima en la tienda: "></span>
+                <span :text="carCheckout.min | moneda " style="color: #E9418A"></span>
+              </FormattedString>
+            </label> -->
+          </StackLayout>
+        </FlexboxLayout>
+      </HeaderNoActionBar>
 
 
       <StackLayout
         row="1"
       >
-        <!-- <StackLayout paddingLeft="16" v-if="title" paddingRight="16">
-          <Label class="title_product" :text="title" />
-          <Label textWrap :text="subTitle" />
-        </StackLayout> -->
+        <!-- <StackLayout paddingLeft="16" v-if="title" paddingRight="16"> -->
+          <!-- <Label class="title_product" :text="title" /> -->
+          <Label textWrap margin="0 16" :text="subTitle" v-if="subTitle!=''" />
+        <!-- </StackLayout> -->
         <StackLayout>
           <slot/>
         </StackLayout>

@@ -8,7 +8,7 @@
         <StackLayout
           class="card"
           :class="clases"
-          padding="0"
+          padding="16"
         >
           <WrapLayout>
             <StackLayout

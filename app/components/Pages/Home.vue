@@ -80,14 +80,23 @@
             <StackLayout padding="0" margin="0">
               <StackLayout width="100%" height="24"  class="degrade"></StackLayout>
               <GridLayout rows="auto,*, auto" background="white">
-                <Label 
-                  text="Ingresos de Hoy" 
-                  marginBottom="16" 
-                  marginLeft="16" 
-                  marginRight="16"
-                  fontWeight="900"
-                  row="0" 
-                />
+                <GridLayout row="0" 
+                    columns="*, auto" 
+                    marginBottom="16" 
+                    marginLeft="16" 
+                    marginRight="16"
+                    background=""
+                  >
+                  <Label 
+                    :text="`Ingresos de ${nameFilter.toLowerCase()}`" 
+                    margin="0"
+                    padding="0"
+                    fontWeight="900"
+                    col="0"
+                    background=""
+                  />
+                  <Image src="res://filter_e" col="1" @tap="onViewOptionsFilter" borderWidth="0"  />
+                </GridLayout>
 
                 <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length && !item.isFin">
                   <StackLayout 
@@ -160,6 +169,8 @@
   import PromotionsComponent from '~/components/Components/PromotionsComponent.vue'
   import { screen } from "@nativescript/core/platform";
   import moment from 'moment'
+  import { Dialogs } from '@nativescript/core'
+
   export default {
     mixins:[ homeMixin, productMixin ],
     components:{
@@ -217,6 +228,8 @@
         alturaDispositivo: 0,
         isFin: false,
         conteo: 0,
+        dates: moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD'),
+        nameFilter: 'Hoy'
       };
     },
     watch:{  
@@ -228,7 +241,8 @@
        */
       h(){
         return this.alturaDispositivo  - 180
-      }
+      },
+      
     },
     mounted(){
       firebase.analytics.setScreenName({
@@ -277,6 +291,7 @@
 
       /** ACCIONES */
       async onGetProducts(){
+
         this.changeParamsProductsSearch({
           sections:[1,3,6,4,2],
           search:'',
@@ -284,7 +299,7 @@
           length:8,
           storeData:1,
           inStock:1,
-          betweenDates: moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD'),
+          betweenDates: this.dates,
           order:'register DESC',
           cacheTime:1200
         })
@@ -424,7 +439,6 @@
         //   this.onGetProducts()
         // }
       },
-      
       onNavigateSearch(){
         this.$navigator.navigate('/search',{
           transition: {
@@ -447,6 +461,41 @@
           },
         })
       },
+      onViewOptionsFilter(){
+        Dialogs.action({
+          title: 'Ingresos recientes',
+          message: 'Seleccione una opción:',
+          cancelButtonText: 'Cancel',
+          actions: ['Hoy', 'Ayer', 'Antes de ayer','Hace 3 días', 'Hace 4 días'],
+          cancelable: true,
+          // destructiveActionsIndexes: [2],
+        }).then((result) => {
+          this.nameFilter=result
+          switch (result) {
+            case 'Hoy':
+              this.dates = moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD')
+              break;
+            case 'Ayer':
+              this.dates = moment().subtract(1, 'days').format('YYYY-MM-DD')+','+moment().format('YYYY-MM-DD')
+              break;
+            case 'Antes de ayer':
+              this.dates = moment().subtract(2, 'days').format('YYYY-MM-DD')+','+moment().subtract(1, 'days').format('YYYY-MM-DD')
+              break;
+            case 'Hace 3 días':
+              this.dates = moment().subtract(3, 'days').format('YYYY-MM-DD')+','+moment().subtract(2, 'days').format('YYYY-MM-DD')
+              break;
+            case 'Hace 4 días':
+              this.dates = moment().subtract(4, 'days').format('YYYY-MM-DD')+','+moment().subtract(3, 'days').format('YYYY-MM-DD')
+              break;
+          
+            default:
+              break;
+          }
+          this.arrayHome.find((e)=> e.name =='productos').data = new ObservableArray([])
+          this.onGetProducts()
+         
+        })
+      }
     }
   }
 </script>

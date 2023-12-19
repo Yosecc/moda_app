@@ -1,6 +1,7 @@
 <template lang="html">
     <!-- <label :text="block.data.video.url" /> -->
     <WebView 
+    disableZoom="true"
       height="200" 
       :src="block.data.video.url" 
       :marginTop="block.tunes.configTune.margin!= undefined ? block.tunes.configTune.margin.top.value/2:''"

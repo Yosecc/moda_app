@@ -31,6 +31,7 @@
         padding="0"
       />
     </StackLayout>
+   
   </FlexboxLayout>
 </template>
 

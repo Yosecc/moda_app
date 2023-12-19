@@ -61,6 +61,7 @@
             
             
             <StackLayout padding="0" margin="0" col="1">
+              
               <button v-if="!edit"  @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
               <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
             </StackLayout>
@@ -251,31 +252,33 @@
         return null
       },
       calculaPrecio(){
-        
-        if(this.talleSelect && this.talleSelect.properties != undefined){
-          // console.log('tyu',this.talleSelect.properties[0])
-          if(this.talleSelect.properties[0].price == undefined){
-            this.changeToast({
-                  title: 'Combinación no disponible',
-                  status: true,
-                  type: 'danger',
-                  message: ''
-              })
-              this.combinacion.colorActive = ''
-              return
-          }
-
-          let price = this.talleSelect.properties[0].price
-          if([0,null,undefined,'',false,'0'].includes(price)){
-            price = this.talleSelect.price
-          }
+        console.log('koi',this.product,this.talleSelect)
+        // if(this.talleSelect && this.talleSelect.properties != undefined){
+        //   // console.log('tyu',this.talleSelect.properties[0])
+        //   if(this.talleSelect.properties[0].price == undefined){
+        //     this.changeToast({
+        //           title: 'Combinación no disponible',
+        //           status: true,
+        //           type: 'danger',
+        //           message: ''
+        //       })
+        //       this.combinacion.colorActive = ''
+        //       return
+        //   }
+          // let price = 0;
+          
+          let price = this.talleSelect ? this.talleSelect.price : 0
+        //   console.log('koia',price)
+        //   if([0,null,undefined,'',false,'0'].includes(price)){
+        //     price = this.talleSelect.price
+        //   }
 
           if(this.combinacion.cantidad > 1){
             price = price * this.combinacion.cantidad
           }
           return price
-        }
-        return ''
+        // }
+        // return ''
       },
       t(){
         return this.combinacion.talleActive

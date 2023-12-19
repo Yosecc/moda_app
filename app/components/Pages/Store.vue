@@ -1,6 +1,6 @@
 <template lang="html">
   <Page background="" >
-    <HeaderStore row="0" background="" :store="store" :back="true" :carro="carro" @onBack="onCloseDrawer" :isBackEvent="isBackEvent" />
+    <HeaderStore row="0" background="" :isRedirectStore="false" :store="store" :back="true" :carro="carro" @onBack="onCloseDrawer" :isFavorite="store.favorite != undefined ? store.favorite : false " :isBackEvent="isBackEvent" />
     <RadSideDrawer 
       :gesturesEnabled="false"
       drawerContentSize="auto" 

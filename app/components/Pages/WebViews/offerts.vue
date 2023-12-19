@@ -2,7 +2,7 @@
 
 
 <Page actionBarHidden="true" background="#F6F6F6" >
-		<WebView :src="link" />
+		<WebView :src="link" disableZoom="true"/>
 </Page>
 
 </template>

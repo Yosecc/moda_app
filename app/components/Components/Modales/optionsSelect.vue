@@ -64,6 +64,9 @@
       };
     },
     watch:{
+      select(to){
+        console.log('to,',to)
+      }
     },
     computed:{
       datos(){
@@ -86,6 +89,8 @@
 
     },
     mounted(){
+      // console.log('this', this.select)
+      this.selectActual = this.select
     },
     methods:{
       onItemTap(item){

@@ -1,17 +1,24 @@
 <template lang="html">
-  <StackLayout>
+  <GridLayout rows="*,auto">
 
     <InputsLayout
+      row="0"
       :inputs="direccionInput"
       v-if="!dataDirecciones.length && !loading"
     />
 
-    <StackLayout row="0" v-if="loading" padding="16" width="100%" >
+    <!-- <InputsLayout
+      row="0"
+      :inputs="direccionInput"
+      v-if="!dataDirecciones.length && !loading"
+    /> -->
+
+    <!-- <StackLayout row="0" v-if="loading" padding="16" width="100%" >
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
-    </StackLayout>
+    </StackLayout> v-show="dataDirecciones.length && !loading && !dataDelivery.length && !isTransportes"-->
 
     <RadListView 
       ref="dataDirecciones"
@@ -97,7 +104,7 @@
       </v-template>
     </RadListView>
 
-    <RadListView 
+    <!-- <RadListView 
       ref="dataDelivery"
       class="dataDelivery"
       for="item in dataDelivery"
@@ -144,14 +151,18 @@
 
         </StackLayout>
       </v-template>
-    </RadListView>
+    </RadListView> -->
 
-    <InputsLayout
+    <!-- <InputsLayout
+      row="0"
       :inputs="transportesInputs"
       v-if="!loading && isTransportes"
-    />
+    /> -->
+
+    <Label v-if="dataDirecciones.length && !loading" @tap="onAgregarSucursal" text="Agregar Sucursal" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
+
        
-  </StackLayout>
+  </GridLayout>
 </template>
 
 <script>
@@ -599,6 +610,7 @@
         }
       },
       opendDrwer(item){
+        console.log('i',item)
         this.$emit('openDrawer',{type: 'select', data: item})
       },
       onItemSelectedDelivery({item}){
@@ -619,6 +631,12 @@
           this.$emit('changeTransporte',item.provider)
         this.$refs.dataDelivery.refresh()
         this.$emit('statusData', true)
+      },
+      onAgregarSucursal(){
+        console.log(this.dataDirecciones, this.dataDelivery, this.isTransportes)
+        this.dataDirecciones = new ObservableArray([])
+        this.id = ''
+        // this.prop_sucursal = null
       }
     }
     

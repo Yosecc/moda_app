@@ -299,6 +299,7 @@
     },
     mounted(){
       this.arrowTop()
+
       this.changeParamsProductsSearch({
         start: 0,
         length: 9,
@@ -308,8 +309,8 @@
         search: '',
         order: 'date DESC',
         sections: [],
-        cacheTime: 15,
-        betweenDates:''
+        cacheTime: 1200,
+        betweenDates: ''
       })
 
       this.alturaDispositivo = screen.mainScreen.heightDIPs
@@ -319,11 +320,21 @@
       this.$refs.arraySearch.refresh() 
 
       firebase.analytics.setScreenName({
-        screenName: "Buscador"
+        screenName: "Buscador",
       });
 
-      console.log('this.params',this.params)
+      // console.log('this.params',this.params)
 
+      if(this.params.betweenDates != undefined){
+        this.changeParamsProductsSearch({
+          betweenDates: this.params.betweenDates,
+          order: "register DESC"
+        })
+        this.sections = [1,3,6,4,2]
+        this.isBuscador = false
+        utils.ad.dismissSoftInput();
+        this.onSubmitBusqueda()
+      }
       if(this.params.categorie_default != undefined){
         this.sections = this.params.categorie_default
       }
@@ -372,7 +383,6 @@
         this.onSubmitBusqueda()
         return
       }
-
       if(this.isSearch && this.isSection ){
         this.filter = this.params.search
         this.noultimasbusquedas = true

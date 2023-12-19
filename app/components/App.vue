@@ -55,7 +55,7 @@
         }
       },
       notification(to){
-        console.log('to',to)
+        
         if(!to.foreground && to.data!=undefined && to.data.redirect!=undefined){
           this.redirect(JSON.parse(to.data.redirect))
         }
@@ -95,20 +95,20 @@
           }
       });
       
-      setTimeout(()=>{
-        if(this.isLogged){
+      // setTimeout(()=>{
+      //   if(this.isLogged){
 
-          // this.$navigator.modal('/fullModal', { 
-          //   fullscreen: true, 
-          //   props:{ 
-          //     // config : {
-          //       //     background: 'red',
-          //       //     color: 'white'
-          //       // }  
-          //     } 
-          //   })
-        }
-      },100)
+      //     // this.$navigator.modal('/fullModal', { 
+      //     //   fullscreen: true, 
+      //     //   props:{ 
+      //     //     // config : {
+      //     //       //     background: 'red',
+      //     //       //     color: 'white'
+      //     //       // }  
+      //     //     } 
+      //     //   })
+      //   }
+      // },100)
     },
 		methods:{
       ...mapMutations(['changeisLoadPage','changeDrawer','changeviewNotification','changeToast']),

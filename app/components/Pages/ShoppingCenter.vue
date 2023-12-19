@@ -3,10 +3,19 @@
 	<HeaderDefault :logoCenter="false" :back="true" :isCar="false" >
 		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carritos abiertos" />
 	</HeaderDefault>
-	<GridLayout rows="*"  >
+	
+	<GridLayout rows="auto,*"  >
+
+		<StackLayout row="0" padding="16" class="" v-if="isload && carsStores.length && blocksPromotion.length">
+			<StackLayout v-for="(item, key) in blocksPromotion" :key="`blco${key}`" class="card">
+				<WebView  disableZoom="true" :src="item.text" />
+			</StackLayout>
+			<!-- <Label  :text="JSON.stringify(item)" /> -->
+		</StackLayout>
+
 		<RadListView
 			v-show="isload"
-			row="0"
+			row="1"
 			ref="carrosabiertos"
 			for="item in carsStores"
 			pullToRefresh="true"
@@ -101,7 +110,7 @@
 	  },
 	  computed:{
 	  	...mapState('shoping_center',['multienvio','carts']),
-	  	...mapState('car',['carsProducts','combinacion_key','combinacion','carsStores']),
+	  	...mapState('car',['carsProducts','combinacion_key','combinacion','carsStores','blocksPromotion']),
 	  	...mapGetters('car',['shoppingCar']),
 
 	  	ruta(){
@@ -125,6 +134,7 @@
 			mountedCars(){
 				this.isload = false
 				this.getCar().then((e)=>{
+					// console.log('get car', e)
 					this.isload = true
 					this.$forceUpdate()
 				})

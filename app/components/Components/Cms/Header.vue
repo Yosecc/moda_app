@@ -1,6 +1,6 @@
 <template lang="html">
 
-    <WebView marginTop="16" :src="html" v-if="configTuneIsView(block.tunes)" />
+    <WebView disableZoom="true" marginTop="16" :src="html" v-if="configTuneIsView(block.tunes)" />
 
 </template>
   

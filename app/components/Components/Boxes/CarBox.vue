@@ -200,11 +200,19 @@
 				})
 			},
 			onTapViewStore(){
+				// console.log('00',this.car,this.carro)
 				this.onViewStore({
 					logo:     this.car.logo,
 					name:     this.car.name,
 					local_cd: this.car.id,
-					min:      this.car.limit_price
+					min:      this.car.limit_price,
+					categorie: this.car.categorie,
+					categories_store: this.car.categories_store,
+					category_default: this.car.category_default,
+					cleaned: this.car.cleaned,
+					paquete: this.car.paquete,
+					rep: this.car.rep,
+					vc: this.car.vc,
 				})
 			}
 		}

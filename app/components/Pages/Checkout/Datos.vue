@@ -8,6 +8,8 @@
       @onAction="oneditClient"
     >
       <StackLayout  class="" paddingBottom="16" marginTop="0">
+        
+        
         <InputsLayout
           :clases="'shadow-none'"
           :inputs="infoPersonal"

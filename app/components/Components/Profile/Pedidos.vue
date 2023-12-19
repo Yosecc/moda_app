@@ -3,53 +3,22 @@
     <StackLayout v-if="loading" marginTop="24">
       <ActivityIndicator busy="true" color="#E9418A" />
     </StackLayout>
-    <!-- <StackLayout v-if="pedidosUnidos._array.length == 0 && !loading" padding="24">
+   
+      <RadListView 
+        :ref="`listBase`"
+        loadOnDemandMode="Auto"
+        @loadMoreDataRequested="onLoadCargar"
+        @scrollEnded="scrollEnded"
+        :items="pedidosData" 
+      >
+        <v-template   >
+          <StackLayout>
+            <Label :text="fecha(item.date)" fontWeight="bold" marginBottom="16"/>
+            <PedidoBox v-for="(i,k) in item.data" :key="`erer${k}`" :item="i" />
+          </StackLayout>
+        </v-template>
+      </RadListView>
 
-      <Label 
-        text="No posee pedidos"
-        fontWeight="100"
-        fontSize="30"
-        textAlignment="center"
-      />
-
-      <Label 
-        text="¿Cómo realizar un pedido?"
-        fontWeight="400"
-        fontSize="14"
-        textAlignment="center"
-        class="label_enlace"
-        marginTop="16"
-      />
-    </StackLayout> -->
-
-    <!-- <v-template name="footer">
-        <ActivityIndicator v-if="loadingMas" busy="true" color="#E9418A" />
-        <Label 
-          v-else
-          text="Ver más"
-          fontWeight="600"
-          fontSize="18"
-          textAlignment="center"
-          class="label_enlace"
-          padding="16 0"
-          @tap="verMas"
-        />
-      </v-template> -->
-      <StackLayout v-for="(i, key) in pedidosData" :key="`pedii${key}}`">
-        <Label :text="fecha(i.date)" fontWeight="bold" marginBottom="16"/>
-        <RadListView 
-          v-if="i.data.length"
-          :ref="`peio${key}`" 
-          :items="i.data" 
-        >
-          <v-template  >
-
-            <PedidoBox :item="item" />
-            
-          </v-template>
-        </RadListView>
-      </StackLayout>
-      
   </StackLayout>
 </template>
 
@@ -60,11 +29,9 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   import moment from 'moment'
-
   export default {
     mixins: [profileMixin],
     props: {
-
     },
     components: {
       // CardEnvio,
@@ -102,19 +69,19 @@
      mounted(){
       this.getPedidos(this.page).then((response)=>{
         this.loading = false
-        console.log('response',response)
+        // console.log('response',response)
         const o = response.orders
         for (var i in o) {
           this.pedidosData.push(o[i])
         }
-        console.log('f',this.pedidosData)
+        // console.log('f',this.pedidosData)
       })
     },
     methods:{
       ...mapActions('profile',['getPedidos']),
       fecha(value){
-                return moment(value).lang("es").format('LL')
-            },
+          return moment(value).lang("es").format('LL')
+      },
       // ...mapMutations('profile',['','setMasPedidos']),
       verMas(){
         this.page++
@@ -124,7 +91,51 @@
           this.setMasPedidos(response)
           this.loadingMas = false
         })
-      }
+      },
+      scrollEnded(args){
+        // console.log(args)
+        // if(this.$refs.listBase != undefined ){
+          this.$refs.listBase.nativeView.loadOnDemandMode = 'Auto'
+        // }
+        // if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.listBase != undefined){
+        //   this.$refs.listBase.nativeView.loadOnDemandMode = 'Manual'
+        // }
+      },
+      async onLoadCargar(args){
+        // console.log('enytra')
+        // this.conteo++
+        this.page++
+        await this.getPedidos(this.page).then((response)=>{
+          this.loading = false
+          if(response.orders.length == 0){
+            args.returnValue = false;
+            args.object.notifyAppendItemsOnDemandFinished(0, true);
+          }else{
+            if( this.page > 1 ){
+              this.$refs.listBase.nativeView.loadOnDemandMode = 'Manual'
+            }
+            args.returnValue = true;
+            args.object.notifyAppendItemsOnDemandFinished(0, false);
+          }
+          const o = response.orders
+          for (var i in o) {
+            this.pedidosData.push(o[i])
+          }
+          
+        })
+        // await this.onGetProducts()
+        //   if(this.isFin){
+            // args.returnValue = false;
+            // args.object.notifyAppendItemsOnDemandFinished(0, true);
+        //     return 
+        //   }else{
+            // if( this.conteo > 1 ){
+            //   this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+            // }
+        //     args.returnValue = true;
+        //     args.object.notifyAppendItemsOnDemandFinished(0, false);
+        //   }
+      }, 
     }
     
   };

@@ -28,7 +28,10 @@
           verticalAlignment="middle"
            >
             <GridLayout>
-              <ImageCache
+
+              <ImageZoom :src="`${image}`" maxZoom="5" minZoom="1"></ImageZoom>
+
+              <!-- <ImageCache
                 @pinch="onPich"
                 stretch="aspectFit" 
                 height="100%"
@@ -36,7 +39,7 @@
                 placeholderStretch="aspectFill"
                 placeholder="res://eskeleton"
                 :src="`${image}`"
-              />
+              /> -->
 
               <!-- <Image @pinch="onPich" @touch="onTouch" :src="`${image}`" stretch="aspectFill"/> -->
 

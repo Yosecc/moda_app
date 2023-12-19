@@ -1,27 +1,78 @@
 <template lang="html">
-  <Page actionBarHidden="true" >
-    <GridLayout rows="auto, *" padding="0" margin="0">
+  <Page actionBarHidden="false" >
+    <!-- <GridLayout rows="auto, *" padding="0" margin="0"> -->
 
-      <HeaderNoActionBar row="0" margin="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
+      <!-- <HeaderNoActionBar row="0" margin="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
         <Label col="1" marginTop="6" fontWeight="900" fontSize="16" text="Resumen de compra" />
-      </HeaderNoActionBar>
+      </HeaderNoActionBar> -->
+      <HeaderDefault row="0" :logoCenter="false" :back="true" :car="false" :isModal="true" >
+        <Label col="1" padding="0" horizontalAlignment="left" fontWeight="900" fontSize="16" text="Resumen de compra" />
+      </HeaderDefault>
 
       <ScrollView row="1">
-        <GridLayout rows="auto,auto,auto,auto,auto,auto">
+        <GridLayout rows="auto,auto,auto,auto,auto,auto,auto">
           
-          <StackLayout row="0" padding="16" margin="0" >
+          <StackLayout row="0" padding="16 16 8 16" margin="0" >
             <GridLayout columns="*,auto" class="card" backgroundColor="#EEEEEE" padding="16">
-                <Label fontSize="12" textWrap="true" row="0" marginBottom="0">
+              <StackLayout col="0">
+                <Label fontSize="12" textWrap="true" marginBottom="0">
                     <FormattedString>
                     <Span text="Compra " />
                     <Span :text="`#${item.id}`" fontWeight="bold" />
                     </FormattedString>
                 </Label>
-                <Label :text="fecha(item.date)" margin="0" fontSize="12" textTransform="uppercase" class="" col="1" fontWeight="400" />
+                <Label :text="fecha(item.date)" margin="0" fontSize="12" textTransform="uppercase" class="" fontWeight="400" />
+              </StackLayout>
+              <StackLayout col="1">
+                <Label :text="statusName" margin="0" padding="5 10" fontSize="12" textTransform="uppercase" class="" :color="statusColor" borderWidth="0.5" :borderColor="statusColor" col="1" fontWeight="900" />
+              </StackLayout>
+                
+              
             </GridLayout>
           </StackLayout>
 
-          <StackLayout row="1" padding="16" margin="0" >
+          <StackLayout row="1" padding="8 16" margin="0" >
+            <GridLayout class="card" backgroundColor="#EEEEEE" padding="16">
+              <StackLayout >
+                <Label text="Estado de la compra" fontWeight="900" fontSize="16" />
+
+                <StackLayout
+                  v-for="(i, k) in item.estado_calculado.textos" 
+                  :key="`statused${k}`"
+                >
+                  <Label 
+                    v-if="i.type == 'text'"
+                    :text="i.text" 
+                    fontWeight="400" 
+                    :fontSize="i.fontSize != undefined ? i.fontSize : 16" 
+                    textWrap
+                  />
+
+                  <Button 
+                    v-if="i.type == 'button'"
+                    :text="i.text" 
+                    fontWeight="400" 
+                    :fontSize="i.fontSize != undefined ? i.fontSize : 16" 
+                    textWrap
+                    marginTop="10"
+                    class="btn btn-primary"
+                    @tap="onRedirect(i.redirect)"
+                  />
+
+
+                </StackLayout>
+                
+
+              </StackLayout>
+              <!-- <StackLayout col="1">
+                <Label :text="statusName" margin="0" padding="5 10" fontSize="12" textTransform="uppercase" class="" :color="statusColor" borderWidth="0.5" :borderColor="statusColor" col="1" fontWeight="900" />
+              </StackLayout> -->
+                
+              
+            </GridLayout>
+          </StackLayout>
+
+          <StackLayout row="2" padding="8 16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
               <GridLayout columns="*,auto" rows="auto, *">
                   <FlexboxLayout row="0" colSpan="2" col="0" alignItems="center" >
@@ -107,7 +158,7 @@
             </StackLayout>
           </StackLayout>
 
-          <StackLayout row="2" padding="16" margin="0" >
+          <StackLayout row="3" padding="8 16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
               <Label text="Datos de la sucursal" fontWeight="900" fontSize="16" />
                 <Label fontSize="14" textWrap="true" row="0" marginBottom="0">
@@ -127,7 +178,7 @@
             </StackLayout>
           </StackLayout>
 
-          <StackLayout row="3" padding="16" margin="0" >
+          <StackLayout row="4" padding="8 16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
               <Label text="Servicio de envío" fontWeight="900" fontSize="16" />
               <Label marginLeft="16" fontSize="14" textWrap="true" row="0" marginBottom="0">
@@ -139,7 +190,7 @@
             </StackLayout>
           </StackLayout>
 
-          <StackLayout row="4" padding="16" margin="0" >
+          <StackLayout row="5" padding="8 16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
               <Label text="Método de pago" fontWeight="900" marginBottom="8" fontSize="16" />
 
@@ -155,7 +206,7 @@
             </StackLayout>
           </StackLayout>
 
-          <StackLayout row="5" padding="16" margin="0" >
+          <StackLayout v-if="!['unknown'].includes(item.status)" row="6" padding="16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
               <Label text="Datos de facturación" fontWeight="900" fontSize="16" />
               <Label text="Datos personales" fontWeight="600" fontSize="14" />
@@ -166,25 +217,29 @@
         </GridLayout>
       </ScrollView>
 
-    </GridLayout>
+    <!-- </GridLayout> -->
 
   </Page>
 </template>
 
 <script>
   import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
+  import HeaderDefault from '~/components/Components/ActionBar/HeaderDefault.vue'
   import pedidosMixin from '~/mixins/pedidosMixin';
+  import redirectMixin from '~/mixins/redirectMixin.js'
 
   export default {
-    mixins: [pedidosMixin],
+    mixins: [pedidosMixin, redirectMixin],
     props: {
       item:{
         type: Object,
         default:{}
-      }
+      },
+      categoriesBase: null
     },
     components: {
       HeaderNoActionBar,
+      HeaderDefault
     },
     filters: {
      
@@ -207,6 +262,9 @@
     methods:{
       // ...mapMutations(['changeDrawerCar','changeDrawer']),
       // ...mapActions('profile',['']),
+      onRedirect(redirect){
+        this.redirect(redirect)
+      },
       onTapSave(){
        
         

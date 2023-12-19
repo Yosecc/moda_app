@@ -1,5 +1,5 @@
 <template lang="html">
-    <WebView :src="html" />
+    <WebView :src="html" disableZoom="true" />
 </template>
     
     <script>

@@ -29,7 +29,7 @@
         <FlexboxLayout 
           col="1"
           alignItems="center"
-          @tap="onViewStore(store)"
+          @tap="OnViewStore(store)"
           
         >
 
@@ -90,7 +90,18 @@
           orientation="horizontal"
           col="2" 
         >
-      
+              <Image 
+                top="0"
+                left="0"
+                marginRight="8"
+                verticalAlignment="center"
+                horizontalAlignment="center"
+                :src="likeImage" 
+                width="30" 
+                height="30"
+                @tap="onLikeStore"
+              />
+
           <AbsoluteLayout
             class=""
             height="40"
@@ -125,34 +136,47 @@
               />
 
             </AbsoluteLayout>
-              <FlexboxLayout
-                top="0"
-                left="25"
-                width="15"
-                height="15"
-                backgroundColor="#E9418A"
-                borderRadius="100%"
-                justifyContent="center"
-                alignItems="center"
-                v-if="carro != null && Object.keys(carro).length > 0"
-              >
 
-                <Label 
-                  v-if="carro.products_count > 0"
-                  :text="carro.products_count"
-                  fontSize="9"
-                  color="white"
-                  padding="0"
-                  margin="0"
-                  lineHeight="0"
-                  letterSpacing="0"
-                  verticalAlignment="center"
-                  horizontalAlignment="center"
-                />   
+            <ActivityIndicator
+              v-if="isLoading"
+              color="#E9418A"
+              busy="true"  
+              top="0"
+              left="25"
+              width="15"
+              height="15" 
+            
+              />
+            <FlexboxLayout
+              top="0"
+              left="25"
+              width="15"
+              height="15"
+              backgroundColor="#E9418A"
+              borderRadius="100%"
+              justifyContent="center"
+              alignItems="center"
+              v-if="(carro != null && Object.keys(carro).length > 0) && !isLoading"
+            >
 
-              </FlexboxLayout>
+              <Label 
+                v-if="(carro.products_count > 0)"
+                :text="carro.products_count"
+                fontSize="9"
+                color="white"
+                padding="0"
+                margin="0"
+                lineHeight="0"
+                letterSpacing="0"
+                verticalAlignment="center"
+                horizontalAlignment="center"
+              />  
+
+            </FlexboxLayout>
 
           </AbsoluteLayout>
+
+          
 
         </StackLayout>
       </GridLayout>
@@ -163,14 +187,13 @@
 
 <script>
 
-// import { Utils, Device } from '@nativescript/core'
 import BtnBack from './BtnBack.vue'
 import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
 import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
-import { mapMutations, mapState, mapGetters } from 'vuex'
+import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
  import storeMixin from '~/mixins/storeMixin.js'
-
+ import Api from '~/services'
   export default {
     mixins:[storeMixin],
     props:{
@@ -194,6 +217,18 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean, 
         default: false
       },
+      isLoading: {
+        type: Boolean,
+        default: false
+      },
+      isFavorite:{
+        type: Boolean,
+        default: false
+      },
+      isRedirectStore:{
+        type: Boolean,
+        default: true
+      }
     },
     components:{
       BtnMenu,
@@ -217,15 +252,19 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
     data() {
       return {
         message: "<!-- Browse page content goes here -->",
-        searchQuery: ''
+        searchQuery: '',
+        onfavorite: this.isFavorite
       };
     },
     computed:{
       ...mapState(['page']),
-      ...mapGetters('authentication',['token'])
+      ...mapGetters('authentication',['token']),
+      likeImage(){
+        return !this.onfavorite ? 'res://heart_line_2':'res://heart_solid_2';
+      }
     },
     mounted(){
-      // console.log('token',this.token)
+      console.log('monte this.store',this.store)
       if (global.isIOS) {
         // frame.topmost().nativeView.endEditing(true); 
       } 
@@ -235,6 +274,12 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
     },
     methods:{
       ...mapMutations(['changePage']),
+      ...mapActions(['likeStore']),
+      OnViewStore(store){
+        if(this.isRedirectStore){
+          this.onViewStore(store)
+        }
+      },
       onBack(){
         this.$emit('onBack')
       },
@@ -254,6 +299,15 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         }else{
           alert('No posee prendas en el carro')
         }
+      },
+      onLikeStore(){
+        
+        this.likeStore({
+          store_id : this.store.local_cd,
+          company_id : this.store.company_id,
+        }).then((response)=>{
+          this.onfavorite = response.data.favorite
+        })
         
       }
     }

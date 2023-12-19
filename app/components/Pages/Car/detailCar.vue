@@ -268,7 +268,7 @@
   import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { firebase } from '@nativescript/firebase';
-
+  import { Dialogs } from '@nativescript/core'
   export default {
     mixins: [carMixin, storeMixin, productMixin],
     props: {
@@ -331,10 +331,10 @@
           }
           this.carro = response
         })
-        console.log('pasa por aqui')
+        // console.log('pasa por aqui')
 
         await this.getProductsCart(this.car_id).then((response)=>{
-          console.log('response..', response)
+          // console.log('response..', response)
           if(response.products.length == 0){
             this.getCar()
             return 
@@ -355,13 +355,19 @@
               }
             })
           }
+
+          // console.log('products',this.products)
           this.isLoading = false
-          this.$refs.productsCar.refresh()
+          if(this.$refs.productsCar!=undefined){
+            this.$refs.productsCar.refresh()
+          }
         })
       },
       loaded(){
         setTimeout(()=>{
-          this.$refs.productsCar.refresh()
+          if(this.$refs.productsCar!=undefined){
+            this.$refs.productsCar.refresh()
+          }
         },1)
       },
       totalCombinacionProducto(product){
@@ -370,7 +376,9 @@
         if(product.combinacion.length){
           product.combinacion.forEach((e)=>{
             try {
-              let p = product.models.find((i)=> i.size == e.talleActive).properties.find((x)=> x.color_id ==  e.colors.find((w)=> w.code == e.colorActive).id).price
+              let p = product.models.find((i)=> i.size == e.talleActive)
+              // .properties.find((x)=> x.color_id ==  e.colors.find((w)=> w.code == e.colorActive).id)
+              .price
               if(p == '0' || p == 0 || p == null || p == '' || p == undefined ){
                 p = product.precio
               }
@@ -405,18 +413,30 @@
         this.onViewProduct(product)
       },
       ondeleteProduct(product_id){
-        let index = this.products._array.findIndex((e)=> e.id == product_id)
-        
-        if(index != -1){
-          this.products._array.splice(index, 1)
-        }
-        if(this.products.length > 0){
-          this.$refs.productsCar.refresh()
-          // this.isLoading = true
-        }
-        // console.log('products', product_id, index, this.products.length)
-        this.deleteProduct(product_id)
-        this.loadCart()
+        Dialogs.confirm({
+          title: 'Alerta',
+          message: 'Está seguro de que desea remover este artículo?',
+          okButtonText: 'Si',
+          cancelButtonText: 'No',
+          neutralButtonText: 'Cancelar',
+        }).then((result) => {
+          console.log(result)
+          if(result){
+            let index = this.products._array.findIndex((e)=> e.id == product_id)
+          
+            if(index != -1){
+              this.products._array.splice(index, 1)
+            }
+            if(this.products.length > 0){
+              this.$refs.productsCar.refresh()
+              // this.isLoading = true
+            }
+            // console.log('products', product_id, index, this.products.length)
+            this.deleteProduct(product_id)
+            this.loadCart()
+          }
+        })
+
       },
 
       onProcessCheckout(){

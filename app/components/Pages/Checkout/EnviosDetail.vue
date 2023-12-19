@@ -1,94 +1,93 @@
 <template lang="html">
-  <Page actionBarHidden="true">
+  <Page actionBarHidden="true" background="#FDFDFD">
 
-  <RadSideDrawer 
-    :gesturesEnabled="false" 
-    :drawerContentSize="500" 
-    :drawerLocation="currentLocation" 
-    @drawerClosed="onDrawerClosed()"
-    ref="drawerSelect"
-  >
-    <StackLayout 
-      ~drawerContent 
-      class="" 
-      borderTopLeftRadius="15"
-      borderTopRightRadius="15"
+    <RadSideDrawer 
+      :gesturesEnabled="false" 
+      :drawerContentSize="500" 
+      :drawerLocation="currentLocation" 
+      @drawerClosed="onDrawerClosed()"
+      @drawerOpened="onDrawerOpened"
+      ref="drawerSelect"
     >
-      <StackLayout
-        row="0"
-        width="100"
-        height="5"
-        borderRadius="100%"
-        background="#7B7B7B"
-        horizontalAlignment="center"
-        margin="8 0"
-        v-if="typeComponentDrawer != 'select'"
-      />
-
-      <Sucursales v-if="typeComponentDrawer == 'sucursales'" v-model="opcionSucursal.sucursal" @closeDrawer="onCloseDrawer" />
-
-      <optionsSelect 
-        v-if="typeComponentDrawer == 'select' && resetSelect"
-        v-model="select"
-        @change="selectChange"
-      />
-
-    </StackLayout>
-    <StackLayout ~mainContent>
-      <layoutCheckout
-        title="Datos de envío"
-        :subTitle="subTitle"
-        nextPage="/metodo_pago"
-        :nameButtom="nameButtom"
-        :nextStatus="nextStatus"
-        :loading="buttonLoading"
-        @onAction="onEnvioDetail"
+      <StackLayout 
+        ~drawerContent 
+        class="" 
+        borderTopLeftRadius="15"
+        borderTopRightRadius="15"
       >
-        
-          <Sucursal
-            v-if="envio == 1 && reset"
-            @openDrawer="onopenDrawer"
-            @statusData="onstatusData"
-            @changeSucursal="onchangeSucursal"
-            :sucursal="opcionSucursal.sucursal"
-            :sucursales="sucursales"
-            v-model="opcionSucursal.destinatario"
-          />
-          <Domicilio
-            v-if="(envio == 2 || envio == 3) && reset"
-            @openDrawer="onopenDrawer"
-            @statusData="onstatusData"
-            @changeName="onChangeName"
-            @changeSubTitle="onChangeSubTitle"
-            @changeTransporte="onChangeTransporte"
-            :isTransportes="isTransportes"
-            :direcciones="opcionDomicilio.direcciones"
-            :select="select"
-            :delivery="opcionDomicilio.delivery"
-            v-model="opcionDomicilio.destinatario"
-          />
-          <IntegralPack
-            v-if="envio == 4 && reset"
-            @openDrawer="onopenDrawer"
-            @statusData="onstatusData"
-            :direcciones="integral.direcciones"
-            :select="select"
-            v-model="integral.destinatario"
-          />
+        <StackLayout
+          row="0"
+          width="100"
+          height="5"
+          borderRadius="100%"
+          background="#7B7B7B"
+          horizontalAlignment="center"
+          margin="8 0"
+          v-if="typeComponentDrawer != 'select'"
+        />
+
+        <Sucursales v-if="typeComponentDrawer == 'sucursales'" v-model="opcionSucursal.sucursal" @closeDrawer="onCloseDrawer" />
+
+        <optionsSelect 
+          v-if="typeComponentDrawer == 'select' && resetSelect"
+          v-model="select"
+          @change="selectChange"
+        />
+
+      </StackLayout>
+      <StackLayout ~mainContent>
+        <layoutCheckout
+          title="Datos de envío"
+          :subTitle="''"
+          nextPage="/metodo_pago"
+          :nameButtom="nameButtom"
+          :nextStatus="nextStatus"
+          :loading="buttonLoading"
+          @onAction="onEnvioDetail"
+        >
           
-          <Tienda 
-            v-if="envio == 5 && reset"
-            v-model="deposito.destinatario"
-            @statusData="onstatusData"
-            :direcciones="deposito.direcciones"
-          /> 
+            <Sucursal
+              v-if="envio == 1 && reset"
+              @openDrawer="onopenDrawer"
+              @statusData="onstatusData"
+              @changeSucursal="onchangeSucursal"
+              :sucursal="opcionSucursal.sucursal"
+              :sucursales="sucursales"
+              v-model="opcionSucursal.destinatario"
+            />
+            <Domicilio
+              v-if="(envio == 2 || envio == 3) && reset"
+              @openDrawer="onopenDrawer"
+              @statusData="onstatusData"
+              @changeName="onChangeName"
+              @changeSubTitle="onChangeSubTitle"
+              @changeTransporte="onChangeTransporte"
+              :isTransportes="isTransportes"
+              :direcciones="opcionDomicilio.direcciones"
+              :select="select"
+              :delivery="opcionDomicilio.delivery"
+              v-model="opcionDomicilio.destinatario"
+            />
+            <IntegralPack
+              v-if="envio == 4 && reset"
+              @openDrawer="onopenDrawer"
+              @statusData="onstatusData"
+              :direcciones="integral.direcciones"
+              :select="select"
+              v-model="integral.destinatario"
+            />
+            <Tienda 
+              v-if="envio == 5 && reset"
+              v-model="deposito.destinatario"
+              @statusData="onstatusData"
+              :direcciones="deposito.direcciones"
+            /> 
 
-      </layoutCheckout>
-    </StackLayout>
-  </RadSideDrawer>
-  
+        </layoutCheckout>
+      </StackLayout>
+    </RadSideDrawer>
 
-</Page>
+  </Page>
 </template>
 
 <script>
@@ -105,6 +104,9 @@
   import * as utils from "@nativescript/core/utils";
   import Sucursales from '~/components/Components/Checkout/Drawers/Sucursales.vue'
   import { firebase } from '@nativescript/firebase';
+  import * as application from '@nativescript/core/application';
+  import { Dialogs } from '@nativescript/core'
+  // import { AndroidApplication, AndroidActivityBackPressedEventData } from "application";
 
   export default {
     mixins: [],
@@ -156,7 +158,8 @@
         resetSelect: true,
         subTitle: 'A continuación podés llenar los datos de la persona que recibirá el paquete.',
         nameButtom: 'Continuar',
-        serviceprovider: false
+        serviceprovider: false,
+        openDrawerStatus: false
       };
     },
     watch:{
@@ -169,11 +172,36 @@
       },
     },
     mounted(){
+      this.onBackButtonPressed()
       firebase.analytics.setScreenName({
         screenName: `Checkout Envios Detalle`
       });
     },
     methods:{
+      onDrawerOpened(){
+        this.openDrawerStatus = true
+      },
+      onBackButtonPressed() {
+        this.openDrawerStatus = false
+        application.android.on(application.AndroidApplication.activityBackPressedEvent, (data) => {
+          if(this.$navigator.path == '/envios_detail'){
+            if(this.openDrawerStatus){
+              Dialogs.confirm({
+                title: 'Confirmar',
+                message: '¿Seguro desea regresar?',
+                okButtonText: 'Si',
+                cancelButtonText: 'No',
+                neutralButtonText: 'Cancel',
+              }).then((result) => {
+                if(result){
+                  this.$refs.drawerSelect.closeDrawer();
+                }
+              })
+              data.cancel = true
+            }
+          }
+        });
+      },
       ...mapMutations('checkout',['addCostoEnvio','setDatosFacturacion']),
       ...mapActions('checkout',['envioDetail','homeDeliveryProviders','editServiceProvider','isDatosFacturacion']),
       onChangeName(name){
@@ -183,6 +211,7 @@
         this.subTitle = subtitle
       },
       onopenDrawer({type, data}){
+        
         utils.ad.dismissSoftInput();
         this.typeComponentDrawer = type
         if(data != undefined){
@@ -194,6 +223,7 @@
             this.resetSelect = true
           },100)
         }
+        
         this.$refs.drawerSelect.showDrawer();
       },
       onCloseDrawer(){
@@ -201,9 +231,7 @@
         this.$refs.drawerSelect.closeDrawer();
       },
       onDrawerClosed(){
-        // this.typeComponentDrawer = null
-        // this.select = null
-        // this.$refs.drawerSelect.closeDrawer();
+        this.openDrawerStatus = false
       },
       onstatusData(status){
         this.nextStatus = status
@@ -303,6 +331,7 @@
         
       },
       onEnvioDetail(){
+        console.log('0')
         if(this.buttonLoading){
           return
         }
@@ -311,6 +340,7 @@
           group_id:   this.group_id,
           method:     this.tipoEnvio.method,
         }
+        console.log('1',this.tipoEnvio)
 
         if(this.tipoEnvio.id == 1){
           obj.zipcode    = this.opcionSucursal.sucursal.zipcode
@@ -329,16 +359,23 @@
         }
 
         if(this.tipoEnvio.id == 2 || this.tipoEnvio.id == 3){
+
+        console.log('2',this.tipoEnvio)
+
           const data = this.opcionDomicilio.destinatario
           for(var i in data){
             obj[i] = data[i]
           }
 
           if(this.tipoEnvio.id == 2){
+
+            console.log('3',this.opcionDomicilio)
+
             if(obj.id != '' && !this.opcionDomicilio.delivery.length && !obj.edit){
                 this.onhomeDeliveryProviders(obj.id)
                 return
             }
+            console.log('pasa por aqui');
             if(obj.id && this.opcionDomicilio.delivery.length){
               this.editServiceProvider({
                 provider:this.id_transporte,
@@ -391,7 +428,7 @@
             return
           }
         }
-
+        console.log('obj',obj)
         this.buttonLoading = true
         this.envioDetail(obj).then((response)=>{
           this.reset = false
@@ -409,6 +446,7 @@
           this.buttonLoading = false
 
         }).catch((error)=>{
+          console.log('error', error, error.toString(), error.toJSON())
           this.buttonLoading = false
         })
 

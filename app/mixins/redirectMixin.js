@@ -110,6 +110,10 @@ export default {
             const response = await Api.get(`cms/get/${val}`)
             return response
         },
+        async getPedido(val) {
+            const response = await Api.get(`ventas?id=${val}`)
+            return response
+        },
         caseCategorie(redirect) {
             // console.log('r', redirect, this.getCategorie(redirect.params))
             const obj = {
@@ -211,19 +215,25 @@ export default {
                         utils.openUrl(redirect.params);
                         return
                         break;
+                    case '/order':
+                        if (redirect.params.id == '') {
+                            return
+                        }
+                        this.getPedido(redirect.params.id).then((response) => {
+                            this.$navigator.navigate('/pedido', {
+                                fullscreen: true,
+                                id: 'pedido',
+                                props: {
+                                    item: response.order
+                                }
+                            })
+                        })
+                        return
+                        break;
                     case 'ancla':
-
                         const isHash = redirect.params.includes('#')
-
                         const objectRuta = this.construccionRuta(redirect.params)
-
-                        // console.log('objectRuta', objectRuta)
-
-                        // objectRuta.hash
-
                         this.$emit("acceder", objectRuta.hash);
-
-
                         return
                         break;
                     default:

@@ -16,6 +16,7 @@
           verticalAlignment="middle"
            >
             <GridLayout>
+
               <ImageCache 
                 stretch="aspectFit" 
                 height="100%"

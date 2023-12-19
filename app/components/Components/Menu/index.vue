@@ -9,11 +9,8 @@
     row="0"
     class="bg bg-infoBox"  backgroundImage="~/assets/patron.png"
   >
-    <UserInfoBox height="80" />
+    <UserInfoBox  />
   </StackLayout>
-
-    
-
     <StackLayout
       col="0"
       row="1"
@@ -24,14 +21,13 @@
         :key="key"
         :item="item"
       />
+
     </StackLayout>
 
     <StackLayout
       col="0"
       row="2"
     >
-
-    
       <ItemMenu
         v-for="(item, key) in othersItemsMenu"
         :key="key"
@@ -120,7 +116,7 @@ import { mapState } from 'vuex'
           //   disabled: true
           // },
           {
-            icon: 'salir',
+            icon: '~/assets/icons/salir.png',
             name: 'Salir',
             route: '/login',
             disabled: false,

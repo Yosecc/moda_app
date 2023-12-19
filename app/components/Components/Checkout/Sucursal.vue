@@ -1,9 +1,9 @@
 <template lang="html">
-  <GridLayout columns="*" padding="0" margin="0">
+  <GridLayout rows="*,auto" padding="" margin="0" >
     <InputsLayout
       :inputs="sucursalImputs"
       row="0" 
-      padding="0" 
+      padding="" 
       v-if="!dataSucursales.length && !loading"
     >
       <template slot="top">
@@ -40,7 +40,7 @@
               borderBottomWidth=".5"
               borderColor="#4D4D4D" 
               orientation="horizontal"
-              v-if="sucursal"
+              v-if="prop_sucursal"
               marginTop="16"
               paddingBottom="16"
             >
@@ -50,15 +50,15 @@
                 height="60"
                 placeholderStretch="aspectFill"
                 placeholder="res://eskeleton"
-                :src="(sucursal.provider == 'OCA' || sucursal.provider == 'oca') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
+                :src="(prop_sucursal.provider == 'OCA' || prop_sucursal.provider == 'oca') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
                 rounded="true"
                 borderWidth=".5"
                 borderColor="#4D4D4D"
                 marginRight="8"
               />
               <StackLayout>
-                <Label fontSize="16" textWrap :text="sucursal.label" margin="0" padding="0" />
-                <Label :text="sucursal.price | moneda" fontWeight="800" fontSize="18" color="#E9418A"/>
+                <Label fontSize="16" textWrap :text="prop_sucursal.label" margin="0" padding="0" />
+                <Label :text="prop_sucursal.price | moneda" fontWeight="800" fontSize="18" color="#E9418A"/>
               </StackLayout>
             </StackLayout>
 
@@ -76,95 +76,97 @@
     </StackLayout>
 
     
-    <RadListView 
-      ref="dataSucursales"
-      class="dataSucursales"
-      for="item in dataSucursales"
-      row="0" 
-      padding="0"
-      margin="0"
-      v-show="dataSucursales.length && !loading"
-      @itemTap="onItemSelected"
-    >
-      <v-template>
-        <StackLayout padding="8 16 8 16">
+      <RadListView 
+        ref="dataSucursales"
+        class="dataSucursales"
+        for="item in dataSucursales"
+        row="0" 
+        padding="0"
+        margin="0"
+        v-show="dataSucursales.length && !loading"
+        @itemTap="onItemSelected"
+      >
+        <v-template>
+          <StackLayout padding="8 16 8 16">
 
-          <StackLayout 
-            class="card" 
-            :borderWidth="item.status ? 2:0"
-            :borderColor="item.status ? '#E9418A':''"
-          >
+            <StackLayout 
+              class="card" 
+              :borderWidth="item.status ? 2:0"
+              :borderColor="item.status ? '#E9418A':''"
+            >
 
-            <FlexboxLayout justifyContent="space-between" alignItems="flex-start">
-              <StackLayout >
-                <StackLayout margin="0" padding="0" orientation="horizontal">
-                  <Label  margin="0 4 0 0" padding="0" fontWeight="700" :text="item.first_name" />
-                  <Label  margin="0" padding="0" fontWeight="700" :text="item.last_name" />
+              <FlexboxLayout justifyContent="space-between" alignItems="flex-start">
+                <StackLayout >
+                  <StackLayout margin="0" padding="0" orientation="horizontal">
+                    <Label  margin="0 4 0 0" padding="0" fontWeight="700" :text="item.first_name" />
+                    <Label  margin="0" padding="0" fontWeight="700" :text="item.last_name" />
+                  </StackLayout>
+                  <Label margin="0" padding="0" fontWeight="700" :text="`DNI: ${item.dni}`" />
                 </StackLayout>
-                <Label margin="0" padding="0" fontWeight="700" :text="`DNI: ${item.dni}`" />
-              </StackLayout>
-              <StackLayout orientation="horizontal">
-                <FlexboxLayout 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  width="40" 
-                  height="40" 
-                  margin="0 8 0 0" 
-                  class="btn btn-icon"
-                  borderWidth=".5"
-                  borderColor="#4D4D4D"
-                  @tap="ondeleteShipping(item)"
-                >
-                  <Image 
-                    src="~/assets/icons/trash.png" 
-                    width="25" 
-                    height="25" 
-                  />
-                </FlexboxLayout>
-                <FlexboxLayout 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  width="40" 
-                  height="40" 
-                  margin="0" 
-                  class="btn btn-icon"
-                  borderWidth=".5"
-                  borderColor="#4D4D4D"
-                  @tap="onEditSucursal(item)"
-                >
-                  <Image 
-                    src="~/assets/icons/pencil.png" 
-                    width="25" 
-                    height="25" 
-                  />
-                </FlexboxLayout>
-              </StackLayout>
-            </FlexboxLayout>
+                <StackLayout orientation="horizontal">
+                  <FlexboxLayout 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    width="40" 
+                    height="40" 
+                    margin="0 8 0 0" 
+                    class="btn btn-icon"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                    @tap="ondeleteShipping(item)"
+                  >
+                    <Image 
+                      src="~/assets/icons/trash.png" 
+                      width="25" 
+                      height="25" 
+                    />
+                  </FlexboxLayout>
+                  <FlexboxLayout 
+                    alignItems="center" 
+                    justifyContent="center" 
+                    width="40" 
+                    height="40" 
+                    margin="0" 
+                    class="btn btn-icon"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                    @tap="onEditSucursal(item)"
+                  >
+                    <Image 
+                      src="~/assets/icons/pencil.png" 
+                      width="25" 
+                      height="25" 
+                    />
+                  </FlexboxLayout>
+                </StackLayout>
+              </FlexboxLayout>
 
-            <StackLayout  orientation="horizontal">
-              <ImageCache 
-                stretch="aspectFill" 
-                width="60"
-                height="60"
-                placeholderStretch="aspectFill"
-                placeholder="res://eskeleton"
-                :src="(item.branch_data.provider == 'oca' || item.branch_data.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
-                rounded="true"
-                borderWidth=".5"
-                borderColor="#4D4D4D"
-              />
-              <StackLayout>
-                <Label  fontSize="16" textWrap :text="item.branch_data.label" margin="0" padding="0" />
-                <Label  :text="item.branch_data.price | moneda" fontWeight="800" fontSize="18" />
+              <StackLayout  orientation="horizontal">
+                <ImageCache 
+                  stretch="aspectFill" 
+                  width="60"
+                  height="60"
+                  placeholderStretch="aspectFill"
+                  placeholder="res://eskeleton"
+                  :src="(item.branch_data.provider == 'oca' || item.branch_data.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
+                  rounded="true"
+                  borderWidth=".5"
+                  borderColor="#4D4D4D"
+                />
+                <StackLayout>
+                  <Label  fontSize="16" textWrap :text="item.branch_data.label" margin="0" padding="0" />
+                  <Label  :text="item.branch_data.price | moneda" fontWeight="800" fontSize="18" />
+                </StackLayout>
               </StackLayout>
+
             </StackLayout>
 
           </StackLayout>
+        </v-template>
+      </RadListView>
+      
+      <Label v-if="dataSucursales.length && !loading" @tap="onAgregarSucursal" text="Agregar Sucursal" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
 
-        </StackLayout>
-      </v-template>
-    </RadListView>
-    
   </GridLayout>
 </template>
 
@@ -225,12 +227,15 @@
           }
         ],
         id: '',
+        prop_sucursal: this.sucursal,
         dataSucursales: new ObservableArray(this.sucursales),
         loading: false
       };
     },
     watch:{
       sucursal(to){
+        // console.log('to',to)
+        this.prop_sucursal = to
         if(!this.dataSucursales.length){
           this.statusData(this.datosInputs)
         }
@@ -295,7 +300,7 @@
         if(estados.includes(false)){
           this.$emit('statusData', false)
         }else{
-          if(this.sucursal){
+          if(this.prop_sucursal){
             this.$emit('statusData', true)
             this.datosInputs.id = this.id
             this.$emit('change', this.datosInputs)
@@ -354,6 +359,10 @@
         }).then((response)=>{
           this.mountedData()
         })
+      },
+      onAgregarSucursal(){
+        this.dataSucursales = new ObservableArray([])
+        this.prop_sucursal = null
       }
     }
     

@@ -6,6 +6,7 @@ import SetCategories from './components/Pages/Auth/SetCategories.vue'
 import TermsAndConditions from './components/Pages/webViews/TermsAndConditions.vue'
 import CodeValidation from './components/Pages/Auth/CodeValidation.vue'
 import Home from './components/Pages/Home.vue'
+import Products from './components/Pages/Products.vue'
 
 import ShoppingCenter from './components/Pages/ShoppingCenter.vue'
 import Search from './components/Pages/Search.vue'
@@ -60,6 +61,9 @@ import CMS from '~/components/Pages/Cms/index.vue'
 
 
 export const routes = {
+    '/products': {
+        component: Products
+    },
     '/cms': {
         component: CMS
     },

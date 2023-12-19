@@ -12,6 +12,7 @@
         "@nativescript/theme": "~3.0.2",
         "@nstudio/nativescript-carousel": "^8.0.3",
         "@ticnat/nativescript-image-cache": "^1.0.7",
+        "@triniwiz/nativescript-image-zoom": "^4.2.0",
         "moment": "^2.29.4",
         "nativescript-facebook": "^4.2.1",
         "nativescript-gif": "^5.0.0",
