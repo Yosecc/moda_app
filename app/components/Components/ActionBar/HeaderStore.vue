@@ -264,7 +264,7 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       }
     },
     mounted(){
-      console.log('monte this.store',this.store)
+      // console.log('monte this.store',this.store)
       if (global.isIOS) {
         // frame.topmost().nativeView.endEditing(true); 
       } 

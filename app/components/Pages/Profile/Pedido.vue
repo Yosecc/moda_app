@@ -206,11 +206,13 @@
             </StackLayout>
           </StackLayout>
 
-          <StackLayout v-if="!['unknown'].includes(item.status)" row="6" padding="16" margin="0" >
+          <StackLayout v-if="!['unknown'].includes(item.status) && billing" row="6" padding="16" margin="0" >
             <StackLayout class="card" backgroundColor="#EEEEEE" padding="16">
-              <Label text="Datos de facturación" fontWeight="900" fontSize="16" />
-              <Label text="Datos personales" fontWeight="600" fontSize="14" />
-                
+              <Label text="Datos de facturación" fontWeight="900" fontSize="16" marginBottom="8" />
+              <Label text="Datos personales" fontSize="15" />
+              <Label fontSize="14" :text="`${billing.first_name} ${billing.last_name}  DNI: ${billing.id_number}`" />
+              <Label fontSize="14" :text="`${billing.street_name} ${billing.street_number}, ${billing.location} ${billing.state_name}`" />
+              <Label fontSize="14" :text="`CP ${billing.zipcode}`" />
             </StackLayout>
           </StackLayout>
 
@@ -234,6 +236,12 @@
       item:{
         type: Object,
         default:{}
+      },
+      billing:{
+          type: Object,
+          default(){
+            return null
+          }
       },
       categoriesBase: null
     },

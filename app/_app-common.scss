@@ -4,6 +4,7 @@
 $modatexColor: #E9418A;
 page {
     font-size: 16;
+    // background-color: #FDFDFD;
 }
 
 .page_home {
@@ -479,7 +480,7 @@ Switch.switch[checked=false] {
 }
 
 .label_skeleton {
-    background-color: #EEEEEE;
+    background-color: #DDDDDD;
     height: 22;
     width: 180;
     border-radius: 3;
@@ -488,7 +489,7 @@ Switch.switch[checked=false] {
         height: 12;
     }
     .item {
-        background: #DDDDDD;
+        background: #cccccc;
     }
 }
 

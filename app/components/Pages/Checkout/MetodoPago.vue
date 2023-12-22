@@ -37,7 +37,12 @@
   export default {
     mixins: [],
     props: {
-
+      method_selected:{
+        type: Object,
+        default(){
+          return null
+        }
+      }
     },
     components: {
       HeaderDefault,
@@ -68,12 +73,20 @@
       firebase.analytics.setScreenName({
         screenName: `Checkout Metodo de pago`
       });
+      this.getMetodosPagos().then((response)=>{
+        if(this.method_selected){
+          this.onItemTap({item: this.method_selected})
+        }
+        this.$refs.metodospagos.refresh()
+      })
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
       ...mapMutations('checkout',['setMetodopago']),
-      ...mapActions('checkout',['selectMethodPayment']),
+      ...mapActions('checkout',['selectMethodPayment','getMetodosPagos']),
       onItemTap({item}){
+
+        
         this.setMetodopago(item.id)
         this.metodospagos._array.forEach((e)=>{
           if(e.id == item.id){

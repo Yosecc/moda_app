@@ -36,7 +36,12 @@
                   :secure="e.secure ? e.secure : false"
                   :class="e.error ? 'input-control-error':''"
                   :hint="e.hint"
-                  :keyboardType="e.typeInput" />
+                  :keyboardType="e.typeInput"
+                  :maxLength="e.maxLength"
+                  :borderWidth="e.error != undefined ? (e.error == true ? 1 : 0) : 0"
+                  :borderColor="e.error != undefined ? (e.error == true ? 'red' : '') : ''"
+                />
+          
 
                 <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="10" fontWeight="300" />
 

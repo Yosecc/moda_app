@@ -190,7 +190,7 @@
       // },
     },
     computed:{
-      ...mapState('checkout',['coupon','coupons','typeFactura','group_id']),
+      ...mapState('checkout',['coupon','coupons','typeFactura','group_id','carCheckout']),
       ...mapState('profile',['infoPersonal']),
       inputsStep (){
         if(this.typeFactura == 1){
@@ -281,6 +281,11 @@
             ]
           })
           this.$navigator.navigate('/envios',{
+                    // props: {
+                    //     store: {
+                    //         id: this.local_cd
+                    //     }
+                    // },
                   transition: {
                     name: 'slideLeft',
                     duration: 300,

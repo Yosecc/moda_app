@@ -3,7 +3,7 @@
     <GridLayout
       rows="auto,*,auto"
       padding="0"
-      background="#FDFDFD"
+      background="#efefef"
     >
       <HeaderNoActionBar  
         class="card"

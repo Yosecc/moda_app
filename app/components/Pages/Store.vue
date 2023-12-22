@@ -287,17 +287,18 @@
           padding="0"
           background="#EEEEEE"
           ref="contPastillas"
-          v-show="arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data.length > 0 "
+          v-show="lengthPastillas > 0"
         >
           <FlexboxLayout
+          
             justifyContent="center"
             alignItems="center"
             width="100%"
             height="80"
-            v-if="arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data.length <= 2"
+            v-if="lengthPastillas <= 2"
           >
             <StackLayout  
-              v-for="(item, index) in arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data" 
+              v-for="(item, index) in dataPastillas" 
               :key="`dniosd-${index}`" 
               class="pastillaStore" 
               borderRadius="10" 
@@ -332,9 +333,9 @@
           </FlexboxLayout>
           <RadListView 
             ref="productsSscrollPastillas"
-            :items="arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data"
+            :items="dataPastillas"
             orientation="horizontal"
-            v-if="arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data.length > 2"
+            v-if="lengthPastillas > 2"
             padding="0"
             margin="0"
             height="80"
@@ -501,7 +502,7 @@ export default {
       }else{
         this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').iconFilter = 'res://filter'
       }
-      console.log('to',this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').iconFilter)
+      // console.log('to',this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').iconFilter)
       this.refreshList()
     },
     section(to){
@@ -581,6 +582,13 @@ export default {
     },
     h(){
       return this.alturaDispositivo  - 180
+    },
+    //
+    lengthPastillas(){
+      return this.arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data.length
+    },
+    dataPastillas(){
+      return this.arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data
     }
   },
   created(){

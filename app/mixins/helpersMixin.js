@@ -106,7 +106,7 @@ export default {
         },
         setModelsInputs(inputs, data) {
             if (typeof data == 'object') {
-                console.log('data', data, inputs)
+                // console.log('data', data, inputs)
                 for (var i in data) {
                     if (inputs.find((e) => e.name == i) != undefined) {
                         inputs.find((e) => e.name == i).model = data[i]

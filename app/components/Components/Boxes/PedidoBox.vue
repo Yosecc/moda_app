@@ -76,6 +76,9 @@
             item:{
                 type: Object,
                 required: true
+            },
+            billing:{
+                type: Object
             }
         },
         
@@ -98,7 +101,8 @@
                         fullscreen: true, 
                         id: 'pedido', 
                         props:{
-                            item: this.item
+                            item: this.item,
+                            billing:this.billing
                         } 
                     })
 

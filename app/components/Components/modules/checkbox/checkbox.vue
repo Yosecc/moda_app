@@ -65,6 +65,11 @@
           checkeds: this.checked
       };
     },
+    watch:{
+        checked(to){
+            this.checkeds = to
+        }
+    },
     mounted(){
         // console.log(this.value)
     },

@@ -1,5 +1,5 @@
 <template lang="html">
-<Page>
+<Page backgroundColor="#efefef">
 	<HeaderDefault :logoCenter="false" :back="true" :isCar="false" >
 		 <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Carritos abiertos" />
 	</HeaderDefault>
@@ -208,7 +208,8 @@
 					min:         data.carro.limit_price,
 					total:       data.total,
 					prendas:     data.prendas,
-					products:    products
+					products:    products,
+					local_cd: data.carro.id
 				})
 						
 				await this.processCart(data.carro.id).then((response)=>{
@@ -239,6 +240,11 @@
 							})
 						}else{
 							this.$navigator.navigate('/envios',{
+								props: {
+                                    store: {
+                                        id: data.carro.id
+                                    }
+                                },
 							transition: {
 								name: 'slideLeft',
 								duration: 300,

@@ -214,6 +214,11 @@ export default {
                             })
                         } else {
                             this.$navigator.navigate('/envios', {
+                                props: {
+                                    store: {
+                                        id: id
+                                    }
+                                },
                                 transition: {
                                     name: 'slideLeft',
                                     duration: 300,

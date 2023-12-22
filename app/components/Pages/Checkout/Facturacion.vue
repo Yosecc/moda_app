@@ -366,7 +366,6 @@
       }
     },
     methods:{
-      // ...mapMutations('checkout',['setEnvio','addCostoEnvio',]),
       ...mapActions('checkout',['getComboDirecciones','datosFacturacion']),
       selectTipo(item){
         this.tiposFacturas.forEach((e)=>{

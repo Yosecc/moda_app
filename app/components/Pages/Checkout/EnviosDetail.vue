@@ -45,7 +45,9 @@
           :loading="buttonLoading"
           @onAction="onEnvioDetail"
         >
+       
           
+     
             <Sucursal
               v-if="envio == 1 && reset"
               @openDrawer="onopenDrawer"
@@ -53,6 +55,7 @@
               @changeSucursal="onchangeSucursal"
               :sucursal="opcionSucursal.sucursal"
               :sucursales="sucursales"
+              :servicio_envio_select="servicio_envio_select_data"
               v-model="opcionSucursal.destinatario"
             />
             <Domicilio
@@ -62,10 +65,14 @@
               @changeName="onChangeName"
               @changeSubTitle="onChangeSubTitle"
               @changeTransporte="onChangeTransporte"
+              :redirect="redirectData"
+              :errores="errores"
               :isTransportes="isTransportes"
               :direcciones="opcionDomicilio.direcciones"
               :select="select"
               :delivery="opcionDomicilio.delivery"
+              :delivery_select="delivery_select_data"
+              :direccion_select="direccion_select"
               v-model="opcionDomicilio.destinatario"
             />
             <IntegralPack
@@ -81,6 +88,7 @@
               v-model="deposito.destinatario"
               @statusData="onstatusData"
               :direcciones="deposito.direcciones"
+              :destinatario_select="destinatario"
             /> 
 
         </layoutCheckout>
@@ -111,7 +119,34 @@
   export default {
     mixins: [],
     props: {
-
+      redirect:{
+        type: String,
+        default: ''
+      },
+      destinatario:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
+      servicio_envio_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
+      direccion_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
+      delivery_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
     },
     components: {
       HeaderDefault,
@@ -129,8 +164,12 @@
     },
     data() {
       return {
+        redirectData: this.redirect,
+        servicio_envio_select_data: this.servicio_envio_select,
+        delivery_select_data: this.delivery_select,
         currentLocation: SideDrawerLocation.Bottom,
         typeComponentDrawer: null,
+        errores:[],
         opcionSucursal:{
           sucursal: null,
           destinatario: null
@@ -173,11 +212,14 @@
     },
     mounted(){
       this.onBackButtonPressed()
+     
       firebase.analytics.setScreenName({
         screenName: `Checkout Envios Detalle`
       });
+
     },
     methods:{
+      ...mapMutations(['changeToast']),
       onDrawerOpened(){
         this.openDrawerStatus = true
       },
@@ -258,7 +300,7 @@
                 costo_envio[index].isFree = true
               }
             }
-
+            console.log('Envios Detail',costo_envio)
             this.addCostoEnvio(costo_envio)
           }
         }
@@ -275,6 +317,10 @@
           id:id,
           group_id:   this.group_id,
         }).then((response)=>{
+
+          if(this.delivery_select_data){
+                  this.nextFacturacion()
+                }
           this.opcionDomicilio.delivery = response
           this.reset = false
           this.buttonLoading = false
@@ -285,15 +331,25 @@
         })
       },
       onEditServiceProvider(){
+       
+        this.buttonLoading = true
+
         this.editServiceProvider({
-          provider:this.id_transporte,
-          group_id:   this.group_id,
+          provider: this.id_transporte,
+          group_id:  this.group_id,
         }).then((response)=>{
           this.serviceprovider = true
+          this.buttonLoading = false
           this.nextFacturacion()
-                
         }).catch((error)=>{
-
+          this.buttonLoading = false
+          this.changeToast({
+                    title: error.toJSON().message,
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+          // console.log('errored',)
         })
       },
       nextFacturacion(){
@@ -331,7 +387,8 @@
         
       },
       onEnvioDetail(){
-        console.log('0')
+        // console.log('pasa','obj')
+     
         if(this.buttonLoading){
           return
         }
@@ -340,19 +397,19 @@
           group_id:   this.group_id,
           method:     this.tipoEnvio.method,
         }
-        console.log('1',this.tipoEnvio)
 
         if(this.tipoEnvio.id == 1){
           obj.zipcode    = this.opcionSucursal.sucursal.zipcode
           obj.branch_id  = this.opcionSucursal.sucursal.value
           obj.provider   = this.opcionSucursal.sucursal.provider
           obj.first_name = this.opcionSucursal.destinatario.name
+          obj.edit = this.opcionSucursal.destinatario.edit
           obj.last_name  = this.opcionSucursal.destinatario.apellido
           obj.dni        = this.opcionSucursal.destinatario.dnni
           obj.id        = this.opcionSucursal.destinatario.id ? this.opcionSucursal.destinatario.id : ''
 
          
-          if(obj.id){
+          if(!obj.edit && obj.id){
             this.nextFacturacion()
             return
           }
@@ -360,32 +417,32 @@
 
         if(this.tipoEnvio.id == 2 || this.tipoEnvio.id == 3){
 
-        console.log('2',this.tipoEnvio)
-
           const data = this.opcionDomicilio.destinatario
           for(var i in data){
             obj[i] = data[i]
           }
-
           if(this.tipoEnvio.id == 2){
-
-            console.log('3',this.opcionDomicilio)
-
+            console.log('asw', {obj: obj,delivery_select_data: this.delivery_select_data,delivery:this.opcionDomicilio.delivery})
             if(obj.id != '' && !this.opcionDomicilio.delivery.length && !obj.edit){
+              console.log('llega')
                 this.onhomeDeliveryProviders(obj.id)
+                
                 return
             }
-            console.log('pasa por aqui');
             if(obj.id && this.opcionDomicilio.delivery.length){
+              this.buttonLoading = true
               this.editServiceProvider({
                 provider:this.id_transporte,
                 group_id:   this.group_id,
+              }).then((response)=>{
+                this.buttonLoading = false
+              }).catch((error)=>{
+                console.log(error.toJSON())
               })
   
               this.nextFacturacion()
-              return
+              
             }
-
           }
 
           if(this.tipoEnvio.id == 3 ){
@@ -394,8 +451,10 @@
               this.subTitle = 'Seleccioná el servicio de entrega que enviará tu paquete.'
               return
             }else{
-              this.onEditServiceProvider()
-              return
+              if(obj.id){
+                this.onEditServiceProvider()
+                return
+              }
             }
           }
         }
@@ -428,16 +487,23 @@
             return
           }
         }
-        console.log('obj',obj)
+        // console.log('pasa',obj)
         this.buttonLoading = true
+        this.errores = []
         this.envioDetail(obj).then((response)=>{
           this.reset = false
+          this.redirectData = ''
+
           if(this.tipoEnvio.id == 1){
             this.sucursales = response
           }
+          
           if(this.tipoEnvio.id == 2 || this.tipoEnvio.id == 3){
             this.opcionDomicilio.direcciones = response
           }
+          
+          this.servicio_envio_select_data = null
+          
 
           setTimeout(()=>{
             this.reset = true
@@ -446,7 +512,23 @@
           this.buttonLoading = false
 
         }).catch((error)=>{
-          console.log('error', error, error.toString(), error.toJSON())
+          console.log('error',error)
+          const  err = JSON.parse(error.toJSON())
+          if(err!=undefined && err.message !=undefined){
+            // if (err.message.charAt(0) === '{') {
+              const obj = err.message
+              // const obj = JSON.parse(err.message)
+
+              for (const key in obj) {
+                this.errores.push(key)
+                this.changeToast({
+                    title: obj[key],
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+            }
+          }
           this.buttonLoading = false
         })
 
@@ -457,7 +539,6 @@
         }, 500)
       }
     }
-    
   };
 </script>
 

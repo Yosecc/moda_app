@@ -508,6 +508,11 @@
                 })
               }else{
                 this.$navigator.navigate('/envios',{
+                  props: {
+                                    store: {
+                                        id: this.car_id
+                                    }
+                                },
                   transition: {
                       name: 'slideLeft',
                       duration: 300,

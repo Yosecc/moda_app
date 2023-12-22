@@ -14,7 +14,7 @@
         <v-template   >
           <StackLayout>
             <Label :text="fecha(item.date)" fontWeight="bold" marginBottom="16"/>
-            <PedidoBox v-for="(i,k) in item.data" :key="`erer${k}`" :item="i" />
+            <PedidoBox v-for="(i,k) in item.data" :key="`erer${k}`" :item="i" :billing="billing" />
           </StackLayout>
         </v-template>
       </RadListView>
@@ -56,7 +56,8 @@
         loading: true,
         loadingMas: false,
         page: 1,
-        pedidosData: new ObservableArray([])
+        pedidosData: new ObservableArray([]),
+        billing: null
       };
     },
     watch:{
@@ -69,11 +70,13 @@
      mounted(){
       this.getPedidos(this.page).then((response)=>{
         this.loading = false
-        // console.log('response',response)
+        console.log('response',response)
         const o = response.orders
+
         for (var i in o) {
           this.pedidosData.push(o[i])
         }
+        this.billing = response.billing
         // console.log('f',this.pedidosData)
       })
     },
@@ -94,9 +97,9 @@
       },
       scrollEnded(args){
         // console.log(args)
-        // if(this.$refs.listBase != undefined ){
+        if(this.$refs.listBase != undefined ){
           this.$refs.listBase.nativeView.loadOnDemandMode = 'Auto'
-        // }
+        }
         // if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.listBase != undefined){
         //   this.$refs.listBase.nativeView.loadOnDemandMode = 'Manual'
         // }
@@ -112,7 +115,9 @@
             args.object.notifyAppendItemsOnDemandFinished(0, true);
           }else{
             if( this.page > 1 ){
-              this.$refs.listBase.nativeView.loadOnDemandMode = 'Manual'
+              if(this.$refs.listBase != undefined ){
+                this.$refs.listBase.nativeView.loadOnDemandMode = 'Manual'
+              }
             }
             args.returnValue = true;
             args.object.notifyAppendItemsOnDemandFinished(0, false);

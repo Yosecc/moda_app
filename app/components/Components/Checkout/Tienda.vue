@@ -1,7 +1,8 @@
 <template lang="html">
-  <StackLayout>
+  <GridLayout rows="*,auto">
 
     <InputsLayout
+      row="0"
       :inputs="direccionInput"
       v-if="!dataDirecciones.length && !loading"
     >
@@ -40,6 +41,7 @@
                   <StackLayout margin="0" padding="0" orientation="horizontal">
                     <Label  margin="0 4 0 0" padding="0" fontWeight="700" fontSize="16" :text="item.first_name" />
                     <Label  margin="0" padding="0" fontWeight="700" fontSize="16" :text="item.last_name" />
+                    <ActivityIndicator color="#E9418A" width="15" marginLeft="8" v-if="loadingSelect == item.id" busy="true" />
                   </StackLayout>
                   <Label margin="0" padding="0" fontWeight="700" fontSize="16" :text="`DNI: ${item.dni}`" />
                 </StackLayout>
@@ -91,8 +93,9 @@
       </v-template>
     </RadListView>
 
+    <Label v-if="dataDirecciones.length && !loading" @tap="onAgregarSucursal" text="Agregar" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
        
-  </StackLayout>
+  </GridLayout>
 </template>
 
 <script>
@@ -107,14 +110,17 @@
       event: 'change'
     },
     props: {
-      // select:{
-      //   type: Object,
-      //   default: null
-      // },
+      destinatario_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
       direcciones:{
         type: Array,
         default: []
-      }
+      },
+      
     },
     components: {
       InputsLayout
@@ -154,6 +160,7 @@
         id: '',
         dataDirecciones: new ObservableArray(this.direcciones),
         loading: false,
+        loadingSelect: null
       };
     },
     watch:{
@@ -173,7 +180,7 @@
       },
       dataDirecciones(to){
         if(this.dataDirecciones.length){
-          this.onItemSelected({item : to._array[0]})
+          // this.onItemSelected({item : to._array[0]})
         }
       },
       dataInput(to){
@@ -198,7 +205,7 @@
       this.mountedData()
     },
     methods:{
-      ...mapActions('checkout',['datosEnvio','deleteShipping']),
+      ...mapActions('checkout',['datosEnvio','deleteShipping', 'shippingSelectAddress']),
       mountedData(){
         this.loading = true
         this.datosEnvio({
@@ -206,30 +213,49 @@
           method: this.envios._array.find((e)=> e.active == true).method
         }).then((response)=>{
           this.loading = false
-          response.forEach((e,i)=>{
-            if(i == 0){
-              e.status = true
-            }else{
-              e.status = false
-            }
-          })
+          
           this.dataDirecciones = new ObservableArray(response)
+          this.dataDirecciones.length ? this.dataDirecciones.forEach(element => element.active == 1 ? this.onItemSelected({item: element, noPost: true }) : null ) : null
+         
+          if(this.destinatario_select){
+            this.onItemSelected({item: this.destinatario_select}) 
+          }
+          
         }).catch((error)=>{
           this.loading = false
           this.dataDirecciones = []
         })
       },
-      onItemSelected({item}){
-        this.dataDirecciones._array.forEach((e)=>{
-          if(e.id == item.id){
-            e.status = true
-          }else{  
-             e.status = false
-          }
-        })
-        this.$refs.dataDirecciones.refresh()
+      onItemSelected({item, noPost}){
         
-        this.setData(item)
+        if(noPost!=undefined && noPost == true){
+          this.defineStatus(item)
+          return
+        }
+       this.loadingSelect = item.id
+       this.$refs.dataDirecciones.refresh()
+        this.shippingSelectAddress({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method,
+          select:  item.id
+        }).then((response)=>{
+          this.loadingSelect = null
+          this.defineStatus(item)
+        }).catch((error)=>{
+          this.loadingSelect = null
+          this.$refs.dataDirecciones.refresh()
+        })
+      },
+      defineStatus(item){
+          this.dataDirecciones._array.forEach((e)=>{
+            if(e.id == item.id){
+              e.status = true
+            }else{  
+              e.status = false
+            }
+          })
+          this.$refs.dataDirecciones.refresh()
+          this.setData(item)
       },
       setData(item){
         this.$emit('statusData', true)
@@ -250,12 +276,17 @@
         })
       },
       onEditSucursal(item){
+        console.log('llega', item)
         this.dataDirecciones = []
         this.id = item.id
         this.setModelsInputs(this.direccionInput, item)
       },
       opendDrwer(item){
         this.$emit('openDrawer',{type: 'select', data: item})
+      },
+      onAgregarSucursal(){
+        this.dataDirecciones = new ObservableArray([])
+        this.id = ''
       }
     }
     

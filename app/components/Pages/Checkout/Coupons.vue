@@ -133,6 +133,11 @@
       },
       onNext(data){
         this.$navigator.navigate('/envios',{
+          props: {
+                                    store: {
+                                        id: this.local_cd
+                                    }
+                                },
           transition: {
               name: 'slideLeft',
               duration: 300,

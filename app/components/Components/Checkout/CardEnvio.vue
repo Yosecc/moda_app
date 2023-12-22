@@ -1,77 +1,124 @@
 <template lang="html">
   <StackLayout  padding="8">
-
-    <StackLayout 
+    <GridLayout 
+      columns="*,auto"
+      rows="auto,*"
       marginBottom="8" 
       :borderWidth="envio.active ? 2:0"
       :borderColor="envio.active ? '#E9418A':''"
       class="card"
-
     >
-      <StackLayout
-        top="8"
-        left="8">
-        <StackLayout orientation="horizontal">
-          
-          <image 
-            top="16"
-            left="64"
-            width="35"
-            :src="envio.icon" 
-            stretch="aspectFill" 
-          /> 
+      <StackLayout row="0" col="0" orientation="horizontal">
+        
+        <image 
+          top="16"
+          left="64"
+          width="35"
+          :src="envio.icon" 
+          stretch="aspectFill" 
+        /> 
 
-          <Label 
-            class="title"
-            fontSize="20"
-            fontWeight="900"
-            margin="0 0 0 6"
-            padding="0"
-            
-            :text="envio.title" 
-          />
-
-        </StackLayout>
         <Label 
           class="title"
-          fontSize="14"
-          fontWeight="600"
-          textWrap="true"
-          :marginBottom="envio.precios.length ? 16:''"
-          :text="envio.description" 
-        />
-
-        <Label 
-          v-for="(precio, key) in envio.precios"
-          :key="`precio-${envio.id}-${key}`"
-          v-if="envio.precios.length && !envio.isFree"
-          fontSize="14"
-          fontWeight="600"
-          textWrap="true"
-          margin="0 0 8 16"
+          fontSize="20"
+          fontWeight="900"
+          margin="0 0 0 6"
           padding="0"
- 
-          :text="precio" 
-        />
-
-        <label fontSize="20" textAlignment="center" textTransform="uppercase" fontWeight="900" text="Envío gratis" v-if="envio.isFree" />
-
-        <Label 
-          fontSize="14"
-          fontWeight="300"
-          textWrap="true"
-          marginTop="8"
-   
-          :text="envio.description2" 
+          
+          :text="envio.title" 
         />
 
       </StackLayout>
-       
-    </StackLayout> 
+
+      <StackLayout row="0" col="1">
+        <AbsoluteLayout marginTop="8">
+            <label
+                  left="0"
+                  top="0"
+                  width="20"
+                  height="20"
+                  backgroundColor="white"
+                  borderWidth="2"
+                  borderColor="#E9418A"
+                  borderRadius="100%"
+                  :opacity="envio.active ? 1:.2"
+              />
+
+              <label
+              v-if="envio.active"
+                  left="3"
+                  top="3"
+                  width="13.5"
+                  height="13.5"
+                  borderWidth="0"
+                  backgroundColor="#E9418A"
+                  borderRadius="100%"
+              />
+              
+        </AbsoluteLayout>
+      </StackLayout>
+
+      <StackLayout  
+          row="1"
+          col="0"
+          colSpan="2">
+        <StackLayout
+          v-for="(item, key) in envio.body"
+          :key="`envio${key}`"
+        >
+          <label 
+            v-if="item.type == 'text' && item.children==undefined" 
+            :text="item.text" 
+            :fontWeight="item.fontWeight!=undefined ? item.fontWeight : ''"
+            :fontSize="item.fontSize!=undefined ? item.fontSize : ''"
+            :backgroundColor="item.backgroundColor!=undefined ? item.backgroundColor : ''"
+            :color="item.color!=undefined ? item.color : ''"
+            :padding="item.padding!=undefined ? item.padding : ''"
+            :borderRadius="item.borderRadius!=undefined ? item.borderRadius : ''"
+            :textDecoration="item.textDecoration!=undefined ? item.textDecoration : ''"
+            textWrap 
+          />
+
+          <StackLayout v-if="item.type == 'text' && item.children!=undefined"   padding="0 4" margin="0" orientation="horizontal">
+            <StackLayout v-for="(i, k) in item.children" :key="`envio-childe${key}${k}`" padding="0" margin="0"> 
+              <label 
+                 v-if="i.type == 'text'"
+                :text="`${i.text}`" 
+                :fontWeight="i.fontWeight!=undefined ? i.fontWeight : ''"
+                :fontSize="i.fontSize!=undefined ? i.fontSize : ''"
+                :backgroundColor="i.backgroundColor!=undefined ? i.backgroundColor : ''"
+                :color="i.color!=undefined ? i.color : ''"
+                :borderRadius="i.borderRadius!=undefined ? i.borderRadius : ''"
+                :padding="i.padding!=undefined ? i.padding : ''"
+                :textDecoration="i.textDecoration!=undefined ? i.textDecoration : ''" 
+                textWrap 
+              />
+              <Image 
+                v-if="i.type == 'image'"
+                :src="i.src!=undefined ? i.src : '' " 
+                :height="i.height!=undefined ? i.height : '' "
+                :width="i.width!=undefined ? i.width : '' "
+                stretch="aspectFit"
+                marginRight="8"
+              />
+            </StackLayout>
+          </StackLayout>
+
+          
+          <!-- <WebView v-if="item.type == 'text' && item.children==undefined  && item.html != undefined" margin="0" padding="0" canGoBack="false" canGoForward="false" :src="item.html" disableZoom="true" /> -->
+          
+
+          
+
+        </StackLayout>
+      </StackLayout>
+    </GridLayout> 
   </StackLayout>
 </template>
 
 <script>
+  import CheckBox from '~/components/Components/modules/checkbox/checkbox.vue'
+
   export default {
     mixins: [],
     props: {
@@ -85,6 +132,7 @@
       }
     },
     components: {
+      CheckBox
     },
     filters: {
     },

@@ -22,37 +22,7 @@ const state = {
         active: false
     }]),
     direccion: null,
-    metodospagos: new ObservableArray([{
-            id: 1,
-            name: 'Tarjeta de Crédito / Débito',
-            modapago: true,
-            descripcion: 'Selecciona esta opción si deseas abonar con tarjeta de crédito. Fácil, seguro y rápido.',
-            logos: ['~/assets/visa.jpg', '~/assets/master.jpg', '~/assets/naranja.jpg', '~/assets/american.jpg', '~/assets/shopping.jpg', '~/assets/cencosud.jpg', '~/assets/argencard.jpg'],
-            active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra con tu tarjeta.',
-            method: 'card'
-        },
-        {
-            id: 2,
-            name: 'Efectivo',
-            modapago: true,
-            descripcion: 'Si quieres obtener un cupón de pago para abonar en efectivo, selecciona esta opción.',
-            logos: ['~/assets/pagofacil.jpg', '~/assets/rapipagos.jpg', '~/assets/cobroex.jpg'],
-            active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, el cupón para pagar esta compra en los puntos de Pago Fácil, Rapipagos o Cobro Express.',
-            method: 'cash'
-        },
-        {
-            id: 3,
-            name: 'Transferencia o depósito bancario',
-            modapago: false,
-            descripcion: 'Seleccionando aquí, podrás realizar una transferencia o depósito bancario.',
-            logos: ['~/assets/santanderrio.png', '~/assets/bancocomafi.jpg'],
-            active: false,
-            detalle: 'Luego de recibir este pedido, la tienda te enviará por mail dentro de las 48 hs, los datos bancarios.',
-            method: 'bank'
-        },
-    ]),
+    metodospagos: new ObservableArray([]),
     metodopago: null,
     typeFactura: 1,
     comboDirecciones: { states: [], gba: [], caba: [] },
@@ -81,7 +51,8 @@ const getters = {
     },
     carProducts(state) {
         return state.carCheckout.products
-    }
+    },
+
 };
 
 const mutations = {
@@ -123,6 +94,9 @@ const mutations = {
     },
     setcomboDirecciones(state, val) {
         state.comboDirecciones = val
+    },
+    setMetodosPagos(state, val) {
+        state.metodospagos = new ObservableArray(val)
     }
 };
 
@@ -130,6 +104,16 @@ const actions = {
     // setCarCheckout(context, val){
     //     context.commit('setcarCheckout',val)
     // },
+
+    async getHorarios(context) {
+        const response = await Api.post('checkout/getHorarios')
+        return response
+    },
+    async getMetodosPagos(context, val) {
+        const response = await Api.post('checkout/getMetodosPagos', val)
+        context.commit('setMetodosPagos', response)
+        return response
+    },
     async getEnvios(context, val) {
         const response = await Api.post('checkout/getEnvios', val)
         return response
@@ -148,6 +132,10 @@ const actions = {
     },
     async datosEnvio(context, val) {
         const response = await Api.post('checkout/datosEnvio', val)
+        return response
+    },
+    async shippingSelectAddress(context, val) {
+        const response = await Api.post('checkout/shippingSelectAddress', val)
         return response
     },
     async envioDetail(context, val) {
@@ -187,8 +175,6 @@ const actions = {
         return response
     },
     async selectMethodPayment(context, val) {
-        console.log('val', val)
-
         const response = await Api.post('checkout/selectMethodPayment', val)
         return response
     },
@@ -209,10 +195,10 @@ const actions = {
         const response = await Api.post('checkout/couponUnselectAll', val)
         return response
     },
-
-
-
-
+    async getMetodos(context, val) {
+        const response = await Api.post('checkout/getMetodos', { local_cd: val })
+        return response
+    },
 };
 
 export const checkout = {

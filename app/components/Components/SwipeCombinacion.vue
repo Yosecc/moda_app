@@ -173,7 +173,7 @@
       colores(){
         if(this.combinacion.colors.length){
           setTimeout(()=>{
-            console.log('cambiaron los colores', this.$refs.contentColores.nativeView)
+            // console.log('cambiaron los colores', this.$refs.contentColores.nativeView)
           },500)
         }
       }
@@ -252,7 +252,7 @@
         return null
       },
       calculaPrecio(){
-        console.log('koi',this.product,this.talleSelect)
+        // console.log('koi',this.product,this.talleSelect)
         // if(this.talleSelect && this.talleSelect.properties != undefined){
         //   // console.log('tyu',this.talleSelect.properties[0])
         //   if(this.talleSelect.properties[0].price == undefined){
@@ -313,7 +313,7 @@
         this.clearCombinacion()
       }, 
       onSwipe(args){
-        console.log('ddd',args.direction)
+        // console.log('ddd',args.direction)
         if(args.direction == 8){
           // this.$emit('closeDrawer')
           this.closeDropBottom()

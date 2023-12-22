@@ -249,24 +249,26 @@ const actions = {
         let cardb = []
 
         val.combinacion.forEach((e) => {
-            let color_id = val.colors.find((i) => e.colorActive == i.code).id
-            let size_id = val.models.find((x) => x.size == e.talleActive).size_id
-            let modelo = val.models.find((x) => x.size_id == size_id).properties.find((y) => y.color_id == color_id)
+                let color_id = val.colors.find((i) => e.colorActive == i.code).id
+                let size_id = val.models.find((x) => x.size == e.talleActive).size_id
+                let modelo = val.models.find((x) => x.size_id == size_id).properties.find((y) => y.color_id == color_id)
 
-            console.log('modelo', modelo)
-            cardb.push({
-                group_cd: val.store.company,
-                local_cd: val.store.id,
-                product_id: val.id,
-                models_id: modelo.id,
-                size_id: size_id,
-                color_id: color_id,
-                price: modelo.price != 0 ? modelo.price : val.precio,
-                cantidad: e.cantidad,
-                total_price: (modelo.price != 0 ? modelo.price : val.precio) * e.cantidad
+                // console.log('modelo', modelo)
+
+
+                cardb.push({
+                    group_cd: val.store.company,
+                    local_cd: val.store.id,
+                    product_id: val.id,
+                    models_id: modelo.id,
+                    size_id: size_id,
+                    color_id: color_id,
+                    price: modelo.price != 0 ? modelo.price : val.precio,
+                    cantidad: e.cantidad,
+                    total_price: (modelo.price != 0 ? modelo.price : val.precio) * e.cantidad
+                })
             })
-        })
-        console.log('final', cardb)
+            // console.log('final', cardb)
         let response = await Api.post('car/addCar', cardb)
             // context.commit('addCarStore',val.store)
             // context.commit('carsProductsPush', val)
@@ -293,7 +295,7 @@ const actions = {
     },
     async getProductsCart(context, val) {
         const response = await Api.get('car/getProductsCart/' + val)
-        console.log('response', response)
+            // console.log('response', response)
         return response
     },
     async deleteModelo(context, val) {
@@ -302,7 +304,7 @@ const actions = {
     },
     async deleteProduct(context, val) {
         const response = await Api.post('car/deleteProduct', { product_id: val })
-        console.log('response', response)
+            // console.log('response', response)
         return response
     },
 

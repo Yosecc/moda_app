@@ -4,21 +4,15 @@
     <InputsLayout
       row="0"
       :inputs="direccionInput"
-      v-if="!dataDirecciones.length && !loading"
+      v-if="!dataDirecciones.length && !loading && reset && !isTransportes"
     />
 
-    <!-- <InputsLayout
-      row="0"
-      :inputs="direccionInput"
-      v-if="!dataDirecciones.length && !loading"
-    /> -->
-
-    <!-- <StackLayout row="0" v-if="loading" padding="16" width="100%" >
+    <StackLayout row="0" v-if="loading" padding="16" width="100%" >
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
-    </StackLayout> v-show="dataDirecciones.length && !loading && !dataDelivery.length && !isTransportes"-->
+    </StackLayout> 
 
     <RadListView 
       ref="dataDirecciones"
@@ -45,6 +39,8 @@
                 <StackLayout margin="0" padding="0" orientation="horizontal">
                   <Label  margin="0 4 0 0" padding="0" fontWeight="700" fontSize="16" :text="item.first_name" />
                   <Label  margin="0" padding="0" fontWeight="700" fontSize="16" :text="item.last_name" />
+                  <ActivityIndicator color="#E9418A" width="15" marginLeft="8" v-if="loadingSelect == item.id" busy="true" />
+
                 </StackLayout>
                 <Label margin="0" padding="0" fontWeight="700" fontSize="16" :text="`DNI: ${item.dni}`" />
               </StackLayout>
@@ -104,14 +100,14 @@
       </v-template>
     </RadListView>
 
-    <!-- <RadListView 
+    <RadListView 
       ref="dataDelivery"
       class="dataDelivery"
       for="item in dataDelivery"
       row="0" 
       padding="0"
       margin="0"
-      v-show="dataDelivery.length && !loading "
+      v-show="dataDelivery.length && !loading"
       @itemTap="onItemSelectedDelivery"
     >
       <v-template if="item.status == true">
@@ -123,10 +119,11 @@
             :borderColor="item.status ? '#E9418A':''"
           >
             <FlexboxLayout justifyContent="space-between" alignItems="center">
-              
-                <Label fontSize="20" fontWeight="900" :text="item.provider" />
-                <Label fontSize="20" fontWeight="900" :text="item.price | moneda" />
+                  <Image :src="imageProvider(item.provider)" height="80" />
+                   <ActivityIndicator color="#E9418A" width="15" marginLeft="8" v-if="loadingSelectDelivery == item.type" busy="true" />
 
+                  <Label v-if="item.price > 0" fontSize="20" fontWeight="900" :text="item.price | moneda" />
+                  <Label v-if="item.price == 0" fontSize="16" fontWeight="900" :text="'Sin costo de envío'" borderRadius="10" padding="6 12" />
             </FlexboxLayout>
           </StackLayout>
 
@@ -142,24 +139,34 @@
             :borderColor="item.status ? '':''"
           >
             <FlexboxLayout justifyContent="space-between" alignItems="center">
-              
-                <Label fontSize="20" fontWeight="900" :text="item.provider" />
-                <Label fontSize="20" fontWeight="900" :text="item.price | moneda" />
-
+              <Image  :src="imageProvider(item.provider)" height="80" />
+                   <ActivityIndicator color="#E9418A" width="15" marginLeft="8" v-if="loadingSelectDelivery == item.type" busy="true" />
+                <Label v-if="item.price > 0" fontSize="20" fontWeight="900" :text="item.price | moneda" />
+                
+                <Label v-if="item.price == 0" fontSize="16" fontWeight="900" :text="'Sin costo de envío'" />
             </FlexboxLayout>
           </StackLayout>
 
         </StackLayout>
       </v-template>
-    </RadListView> -->
+    </RadListView>
 
-    <!-- <InputsLayout
+    <InputsLayout
       row="0"
       :inputs="transportesInputs"
       v-if="!loading && isTransportes"
-    /> -->
+    />
 
-    <Label v-if="dataDirecciones.length && !loading" @tap="onAgregarSucursal" text="Agregar Sucursal" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
+   <Label 
+      v-show="dataDirecciones && dataDirecciones.length && !loading && !dataDelivery.length && !isTransportes" 
+      @tap="onAgregarSucursal" 
+      text="Agregar" 
+      fontWeight="600" 
+      class="label_enlace" 
+      textAlignment="center" 
+      row="1" 
+      padding="16" 
+    />
 
        
   </GridLayout>
@@ -192,7 +199,29 @@
       isTransportes:{
         type: Boolean,
         default: false
-      }
+      },
+      errores:{
+        type: Array,
+        default(){
+          return []
+        }
+      },
+      redirect:{
+        type: String,
+        default: ''
+      },
+      direccion_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
+      delivery_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
     },
     components: {
       InputsLayout
@@ -202,7 +231,10 @@
     },
     data() {
       return {
+
+        redirectData: this.redirect,
         reload: true,
+        reset: true,
         direccionInput:[
           {
             typeInput: undefined,
@@ -247,13 +279,14 @@
             paddingRight: 8
           },
           {
-            typeInput: undefined,
+            typeInput: 'number',
             name: 'street_number',
             model: '',
             label: 'Número',
             hint:'Número',
             required: true,
-            width: '30%'
+            width: '30%',
+            maxLength: 4,
           },
           {
             typeInput: undefined,
@@ -281,6 +314,7 @@
             label: 'Código postal',
             hint:'Código postal',
             required: true,
+            error: false
           },
           {
             typeInput: 'number',
@@ -290,7 +324,8 @@
             hint:'Cod. área',
             required: true,
             width: '30%',
-            paddingRight: 4
+            paddingRight: 4,
+            maxLength: 4
           },
           {
             typeInput: 'number',
@@ -350,9 +385,7 @@
             title: 'Seleccione un horario', 
             hint:'Seleccione un horario.',
             footerLabel: 'Entregas de lunes a viernes hábiles, y sábados. Para recibir este pedido debés presentar tu DNI.',
-            values: [
-              {id: 3, name: "8:00hs a 18:00hs"},
-            ],
+            values: [],
             campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
@@ -388,16 +421,35 @@
         dataDelivery: new ObservableArray(this.delivery),
         loading: false,
         transportes: [],
-        edit: false
+        edit: false,
+        loadingSelect: null,
+        loadingSelectDelivery: null
       };
     },
     watch:{
+      errores(to){
+        this.direccionInput.forEach((e)=>{
+          e.error = false
+        })
+        if(to.length){
+          to.forEach((r)=>{
+            if(this.direccionInput.find((e)=> e.name == r)!=undefined){
+              this.direccionInput.find((e)=> e.name == r).error = true
+            }
+          })
+        }
+        this.reset = false
+        setTimeout(()=>{
+          this.reset = true
+        },100)
+      },
       dataSelect(to){
         if(this.select){
           this.changeSelect(this.select)
         }
       },
       datosInputs(to){
+        // console.log('datosInputs',to)
         if(to){
           this.$emit('statusData', true)
           let data = this.prepareData(this.direccionInput, false)
@@ -409,8 +461,9 @@
         }
       },
       dataDirecciones(to){
+        
         if(this.dataDirecciones.length){
-          this.onItemSelected({item : to._array[0]})
+          // this.onItemSelected({item : to._array[0]})
           this.$emit('changeName','Continuar')
           if(!this.dataDelivery.length){
             this.$emit('changeSubTitle','Acá podrás ver el listado de todas tus direcciones para este tipo de envío.')
@@ -424,6 +477,7 @@
         }
       },
       dataInput(to){
+        // console.log('dataInput',to)
         if(!this.dataDirecciones.length){
           to.id = this.id
           if(this.edit){
@@ -442,9 +496,7 @@
         return this.select
       },
       datosInputs(){
-
         return this.validadores(this.direccionInput)
-
       },
       dataInput(){
         return this.prepareData(this.direccionInput, false)
@@ -456,50 +508,112 @@
     mounted(){
       this.getComboDirecciones({group_id: this.group_id}).then((response)=>{
         this.direccionInput.find((e)=> e.name == 'state').values = this.comboDirecciones.states
+        this.direccionInput.find((e)=>e.name == 'drop_off_time').values = this.comboDirecciones.horarios
         this.transportesInputs.find((e)=>e.name == 'provider').values = this.comboDirecciones.transportes
       })
+
       this.mountedData()
     },
     methods:{
       ...mapMutations('checkout',['addCostoEnvio']),
-      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping','editServiceProvider',]),
+      ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping','editServiceProvider','getHorarios','shippingSelectAddress','homeDeliveryProviders']),
+      imageProvider(provider){
+        let image = ''
+        switch (provider) {
+          case 'OCA':
+            image = '~/assets/icons/oca_logo.png'
+            break;
+          case 'MOTO':
+            image = '~/assets/icons/moto.png'
+            break;
+          case 'CA':
+            image = '~/assets/icons/ca_logo.png'
+            break;
+        
+          default:
+            break;
+        }
+        return image
+      },
+      prepareDelivery(){
+        if(this.dataDelivery.length){
+          // console.log('this.dataDelivery',this.dataDelivery)
+          this.dataDelivery._array.forEach((e,i)=>{
+              if(e.selected){
+                e.status = true
+              }else{
+                e.status = false
+              }
+          })
+          // this.$emit('changeTransporte',this.dataDelivery._array.find((e)=> e.status == true).provider)
+          if(this.$refs.dataDelivery!=undefined){
+            this.$refs.dataDelivery.refresh()
+          }
+          this.$emit('statusData', true)
+          this.$emit('changeSubTitle','Seleccioná el servicio de entrega que enviará tu paquete.')
+        }
+      },
       mountedData(){
+        // console.log('domicilio mounted', this.delivery_select, this.delivery)
+        
+        this.prepareDelivery()
+
         this.loading = true
         this.datosEnvio({
           group_id: this.group_id,
           method: this.envios._array.find((e)=> e.active == true).method
         }).then((response)=>{
-          this.loading = false
-          response.forEach((e,i)=>{
-            if(i == 0){
-              e.status = true
-            }else{
-              e.status = false
-            }
-          })
+          if(!this.delivery_select){
+            this.loading = false
+          }
           this.dataDirecciones = new ObservableArray(response)
+          this.dataDirecciones.length ? this.dataDirecciones.forEach(element => element.active ? this.onItemSelected({item: element, noPost: true }) : null ) : null
+          if(this.redirectData == 'missing_shipping_data'){
+            this.redirectData = ''
+            let item = this.dataDirecciones.find((e) => e.active == true )
+            this.onEditSucursal(item) 
+            this.$emit('statusData', true)  
+          }
+          if(this.direccion_select){
+            this.onItemSelected({item : this.direccion_select })
+          }
+          if(this.delivery_select){
+            let item = this.dataDirecciones.find((e) => e.active == true )
+            console.log('this.delivery_select',this.dataDelivery, this.delivery, item)
+            
+            this.homeDeliveryProviders({
+                id:item.id,
+                group_id:this.group_id,
+              })
+              .then((response)=>{
+
+                response.forEach((e)=>{
+                  if(e.selected){
+                    e.status = true
+                  }else{
+                    e.status = false
+                  }
+                })
+
+                // console.log('response',response)
+                this.dataDelivery = new ObservableArray(response)
+                this.prepareDelivery()
+                const delivery = this.dataDelivery.find((e)=> e.status == true)
+                this.onItemSelectedDelivery({item: delivery, noPost: true})
+                this.loading = false
+              }).catch((error)=>{
+                console.log('error',error)
+              })
+            
+          }
         }).catch((error)=>{
           this.loading = false
           this.dataDirecciones = []
         })
 
-        if(this.dataDelivery.length){
-          this.dataDelivery._array.forEach((e,i)=>{
-            if(i == 0){
-              e.status = true
-              this.preparePrecio(e.price)
-
-            }else{
-              e.status = false
-            }
-          })
-          this.$emit('changeTransporte',this.dataDelivery._array.find((e)=> e.status == true).provider)
-          this.$refs.dataDelivery.refresh()
-          this.$emit('statusData', true)
-          this.$emit('changeSubTitle','Seleccioná el servicio de entrega que enviará tu paquete.')
-        }
       },
       preparePrecio(price){
+        // console.log('this.costoEnvio',this.costoEnvio)
         let costo_envio = this.costoEnvio
         let index = costo_envio.findIndex((e)=> e.concepto == 'Envío')
         let obj = {
@@ -520,18 +634,43 @@
             costo_envio[index].isFree = true
           }
         }
+        // console.log('Domicilio', costo_envio)
         this.addCostoEnvio(costo_envio)
       },
-      onItemSelected({item}){
-        this.dataDirecciones._array.forEach((e)=>{
-          if(e.id == item.id){
-            e.status = true
-          }else{  
-             e.status = false
-          }
-        })
+      onItemSelected({item, noPost}){
+        if(noPost!=undefined && noPost == true){
+          this.defineStatus(item)
+          return
+        }
+        this.loadingSelect = item.id
         this.$refs.dataDirecciones.refresh()
-        this.setData(item)
+        this.homeDeliveryProviders({
+          group_id: this.group_id,
+          id: item.id
+        })
+        this.shippingSelectAddress({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method,
+          select: item.id
+        }).then((response)=>{
+            this.loadingSelect = null
+            this.defineStatus(item)
+        }).catch((error)=>{
+          this.loadingSelect = null
+          this.$refs.dataDirecciones.refresh()
+        })
+        
+      },
+      defineStatus(item){
+        this.dataDirecciones._array.forEach((e)=>{
+            if(e.id == item.id){
+              e.status = true
+            }else{  
+              e.status = false
+            }
+          })
+          this.$refs.dataDirecciones.refresh()
+          this.setData(item)
       },
       setData(item){
         this.$emit('statusData', true)
@@ -552,9 +691,10 @@
         })
       },
       onEditSucursal(item){
-        this.dataDirecciones = []
+        this.dataDirecciones = new ObservableArray([])
         this.id = item.id
         this.edit = true
+       
         this.setModelsInputs(this.direccionInput, item)
         this.changeSelect(this.direccionInput.find((e)=> e.name == 'state'))
         this.changeSelect(this.direccionInput.find((e)=> e.name == 'location'))
@@ -574,6 +714,8 @@
           if(parseInt(select.model) == 24){
             this.direccionInput.find((e)=> e.name == 'location').values = this.comboDirecciones.caba
           }
+          const direccion = this.comboDirecciones.states.find((e)=> e.id == select.model)
+          this.direccionInput.find((e)=> e.name == 'state').title = direccion!=undefined ?  direccion.name : 'Seleccione su provincia'
           
           if(select.model != ''){
             if(parseInt(select.model) != 24 && parseInt(select.model) != 25){
@@ -597,43 +739,79 @@
           if(select.model == '__other__'){
             this.direccionInput.find((e)=> e.name == 'location_custom').typeInput = undefined
             this.direccionInput.find((e)=> e.name == 'location_custom').required = true
-
-            
-
           }else{
             this.direccionInput.find((e)=> e.name == 'location_custom').typeInput = 'hidden'
             this.direccionInput.find((e)=> e.name == 'location_custom').required = false
           }
         }
+
+        if(select.name == 'drop_off_time'){
+          this.$emit('statusData', true)
+          let data = this.prepareData(this.direccionInput, false)
+          data.id = this.id
+          if(this.edit){
+            data.edit = true
+          }
+          this.$emit('change', data)
+        }
+
         if(select.name == 'provider'){
           this.$emit('changeTransporte',select.model)
         }
       },
       opendDrwer(item){
-        console.log('i',item)
+        // console.log('i',item)
         this.$emit('openDrawer',{type: 'select', data: item})
       },
-      onItemSelectedDelivery({item}){
-        // console.log('item', item)
-        this.dataDelivery._array.forEach((e,i)=>{
-          if(e.type == item.type){
-            e.status = true
-            this.preparePrecio(e.price)
-          }else{
-            e.status = false
-          }
-        })
+      onItemSelectedDelivery({item, noPost}){
 
+        console.log('item',item)
+        this.loadingSelectDelivery = item.type
+        if(this.$refs.dataDelivery!=undefined){
+          this.$refs.dataDelivery.refresh()
+        }
+        
         this.editServiceProvider({
           provider: item.provider.toLowerCase(),
           group_id:   this.group_id,
-        })
+        }).then((response)=>{
+
+          this.loadingSelectDelivery = null
+
+          this.dataDelivery._array.forEach((e,i)=>{
+            if(e.type == item.type){
+              e.status = true
+              this.preparePrecio(e.price)
+            }else{
+              e.status = false
+            }
+          })
+
+          const direccion = response.find((e)=>e.active ==true)
+          if(direccion!=undefined){
+            if(direccion.active){
+              let index = this.dataDelivery.findIndex((e)=> e.type == direccion.service_provider.type ) 
+              this.dataDelivery[index] = direccion.service_provider
+              direccion.edit = false
+              this.defineStatus(direccion)
+            }
+          }
+         
           this.$emit('changeTransporte',item.provider)
-        this.$refs.dataDelivery.refresh()
-        this.$emit('statusData', true)
+          if(this.$refs.dataDelivery!=undefined){
+            this.$refs.dataDelivery.refresh()
+          }
+          this.$emit('statusData', true)
+        }).catch((error)=>{
+          this.loadingSelectDelivery = null
+          if(this.$refs.dataDelivery!=undefined){
+            this.$refs.dataDelivery.refresh()
+          }
+        })
+
+          
       },
       onAgregarSucursal(){
-        console.log(this.dataDirecciones, this.dataDelivery, this.isTransportes)
         this.dataDirecciones = new ObservableArray([])
         this.id = ''
         // this.prop_sucursal = null

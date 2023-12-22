@@ -75,96 +75,99 @@
       <StackLayout width="100%" class="label_skeleton" height="50" horizontalAlignment="left"></StackLayout>
     </StackLayout>
 
-    
-      <RadListView 
-        ref="dataSucursales"
-        class="dataSucursales"
-        for="item in dataSucursales"
-        row="0" 
-        padding="0"
-        margin="0"
-        v-show="dataSucursales.length && !loading"
-        @itemTap="onItemSelected"
-      >
-        <v-template>
-          <StackLayout padding="8 16 8 16">
 
-            <StackLayout 
-              class="card" 
-              :borderWidth="item.status ? 2:0"
-              :borderColor="item.status ? '#E9418A':''"
-            >
+      <StackLayout padding="0" v-show="dataSucursales.length && !loading">
+          <Label  margin="0 16" textWrap :text="'Acá podrás ver el listado de todas tus direcciones para este tipo de envío.'" />
+        <RadListView 
+          ref="dataSucursales"
+          class="dataSucursales"
+          for="item in dataSucursales"
+          row="0" 
+          padding="0"
+          margin="0"
+          
+          @itemTap="onItemSelected"
+        >
+          <v-template>
+            <StackLayout padding="8 16 8 16">
 
-              <FlexboxLayout justifyContent="space-between" alignItems="flex-start">
-                <StackLayout >
-                  <StackLayout margin="0" padding="0" orientation="horizontal">
-                    <Label  margin="0 4 0 0" padding="0" fontWeight="700" :text="item.first_name" />
-                    <Label  margin="0" padding="0" fontWeight="700" :text="item.last_name" />
+              <StackLayout 
+                class="card" 
+                :borderWidth="item.status ? 2:0"
+                :borderColor="item.status ? '#E9418A':''"
+              >
+
+                <FlexboxLayout justifyContent="space-between" alignItems="flex-start">
+                  <StackLayout >
+                    <StackLayout margin="0" padding="0" orientation="horizontal">
+                      <Label  margin="0 4 0 0" padding="0" fontWeight="700" :text="item.first_name" />
+                      <Label  margin="0" padding="0" fontWeight="700" :text="item.last_name" />
+                      <ActivityIndicator color="#E9418A" width="15" marginLeft="8" v-if="loadingSelect == item.id" busy="true" />
+                    </StackLayout>
+                    <Label margin="0" padding="0" fontWeight="700" :text="`DNI: ${item.dni}`" />
                   </StackLayout>
-                  <Label margin="0" padding="0" fontWeight="700" :text="`DNI: ${item.dni}`" />
-                </StackLayout>
-                <StackLayout orientation="horizontal">
-                  <FlexboxLayout 
-                    alignItems="center" 
-                    justifyContent="center" 
-                    width="40" 
-                    height="40" 
-                    margin="0 8 0 0" 
-                    class="btn btn-icon"
-                    borderWidth=".5"
-                    borderColor="#4D4D4D"
-                    @tap="ondeleteShipping(item)"
-                  >
-                    <Image 
-                      src="~/assets/icons/trash.png" 
-                      width="25" 
-                      height="25" 
-                    />
-                  </FlexboxLayout>
-                  <FlexboxLayout 
-                    alignItems="center" 
-                    justifyContent="center" 
-                    width="40" 
-                    height="40" 
-                    margin="0" 
-                    class="btn btn-icon"
-                    borderWidth=".5"
-                    borderColor="#4D4D4D"
-                    @tap="onEditSucursal(item)"
-                  >
-                    <Image 
-                      src="~/assets/icons/pencil.png" 
-                      width="25" 
-                      height="25" 
-                    />
-                  </FlexboxLayout>
-                </StackLayout>
-              </FlexboxLayout>
+                  <StackLayout orientation="horizontal">
+                    <FlexboxLayout 
+                      alignItems="center" 
+                      justifyContent="center" 
+                      width="40" 
+                      height="40" 
+                      margin="0 8 0 0" 
+                      class="btn btn-icon"
+                      borderWidth=".5"
+                      borderColor="#4D4D4D"
+                      @tap="ondeleteShipping(item)"
+                    >
+                      <Image 
+                        src="~/assets/icons/trash.png" 
+                        width="25" 
+                        height="25" 
+                      />
+                    </FlexboxLayout>
+                    <FlexboxLayout 
+                      alignItems="center" 
+                      justifyContent="center" 
+                      width="40" 
+                      height="40" 
+                      margin="0" 
+                      class="btn btn-icon"
+                      borderWidth=".5"
+                      borderColor="#4D4D4D"
+                      @tap="onEditSucursal(item)"
+                    >
+                      <Image 
+                        src="~/assets/icons/pencil.png" 
+                        width="25" 
+                        height="25" 
+                      />
+                    </FlexboxLayout>
+                  </StackLayout>
+                </FlexboxLayout>
 
-              <StackLayout  orientation="horizontal">
-                <ImageCache 
-                  stretch="aspectFill" 
-                  width="60"
-                  height="60"
-                  placeholderStretch="aspectFill"
-                  placeholder="res://eskeleton"
-                  :src="(item.branch_data.provider == 'oca' || item.branch_data.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
-                  rounded="true"
-                  borderWidth=".5"
-                  borderColor="#4D4D4D"
-                />
-                <StackLayout>
-                  <Label  fontSize="16" textWrap :text="item.branch_data.label" margin="0" padding="0" />
-                  <Label  :text="item.branch_data.price | moneda" fontWeight="800" fontSize="18" />
+                <StackLayout  orientation="horizontal">
+                  <ImageCache 
+                    stretch="aspectFill" 
+                    width="60"
+                    height="60"
+                    placeholderStretch="aspectFill"
+                    placeholder="res://eskeleton"
+                    :src="(item.branch_data.provider == 'oca' || item.branch_data.provider == 'OCA') ? '~/assets/icons/oca_logo.png':'~/assets/icons/ca_logo.png'"
+                    rounded="true"
+                    borderWidth=".5"
+                    borderColor="#4D4D4D"
+                  />
+                  <StackLayout>
+                    <Label  fontSize="16" textWrap :text="item.branch_data.label" margin="0" padding="0" />
+                    <Label  :text="item.branch_data.price | moneda" fontWeight="800" fontSize="18" />
+                  </StackLayout>
                 </StackLayout>
+
               </StackLayout>
 
             </StackLayout>
-
-          </StackLayout>
-        </v-template>
-      </RadListView>
-      
+          </v-template>
+        </RadListView>
+      </StackLayout>
       <Label v-if="dataSucursales.length && !loading" @tap="onAgregarSucursal" text="Agregar Sucursal" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
 
   </GridLayout>
@@ -187,9 +190,21 @@
         type: Object,
         default: null
       },
+      sucursal_select:{
+        type: Object,
+        default(){
+          return null
+        }
+      },
       sucursales:{
         type: Array,
         default: []
+      },
+      servicio_envio_select:{
+        type: Object,
+        default(){
+          return null
+        }
       }
     },
     components: {
@@ -229,12 +244,17 @@
         id: '',
         prop_sucursal: this.sucursal,
         dataSucursales: new ObservableArray(this.sucursales),
-        loading: false
+        loading: false,
+        loadingSelect: 0,
+        edit: false,
       };
     },
     watch:{
-      sucursal(to){
+      sucursales(to){
         // console.log('to',to)
+      },
+      sucursal(to){
+        
         this.prop_sucursal = to
         if(!this.dataSucursales.length){
           this.statusData(this.datosInputs)
@@ -247,7 +267,7 @@
       },
       dataSucursales(to){
         if(this.dataSucursales.length){
-          this.onItemSelected({item : to._array[0]})
+          // this.onItemSelected({item : to._array[0]})
         }
       }
     },
@@ -256,6 +276,7 @@
       ...mapState('checkout',['group_id', 'envios']),
       datosInputs(){
         const data = this.prepareData(this.sucursalImputs, false)
+        data.edit = this.edit
         return data
       }
     },
@@ -263,23 +284,26 @@
       this.mountedData()
     },
     methods:{
-      ...mapActions('checkout',['datosEnvio','deleteShipping']),
-      mountedData(){
+      ...mapActions('checkout',['datosEnvio','deleteShipping','shippingSelectAddress']),
+      mountedData(){        
         this.loading = true
         this.datosEnvio({
           group_id: this.group_id,
           method: this.envios._array.find((e)=> e.active == true).method
         }).then((response)=>{
           this.loading = false
-          response.forEach((e,i)=>{
-            if(i ==0){
-              e.status = true
-            }else{
-              e.status = false
-            }
-          })
-
+           
           this.dataSucursales = new ObservableArray(response)
+          this.dataSucursales.length ? this.dataSucursales.forEach(element => element.active == 1 ? this.onItemSelected({item: element, noPost: true }) : null ) : null
+
+          if(this.sucursal_select){
+            this.onItemSelected({item: this.sucursal_select})
+          }
+          
+          if(this.servicio_envio_select){
+            this.onEditSucursal(this.servicio_envio_select) 
+            this.statusData(this.datosInputs)
+          }
         }).catch((error)=>{
           this.loading = false
           this.dataSucursales = []
@@ -289,6 +313,7 @@
         this.$emit('openDrawer',type)
       },
       statusData(inputs){
+        // console.log('inputs',inputs)
         let estados = []
         for(var i in inputs){
           if([undefined, '' , null].includes(inputs[i])){
@@ -303,23 +328,47 @@
           if(this.prop_sucursal){
             this.$emit('statusData', true)
             this.datosInputs.id = this.id
+            
             this.$emit('change', this.datosInputs)
           }else{
             this.$emit('statusData', false)
           }
         }
       },
-      onItemSelected({item}){
-        this.dataSucursales._array.forEach((e)=>{
-          if(e.id == item.id){
-            e.status = true
-          }else{  
-             e.status = false
-          }
-        })
+      onItemSelected({item,noPost}){
+
+        if(noPost!=undefined && noPost==true){
+          this.defineStatus(item)
+          return
+        }
+
+        this.loadingSelect = item.id
         this.$refs.dataSucursales.refresh()
+        this.shippingSelectAddress({
+          group_id: this.group_id,
+          method: this.envios._array.find((e)=> e.active == true).method,
+          select:  item.id
+        }).then((response)=>{
+          this.loadingSelect = null
+          this.defineStatus(item)
+        }).catch((error)=>{
+          this.loadingSelect = null
+          this.$refs.dataSucursales.refresh()
+        })
+       
         
-        this.setData(item)
+       
+      },
+      defineStatus(item){
+        this.dataSucursales._array.forEach((e)=>{
+            if(e.id == item.id){
+              e.status = true
+            }else{  
+              e.status = false
+            }
+          })
+          this.$refs.dataSucursales.refresh()
+          this.setData(item)
       },
       setData(item){
         this.$emit('change', {
@@ -341,11 +390,13 @@
         this.$emit('statusData', true)
       },
       onEditSucursal(item){
+        // console.log('item',item)
         this.dataSucursales = []
         this.sucursalImputs.find((e)=> e.name == 'name').model = item.first_name
         this.sucursalImputs.find((e)=> e.name == 'apellido').model = item.last_name
         this.sucursalImputs.find((e)=> e.name == 'dnni').model = item.dni
         this.id = item.id
+        this.edit = true
         // this.setData(item)
       },
       ondeleteShipping(item){
