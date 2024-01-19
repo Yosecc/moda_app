@@ -16,6 +16,7 @@
           left="0"
           padding="0"
           @tap="onTap()"
+          :opacity="!product.has_stock || !product.sizes ? '.2':''"
         >
           <ImageCache 
             horizontalAlignment="center"
@@ -39,6 +40,10 @@
           v-if="product.store && product.store.logo && !isStore"
           :store="product.store"
         />
+
+        <GridLayout v-if="!product.has_stock || !product.sizes" top="100" left="0" width="100%" >
+          <Label text="Sin stock" fontWeight="800" horizontalAlignment="center" />
+        </GridLayout>
            
         <!-- <StackLayout
           top="170"
@@ -65,7 +70,7 @@
 
       </AbsoluteLayout>
 
-      <StackLayout  paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
+      <StackLayout  :opacity="!product.has_stock || !product.sizes ? '.2':''" paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
         <label 
           marginTop="8"
           v-if="product.code && product.code != ''"
@@ -94,7 +99,7 @@
           :fontSizePrice="fontSizePrice"
         />
       </StackLayout>
-        <GridLayout columns="*,*" background="" padding="0 8 8 8" @tap="openModal()">
+        <GridLayout :opacity="!product.has_stock || !product.sizes ? '.2':''" columns="*,*" background="" padding="0 8 8 8" @tap="openModal()">
           <colorsCircle col="0" :product_id="product.id" v-if="product && product.colors" :colors="product.colors" />
           <tallesCircle col="1" :product_id="product.id" v-if="product && product.sizes" :talles="product.sizes" horizontalAlignment="right" />
         </GridLayout>

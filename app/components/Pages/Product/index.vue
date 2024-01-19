@@ -133,7 +133,7 @@
 
               </GridLayout >
 
-              <StackLayout v-if="producto.has_stock" padding="0" margin="0" minHeight="140">
+              <StackLayout v-if="producto.has_stock && producto.sizes" padding="0" margin="0" minHeight="140">
                 <CombinacionesProduct
                   padding="0 16 32 12"
                   v-if="change && changeCombinaciones"
@@ -253,7 +253,7 @@
                 </StackLayout>
               </StackLayout>
 
-              <StackLayout v-if="!producto.has_stock" padding="0" margin="0" minHeight="140" >
+              <StackLayout v-if="!producto.has_stock || !producto.sizes" padding="0" margin="0" minHeight="140" >
                 <Label textAlignment="center" fontWeight="100" fontSize="24" flexWrap  text="Sin Stock" />
               </StackLayout>
 
@@ -580,6 +580,7 @@
       },
       async onLoadProduct(){
         await this.getProduct(this.product.id).then((response)=>{
+          // console.log('PRODUCTO',this.product,'RESPONSE',response)
           this.producto.models = response[0].models;
           this.producto.isCart = response[0].isCart;
           this.producto.store = response[0].store

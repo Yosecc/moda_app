@@ -356,7 +356,7 @@
             })
           }
 
-          // console.log('products',this.products)
+          // console.log('products car',this.products)
           this.isLoading = false
           if(this.$refs.productsCar!=undefined){
             this.$refs.productsCar.refresh()
@@ -462,7 +462,7 @@
           products:    this.products
         })
 
-        console.log('pasa')
+        // console.log('pasa')
         this.processCart(this.car_id).then((response)=>{
           console.log('responseeeee',response)
           firebase.analytics.logEvent({
