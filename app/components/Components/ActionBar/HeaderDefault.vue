@@ -8,7 +8,8 @@
         marginTop="10"
         marginBottom="5"
         paddingLeft="0"
-        height="50"
+        height="60"
+        
       >
         <FlexboxLayout 
           col="0"
@@ -19,6 +20,7 @@
             v-show="!back" 
             col="0"
             horizontalAlignment="left" 
+
           ></BtnMenu>
         
           <BtnBack
@@ -27,6 +29,7 @@
             horizontalAlignment="left"
             :isEvent="isEvent"
             @onBack="onBack"
+            marginLeft="-8"
           ></BtnBack>
 
           <Image 

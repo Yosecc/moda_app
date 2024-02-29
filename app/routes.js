@@ -43,6 +43,9 @@ import Pedido from './components/Pages/Profile/Pedido.vue'
 import detailCar from './components/Pages/Car/detailCar.vue'
 
 import filterCategorias from './components/Components/Modales/filterCategorias.vue'
+
+import ModalFilter from './components/Components/Modales/ModalFilter.vue'
+
 import tiendasModal from './components/Components/Modales/tiendas.vue'
 import methodsPaymentsModal from './components/Components/Modales/methodsPayments.vue'
 import detalleCheckout from '~/components/Components/Modales/detalleCheckout.vue'
@@ -58,9 +61,15 @@ import modalColorsTalles from '~/components/Components/Modales/modalColorsTalles
 
 import CMS from '~/components/Pages/Cms/index.vue'
 
-
+import selectListPicker from '~/components/Components/Modales/selectListPicker.vue'
 
 export const routes = {
+    '/selectListPicker': {
+        component: selectListPicker
+    },
+    '/modal_filter': {
+        component: ModalFilter
+    },
     '/products': {
         component: Products
     },

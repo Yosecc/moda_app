@@ -6,6 +6,8 @@
         justifyContent="flex-start"
         
       >
+      <!-- <label :text="JSON.stringify(colorChecked)" textWrap margin="0 16 24 0"  textAlignment="left" fontSize="16" fontWeight="200" /> -->
+
         <AbsoluteLayout
           paddingRight="14.5"
           v-for="(color, key) in colores"
@@ -51,6 +53,7 @@
             v-if="color.code.includes('/')"
           />
 
+          <!-- <label :text="JSON.stringify([colorChecked, color.code])" textWrap margin="0 16 24 0"  textAlignment="left" fontSize="12" fontWeight="200" /> -->
 
           <Image
             v-show="colorChecked == color.code && (color != '#ffffff' || color != '#FFFFFF' || color != 'white')"
@@ -99,10 +102,11 @@
     },
     watch:{
       colorActive(to){
-        if(to == ''){
-          this.colorChecked = to
-          this.$forceUpdate()
-        }
+        console.log('TO',to)
+        this.colorChecked = to
+        // if(to == ''){
+        //   this.$forceUpdate()
+        // }
       }
     },
     data() {

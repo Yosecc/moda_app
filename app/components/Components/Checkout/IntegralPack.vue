@@ -2,7 +2,8 @@
   <StackLayout>
 
     <InputsLayout
-      :inputs="direccionInput"
+      v-model="direccionInput"
+      @changeSelect="changeSelect"
       v-if="!dataDirecciones.length && !loading"
     >
       
@@ -161,9 +162,9 @@
             hint: 'Seleccion su provincia',
             campos: {id: 'id', name: 'name'},
             required: true,
-            onTap: (input)=>{
-              this.opendDrwer(input)
-            }
+            // onTap: (input)=>{
+            //   this.opendDrwer(input)
+            // }
           },
           {
             typeInput: 'select',
@@ -174,12 +175,12 @@
             hint: 'Ingrese su Localidad',
             campos: {id: 'id', name: 'name'},
             required: true,
-            onTap: (input)=>{
-              if(input.values!= undefined){
-                this.opendDrwer(input)
-              }else{
+            beforeOpen: (input)=>{
+              if(input.values== undefined){
                 alert('Seleccione una provincia')
+                return false
               }
+              return true
             }
           },
         ],

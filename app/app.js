@@ -34,6 +34,9 @@ Vue.registerElement(
     () => require('@nativescript-community/ui-pulltorefresh').PullToRefresh
 );
 
+import CollectionView from '@nativescript-community/ui-collectionview/vue';
+Vue.use(CollectionView);
+
 // var auth_service_1 = require("./auth-service");
 // auth_service_1.configureOAuthProviders();
 

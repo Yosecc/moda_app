@@ -3,8 +3,9 @@
 
     <InputsLayout
       row="0"
-      :inputs="direccionInput"
-      v-if="!dataDirecciones.length && !loading && reset && !isTransportes"
+      v-model="direccionInput"
+      @changeSelect="changeSelect"
+      v-show="!dataDirecciones.length && !loading && reset && !isTransportes"
     />
 
     <StackLayout row="0" v-if="loading" padding="16" width="100%" >
@@ -153,8 +154,9 @@
 
     <InputsLayout
       row="0"
-      :inputs="transportesInputs"
-      v-if="!loading && isTransportes"
+      v-model="transportesInputs"
+      @changeSelect="changeSelect"
+      v-show="!loading && isTransportes"
     />
 
    <Label 
@@ -231,7 +233,6 @@
     },
     data() {
       return {
-
         redirectData: this.redirect,
         reload: true,
         reset: true,
@@ -347,7 +348,7 @@
             campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
-              this.opendDrwer(input)
+              // this.opendDrwer(input)
             }
           },
           {
@@ -360,11 +361,11 @@
             campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
-              if(input.values!= undefined){
-                this.opendDrwer(input)
-              }else{
-                alert('Seleccione una provincia')
-              }
+              // if(input.values!= undefined){
+              //   this.opendDrwer(input)
+              // }else{
+              //   alert('Seleccione una provincia')
+              // }
             }
           },
           {
@@ -389,7 +390,7 @@
             campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
-              this.opendDrwer(input)
+              // this.opendDrwer(input)
             },
           },
           {
@@ -412,7 +413,7 @@
             campos: {id: 'id', name: 'name'},
             required: true,
             onTap: (input)=>{
-              this.opendDrwer(input)
+              // this.opendDrwer(input)
             }
           },
         ],
@@ -444,8 +445,8 @@
         },100)
       },
       dataSelect(to){
-        if(this.select){
-          this.changeSelect(this.select)
+        if(to){
+          this.changeSelect(to)
         }
       },
       datosInputs(to){
@@ -490,10 +491,7 @@
     computed:{
       ...mapState('checkout',['group_id','comboDirecciones','envios','costoEnvio']),
       dataSelect(){
-        if(this.select != null){
-          return this.select.model
-        }
-        return this.select
+        return this.direccionInput.find((e)=> e.name == 'state')
       },
       datosInputs(){
         return this.validadores(this.direccionInput)

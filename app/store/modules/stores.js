@@ -80,6 +80,9 @@ const mutations = {
             state.paramsStores[i] = val[i]
         }
     },
+    deleteParamsStore(state, val) {
+        delete state.paramsStores[val]
+    },
     setCategoriesStore(state, val) {
         state.categoriesStore = val
     },

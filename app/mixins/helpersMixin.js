@@ -45,11 +45,18 @@ export default {
             if (cache.get('last_search')) {
                 let data = JSON.parse(cache.get('last_search'))
                 data.forEach((e, i) => {
-                    if (e != '' && i <= 5) {
+                    if (e != '') {
                         this.ultimasbusquedas.push({ type: "cache", data: e })
                     }
                 })
             }
+        },
+        deleteUltimaBusquedaCache(value) {
+            let data = JSON.parse(cache.get('last_search'))
+            const index = data.findIndex(element => element == value)
+            data.splice(index, 1)
+            this.ultimasbusquedas.splice(index, 1)
+            cache.set('last_search', JSON.stringify(data))
         },
         prepareData(inputs, isAlert = true) {
             let data = {}

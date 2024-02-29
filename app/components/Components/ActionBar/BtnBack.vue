@@ -2,18 +2,17 @@
     
   <GridLayout
       @tap="onTap()"
-      height="40" 
-      width="40" 
+      height="50" 
+      width="50" 
       borderRadius="6"
       marginRight="8"
       marginLeft="0"
       paddingLeft="0"
-
     >
     <Image 
       src="~/assets/icons/arrow_back.png" 
       width="20" 
-      height="15"  />
+    />
 
   </GridLayout>
 

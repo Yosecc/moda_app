@@ -1,7 +1,8 @@
 <template lang="html">
+
     <StackLayout 
       class="product_root"
-      :borderWidth="isBorders ? '.5':'0'"
+      :borderWidth="box.borderWidth"
       borderColor="#F5F5F5"
       v-if="product && product.id != undefined"
       paddingBottom="8"
@@ -9,39 +10,34 @@
     >
       <AbsoluteLayout >
 
-        <StackLayout
-          width="100%"
-          v-if="product.images && product.images.length"
+        <ImageCache 
+          @tap="onTap()"
           top="0"
           left="0"
-          padding="0"
-          @tap="onTap()"
-          :opacity="!product.has_stock || !product.sizes ? '.2':''"
-        >
-          <ImageCache 
-            horizontalAlignment="center"
-            verticalAlignment="top"
-            v-if="product.images && product.images.length"
-            stretch="aspectFill" 
-            :height="imageHeight"
-            width="100%"
-            class="product_img"
-            placeholderStretch="aspectFill"
-            placeholder="res://eskeleton"
-            :src="`${product.images[0]}`" 
-          />
-        </StackLayout>
+          loadMode="async"
+          horizontalAlignment="center"
+          verticalAlignment="top"
+          v-if="product.images && product.images.length"
+          stretch="aspectFill" 
+          :height="imageHeight"
+          width="100%"
+          class="product_img"
+          placeholderStretch="aspectFill"
+          placeholder="res://eskeleton"
+          :src="`${product.images[0]}`" 
+          :opacity="stock.opacity"
+        />
 
         <StoreBox
           top="8"
           left="8"
           width="40"
           height="40"
-          v-if="product.store && product.store.logo && !isStore"
+          v-show="product.store && product.store.logo && !isStore"
           :store="product.store"
         />
 
-        <GridLayout v-if="!product.has_stock || !product.sizes" top="100" left="0" width="100%" >
+        <GridLayout v-show="!isStock" top="100" left="0" width="100%" >
           <Label text="Sin stock" fontWeight="800" horizontalAlignment="center" />
         </GridLayout>
            
@@ -67,13 +63,12 @@
           />
         </StackLayout>  -->
          
-
       </AbsoluteLayout>
 
-      <StackLayout  :opacity="!product.has_stock || !product.sizes ? '.2':''" paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
+      <StackLayout  :opacity="stock.opacity" paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
         <label 
           marginTop="8"
-          v-if="product.code && product.code != ''"
+          v-show="product.code && product.code != ''"
           :text="product.code"
           fontSize="8"
           fontWeight="300"
@@ -82,27 +77,28 @@
           marginBottom="0"
         />
         <label 
-          :marginTop="product.code && product.code != '' ? 0 : 8"
+          :marginTop="title.marginTop"
           textWrap
+          v-if="product.name"
           :text="product.name"
           class="title_product"
           fontSize="11"
           fontWeight="300"
           lineHeight="0"
           padding="0"
-          ref="titulo"
         />
         <price
           :price="product.price"
           :prev_price="product.prev_price"
-          :priceOffert="product.is_desc ? product.is_desc:false"
+          :priceOffert="ispriceOffert"
           :fontSizePrice="fontSizePrice"
         />
       </StackLayout>
-        <GridLayout :opacity="!product.has_stock || !product.sizes ? '.2':''" columns="*,*" background="" padding="0 8 8 8" @tap="openModal()">
-          <colorsCircle col="0" :product_id="product.id" v-if="product && product.colors" :colors="product.colors" />
-          <tallesCircle col="1" :product_id="product.id" v-if="product && product.sizes" :talles="product.sizes" horizontalAlignment="right" />
-        </GridLayout>
+
+      <GridLayout :opacity="stock.opacity" columns="*,*" background="" padding="0 8 8 8" @tap="openModal()">
+        <colorsCircle col="0" :product_id="product.id" v-if="product && product.colors" :colors="product.colors" />
+        <tallesCircle col="1" :product_id="product.id" v-if="product && product.sizes" :talles="product.sizes" horizontalAlignment="right" />
+      </GridLayout>
     </StackLayout>
 
 </template>
@@ -175,6 +171,31 @@
     },
     computed:{
       ...mapState(['isLoadPage']),
+      ispriceOffert(){
+        return this.product.is_desc ? this.product.is_desc:false
+      },
+      isCode(){
+        return this.product.code && this.product.code != ''
+      },
+      title(){
+        return {
+          marginTop: this.isCode ? 0 : 8
+        }
+      },
+      stock(){
+        return {
+          opacity: !this.isStock ? '.2':''
+        }
+      },
+      isStock(){
+        return this.product.has_stock 
+        // || this.product.sizes
+      },
+      box(){
+        return {
+          borderWidth: this.isBorders ? '.5':'0'
+        }
+      },
       offert(){
         if (this.product.mountOffert != undefined ) {
           return this.product.mountOffert.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.');

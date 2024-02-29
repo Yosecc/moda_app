@@ -4,25 +4,14 @@
       <Label col="1" v-if="type == 'create'" fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Agregar nueva dirección" />
       <Label col="1" v-if="type == 'edit'" fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" text="Editar dirección" />
     </HeaderDefault>
-    <RadSideDrawer 
-      ref="drawerSelect"
-      @drawerClosed="onDrawerClosed()"
-      drawerLocation="Bottom"
-      drawerContentSize="500"
-      :gesturesEnabled="false"
-    >
-      <StackLayout ~drawerContent class="sideStackLayout">
-        <optionsSelect 
-          v-model="select"
-          @change="change"
-        />
-      </StackLayout>
+    
      
-      <StackLayout ~mainContent>
+      <StackLayout>
        
+        
         <InputsLayout
           :clases="'shadow-none'"
-          :inputs="inputs"
+          v-model="inputs"
         >
           <!-- <template slot="top">
             <Label 
@@ -46,7 +35,7 @@
         </InputsLayout>
       </StackLayout>
       
-    </RadSideDrawer>
+    
   </Page>
 
 

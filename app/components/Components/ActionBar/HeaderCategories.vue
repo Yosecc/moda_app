@@ -9,6 +9,7 @@
         marginBottom="5"
         paddingLeft="0"
         :marginLeft="-16"
+        minHeight="60"
       >
         <BtnMenu
           v-show="!back" 

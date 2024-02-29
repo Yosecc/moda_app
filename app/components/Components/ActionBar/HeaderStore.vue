@@ -1,20 +1,22 @@
 <template lang="html">
 
-    <ActionBar  >
+    <!-- <ActionBar  > -->
       
       <GridLayout
-        v-if="true"
+        class=""
         columns="auto,*,auto" 
         rows="*" 
-        marginTop="10"
+        marginTop="0"
         paddingLeft="0"
-        height="50"
+        height="60"
+        background=""
+        borderBottomWidth=".1"
+        borderColor="rgba(0, 0, 0, .2)"
       >
         <BtnMenu
           v-show="!back" 
           col="0"
           horizontalAlignment="left" 
-          
         ></BtnMenu>
         
         <BtnBack
@@ -29,7 +31,7 @@
         <FlexboxLayout 
           col="1"
           alignItems="center"
-          @tap="OnViewStore(store)"
+          @tap="OnViewStore(storeData)"
           
         >
 
@@ -100,6 +102,7 @@
                 width="30" 
                 height="30"
                 @tap="onLikeStore"
+                v-if="isFavorite"
               />
 
           <AbsoluteLayout
@@ -137,7 +140,7 @@
 
             </AbsoluteLayout>
 
-            <ActivityIndicator
+            <!-- <ActivityIndicator
               v-if="isLoading"
               color="#E9418A"
               busy="true"  
@@ -146,22 +149,22 @@
               width="15"
               height="15" 
             
-              />
+              /> -->
             <FlexboxLayout
               top="0"
-              left="25"
+              left="22"
               width="15"
               height="15"
               backgroundColor="#E9418A"
               borderRadius="100%"
               justifyContent="center"
               alignItems="center"
-              v-if="(carro != null && Object.keys(carro).length > 0) && !isLoading"
+              v-if="carro_count > 0"
             >
 
               <Label 
-                v-if="(carro.products_count > 0)"
-                :text="carro.products_count"
+
+                :text="carro_count"
                 fontSize="9"
                 color="white"
                 padding="0"
@@ -181,7 +184,7 @@
         </StackLayout>
       </GridLayout>
      
-    </ActionBar>
+    <!-- </ActionBar> -->
  
 </template>
 
@@ -193,6 +196,9 @@ import BtnCar from './BtnCar.vue'
 import StoreBox from '~/components/Components/Boxes/StoreBox.vue'
 import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
  import storeMixin from '~/mixins/storeMixin.js'
+ import cache from '@/plugins/cache'
+//  import modelosMixin from '~/mixins/modelosMixin.js'
+
  import Api from '~/services'
   export default {
     mixins:[storeMixin],
@@ -205,10 +211,10 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
         type: Object,
         default: {}
       }, 
-      carro:{
-        type: Object|Array,
-        default: {}
-      },
+      // carro:{
+      //   type: Object|Array,
+      //   default: {}
+      // },
       iscarro:{
         type: Boolean, 
         default: true
@@ -223,11 +229,15 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       },
       isFavorite:{
         type: Boolean,
-        default: false
+        default: true
       },
       isRedirectStore:{
         type: Boolean,
         default: true
+      },
+      carro_count:{
+        type: Number,
+        default: 0
       }
     },
     components:{
@@ -253,7 +263,8 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       return {
         message: "<!-- Browse page content goes here -->",
         searchQuery: '',
-        onfavorite: this.isFavorite
+        
+        storeData: this.store
       };
     },
     computed:{
@@ -261,6 +272,9 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       ...mapGetters('authentication',['token']),
       likeImage(){
         return !this.onfavorite ? 'res://heart_line_2':'res://heart_solid_2';
+      },
+      onfavorite(){
+        return this.storeData.favorite
       }
     },
     mounted(){
@@ -275,6 +289,7 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
     methods:{
       ...mapMutations(['changePage']),
       ...mapActions(['likeStore']),
+      ...mapActions('stores',['getStoreRosa']),
       OnViewStore(store){
         if(this.isRedirectStore){
           this.onViewStore(store)
@@ -293,20 +308,39 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
         // }, 200)
       },
       redirect(){
-        // console.log(this.carro)
-        if(this.carro && this.carro.products_count){
-          this.onRedirectCart()
+        // console.log(this.store)
+        if(this.carro_count){
+          this.$navigator.navigate('/detail_car', {
+              props: {
+                  car_id: this.storeData.id,
+                  store: this.storeData
+              },
+              transition: {
+                  name: 'slideTop',
+                  duration: 300,
+                  curve: 'easeIn'
+              },
+          })
+          
         }else{
           alert('No posee prendas en el carro')
         }
       },
       onLikeStore(){
-        
+        this.storeData.favorite = !this.storeData.favorite
+        // this.storeData.favorite = this.onfavorite
         this.likeStore({
           store_id : this.store.local_cd,
           company_id : this.store.company_id,
         }).then((response)=>{
-          this.onfavorite = response.data.favorite
+
+          this.storeData.favorite = response.data.favorite
+
+          this.$emit('updateLike', this.storeData.favorite)
+          this.getStoreRosa().then((response)=>{
+            cache.set('marcasSearch',JSON.stringify(response))
+          })
+
         })
         
       }

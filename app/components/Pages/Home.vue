@@ -1,158 +1,179 @@
 <template lang="html">
-  <Page background="#FDFDFD">
+  <Page background="#FDFDFD" @loaded="onload">
     <HeaderDefault :back="false" />
    
     <GridLayout  rows="*,auto">
-      <AbsoluteLayout background="#F8F8F8" padding="0" margin="0"  row="0"> 
+      
+      <!-- <AbsoluteLayout background="#F8F8F8" padding="0" margin="0"  row="0">  -->
         <RadListView 
+        row="0"
+        itemHeight="330"
           ref="arrayHome"
           :items="arrayHome"
-          scrollBarIndicatorVisible="true"
+          scrollBarIndicatorVisible=""
           pullToRefresh="true"
-          scrollPositionProperty="right"
+          scrollPositionProperty=""
           orientation="vertical"
-          loadOnDemandMode="Auto"
-          :loadOnDemandBufferSize="5"
+          loadOnDemandMode=""
+          loadOnDemandBufferSize="80"
+          :itemTemplateSelector="itemTemplateSelector"
           @pullToRefreshInitiated="onPullToRefreshInitiated"
-          @loadMoreDataRequested="onLoadCargar"
-          @scrollStarted="onScrolled"
-          @scrolled="onScroll"
-          @scrollEnded="scrollEnded"
+          @loadMoreDataRequested=""
+          @scrollStarted=""
+          @scrolled=""
+          @scrollEnded=""
           top="0"
           left="0"
         >
-          <v-template if="item.name == 'buscador'">
+          <v-template if="item.name == 'buscador'" name="buscador" > 
             <StackLayout
               padding="16 16 8 16"
             >
-              <FlexboxLayout 
+              <GridLayout 
+                columns="auto,*"
                 alignItems="center"
                 width="100%"
-                height="40"
-                class="inputForm"
-                padding="0"
-                margin="0"
+                height="50"
+                borderRadius="28"
+                borderWidth="1"
+                background="white"
+                paddingLeft="16"
+                borderColor="#F2F3F4"
                 @tap="onNavigateSearch"
               >
                 <Image 
                   verticalAlignment="center"
                   horizontalAlignment="center"
                   src="~/assets/icons/search.png" 
-                  width="20" 
-                  height="20"
-                  margin="2 6 0 8"
+                  width="25" 
+                  height="25"
+                  opacity=".5"
+                  col="0"
                 />
                 <label 
-                  
-                  text="Buscar productos" 
-                  class="" 
-                  horizontalAlignment="left"
-                  fontWeight="200"
-                  fontSize="16"
+                  col="1"
+                  text="Buscar tiendas o productos"
+                  width="100%"
                   margin="0"
-                  padding="0"
+                  fontWeight="300" 
+                  fontSize="16"                
                 />
-              </FlexboxLayout >
+              </GridLayout >
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'slider'">
+          <v-template if="item.name == 'slider'" name="slider" > 
             <SliderComponent :sliders="item.data" :categoriesBase="categoriesBase" :cargado="item.cargado" />              
           </v-template>
-          <v-template if="item.name == 'categories'">
+          <v-template if="item.name == 'categories'" name="categories" > 
             <StackLayout padding="16 0 0 0" >
               <SlideCategories :categories="item.data" />
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'promociones'">
+          <v-template if="item.name == 'promociones'" name="promociones" > 
             <PromotionsComponent :data="item.data" />
           </v-template>
-          <v-template if="item.name == 'marcas'">
+          <v-template if="item.name == 'marcas'" name="marcas" > 
             <StackLayout padding="16 0 20 0" >
               <Marcas :data="item.data" />
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'bloques'">
-            <StackLayout padding="16 0" >
-              <Bloques :data="item.data" />
-            </StackLayout>
+          <v-template if="item.name == 'gridproduct'" name="gridproduct">
+            
+
+            <GridProduct  :bloque="item.data"  />
           </v-template>
-          <v-template name="productos" if="item.name == 'productos'" >
-            <StackLayout padding="0" margin="0">
-              <StackLayout width="100%" height="24"  class="degrade"></StackLayout>
-              <GridLayout rows="auto,*, auto" background="white">
-                <GridLayout row="0" 
-                    columns="*, auto" 
-                    marginBottom="16" 
-                    marginLeft="16" 
-                    marginRight="16"
-                    background=""
-                  >
-                  <Label 
-                    :text="`Ingresos de ${nameFilter.toLowerCase()}`" 
-                    margin="0"
-                    padding="0"
-                    fontWeight="900"
-                    col="0"
-                    background=""
-                  />
-                  <Image src="res://filter_e" col="1" @tap="onViewOptionsFilter" borderWidth="0"  />
-                </GridLayout>
-
-                <WrapLayout row="1" padding="0" margin="16" v-if="!item.data.length && !item.isFin">
-                  <StackLayout 
-                    v-for="i in 4"
-                    class="label_skeleton"
-                    :key="`skeleto-marca-${i}}`" 
-                    height="340" 
-                    width="50%"
-                    stretch="aspectFill" 
-                  />
-                </WrapLayout >
-
-                <StackLayout  padding="0 16 24 16" row="1" v-if="item.isFin" >
-                  <Label textAlignment="center" fontWeight="100" fontSize="16" flexWrap text="No se encontraron registros" />
+          <v-template if="item.name == 'box_categories'" name="box_categories">
+            <StackLayout padding="16" >
+                <StackLayout class="card" padding="0">
+                    <StackLayout
+                        borderBottomWidth=".2"
+                        borderColor="#DFDFDF"
+                        :padding="item.data.config && !item.data.config.is_card ? '4 0':'4 8'"
+                        :margin="item.data.config && !item.data.config.is_card ? '0 16':''"
+                    >
+                        <Label 
+                            :text="item.data.name" 
+                            fontWeight="600"
+                            fontSize="13" />
+                    </StackLayout>
+                    <WrapLayout >
+                        <FlexboxLayout 
+                            v-for="(itemd,kedy) in item.data.categories"
+                            :key="`bloquevatehd${kedy}`"
+                            @tap="onTapCategori(itemd)"
+                            borderWidth=".1" 
+                            borderColor="#DFDFDF" 
+                            justifyContent="center" 
+                            alignItems="center" 
+                            flexDirection="column"
+                            width="50%" 
+                            height="50%" 
+                            padding="24 16"
+                            
+                        >
+                            <Image 
+                                :src="itemd.icon" 
+                                width="40" 
+                                height="40"
+                            />
+                            <Label :text="itemd.name" fontWeight="900" />
+                        </FlexboxLayout>
+                    
+                    </WrapLayout>
                 </StackLayout>
-                
-
-                <RadListView 
-                  ref="producsScroll"
-                  layout="grid"
-                  :items="item.data"
-                  row="1"
-                  v-show="item.data.length"
-                >
-                  <v-template key="product">
-                    <ProductBox
-                        :product="item"
-                    ></ProductBox>
-                  </v-template>
-                  
-                </RadListView>
-              </GridLayout>
             </StackLayout>
           </v-template>
-          <v-template name="foote" if="item.name == 'footer'" >
-            <StackLayout  padding="24" row="1" >
-              <Label v-if="item.data" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
+          <v-template if="item.name == 'card_list_redirect'" name="card_list_redirect">
+            <StackLayout padding="16" >
+                <StackLayout  class="card" padding="0">
+                    <StackLayout
+                        borderBottomWidth=".2"
+                        borderColor="#DFDFDF"
+                        :padding="item.data.config && !item.data.config.is_card ? '4 0':'4 8'"
+                        :margin="item.data.config && !item.data.config.is_card ? '0 16':''"
+                    >
+                        <Label 
+                            :text="item.data.name" 
+                            fontWeight="600"
+                            fontSize="13" />
+                    </StackLayout>
+                    <GridLayout 
+                        v-for="(itemds,kedsy) in item.data.items"
+                        :key="`bloquevatehd${kedsy}`"
+                        columns="*,auto"
+                        padding="8"
+                        borderBottomWidth=".2"
+                        borderColor="#DFDFDF"
+                        @tap="onTapPage(itemds)"
+                    >
+                        <Label col="0" :text="itemds.name" fontSize="12" fontWeight="200" />
+                        <image col="1" src="res://arrow_right" height="12" opacity=".5" stretch="aspectFit" />
+                    </GridLayout>
+                </StackLayout>
             </StackLayout>
+          </v-template>
+          <v-template name="footer"   >
+            <Label margin="32 16" background="" padding="16" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
           </v-template>
         </RadListView>
-        <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
+        <!-- <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
           <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
-        </FlexboxLayout>
-        <Loading
+        </FlexboxLayout> -->
+        <!-- <Loading
           v-if="isLoadingProducts"
           :top="h" 
           left="0"
-        />
+        /> -->
         
-      </AbsoluteLayout>
+      <!-- </AbsoluteLayout> -->
       
     </GridLayout>
   </Page> 
 </template>
 
 <script>
+  
+  import GridProduct from '~/components/Components/Bloques/GridProduct.vue' 
   import homeMixin from '~/mixins/homeMixin.js'
   import productMixin from '~/mixins/productMixin.js'
   import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
@@ -170,26 +191,31 @@
   import { screen } from "@nativescript/core/platform";
   import moment from 'moment'
   import { Dialogs } from '@nativescript/core'
+  import cache from '@/plugins/cache'
 
   export default {
     mixins:[ homeMixin, productMixin ],
     components:{
-      SliderComponent,
-      HeaderDefault,
-      SlideCategories,
-      PromotionsComponent,
-      ProductBox,
-      Marcas,
-      Bloques,
-      Loading
-    },
+    SliderComponent,
+    HeaderDefault,
+    SlideCategories,
+    PromotionsComponent,
+    ProductBox,
+    Marcas,
+    Bloques,
+    Loading,
+    GridProduct,
+    
+},
     data() {
       return {     
         page: 1,
+        pag: 0,
         ultimosProductos:  new ObservableArray([]),
         isLoadingProducts: false,
         last_page: 4,
         viewArrowTop: false,
+        arrayHomes: new ObservableArray([{name:'jdjf'},{name:'jdjddjff'}]),
         arrayHome: new ObservableArray([
           {
             name: 'buscador'
@@ -210,26 +236,41 @@
             name:'marcas',
             data: new ObservableArray([])
           },
+          // {
+          //   name: 'bloques',
+          //   data: new ObservableArray([])
+          // },
           {
-            name: 'bloques',
+            name: 'gridproduct',
             data: new ObservableArray([])
           },
-          {
-            name:'productos',
-            data: new ObservableArray([]),
-            alturaBase: 350,
-            isFin: false
-          },
-          {
-            name:'footer',
-            data: false
-          },
+          // {
+          //   name: 'box_categories',
+          //   data: new ObservableArray([])
+          // },
+          // {
+          //   name: 'card_list_redirect',
+          //   data: new ObservableArray([])
+          // },
+          // {
+          //   name:'productos',
+          //   data: new ObservableArray([]),
+          //   alturaBase: 350,
+          //   isFin: false
+          // },
+          // {
+          //   name:'footer',
+          //   data: true
+          // },
         ]),
         alturaDispositivo: 0,
         isFin: false,
         conteo: 0,
         dates: moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD'),
-        nameFilter: 'Hoy'
+        nameFilter: 'Hoy',
+        bloques: [],
+        
+        
       };
     },
     watch:{  
@@ -244,14 +285,123 @@
       },
       
     },
+    beforeMount(){
+      console.log('beforeMount')
+    },
+    beforeUpdate(){
+      console.log('beforeUpdate')
+    },
+    updated(){
+      console.log('updated')
+    },
+    beforeDestroy(){
+      console.log('beforeDestroy')
+    },
+    destroyed(){
+      console.log('destroyed')
+    },
     mounted(){
       firebase.analytics.setScreenName({
         screenName: "Home"
       });
       this.alturaDispositivo = screen.mainScreen.heightDIPs
+
       this.cargaHome()
     },
     methods:{
+      itemTemplateSelector(item,index,items) {
+        return item.name
+      },
+      alturaCollectionView(length){
+                return (length/2) * 330
+            },
+      onload(args){
+        // const page = args.object;
+        // page.bindingContext = { purbea: 'HOLA' }
+        // console.log('page',page)
+      },
+      onTapPage(item){
+          if(item.editor==undefined){
+                  return
+              }
+          this.$navigator.navigate('/cms',{
+              transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+              },
+              props:{
+                  page:{
+                      name: item.name,
+                      editor: item.editor,
+                  },
+              }
+          })
+      },
+      onTapCategori(item){
+
+          if(item.type && item.type == 'search'){
+
+              let url = '/search'
+
+              let p = {
+                          search: item.search,
+                          section: item.id,
+                          auto: true
+                      }
+
+              if(item.redirect!=undefined){
+                  url = item.redirect.route
+                  p = item.redirect.params
+              }
+
+              this.$navigator.navigate(url,{
+                  transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                  },
+                  props:{
+                      params:p,
+                  }
+              })
+              return
+          }
+
+          if(item.type && item.type == 'page'){
+              if(item.editor==undefined){
+                  return
+              }
+              this.$navigator.navigate('/cms',{
+                  transition: {
+                  name: 'slideLeft',
+                  duration: 300,
+                  curve: 'easeIn'
+                  },
+                  props:{
+                  page:{
+                      name: item.name,
+                      editor: item.editor,
+                  },
+                  }
+              })
+          return
+          }
+
+          this.$navigator.navigate('/categories',{
+          transition: {
+              name: 'slideLeft',
+              duration: 300,
+              curve: 'easeIn'
+          },
+          props:{
+              params:{
+              search: '',
+              section: item.id
+              },
+          }
+          })
+      },
      /**
       * GET SLIDERS
       * GET PROMOCIONES
@@ -270,23 +420,21 @@
       /**
        * GET STORE
        */
-      ...mapActions('stores', ['getStoreRosa']),
+       ...mapMutations('stores',['changeParamsStores']),
+        ...mapActions('stores',['getStoreRosa']),
+      // ...mapActions('stores', ['getStoreRosa']),
       
       /**
        * GET PRODUCTS HOY
        * GET SLIDERS
        * GET STORES
        */
-      cargaHome(){
-        // console.log('1')
-        // this.onGetProducts()
-        this.onGetSliders()
-        this.onGetStores()
-        this.onSearchBloques()
-        this.onGetPromociones()
-        this.onGetCategories()
-        this.defineHome()
-        this.$refs.arrayHome.refresh()
+      async cargaHome(){
+        await this.onGetSliders()
+        await this.onGetCategories()
+        await this.onGetStores()
+        await this.onGetPromociones()
+        await this.onSearchBloques()
       },
 
       /** ACCIONES */
@@ -296,37 +444,36 @@
           sections:[1,3,6,4,2],
           search:'',
           start: this.arrayHome.find((e)=> e.name =='productos').data.length,
-          length:8,
+          length: 36,
           storeData:1,
           inStock:1,
           betweenDates: this.dates,
           order:'register DESC',
           cacheTime:1200
         })
-        this.isLoadingProducts = true
+        this.isLoadingProducts = false
         this.arrayHome.find((e)=> e.name =='productos').isFin = false
-        this.isFin = false 
+        // this.arrayHome.find((e)=> e.name =='footer').data = true
+        this.arrayHome.find((e)=> e.name =='productos').isFin = false
+        this.isFin = true
 
         await this.getSearch().then((response)=>{
 
-          if(response.length == 0){
-            this.isLoadingProducts = false
-            this.isFin = true 
-            this.arrayHome.find((e)=> e.name =='footer').data = true
-            this.arrayHome.find((e)=> e.name =='productos').isFin = true
-            this.$refs.arrayHome.refresh()
-            return false
-          }
-          
-          this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)
-          // this.arrayHome.find((e)=> e.name =='productos').alturaBase = (340*2) * this.page
-          this.isLoadingProducts = false
-          this.$refs.arrayHome.refresh()
+          // console.log('response',response)
 
+          this.arrayHome.find((e)=> e.name =='productos').data = this.arrayHome.find((e)=> e.name =='productos').data.concat(response)
+          this.isLoadingProducts = false
+          // if(response.length == 0){
+            // this.isLoadingProducts = false
+            this.isFin = true 
+            // this.arrayHome.find((e)=> e.name =='footer').data = true
+            // this.arrayHome.find((e)=> e.name =='productos').isFin = true
+            this.$refs.arrayHome.refresh()
+            // return false
+          // }
+          // this.arrayHome.find((e)=> e.name =='productos').alturaBase = (340*2) * this.page
           return true
         })
-
-
       },
       async onGetSliders(){
         this.arrayHome.find((e)=> e.name =='slider').cargado = false
@@ -336,52 +483,158 @@
           // console.log('response', response, typeof response)
           this.arrayHome.find((e)=> e.name =='slider').cargado = true
           this.arrayHome.find((e)=> e.name =='slider').data = this.arrayHome.find((e)=> e.name =='slider').data.concat(response)
+          this.$refs.arrayHome.refresh()
         })
       },
       async onGetStores(){
+        this.changeParamsStores({
+                no_paginate: false 
+            })
         await this.getStoreRosa().then((response) => {
           let arr = []
-          this.arrayHome.find((e)=> e.name =='marcas').data = this.arrayHome.find((e)=> e.name =='marcas').data.concat(Object.values(response.data))
+          cache.set('marcasSearch',JSON.stringify(response))
+          this.arrayHome.find((e)=> e.name =='marcas').data = new ObservableArray(response.slice(0,16))
           this.$refs.arrayHome.refresh()
         })
       },
       async onSearchBloques(){
         await this.getBloques().then((response)=>{
-          this.arrayHome.find((e)=> e.name == 'bloques').data =  new ObservableArray(response)
+          this.bloques = response
+
+          // console.log('this.bloques',this.bloques)
+          const filteredElements = this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type));
+
+          const i = this.arrayHome.findIndex(e => e.name == 'gridproduct' )
+
+          if(i!=-1){
+            this.arrayHome.splice(i,1)
+          }
+
+          this.arrayHome.push(...filteredElements.map(element => ({ name: 'gridproduct', data: element })));
+
+          const filteredElementsbox_categories = this.bloques.filter(element => ['box_categories'].includes(element.type));
+          this.arrayHome.push(...filteredElementsbox_categories.map(element => ({ name: 'box_categories', data: element })));
+
+          const filteredElementscard_list_redirect = this.bloques.filter(element => ['card_list_redirect'].includes(element.type));
+          this.arrayHome.push(...filteredElementscard_list_redirect.map(element => ({ name: 'card_list_redirect', data: element })));
+          // console.log(' this.arrayHome.', this.arrayHome)
+          
+          
+          
+          // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
+          // this.arrayHome.find((e)=> e.name == 'gridproduct').data =  new ObservableArray(this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type)).slice(0, 2))
+          // response.forEach(element =>{
+          //   if(['categorie','filter','search'].includes(element.type)){
+          //     this.arrayHome.push({
+          //       name: 'gridproduct',
+          //       data: element
+          //     })
+          //   }
+          //   // this.arrayHome.find((e)=> e.name == 'bloques').data.push(element)
+            
+          // })
+          // this.arrayHome.push({
+          //       name: 'gridproduct',
+          //       data: this.bloques
+          //     })
+          // this.arrayHome.push({
+          //       name: 'footer',
+          //       data: true
+          //     })
+          this.$refs.arrayHome.refresh()
+        // response.filter(e=> e.name != 'Ingresos de Hoy'))
+        // this.bloqueextra = response.find(e=> e.name == 'Ingresos de Hoy')
+          
         })
       },
       async onGetPromociones(){
         await this.getPromociones().then((response)=>{
           this.arrayHome.find((e)=> e.name == 'promociones').data =  new ObservableArray(response.carousel_home)
           this.setPageCMSPromotion(response.promotion_page)
+          this.$refs.arrayHome.refresh()
         })
       },
       async onGetCategories(){
         await this.getCategories().then((response)=>{
           this.arrayHome.find((e)=> e.name == 'categories').data =  new ObservableArray(response)
+          this.$refs.arrayHome.refresh()
         })
       },
       
       /**
        * ACTIONS RADLISTVIEW
        */
+     
       async onLoadCargar(args){
-        this.conteo++
-        await this.onGetProducts()
-          if(this.isFin){
-            args.returnValue = false;
-            args.object.notifyAppendItemsOnDemandFinished(0, true);
-            return 
-          }else{
-            if( this.conteo > 1 ){
-              this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
-            }
-            args.returnValue = true;
-            args.object.notifyAppendItemsOnDemandFinished(0, false);
-          }
+        console.log('carcar on')
+
+      //   setTimeout(()=>{
+
+        
+      //   let numero = this.pag
+      
+      //   const nuevosElementos = this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type)).slice( numero, (numero + 2) );
+      //   this.arrayHome.find((e)=> e.name == 'gridproduct').data.push(...nuevosElementos);
+
+      //   this.pag = numero + 2
+      //   // this.$refs.arrayHome.refresh()
+      //   const f = this.arrayHome.find((e)=> e.name == 'gridproduct').data
+      //   console.log('sdsd', f._array.length, this.bloques.length)
+
+      //   const n = typeof f == 'object' ? f._array.length : f.length
+
+      //   console.log('ENE',n)
+
+      //   if(n == this.bloques.length){
+      //     args.returnValue = false;
+      //     args.object.notifyAppendItemsOnDemandFinished(0, true);
+      //     // this.$refs.arrayHome.refresh()
+      //     return
+      //   }else{
+      //     // if(){
+      //       this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+      //     // }
+      //     args.returnValue = true;
+      //     args.object.notifyAppendItemsOnDemandFinished(0, false);
+          
+      //     // return
+      //   }
+      // },2000)
+        // console.log(this.arrayHome.find((e)=> e.name == 'gridproduct').data.length == this.bloque.length)
+       
+        // this.$refs.arrayHome.refresh()
+
+        // if(this.arrayHome.find((e)=> e.name == 'gridproduct').data.length == this.bloque.length){
+        //     args.returnValue = false;
+        //     args.object.notifyAppendItemsOnDemandFinished(0, true);
+        //     this.$refs.arrayHome.refresh()
+        // }else{
+//           setTimeout(()  =>{
+// console.log('kke')
+//             args.returnValue = true;
+//             args.object.notifyAppendItemsOnDemandFinished(0, false);
+//             // this.$refs.arrayHome.refresh()
+//           },2000)
+        // }
+        // this.conteo++
+        // await this.onGetProducts()
+          // if(this.arrayHome.find((e)=> e.name == 'bloques').data.length){
+          //   console.log('PIDE')
+          //   // this.arrayHome.find((e)=> e.name == 'bloques').data.push(this.bloqueextra)
+            // args.returnValue = false;
+            // args.object.notifyAppendItemsOnDemandFinished(0, true);
+            // this.$refs.arrayHome.refresh()
+          //   return 
+          // }else{
+          // //   if( this.conteo > 1 ){
+          // //     this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+          // //   }
+            // args.returnValue = true;
+            // args.object.notifyAppendItemsOnDemandFinished(0, false);
+          // }
       },   
       async onPullToRefreshInitiated ({ object }) {
-        this.arrayHome.find((e)=> e.name =='productos').data = new ObservableArray([])
+        // this.arrayHome.find((e)=> e.name =='productos').data = new ObservableArray([])
         await this.$nextTick( async () => {
           await this.cargaHome()
           object.refreshing = false;
@@ -398,10 +651,10 @@
       },
       scrollEnded(args){
         if(this.$refs.arrayHome != undefined ){
-          this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
+          // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
         }
         if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.arrayHome != undefined){
-          this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+          // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
         }
       },
       onScroll({ scrollOffset }){
@@ -411,11 +664,11 @@
         //   // b: scrollv,
         //   // c: scrollOffset
         // })
-        if(this.arrayHome.find((e)=> e.name =='footer').data){
-          setTimeout(()=>{
-            this.arrayHome.find((e)=> e.name =='footer').data = false
-          },1000)
-        }
+        // if(this.arrayHome.find((e)=> e.name =='footer').data){
+        //   setTimeout(()=>{
+        //     // this.arrayHome.find((e)=> e.name =='footer').data = false
+        //   },1000)
+        // }
       
 
         if((scrollv.getActualSize().height*2) < scrollOffset ){
@@ -440,13 +693,16 @@
         // }
       },
       onNavigateSearch(){
-        this.$navigator.navigate('/search',{
-          transition: {
-            name: 'slideLeft',
-            duration: 300,
-            curve: 'easeIn'
-          },
+        this.$navigator.navigate('/modal_filter',{
+          fullscreen: true,
+          backstackVisible: false,
+          // transition: {
+          //   name: 'slideLeft',
+          //   duration: 300,
+          //   curve: 'easeIn'
+          // },
           props:{
+            isModal: false,
             params: {},
             isCategorie: false
           }

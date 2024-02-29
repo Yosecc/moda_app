@@ -1,5 +1,5 @@
 <template lang="html">
-  <GridLayout v-if="load" >
+  <GridLayout >
     <Carousel 
       ref="carouselProduct"
       height="100%" 

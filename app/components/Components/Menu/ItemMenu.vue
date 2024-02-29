@@ -105,7 +105,7 @@ export default {
   methods:{
     ...mapMutations(['changeDrawer']),
     onTapMenu(){
-      
+      // console.log('PASA', this.$navigator)
       if(this.item.childrens!=undefined){
         this.statusChildrens = !this.statusChildrens
         return
@@ -134,19 +134,25 @@ export default {
         
         if(this.item.redirect == undefined){
           this.options.props = {page: this.item}
-          // alert(JSON.stringify(this.options))
           this.$navigator.navigate('/cms',this.options)
-
           return
         }
 
         // console.log(this.item.redirect.route,this.options)
+        if(this.$navigator.path == this.item.redirect.route){
+          // console.log(this.$navigator.path ,this.item.redirect.route)
+          return
+        }
+
+        if(this.item.redirect.products){
+          this.options.props.productsparams = this.item.redirect.products
+        }
 
         this.$navigator.navigate(this.item.redirect.route,this.options)
       }
     },
     onTapMenuChildren(redirect){
-      // console.log('s',redirect)
+      console.log('s',redirect)
       this.changeDrawer('')
       this.options.props = { params: redirect.params }
       this.$navigator.navigate(redirect.route,this.options)

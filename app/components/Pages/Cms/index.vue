@@ -1,7 +1,7 @@
 <template lang="html">
     <Page actionBarHidden="true" >
       <GridLayout padding="0" rows="auto, *">
-        <HeaderNoActionBar margin="0" row="0" :back="true" :logoCenter="false">
+        <HeaderNoActionBar margin="0" row="0" padding="8 8" :back="true" :logoCenter="false">
           <Label col="1"  fontWeight="900" fontSize="16" padding="0" margin="0" textTransform="uppercase" textAlignment="left" :text="page.name" />
         </HeaderNoActionBar>
         <layoutCMS row="1" :blocks="blocks"  />

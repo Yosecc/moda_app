@@ -1,6 +1,24 @@
 <template lang="html">
-
-    <FlexboxLayout v-if="tallesComputed.length" height="20" backgroundColor="">
+    <RadListView 
+        :ref="`tallesList${product_id}`"
+        :id="`tallesList${product_id}`"
+        v-if="tallesComputed.length" 
+        :items="tallesComputed"
+        height="20"
+        orientation="horizontal"
+        horizontalAlignment="right"
+        background=""
+    >
+        <v-template>
+            <label 
+                class="circle talle"
+                :class="calculoClases($index, item)"
+                :text="item"
+                
+            />
+        </v-template>
+    </RadListView>
+    <!-- <FlexboxLayout v-if="tallesComputed.length" height="20" backgroundColor="">
         <label 
             v-for="(talle, key) in tallesComputed" 
             :key="`talle-${product_id}-${key}`" 
@@ -14,7 +32,7 @@
             :text="`+${cantidadRestante}`"
             v-if="cantidadRestante>0"
         />
-    </FlexboxLayout >
+    </FlexboxLayout > -->
     
     </template>
     

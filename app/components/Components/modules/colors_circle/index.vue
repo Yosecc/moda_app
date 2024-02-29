@@ -1,6 +1,23 @@
 <template lang="html">
 
-<FlexboxLayout v-if="colorsComputed.length" height="20" backgroundColor="" >
+    <RadListView 
+        :ref="`color${product_id}`"
+        :id="`color${product_id}`"
+        v-if="colorsComputed.length" 
+        :items="colorsComputed"
+        height="20"
+        orientation="horizontal"
+    >
+        <v-template>
+            <label 
+                :backgroundColor="item.code"
+                class="circle"
+                :class="calculoClases($index, item.code)" 
+                :text="cantidadRestante > 0 && ($index+1) == colorsComputed.length ? `+${cantidadRestante}`:''"
+            />
+        </v-template>
+    </RadListView>
+<!-- <FlexboxLayout v-if="colorsComputed.length" height="20" backgroundColor="" >
     <label 
         v-for="(color, key) in colorsComputed" 
         :key="`color-${product_id}-${key}`" 
@@ -9,7 +26,7 @@
         :class="calculoClases(key, color.code)" 
         :text="cantidadRestante > 0 && (key+1) == colorsComputed.length ? `+${cantidadRestante}`:''"
     />
-</FlexboxLayout >
+</FlexboxLayout > -->
 
 </template>
 

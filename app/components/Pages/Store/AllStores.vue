@@ -258,6 +258,7 @@
       filterName(to){
         if(to == ''){
           this.buscador = false
+          
           this.changeParamsStores({ search: '', page: 1 })
           
           this.getStoreRosa().then((response)=>{
@@ -325,6 +326,8 @@
       this.loading = true
       this.buscador = false
       this.numero = 1
+      this.deleteParamsStore('no_paginate')
+
       this.changeParamsStores({ search: '', page: 1, categorie: 'all' })
       // this.getStoreRosa().then((response)=>{
       //   this.storess = new ObservableArray(response.data)
@@ -335,7 +338,7 @@
     },
     methods:{
       ...mapActions('stores',['getStoreRosa']),
-      ...mapMutations('stores',['changeParamsStores']),
+      ...mapMutations('stores',['changeParamsStores','deleteParamsStore']),
       ...mapMutations('categories',['setCategorieActive']),
 
       async onLoadDada(args){

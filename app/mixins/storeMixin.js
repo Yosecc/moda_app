@@ -103,7 +103,7 @@ export default {
             return '$' + x1 + x2;
         },
         onViewStore(store) {
-            // console.log('objeto esperado', store)
+            console.log('objeto esperado', store)
             this.options.props = {
                 store: store,
             }

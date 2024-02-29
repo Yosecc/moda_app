@@ -12,6 +12,7 @@
 				
         <AbsoluteLayout padding="0" margin="0" row="1">
           <RadListView 
+            v-show="productsCategorie.length"
             ref="categoriScroll"
             row="1"
             layout="grid"
@@ -29,19 +30,53 @@
             left="0"
           >
             <v-template name="header">
-              <StackLayout marginTop="16" padding="0" marginLeft="16" marginRight="16">
-              <label 
-                @tap="onNavigateSearch"
-                text="Buscar productos" 
-                class="inputForm false" 
-                horizontalAlignment="left"
-                width="100%"
-                height="40"
-                paddingTop="8"
-                fontWeight="200"
-                borderRadius="0" 
-              />
-            </StackLayout>
+              <!-- <StackLayout marginTop="16" padding="0" marginLeft="16" marginRight="16">
+                <label 
+                  @tap="onNavigateSearch"
+                  text="Buscar productos" 
+                  class="inputForm false" 
+                  horizontalAlignment="left"
+                  width="100%"
+                  height="40"
+                  paddingTop="8"
+                  fontWeight="200"
+                  borderRadius="0" 
+                />
+              </StackLayout> -->
+              <StackLayout
+                padding="16 16 8 16"
+              >
+                <GridLayout 
+                  columns="auto,*"
+                  alignItems="center"
+                  width="100%"
+                  height="50"
+                  borderRadius="28"
+                  borderWidth="1"
+                  background="white"
+                  paddingLeft="16"
+                  borderColor="#F2F3F4"
+                  @tap="onNavigateSearch"
+                >
+                  <Image 
+                    verticalAlignment="center"
+                    horizontalAlignment="center"
+                    src="~/assets/icons/search.png" 
+                    width="25" 
+                    height="25"
+                    opacity=".5"
+                    col="0"
+                  />
+                  <label 
+                    col="1"
+                    text="Buscar productos"
+                    width="100%"
+                    margin="0"
+                    fontWeight="300" 
+                    fontSize="16"                
+                  />
+                </GridLayout >
+              </StackLayout>
             </v-template>
             <v-template key="product" >
               <ProductBox
@@ -49,6 +84,20 @@
               ></ProductBox>
             </v-template>
           </RadListView>
+
+          <RadListView top="0" left="0" row="0" layout="grid" v-if="!productsCategorie.length" :items="[{},{},{},{},{},{}]">
+            <v-template>
+              <StackLayout padding="8">
+                <StackLayout 
+                  class="label_skeleton"
+                  height="300" 
+                  width="100%"
+                  stretch="aspectFill" 
+                />
+              </StackLayout>
+            </v-template>
+          </RadListView>  
+
           <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
             <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
           </FlexboxLayout>
@@ -122,19 +171,34 @@
       ...mapActions('products',['getCategorieSearch']),
       ...mapMutations('categories',['setCategorieActive']),
       onNavigateSearch(){
-        this.$navigator.navigate('/search',{
-          transition: {
-            name: 'slideRight',
-            duration: 300,
-            curve: 'easeIn'
-          },
+        this.$navigator.navigate('/modal_filter',{
+          fullscreen: true,
+          backstackVisible: false,
+          // transition: {
+          //   name: 'slideLeft',
+          //   duration: 300,
+          //   curve: 'easeIn'
+          // },
           props:{
-            params: {
-              categorie_default: this.params.section
-            },
+            isModal: false,
+            section: this.params.section,
+            params: {},
             isCategorie: false
-          } 
+          }
         })
+        // this.$navigator.navigate('/search',{
+        //   transition: {
+        //     name: 'slideRight',
+        //     duration: 300,
+        //     curve: 'easeIn'
+        //   },
+        //   props:{
+        //     params: {
+        //       categorie_default: this.params.section
+        //     },
+        //     isCategorie: false
+        //   } 
+        // })
       },
       onSubmit(){
         this.filterName

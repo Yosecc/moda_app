@@ -1,408 +1,474 @@
 <template lang="html">
-  <Page >
-    <HeaderStore row="0" v-if="producto.store" :store="producto.store" :back="true" :carro="carro" :isLoading="onIsLoading" />
-    <RadSideDrawer row="1" 
-      @drawerClosed="onCloseDrawer"  
-      :gesturesEnabled="false"
-      drawerContentSize="auto" 
-      borderRadius="16" 
-      :drawerLocation="currentLocation" 
-      ref="drawerProduct">
-      
-      <SwipeCombinacion
-        ~drawerContent
-        top="0"
-        left="0"
-        row="2"
-        :show="openDrop"
-        :isNew="isNew"
-        :isProduct="true"
-        :models="models"
-        :product="producto && producto.images!=undefined ? {
-          image: producto.images.length ? producto.images[0]:'',
-          code: producto.code,
-          name: producto.name,
-          category: producto.category,
-          price: producto.price,
-          prev_price: producto.prev_price,
-          is_desc: producto.is_desc,
-        }:{
-          image: '',
-          code: '',
-          name: '',
-          category: '',
-          price: '',
-          prev_price: '',
-          is_desc: '',
+  <Page  actionBarHidden="true" >
 
-        }"
-        v-if="change"
-        @close="onshowDrop"
-        @addCombinacion="addCombinacion"
-        @editCombinacion="onEditCombinacion"
-        @deleteCombinacion="deleteCombinacion"
-        borderRadius="16 16 0 0"
-      />
+    <GridLayout rows="auto,*">
+  
+      <HeaderStore row="0" :store="producto.store" :carro_count="calculoPrendasProductMixin" :back="true" class="shadow" @updateLike="updateLike" />
+  
+      <GridLayout row="1">
+        <RadSideDrawer  
+          :gesturesEnabled="false"
+          drawerContentSize="auto" 
+          borderRadius="16" 
+          :drawerLocation="currentLocation" 
+          ref="drawerProduct">
 
-      <GridLayout 
-        columns="*" 
-        rows="*,auto" 
-        ~mainContent
-      >
-        <ScrollView v-if="changed" row="0" >
-          <StackLayout>
-            <AbsoluteLayout  row="0" height="380">
-              <CarouselProduct top="0" left="0" width="100%" height="100%" v-if="producto.images" :images="producto.images" />
-            </AbsoluteLayout >
-        
-            <StackLayout 
-              row="1" 
-              class="shadow-n1 card" 
-              borderTopLeftRadius="16"
-              borderTopRightRadius="16"
-              marginTop="8"
-              padding="0"
-            >
+          <StackLayout borderRadius="16 16 0 0" ~drawerContent>
+            <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="40"  >
+              <StackLayout
+                width="100"
+                height="6"
+                borderRadius="10"
+                background="#7B7B7B"
+                row="0"
+              />
+            </FlexboxLayout>
+            <ScrollView>
+              <GridLayout padding="16"  rows="*, auto">
 
-              <GridLayout 
-                columns="*,auto"
-              >
-                <StackLayout col="0" padding="16" >
+                <StackLayout  row="0" marginTop="8" >
+
+                  <FlexboxLayout height="100%"  flexDirection="column" justifyContent="center" alignItems="space-between">
                   
-                  <Label 
-                    v-if="producto.code && producto.code != ''"
-                    :text="producto.code"
-                    fontWeight="200"
-                    marginLeft="0"
-                    marginBottom="0"
-                    marginRight="16"
-                    fontSize="12"
-                    padding="0"
-                  />
-                  <Label 
-                    v-if="producto.category"
-                    :text="producto.category"
-                    fontWeight="200"
-                    marginLeft="0"
-                    marginBottom="0"
-                    marginRight="16"
-                    fontSize="12"
-                    padding="0"
-                  />
-
-                  <Label 
-                    ref="nameProduct"
-                    :text="producto.name"
-                    fontWeight="800"
-                    marginLeft="0"
-                    marginBottom="0"
-                    marginRight="16"
-                    fontSize="18"
-                    @tap="textWrap = !textWrap"
-                    :textWrap="textWrap"
-                    padding="0"
-                  />
-
-                  <price
-                    :price="producto.price"
-                    :prev_price="producto.prev_price"
-                    :priceOffert="producto.is_desc ? producto.is_desc:false"
-                    :isProduct="false"
-                  /> 
-                </StackLayout>
-                <StackLayout v-if="producto.isCart" col="1">
-                  <StackLayout orientation="horizontal" padding="16">
-                    <Image 
-                      top="4"
-                      left="4"
-                      verticalAlignment="center"
-                      horizontalAlignment="center"
-                      src="~/assets/icons/basket.png" 
-                      width="14" 
-                      height="14" />
-
-                    <Label 
-                      text="En el carrito" 
-                      padding="3 6 3 2" 
-                      borderRadius="3"  
-                      fontSize="11" 
-                      fontWeight="400" 
-                      color="black"  />
-                  </StackLayout>
-                </StackLayout>
-
-              </GridLayout >
-
-              <StackLayout v-if="producto.has_stock && producto.sizes" padding="0" margin="0" minHeight="140">
-                <CombinacionesProduct
-                  padding="0 16 32 12"
-                  v-if="change && changeCombinaciones"
-                  v-model="combinaciones"
-                  :product="producto"
-                  :isProduct="false"
-                  :isEnabled="loadCombinaciones"
-                  @openDropBottom="openDropBottomEvent"
-                >
-                  <StackLayout v-if="combinaciones[0].talleActive != ''" >
-                    <StackLayout padding="0" orientation="horizontal">
-                      <label
-                          fontSize="10"
-                          fontWeight="300"
-                          color="black"
-                          :text="textPrendasLabelProduct"
-                          textAlignment="right"
-                          padding="0"
-                          marginRight="4"
-                      /> 
-                      <label
-                            fontSize="10"
-                            fontWeight="100"
-                            margin="0`"
-                            padding="0"
-                            color="black"
-                            text="(Precios sin IVA)"
-                            textAlignment="right"
-                        /> 
-
+                    <StackLayout borderBottomWidth=".5" borderColor="#8e8e8e" padding="0 0 8 0" margin="0 8 16 8" width="100%" >
+                      <label text="Elegí un talle" textWrap margin="0 16 24 0"  textAlignment="left" fontSize="16" fontWeight="200" />
+                      <Talles
+                        :talles="talles"
+                        v-model="talleActive"
+                        ref="talles"
+                      />
                     </StackLayout>
 
-                    <StackLayout padding="0" >
-
-                      <label
-                          fontSize="20"
-                          fontWeight="900"
-                          color="black"
-                          margin="0"
-                          padding="0"
-                          :text="totalProduct | moneda"
-                          textAlignment="right"
-                      /> 
-                      <!-- <label
-                          fontSize="10"
-                          fontWeight="100"
-                          margin="0`"
-                          padding="0"
-                          color="black"
-                          text="(Precios sin IVA)"
-                          textAlignment="right"
-                      />  -->
+                    <StackLayout ref="contentColores"  minHeight="120" borderBottomWidth=".5" borderColor="#8e8e8e" padding="8 0 0 0" margin="0 8 16 8" width="100%"  >
+                      <label :text="`Elegí un color`" textWrap margin="8 16 24 0" textAlignment="left" fontSize="16" fontWeight="200" />
+                      <Colores
+                        row="2"
+                        :colores="colores"
+                        v-model="colorActive"
+                      />
                     </StackLayout>
-                  </StackLayout>
-                </CombinacionesProduct>
-
-                <StackLayout v-if="combinaciones[0].talleActive != ''" padding="0 16">
-
-                  <button 
-                    text="Ver carrito" 
-                    width="100%" 
-                    class="btn btn-primary btn-md outline" 
-                    textTransform="uppercase" 
-                    marginBottom="20"
-                    @tap="redirectCarro"
-                  ></button>
-
-                  <FlexboxLayout
-                    justifyContent="space-between"
-                    alignItems="center"
-                    v-if="textPrendasRestantesCar"
-                    marginBottom="8"
-                  >
-                    <label
-                      fontSize="11"
-                      fontWeight="300"
-                      color="black"
-                      :text="textPrendasRestantesCarLabel"
-                      textAlignment="center"
-                      padding="0"
-                    /> 
-
-                    <label
-                      fontSize="11"
-                      fontWeight="600"
-                      color="black"
-                      :text="`Total: ${textCarMonto}`"
-                      textAlignment="center"
-                      padding="0"
-                    /> 
+                  
+                    <StackLayout padding="0" margin="8 8 24  8" width="100%">
+                      <label text="Elegí una cantidad" textWrap margin="8 16 24 0" textAlignment="left" fontSize="16" fontWeight="200" />
+                      <Count v-model="cantidad" />
+                    </StackLayout>
                   </FlexboxLayout>
 
-                  <button 
-                    :text="buttomComprar" 
-                    @tap="onNewProcessCheckout" 
-                    width="100%" 
-                    class="btn btn-primary  btn-md" 
-                    textTransform="uppercase" 
-                    :class="!isOrderMinStatus ? 'opacitybg' : '1'"
-                    :fontSize="!isOrderMinStatus ? '12':''"
-                    :fontWeight="!isOrderMinStatus ? '200':'600'"
-                    marginBottom="8"
-                    textWrap="true"
-                  ></button>
 
-                  <StackLayout orientation="horizontal" marginBottom="8">
-                    <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="10" margin="0 8 0 0" />
-                    
-                    <label textWrap="true" @tap="onMetodoPagos">
-                      <FormattedString>
-                        <span text="Pagá con Modapago" fontSize="11" marginRight="16" fontWeight="600" />
-                        <span text=" Ver métodos de pago" class="label_enlace" fontSize="11" marginLeft="16"  />
-                      </FormattedString>
-                    </label>
+                </StackLayout>
+
+                <GridLayout columns="auto, *, auto" paddingLeft="8" row="1">
+
+                  <price
+                    col="0"
+                    :price="producto.price"
+                    :prev_price="producto.prev_price"
+                    :priceOffert="ispriceOffert"
+                    :isProduct="false"
+                    :priceForce="priceForce"
+                  /> 
+                  
+                  <StackLayout padding="0" margin="0" col="1">
+                    <button v-if="!edit" @tap="onAddCombinacion" text="Agregar" class="btn btn-primary btn-sm outline" />
+                    <button v-else @tap="onEditCombinacion" text="Editar" class="btn btn-primary btn-sm outline" />
                   </StackLayout>
 
-                </StackLayout>
-              </StackLayout>
-
-              <StackLayout v-if="!producto.has_stock || !producto.sizes" padding="0" margin="0" minHeight="140" >
-                <Label textAlignment="center" fontWeight="100" fontSize="24" flexWrap  text="Sin Stock" />
-              </StackLayout>
-
-            </StackLayout>
-
-            <StackLayout width="100%" height="24" background="" class="degrade"/>
-
-            <StackLayout  
-              class="" 
-              borderRadius="0" 
-              marginTop="0" 
-              paddingTop="16" 
-              row="2" 
-              borderWidth="0"
-              background="white"
-              :class="!productRelacionados.length ? '':'shadw-n1'"
-              :minHeight="!productRelacionados.length ? 500:''"
-              v-if="change"
-            >
-              <StackLayout v-show="productRelacionados.length">
-                
-
-                <FlexboxLayout @tap="onViewStore(product.store)" marginBottom="16" width="100%" justifyContent="space-between" alignItems="center">
-
-                  <label 
-                      text="Más productos de esta tienda"  
-                      margin="0 10" 
-                      fontSize="14" 
-                      fontWeight="900" />
-
-                  <label 
-                      text="Ver todos"  
-                      margin="0 10"
-                      fontSize="14"
-                      class="label_enlace"
-                      fontWeight="600" />
-
-                </FlexboxLayout>
-
-                <RadListView 
-                  ref="listView"
-                  for="item in productRelacionados"
-                  layout="grid"
-                  itemWidth="50%"
-                >
-                  <v-template >
-                    <ProductBox
-                      :product="item"
-                      :isStore="true"
-                    ></ProductBox>
-                  </v-template>
-                </RadListView>
-
-                  <label 
-                      text="Ver más"  
-                      margin="16 0"
-                      fontSize="14"
-                      class="label_enlace"
-                      fontWeight="600"
-                      textAlignment="center"
-                      @tap="onViewStore(product.store)"
-                  />
-
-              </StackLayout>
-            </StackLayout> 
-
-            <StackLayout 
-              class="card " 
-              borderRadius="0" 
-              marginTop="0" 
-              padding="24" 
-            >
-              <GridLayout
-                columns="auto, *"
-                alignItems="center"
-                justifyContent="flex-start"
-                v-if="producto.store"
-                @tap="onViewStore(producto.store)"
-              >
-
-                <ImageCache 
-                  placeholderStretch="aspectFill"
-                  placeholder="res://eskeleton"
-                  :src="producto.store.logo"
-                  width="120"
-                  height="120"
-                  stretch="aspectFill"
-                  marginRight="8"
-                  class="storeBox"
-                  col="0"
-                /> 
-
-                <StackLayout col="1" >
-                  <Label  horizontalAlignment="left" margin="0" padding="0" :text="product.store.name" textTransform="capitalize" fontWeight="900" fontSize="32" />
-                  <label
-                    margin="0" 
-                    padding="0" 
-                    horizontalAlignment="left" 
-                    fontWeight="300"
-                    fontSize="16"
-                    textWrap
+                  <FlexboxLayout
+                    justifyContent="center"
+                    alignItems="center"
+                    width="40"
+                    height="40"
+                    col="2"
+                    v-if="edit"
+                    @tap="deleteCombinacion"
                   >
-                      <FormattedString>
-                        <span  text="Compra mínima: "></span>
-                        <span :text="producto.store.min | moneda " style="color: #E9418A"></span>
-                      </FormattedString>
-                  </label>
-                  <label 
-                      text="Ver la tienda"  
-                      margin="16 0"
-                      fontSize="14"
-                      class="label_enlace"
-                      fontWeight="400" 
-                  />
+                    <image src="~/assets/icons/trash.png" stretch="aspectFit" width="30" margin="0" />
+                  </FlexboxLayout>
+
+                </GridLayout>
+
+
+                </GridLayout>
+            </ScrollView>
+          </StackLayout> 
+          
+
+          <GridLayout 
+            columns="*" 
+            rows="*,auto"
+            ~mainContent
+          >
+            <ScrollView row="0" >
+              <StackLayout>
+                <CarouselProduct 
+                  height="380" 
+                  width="100%" 
+                  :images="producto.images" 
+                />
+
+                <StackLayout 
+                  row="1" 
+                  class="shadow-n1 card" 
+                  borderTopLeftRadius="16"
+                  borderTopRightRadius="16"
+                  marginTop="8"
+                  padding="0"
+                >
+                  <GridLayout 
+                    columns="*,auto"
+                  >
+                    <StackLayout col="0" padding="16" >
+                      
+                      <Label 
+                        v-if="producto.code && producto.code != ''"
+                        :text="producto.code"
+                        fontWeight="200"
+                        marginLeft="0"
+                        marginBottom="0"
+                        marginRight="16"
+                        fontSize="12"
+                        padding="0"
+                      />
+                      <Label 
+                        v-if="producto.category"
+                        :text="producto.category"
+                        fontWeight="200"
+                        marginLeft="0"
+                        marginBottom="0"
+                        marginRight="16"
+                        fontSize="12"
+                        padding="0"
+                      />
+
+                      <Label 
+                        ref="nameProduct"
+                        :text="producto.name"
+                        fontWeight="800"
+                        marginLeft="0"
+                        marginBottom="0"
+                        marginRight="16"
+                        fontSize="18"
+                        @tap="textWrap = !textWrap"
+                        :textWrap="textWrap"
+                        padding="0"
+                      />
+
+                      <price
+                        :price="producto.price"
+                        :prev_price="producto.prev_price"
+                        :priceOffert="ispriceOffert"
+                        :isProduct="false"
+                      /> 
+                    </StackLayout>
+                    <StackLayout v-if="producto.isCart" col="1">
+                      <StackLayout orientation="horizontal" padding="16">
+                        <Image 
+                          top="4"
+                          left="4"
+                          verticalAlignment="center"
+                          horizontalAlignment="center"
+                          src="~/assets/icons/basket.png" 
+                          width="14" 
+                          height="14" />
+
+                        <Label 
+                          text="En el carrito" 
+                          padding="3 6 3 2" 
+                          borderRadius="3"  
+                          fontSize="11" 
+                          fontWeight="400" 
+                          color="black"  />
+                      </StackLayout>
+                    </StackLayout>
+                  </GridLayout >
+                  <StackLayout v-if="producto.has_stock && producto.sizes" padding="0" margin="0" minHeight="140">
+                
+                    <WrapLayout width="100%" v-if="!producto.models.length" >
+                      <StackLayout width="37.5%" padding="4">
+                        <label 
+                          text="Talle"  
+                          margin="0"
+                          padding="0" 
+                          fontSize="12" 
+                          fontWeight="900"
+                          col="0"
+                          rowSpan="2"
+                        />
+                        <GridLayout 
+                          padding="8"
+                          borderRadius="8" 
+                          height="55"
+                          class="card secondary"
+                          columns="*,auto"
+                        >
+                            <label 
+                              :text="'Elegí una opción'"  
+                              marginLeft="8" 
+                              fontSize="12" 
+                              fontWeight="300"
+                              col="0"
+                              
+                            />
+                        </GridLayout>
+                      </StackLayout>
+                      <StackLayout width="37.5%" padding="4">
+                        <label 
+                          text="Color"  
+                          margin="0"
+                          padding="0" 
+                          fontSize="12" 
+                          fontWeight="900"
+                          col="0"
+                          rowSpan="2"
+                        />
+                        <GridLayout 
+                          padding="8"
+                          borderRadius="8" 
+                          height="55"
+                          class="card secondary"
+                          columns="*,auto"
+
+                        >
+                            <label 
+                              :text="'Elegí una opción'"  
+                              marginLeft="8" 
+                              fontSize="12" 
+                              fontWeight="300"
+                              col="0"
+                              
+                            />
+                        </GridLayout>
+                      </StackLayout>
+                      <StackLayout width="25%" padding="4">
+                        <label 
+                          text="Cant." 
+                          margin="0"
+                          padding="0" 
+                          fontSize="12" 
+                          fontWeight="900"
+                          col="0"
+                          rowSpan="2"
+                        />
+                        <GridLayout 
+                          padding="8"
+                          borderRadius="8" 
+                          height="55"
+                          class="card secondary"
+                          columns="*,auto"
+
+                        >
+                            <label 
+                              :text="'Elegí una opción'"  
+                              marginLeft="8" 
+                              fontSize="12" 
+                              fontWeight="300"
+                              col="0"
+                              
+                            />
+                        </GridLayout>
+                      </StackLayout>
+                    </WrapLayout>
+                    <!-- <Label :text="JSON.stringify(agregadosMixin)" /> -->
+                    <CombinacionesProduct
+                      padding="0 16 32 12"
+                      :isButtom="true"
+                      v-model="producto.models"
+                      v-if="producto.models.length"
+                      @openDropBottom="openDropBottomEvent"
+                    >
+                      <StackLayout  >
+                        <StackLayout padding="0" orientation="horizontal">
+                          <label
+                              fontSize="10"
+                              fontWeight="300"
+                              color="black"
+                              :text="textPrendasLabelProductMixin"
+                              textAlignment="right"
+                              padding="0"
+                              marginRight="4"
+                          /> 
+                          <label
+                                fontSize="10"
+                                fontWeight="100"
+                                margin="0`"
+                                padding="0"
+                                color="black"
+                                text="(Precios sin IVA)"
+                                textAlignment="right"
+                            /> 
+
+                        </StackLayout>
+
+                        <StackLayout padding="0" >
+
+                          <label
+                              fontSize="20"
+                              fontWeight="900"
+                              color="black"
+                              margin="0"
+                              padding="0"
+                              :text="precioMixin | moneda"
+                              textAlignment="right"
+                          /> 
+                        </StackLayout>
+                      </StackLayout>
+                    </CombinacionesProduct>
+                    <StackLayout padding="16">
+
+                      <button 
+                        text="Ver carrito" 
+                        width="100%" 
+                        class="btn btn-primary btn-md outline" 
+                        textTransform="uppercase" 
+                        marginBottom="20"
+                        @tap="redirectCarro"
+                      ></button>
+
+                      <FlexboxLayout
+                        justifyContent="space-between"
+                        alignItems="center"
+                        v-if="carroMixin && textPrendasRestantesCarMixin > 0"
+                        marginBottom="8"
+                      >
+                        <label
+                          fontSize="11"
+                          fontWeight="300"
+                          color="black"
+                          :text="textPrendasRestantesCarLabelMixin"
+                          textAlignment="center"
+                          padding="0"
+                        /> 
+
+                        <label
+                          fontSize="11"
+                          fontWeight="600"
+                          color="black"
+                          :text="`Total: ${monedaMethod(carroMixin.total)}`"
+                          textAlignment="center"
+                          padding="0"
+                        /> 
+                      </FlexboxLayout>
+
+                      <button 
+                        :text="buttomComprar" 
+                        @tap="onNewProcessCheckout" 
+                        width="100%" 
+                        class="btn btn-primary  btn-md" 
+                        textTransform="uppercase" 
+                        :class="!isOrdenMinMixin ? 'opacitybg' : '1'"
+                        :fontSize="!isOrdenMinMixin ? '12':''"
+                        :fontWeight="!isOrdenMinMixin ? '200':'600'"
+                        marginBottom="8"
+                        textWrap="true"
+                        v-if="!buttomLoading"
+                      ></button>
+
+                      <ActivityIndicator v-else busy="true" color="#E9418A"  marginBottom="8" />
+
+                      <StackLayout orientation="horizontal" marginBottom="8">
+                        <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="10" margin="0 8 0 0" />
+                        
+                        <label textWrap="true" @tap="onMetodoPagos">
+                          <FormattedString>
+                            <span text="Pagá con Modapago" fontSize="11" marginRight="16" fontWeight="600" />
+                            <span text=" Ver métodos de pago" class="label_enlace" fontSize="11" marginLeft="16"  />
+                          </FormattedString>
+                        </label>
+                      </StackLayout>
+
+                      
+
+                    </StackLayout>
+                      
+                  </StackLayout>
+                  <StackLayout v-if="!producto.has_stock" padding="0" margin="0" minHeight="140" >
+                    <Label textAlignment="center" fontWeight="100" fontSize="24" flexWrap  text="Sin Stock" />
+                  </StackLayout>
+
+                  <FlexboxLayout v-show="productosRelacionados.length" @tap="onViewStore(product0.store)" padding="24 8 16 8" width="100%" justifyContent="space-between" alignItems="center">
+
+                    <label 
+                        text="Más productos de esta tienda"  
+                        margin="0 10" 
+                        fontSize="14" 
+                        fontWeight="900" />
+
+                    <label 
+                        text="Ver todos"  
+                        margin="0 10"
+                        fontSize="14"
+                        class="label_enlace"
+                        fontWeight="600" />
+
+                    </FlexboxLayout>
+
+                  <CollectionView
+                      v-show="productosRelacionados.length"
+                      :items="productosRelacionados"
+                      colWidth="50%"
+                      rowHeight=""
+                      :height="(productosRelacionados.length/2)*330"
+                      padding="16"
+                  >
+                      <v-template  >
+                          <ProductBox
+                              :product="item"
+                              :isBorders="true"
+                          ></ProductBox>
+                      </v-template>
+                  </CollectionView>
+                  
+
+                
+              <Label 
+                margin="24" 
+                textAlignment="center" 
+                fontWeight="100" 
+                fontSize="24" 
+                flexWrap text="No te cuesta estar a la moda" />
+            
+
                 </StackLayout>
-              </GridLayout  >
-            </StackLayout>
 
-          </StackLayout>
-        </ScrollView> 
+              </StackLayout>
+            </ScrollView>
+          </GridLayout>
 
+        </RadSideDrawer>
       </GridLayout>
-    </RadSideDrawer>
+    </GridLayout>
   </Page>
 </template>
 
 <script>
   
-  import { mapState, mapMutations, mapActions } from 'vuex'
-  import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
   import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
+  import { mapState, mapMutations, mapActions } from 'vuex'
+  
+  import Talles from '~/components/Pages/Product/Talles'
+  import Colores from '~/components/Pages/Product/Colores'
+  import Count from '~/components/Components/modules/count'
+  
+  import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
   import CarouselProduct from './CarouselProduct'
   import price from '~/components/Components/modules/price'
   import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
   import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import SwipeCombinacion from '~/components/Components/SwipeCombinacion'
-  import BtnAddCar from './BtnAddCar'
+  // import BtnAddCar from './BtnAddCar'
   import storeMixin from '~/mixins/storeMixin.js'
-  import carMixin from '~/mixins/carMixin.js'
+  import modelosMixin from '~/mixins/modelosMixin.js'
 
-  import BtnActionBarCar from '~/components/Components/ActionBar/BtnActionBarCar.vue'
+  // import BtnActionBarCar from '~/components/Components/ActionBar/BtnActionBarCar.vue'
   import { firebase } from '@nativescript/firebase';
-  import { SwipeGestureEventData } from '@nativescript/core'
-
-
+  // import { SwipeGestureEventData } from '@nativescript/core'
 
   export default {
-    mixins: [storeMixin,carMixin],
+    mixins: [
+      storeMixin,
+      modelosMixin
+    ],
     props: {
       product:{
         type: Object
@@ -413,410 +479,348 @@
       CarouselProduct,
       price,
       CombinacionesProduct,
+      Talles,
+      Colores,
+      Count,
       ProductBox,
       SwipeCombinacion,
-      BtnAddCar,
-      BtnActionBarCar
+      // BtnAddCar,
+      // BtnActionBarCar
     },
     data() {
       return {
-        productEsq: new ObservableArray([
-          {
-            name: 'images',
-            data: new ObservableArray([])
-          },
-          {
-            name: 'body',
-            producto: {}
-          },
-          {
-            name: 'combinaciones',
-            producto: {}
-          },
-        ]),
-        currentLocation: SideDrawerLocation.Bottom,
         producto: this.product,
-        productsCarrito: null,
-        textWrap: true,
-        combinaciones: [
-          { 
-            product_id: this.product.id,
-            talleActive: '',
-            colorActive: '',
-            cantidad: 0,
-            combinacion_key: -1,
-            
-          }
-        ],
-        models: null,
-        productRelacionados: [],
-        openDrop: false,
-        change: true,
-        showDrop: false,
-        loadCombinaciones: true,
-        isNew: null,
-        // carro: null,
-        changeCombinaciones: true,
-        products: [],
-        changed: true,
         onIsLoading: false,
+        currentLocation: SideDrawerLocation.Bottom,
+        textWrap: true,
+        talleActive: '',
+        colorActive: '',
+        cantidad: 1,
+        detail_id: '',
+        edit: null,
+        productosRelacionados: [],
+        buttomLoading: false
       }; 
     },
     watch:{
-      product(){
-        // alert('su')
-      },
-      producto(){
-        // alert('cambio producto')
-      },
-      product_id(){
-        // alert('cambio producto i')
-
-      },
-      ruta(to){
-        // console.log('cambio ruta', to)
-       
-        this.onLoadProduct()
-        this.onLoadCarro()
+      ruta(newQuestion, oldQuestion){
+        if(oldQuestion == '/detail_car'){
+          this.onLoadProduct()
+        }
       }
     },
     computed:{
-      ...mapState('car',['carro']),
-      product_id(){
-        return this.product.id
+      talles(){
+        return this.producto?.sizes
+      },
+      colores(){
+        return this.producto?.colors.map(element =>{
+          element.disabled = false
+          const modelo = this.producto.models.find(e => e.size == this.talleActive)
+          if(modelo){
+            const color = modelo.properties.find(e => e.color_id == element.id )
+            if((color && color.stock == 0) || color == undefined){
+              element.disabled = true
+            }
+          }
+          return element
+        })
+      },
+      ispriceOffert(){
+        return this.producto.is_desc ? this.producto.is_desc:false
+      },
+      
+      buttomComprar(){
+        if(this.isOrdenMinMixin){
+          return 'Comprar ahora'
+        }else{
+          return  this.textMinOrdenMixin
+        }
       },
       ruta(){
         return this.$navigator.path
       },
-      textCarMontoProduct() {
-        return '$' + this.totalProduct.toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&.');
-      },
-      totalProduct(){
-        let total = 0
-        // console.log('computed',this.combinaciones,this.product)
-        this.combinaciones.forEach((e)=>{
-          console.log('uyu', e.talleActive, e.colorActive)
-          let p = e.price ? e.price : this.product.price
-
-          const model = this.product.models.find((i)=> i.size == e.talleActive)
-          // console.log('momdel compute', model)
-          if(model!=undefined){
-            let pr = parseInt(model.price)
-            p = pr != 0 ? pr : p
-          }
-          total += p * e.cantidad
-        })
-        return total
-      },
-      calculoPrendasProduct(){
-        let numero = 0
-        this.combinaciones.forEach((e)=>{
-          numero += e.cantidad
-        })
-        return numero
-      },
-      textPrendasLabelProduct() {
-        let numero = this.calculoPrendasProduct
-        var txt = numero + ' prenda'
-        if (numero > 1) {
-            txt += 's'
+    },
+    filters: {
+      moneda: function (value) {
+        value += '';
+        var x = value.split('.');
+        var x1 = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + '.' + '$2');
         }
-        txt += ''
-        return txt
-      },
-      textPrendasRestantesCar() {
-        return this.cantidadPrendasCarro - this.calculoPrendasProduct
-      },
-      textPrendasRestantesCarLabel() {
-        let text = 'prenda'
-
-        if(this.textPrendasRestantesCar > 1){
-          text = 'prendas'
-        }
-        return `Tenés ${this.textPrendasRestantesCar} ${text} más en el carrito`
-      },
-      buttomComprar(){
-        if(this.isOrderMinStatus){
-          return 'Comprar ahora'
-        }else{
-          return  this.textMinOrden
-        }
+        return '$'+ x1 + x2;
       }
     },
+    created(){
+      this.onLoadProduct()
+    },
+    destroyed(){
+      this.producto = null
+      this.talleActive = ''
+      this.colorActive = ''
+      this.cantidad = 1
+    },
     mounted(){
+      this.talleActive = ''
+      this.colorActive = ''
+      this.cantidad = 1
       firebase.analytics.setScreenName({
         screenName: `Product: ${this.producto.id}`
       });
-      
-      // console.log('llega')
-      this.onLoadProduct()
-      this.onLoadCarro()
-      this.onLoadProductosRelacionados()
-      this.$forceUpdate()
     },
     methods:{
-      ...mapMutations('products',['changeParamsProducts']),
-      ...mapActions('products',['getProductsStoreRosa','getProduct']),
-      ...mapMutations('car',['setCombinacion','setCarro']),
+      ...mapActions('products',['getProduct','getSearch']),
+      ...mapActions('car',['addCar']),
+      ...mapMutations('products',['changeParamsProductsSearch']),
+      ...mapMutations('checkout',['setcarCheckout','setGroupId','setCoupons']),
       ...mapMutations(['changeToast']),
-      ...mapActions('car',['getCart','getProductsCart','updatedCar','deleteModelo']),
-      onMetodoPagos(){
-        this.$navigator.modal('/methods_payments', { fullscreen: true, id: 'methodsPaymentsModal' })
+      ...mapActions('car',['getCart','processCart']),
+      async onAddCombinacion(){
+
+        if(this.talleActive==''){
+          this.changeToast({
+                    title: 'Selecciona un talle para continuar',
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+                return
+        }
+        const index = this.producto.models.findIndex( e => e.size == this.talleActive)
+        
+        const color = this.producto?.colors.find( e => e.code ==  this.colorActive)
+        
+        const addedIndex = this.producto.models[index].added.findIndex(e=>e.color_id==color.id)
+
+        if(addedIndex != -1){
+          const numero = this.producto.models[index].added[addedIndex].amount
+          this.producto.models[index].added[addedIndex].amount = parseInt(numero) + this.cantidad
+          this.$refs.drawerProduct.closeDrawer();
+          const carrito = this.objetoCarrito()
+          const carro =  await this.addCar(carrito)
+          const responseCarro = await this.getCart(this.producto.store.id)
+          this.setCarroMixin(responseCarro)
+          return
+        }
+
+        if(this.modeloColorActive==undefined){
+          this.colorActive = ''
+          this.changeToast({
+                    title: 'Selecciona un color disponible para continuar',
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+                return
+        }
+        const modelo = {
+            amount: this.cantidad,
+            color_id: this.modeloColorActive.color_id,
+            detail_id: this.modeloColorActive.detail_id
+        }
+
+        this.producto.models[index].added.push(modelo)
+        this.$refs.drawerProduct.closeDrawer();
+        const carrito = this.objetoCarrito()
+        const carro =  await this.addCar(carrito)
+        const responseCarro = await this.getCart(this.producto.store.id)
+        this.setCarroMixin(responseCarro)
       },
-      async onLoadProductosRelacionados(){
-        let id = this.producto.store.id  ? this.producto.store.id : this.producto.local_cd
-        this.changeParamsProducts({
-          store: id, 
-          sections: '',
-          plan: '',
-          start: 0, 
-          length: 5, 
-          search: "",
-          no_product_id: this.producto.id,
-        })
-        await this.getProductsStoreRosa().then((response)=>{
-          this.productRelacionados = new ObservableArray(response) 
-        })
+      onEditCombinacion(){
+        const index = this.producto.models.findIndex( e => e.size == this.edit.size )
+        const indexAdded = this.producto.models[index].added.findIndex( e => e.detail_id == this.edit.detail_id )
+        this.producto.models[index].added.splice(indexAdded,1)
+        this.onAddCombinacion()
       },
-      async onLoadProduct(){
-        await this.getProduct(this.product.id).then((response)=>{
-          // console.log('PRODUCTO',this.product,'RESPONSE',response)
-          this.producto.models = response[0].models;
-          this.producto.isCart = response[0].isCart;
-          this.producto.store = response[0].store
-          this.producto.images = response[0].images
-          // this.changed = true
-          return true
-        })
+      deleteCombinacion(){
+        const index = this.producto.models.findIndex( e => e.size == this.edit.size )
+        const indexAdded = this.producto.models[index].added.findIndex( e => e.detail_id == this.edit.detail_id )
+        this.producto.models[index].added.splice(indexAdded,1)
+        
+        const i = this.producto.models[index].properties.findIndex( e => e.detail_id == this.edit.detail_id)
+        this.producto.models[index].properties[i].amount = 0
+
+        this.$refs.drawerProduct.closeDrawer();
+        const carrito = this.objetoCarrito()
+
+        this.addCar(carrito)
       },
-      async onLoadCarro(){
-        let id = this.producto.store.id  ? this.producto.store.id : this.producto.local_cd
-        this.onIsLoading = true
-        await this.getCart(id).then((response)=>{
-         
-          if(Object.entries(response).length === 0){
-            this.combinaciones = [
-              { 
-                product_id: this.producto.id,
-                talleActive: '',
-                colorActive: '',
-                cantidad: 1,
-                combinacion_key: -1,
-                products_count: 0
-              }
-            ]
-            this.setCarro(response)
-            this.onIsLoading = false
-            return
-          }
-          this.loadCombinaciones = false
-          this.setCarro(response)
-          this.getProductsCart(response.id).then((response)=>{
-            this.products = response.products
-            const product = response.products.find((e)=> e.id == this.producto.id)
-            if(product != undefined){
-              this.combinaciones = product.combinacion
-            }
-            if(product == undefined){
-              this.combinaciones = [
-                { 
-                  product_id: this.product.id,
-                  talleActive: '',
-                  colorActive: '',
-                  cantidad: 0,
-                  combinacion_key: -1,
-                }
-              ]
-            }
-            this.loadCombinaciones = true
-            this.onIsLoading = false
-            // this.$refs.productEsq.refresh()
-          }).catch((error)=>{
-            console.log('ssssoo',error)
-          })
-        })
-      },
-      async addCombinacion(data){
-        // console.log('rrr',data)
-        this.onIsLoading = true
-        if(data.combinacion_key != null){
-          this.combinaciones[data.combinacion_key] = data
+      openDropBottomEvent(obj){
+        if(obj == null){
+          this.talleActive = ''
+          this.colorActive = ''
+          this.cantidad = 1
+          this.detail_id = ''
+          this.edit = null
         }else{
-          let index = this.combinaciones.findIndex((e)=> e.colorActive == data.colorActive && e.talleActive == data.talleActive )
-          if(index != -1){
-            this.combinaciones[index].cantidad = this.combinaciones[index].cantidad + data.cantidad
-          }else{
-            this.combinaciones.push(data) 
-          }
+          this.edit = obj
+          this.talleActive = obj.size
+          this.colorActive = obj.color
+          this.cantidad = parseInt(obj.cantidad)
+          this.detail_id = obj.detail_id
         }
-        // console.log('sss',this.combinaciones)
-        firebase.analytics.logEvent({
-          key: "add_combinacion_product",
-          parameters: [
-            {
-              key: 'product_id',
-              value: this.product.id
-            },
-            {
-              key: 'talle',
-              value: data.talleActive
-            },
-            {
-              key: 'color',
-              value: data.colorActive
-            }
-          ]
-        })
-        await this.onProcessDataCar(this.producto, this.combinaciones)
-        await this.onLoadCarro()
-        this.changeToast({
-                  title: 'Combinación agregada',
-                  status: true,
-                  type: 'success',
-                  message: ''
-              })
-        // this.$refs.productEsq.refresh()
-        this.$refs.drawerProduct.closeDrawer();
-      },
-      async onEditCombinacion(combinacion){
-        this.onIsLoading = true
-        if(combinacion.colorActive == '' ){
-          this.changeToast({
-            title: 'Seleccione un color para continuar',
-            status: true,
-            type: 'danger',
-            message: ''
-          })
-          this.$refs.drawerProduct.closeDrawer();  
-          return
-        }
-        if(combinacion.talleActive == '' ){
-          this.changeToast({
-            title: 'Seleccione un talle para continuar',
-            status: true,
-            type: 'danger',
-            message: ''
-          })
-          this.$refs.drawerProduct.closeDrawer();  
-          return
-        }
-        
-        let product = this.producto
-        let size_id = product.models.find((e)=> e.size == combinacion.talleActive).size_id
-        let color_id = product.colors.find((e)=> e.code == combinacion.colorActive).id
-
-        let modelo   = product.models.find( (x) => x.size_id == size_id )
-                        .properties.find( (y) => y.color_id == color_id)
-        
-                       
-        if(modelo == undefined ){
-          this.changeToast({
-            title: 'Combinación no disponible',
-            status: true,
-            type: 'danger',
-            message: ''
-          })
-          this.$refs.drawerProduct.closeDrawer();  
-          return
-        }
-        let modelo_price = null
-        
-        let c = product.models.find((e)=> e.size == combinacion.talleActive).price
-        
-        c = parseInt(c)
-        // console.log('obc', c, modelo)
-
-        // if(modelo.price != null && modelo.price > 0){
-        //   modelo_price =  modelo.price
-        // }else 
-        if(c != '' || c != '0' || c > 0){
-          modelo_price = c
-        }
-        else{
-          // modelo_price = product.models.price
-        }
-        
-        let id = product.store.id  ? product.store.id : product.local_cd
-
-        let obj = {
-          group_cd    : product.store.company,
-          local_cd    : id,
-          product_id  : product.id,
-          modelo_actual:  combinacion.modelo,
-          models_id   : modelo.id,
-          size_id     : size_id,
-          color_id    : color_id,
-          price       : modelo_price,
-          cantidad    : combinacion.cantidad,
-          total_price : modelo_price*combinacion.cantidad
-        }
-
-
-
-        await this.updatedCar(obj)
-        await this.onLoadCarro()
-        this.changeToast({
-                  title: 'Combinación modificada',
-                  status: true,
-                  type: 'success',
-                  message: ''
-              })
-        this.$refs.drawerProduct.closeDrawer();    
-      },
-      async deleteCombinacion(combinacion){
-        this.onIsLoading = true
-        await this.deleteModelo({
-          product_id: this.producto.id,
-          modelo: combinacion.modelo
-        })
-        await this.onLoadCarro()
-        this.changeToast({
-                  title: 'Combinación eliminada',
-                  status: true,
-                  type: 'success',
-                  message: ''
-              })
-        this.$refs.drawerProduct.closeDrawer();
-      },
-      onCloseDrawer(){
-        this.openDrop = false
-      },
-      openDropBottomEvent({data, models, isNew}){
-        // console.log('conmibacion', data)
-
-
-
-
-        this.setCombinacion(data)
-        // console.log('isNew',isNew)
-        this.models = models
-        this.openDrop = true
-
         this.$refs.drawerProduct.showDrawer();
       },
-      onshowDrop(to){
-        this.showDrop = to
-        this.$refs.drawerProduct.closeDrawer();
-      },
-      reload(){
-        this.change = false
-        setTimeout(()=>{
-          this.change = true
-          this.$forceUpdate()
-        },1)
+      async onLoadProduct() {
+        const response = await this.getProduct(this.product.id);
+        this.producto = response
+
+        this.setModelosMixin(this.producto.models)
+        
+        const responseCarro = await this.getCart(this.producto.store.id)
+        
+        this.setCarroMixin(responseCarro)
+
+        this.onLoadProductsRelacionados( )
       },
       redirectCarro(){
         // console.log(this.carro)
-        if(this.carro && this.carro.products_count){
-          this.onRedirectCart()
+
+        if(this.cantidadPrendasCarroMixin){
+
+          this.$navigator.navigate('/detail_car', {
+            backstackVisible: false,
+              props: {
+                  car_id: this.producto.store.id,
+                  store: this.producto.store
+              },
+              transition: {
+                  name: 'slideTop',
+                  duration: 300,
+                  curve: 'easeIn'
+              },
+          })
+          
         }else{
           alert('No posee prendas en el carro')
         }
         
       },
-      onSwipe(args) {
-        // console.log("Swipe Direction: " + args.direction);
-      }
+      onMetodoPagos(){
+        this.$navigator.modal('/methods_payments', { fullscreen: true, id: 'methodsPaymentsModal' })
+      },
+      onLoadProductsRelacionados()
+      {
+        // 
+
+        this.changeParamsProductsSearch({
+          start: 0,
+          length: 6,
+          store: this.producto.store.id,
+          storeData: 1,
+          inStock: 1,
+          daysExpir: 365,
+          search: '',
+          order: 'date DEC',
+          sections: [1,2,3,4,6],
+          cacheTime: 1200,
+          betweenDates: ''
+        })
+
+        this.getSearch().then((response)=>{
+          this.productosRelacionados = new ObservableArray(response)
+        }).catch((error)=>{
+          console.log('error', error)
+        })
+
+      },
+      updateLike(like){
+        this.producto.store.favorite = like
+      },
+      onNewProcessCheckout(){
+
+        if(!this.isOrdenMinMixin){
+          this.changeToast({
+              title: this.textMinOrdenMixin,
+              status: true,
+              type: 'danger',
+              message: ''
+          })
+          return
+        }
+
+        this.buttomLoading = true
+        console.log(this.carroMixin.productos, "PRODUCTOS")
+        this.setcarCheckout({
+          logo:        this.producto.store.logo,
+          name:        this.producto.store.name,
+          min:         this.producto.store.min,
+          total:       this.carroMixin.total,
+          prendas:     this.textPrendasLabelMixin,
+          products:    this.carroMixin.productos
+        })
+
+        this.processCart(this.producto.store.id).then((response)=>{
+
+          firebase.analytics.logEvent({
+            key: "process_cart",
+            parameters: [ // optional
+              {
+                key: "store_id",
+                value: this.producto.store.id
+              },
+              {
+                key: "store_name",
+                value: this.producto.store.name
+              },
+              {
+                key: "group_id",
+                value: this.producto.store.company
+              }
+            ]
+          })
+          if(response.cart.status == 'success'){
+
+            this.setGroupId(response.cart.data.group_id)
+            if(response.is_missing_data.status == 'missing_data'){
+              this.$navigator.navigate('/datos',{
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+              })
+            }else{
+
+              if(response.cupon != null){
+                this.setCoupons(response.cupon)
+                this.$navigator.navigate('/coupons',{
+                    transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                    props:{
+                      local_cd: this.producto.store.id
+                    }
+                })
+              }else{
+                this.$navigator.navigate('/envios',{
+                  props: {
+                    store: {
+                      id: this.producto.store.id
+                    }
+                  },
+                  transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                  },
+                })
+              }
+            }
+          }else{
+            alert(response.cart.status)
+          }
+          this.buttomLoading = false
+        }).catch((error)=>{
+          this.buttomLoading = false
+        })
+        },
+    
     }
     
   };

@@ -98,15 +98,7 @@
       // setTimeout(()=>{
       //   if(this.isLogged){
 
-      //     // this.$navigator.modal('/fullModal', { 
-      //     //   fullscreen: true, 
-      //     //   props:{ 
-      //     //     // config : {
-      //     //       //     background: 'red',
-      //     //       //     color: 'white'
-      //     //       // }  
-      //     //     } 
-      //     //   })
+      
       //   }
       // },100)
     },

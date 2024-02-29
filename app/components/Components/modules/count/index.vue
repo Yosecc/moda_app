@@ -73,8 +73,10 @@
       };
     },
     watch:{
-      num(){
-        this.$forceUpdate()
+      num(to){
+        this.count = to
+        // this.$forceUpdate()
+        
       }
     },
     mounted(){

@@ -150,6 +150,12 @@
         this.setEnvios(response)
         this.arrayPage.find((e)=> e.name == 'listEnvios').data = new ObservableArray(response)
         this.$refs.listEnvios.refresh()
+        
+        const envio = response.find( e => e.active )
+        if(envio){
+          this.onItemTap({item: envio })
+        }
+
         if(this.envio_select){
           this.onItemTap({item: this.envio_select})
         }

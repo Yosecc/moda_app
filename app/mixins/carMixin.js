@@ -57,7 +57,7 @@ export default {
         },
         processDataCar(product, combinaciones) {
             this.dataCart(product, combinaciones)
-            this.$forceUpdate()
+                // this.$forceUpdate()
         },
         addCombinacionCart(product_id) {
             let product = this.carsProducts.find((e) => e.id == product_id)

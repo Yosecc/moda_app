@@ -7,7 +7,7 @@
   >
     <GridLayout borderRadius="0" rows="auto, *">
      
-      <HeaderCustom row="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
+      <HeaderNoActionBar row="0" padding="8" :logoCenter="false" :back="true" :isCar="false" :isEvent="true" @onBack="$modal.close()" :isNotification="false" :isBtnPromotions="false" :isModal="true" >
         <Label 
           col="1"
           text="Detalle de la compra"
@@ -15,9 +15,9 @@
           fontWeight="900"
           textTransform="uppercase"
           horizontalAlignment="left"
-          marginTop="6"
+          marginTop=""
         />
-      </HeaderCustom>
+      </HeaderNoActionBar>
 
       <StackLayout 
         row="1"
@@ -64,7 +64,7 @@
             <StackLayout padding="8 16" class="" >
               
               <StackLayout 
-                :backgroundColor="item.precio == null ? '#E57373':''" 
+                :backgroundColor="item.price == null ? '#E57373':''" 
                 class="card"
               >
 
@@ -83,9 +83,9 @@
                   />
                   <StackLayout width="100%" padding="0">
                     <StackLayout paddingTop="0">
-                      <Label v-if="item.precio == null" textAlignment="cnter" fontWeight="200" text="Esta prenda no se encuentra disponible" />
+                      <Label v-if="item.price == null" textAlignment="cnter" fontWeight="200" text="Esta prenda no se encuentra disponible" />
                       <Label 
-                        :text="item.descripcion" 
+                        :text="item.name" 
                         fontWeight="900"
                         fontSize="18"
                         padding="0"
@@ -93,8 +93,8 @@
                         textWrap
                       />
                       <Label 
-                        v-if="item.precio" 
-                        :text="`Precio uni. desde ${ $options.filters.moneda(item.precio)  } (${calculoPrendas(item.combinacion)})`" 
+                        v-if="item.price" 
+                        :text="`Precio uni. desde ${ $options.filters.moneda(item.price)} `" 
                         fontWeight="200"
                         fontSize="16"
                         padding="0" 
@@ -103,14 +103,15 @@
                     </StackLayout>
                   </StackLayout>
                 </StackLayout>
+                <!-- <Label :text="JSON.stringify(item.models)" /> -->
 
                 <CombinacionesProduct
-                  v-if="item.combinacion && (item.precio != null)"
-                  v-model="item.combinacion"
+                  v-if="item.models && (item.price != null)"
+                  v-model="item.models"
                   :product="item"
                   :isProduct="false"
                   :isEnabled="true"
-                  :isButtom="false"
+                  : ="false"
                   :buttonDisabled="true"
                 />
 
@@ -158,7 +159,7 @@
 
 <script>
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-  import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
+  import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
   import CombinacionesProduct from '~/components/Components/CombinacionesProduct.vue'
   import helpersMixin from '~/mixins/helpersMixin.js'
 
@@ -167,7 +168,7 @@
     props: {
     },
     components: {
-      HeaderCustom,
+      HeaderNoActionBar,
       CombinacionesProduct
     },
     filters: {
@@ -200,6 +201,7 @@
         return null
       },
       products(){
+        console.log(this.carCheckout);
         return this.carCheckout.products
       }, 
       store(){

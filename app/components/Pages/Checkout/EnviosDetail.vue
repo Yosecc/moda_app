@@ -28,13 +28,14 @@
 
         <Sucursales v-if="typeComponentDrawer == 'sucursales'" v-model="opcionSucursal.sucursal" @closeDrawer="onCloseDrawer" />
 
-        <optionsSelect 
+        <!-- <optionsSelect 
           v-if="typeComponentDrawer == 'select' && resetSelect"
           v-model="select"
           @change="selectChange"
-        />
+        /> -->
 
       </StackLayout>
+
       <StackLayout ~mainContent>
         <layoutCheckout
           title="Datos de envío"
@@ -45,51 +46,47 @@
           :loading="buttonLoading"
           @onAction="onEnvioDetail"
         >
-       
-          
-     
-            <Sucursal
-              v-if="envio == 1 && reset"
-              @openDrawer="onopenDrawer"
-              @statusData="onstatusData"
-              @changeSucursal="onchangeSucursal"
-              :sucursal="opcionSucursal.sucursal"
-              :sucursales="sucursales"
-              :servicio_envio_select="servicio_envio_select_data"
-              v-model="opcionSucursal.destinatario"
-            />
-            <Domicilio
-              v-if="(envio == 2 || envio == 3) && reset"
-              @openDrawer="onopenDrawer"
-              @statusData="onstatusData"
-              @changeName="onChangeName"
-              @changeSubTitle="onChangeSubTitle"
-              @changeTransporte="onChangeTransporte"
-              :redirect="redirectData"
-              :errores="errores"
-              :isTransportes="isTransportes"
-              :direcciones="opcionDomicilio.direcciones"
-              :select="select"
-              :delivery="opcionDomicilio.delivery"
-              :delivery_select="delivery_select_data"
-              :direccion_select="direccion_select"
-              v-model="opcionDomicilio.destinatario"
-            />
-            <IntegralPack
-              v-if="envio == 4 && reset"
-              @openDrawer="onopenDrawer"
-              @statusData="onstatusData"
-              :direcciones="integral.direcciones"
-              :select="select"
-              v-model="integral.destinatario"
-            />
-            <Tienda 
-              v-if="envio == 5 && reset"
-              v-model="deposito.destinatario"
-              @statusData="onstatusData"
-              :direcciones="deposito.direcciones"
-              :destinatario_select="destinatario"
-            /> 
+
+          <Sucursal
+            v-if="envio == 1 && reset"
+            @openDrawer="onopenDrawer"
+            @statusData="onstatusData"
+            @changeSucursal="onchangeSucursal"
+            :sucursal="opcionSucursal.sucursal"
+            :sucursales="sucursales"
+            :servicio_envio_select="servicio_envio_select_data"
+            v-model="opcionSucursal.destinatario"
+          />
+          <Domicilio
+            v-if="(envio == 2 || envio == 3) && reset"
+            @openDrawer="onopenDrawer"
+            @statusData="onstatusData"
+            @changeName="onChangeName"
+            @changeSubTitle="onChangeSubTitle"
+            @changeTransporte="onChangeTransporte"
+            :redirect="redirectData"
+            :errores="errores"
+            :isTransportes="isTransportes"
+            :direcciones="opcionDomicilio.direcciones"
+            :delivery="opcionDomicilio.delivery"
+            :delivery_select="delivery_select_data"
+            :direccion_select="direccion_select"
+            v-model="opcionDomicilio.destinatario"
+          />
+          <IntegralPack
+            v-if="envio == 4 && reset"
+            @openDrawer="onopenDrawer"
+            @statusData="onstatusData"
+            :direcciones="integral.direcciones"
+            v-model="integral.destinatario"
+          />
+          <Tienda 
+            v-if="envio == 5 && reset"
+            v-model="deposito.destinatario"
+            @statusData="onstatusData"
+            :direcciones="deposito.direcciones"
+            :destinatario_select="destinatario"
+          /> 
 
         </layoutCheckout>
       </StackLayout>
@@ -387,7 +384,7 @@
         
       },
       onEnvioDetail(){
-        // console.log('pasa','obj')
+        console.log('pasa','obj')
      
         if(this.buttonLoading){
           return
@@ -397,6 +394,9 @@
           group_id:   this.group_id,
           method:     this.tipoEnvio.method,
         }
+
+        console.log('pasa',obj,this.tipoEnvio.id)
+
 
         if(this.tipoEnvio.id == 1){
           obj.zipcode    = this.opcionSucursal.sucursal.zipcode
@@ -417,10 +417,14 @@
 
         if(this.tipoEnvio.id == 2 || this.tipoEnvio.id == 3){
 
+          console.log(';;;',this.opcionDomicilio, this.opcionDomicilio.destinatario)
+
           const data = this.opcionDomicilio.destinatario
           for(var i in data){
             obj[i] = data[i]
           }
+
+
           if(this.tipoEnvio.id == 2){
             console.log('asw', {obj: obj,delivery_select_data: this.delivery_select_data,delivery:this.opcionDomicilio.delivery})
             if(obj.id != '' && !this.opcionDomicilio.delivery.length && !obj.edit){
@@ -445,7 +449,8 @@
             }
           }
 
-          if(this.tipoEnvio.id == 3 ){
+          
+          if(this.tipoEnvio.id == 3 ){ 
             if(!this.isTransportes){
               this.isTransportes = true
               this.subTitle = 'Seleccioná el servicio de entrega que enviará tu paquete.'
@@ -458,7 +463,7 @@
             }
           }
         }
-
+        console.log('datta',this.isTransportes)
         if(this.tipoEnvio.id == 4){
           const data = this.integral.destinatario
           for(var i in data){

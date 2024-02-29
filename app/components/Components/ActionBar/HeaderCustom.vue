@@ -4,11 +4,11 @@
       
       <GridLayout
         columns="auto,*,auto" 
-        rows="*" 
+        rows="*,auto" 
         marginTop="10"
         marginBottom="5"
         paddingLeft="0"
-        height="50"
+        height="60"
       >
         <BtnMenu
           v-show="!back" 
@@ -21,6 +21,7 @@
           col="0"
           horizontalAlignment="left" 
           :isModal="isModal"
+          marginLeft="-8"
         ></BtnBack>
 
         <FlexboxLayout 

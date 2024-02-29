@@ -3,18 +3,17 @@
 
     <GridLayout
       columns="auto,*,auto" 
-      rows="*" 
-      marginTop="10"
-      marginBottom="5"
+      rows="*,auto" 
       paddingLeft="0"
-      height="65"
       class="shadow"
-      background="white"
+      background=""
+      minHeight="70"
     >
-      <FlexboxLayout 
+      <GridLayout 
         col="0"
-        alignItems="center"
-        justifyContent="center"
+        row="0"
+        background=""
+        
       >
         <BtnMenu
           v-show="!back" 
@@ -25,25 +24,31 @@
         <BtnBack
           v-show="back"
           col="0"
-          horizontalAlignment="left"
+          :margin="marginBtnBack"
+          horizontalAlignment="center"
+          verticalAlignment="bottom"
           :isEvent="isEvent"
           @onBack="onBack"
+          background=""
+          
         ></BtnBack>
 
         <Image 
+          col="0"
           src="res://logo"
           padding="0"
           width="100"
           height="32"
           v-if="logoCenter"
         />
-      </FlexboxLayout >
+      </GridLayout >
 
       <slot  />
       
       <StackLayout
         orientation="horizontal"
         col="2" 
+        row="0"
       >
 
         <BtnNotification
@@ -111,6 +116,10 @@ export default {
       type: Boolean,
       default: true
     },
+    marginBtnBack:{
+      type: String,
+      default: '0'
+    }
   },
   components:{
     BtnMenu,

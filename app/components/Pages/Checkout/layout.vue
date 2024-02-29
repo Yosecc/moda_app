@@ -32,19 +32,6 @@
           <StackLayout>
             <Label margin="0" padding="0" fontWeight="900" fontSize="18" :text="carCheckout.name" />
             <Label margin="0" padding="0" fontWeight="900" fontSize="14" :text="title" />
-            <!-- <label
-              margin="0" 
-              padding="0"
-              marginBottom="0" 
-              horizontalAlignment="left" 
-              fontWeight="300"
-              fontSize="10"
-            >
-              <FormattedString>
-                <span  text="Compra mínima en la tienda: "></span>
-                <span :text="carCheckout.min | moneda " style="color: #E9418A"></span>
-              </FormattedString>
-            </label> -->
           </StackLayout>
         </FlexboxLayout>
       </HeaderNoActionBar>
@@ -53,10 +40,7 @@
       <StackLayout
         row="1"
       >
-        <!-- <StackLayout paddingLeft="16" v-if="title" paddingRight="16"> -->
-          <!-- <Label class="title_product" :text="title" /> -->
-          <Label textWrap margin="0 16" :text="subTitle" v-if="subTitle!=''" />
-        <!-- </StackLayout> -->
+        <Label textWrap margin="0 16" :text="subTitle" v-if="subTitle!=''" />
         <StackLayout>
           <slot/>
         </StackLayout>

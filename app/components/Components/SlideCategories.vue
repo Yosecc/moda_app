@@ -203,7 +203,20 @@ import { mapMutations, mapState, mapActions, mapGetters } from 'vuex'
 
             if(item.type && item.type == 'search'){
 
-              this.$navigator.navigate('/search',{
+              let url = '/search'
+
+                    let p = {
+                                search: item.search,
+                                section: item.id,
+                                auto: true
+                            }
+
+                    if(item.redirect!=undefined){
+                        url = item.redirect.route
+                        p = item.redirect.params
+                    }
+
+                    this.$navigator.navigate(url,{
                 transition: {
                   name: 'slideLeft',
                   duration: 300,

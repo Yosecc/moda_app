@@ -1,9 +1,12 @@
 <template lang="html">
-  <Page>
-    <HeaderStore row="0" background="" :store="store" :iscarro="false" :back="true" :carro="carro" /> 
-    <GridLayout   padding="0" rows="*, auto">
+  <Page actionBarHidden="true">
+   
+    <GridLayout rows="auto,*">
+      <HeaderStore row="0" :store="store" :iscarro="false" :back="true" :isFavorite="false" /> 
+  
+    <GridLayout  row="1" padding="0" rows="*, auto">
       <RadListView 
-        v-if="products.length && !isLoading"
+        v-show="products.length && !isLoading"
         ref="productsCar"
         class="productsCar"
         for="item in products"
@@ -22,12 +25,8 @@
           />
         </v-template>
         <v-template >
-          <StackLayout orientation="horizontal" padding="8 16" class="" >
-            
-            <StackLayout 
-              :backgroundColor="item.precio == null ? '#E57373':''" 
-              class="card"
-            >
+          <StackLayout  padding="8 16" class="" >
+            <StackLayout class="card" background="" >
               <StackLayout width="100%" padding="0" orientation="horizontal" >
                 <ImageCache 
                   stretch="aspectFill" 
@@ -43,7 +42,7 @@
                 />
                 <StackLayout width="100%" padding="0">
                     <StackLayout col="0" paddingTop="0">
-                      <Label v-if="item.precio == null" textAlignment="cnter" fontWeight="200" text="Esta prenda no se encuentra disponible" />
+                      <Label v-if="item.price == null" textAlignment="cnter" fontWeight="200" text="Esta prenda no se encuentra disponible" />
                       <Label 
                         v-if="item.code && item.code != ''"
                         :text="item.code"
@@ -55,7 +54,7 @@
                         padding="0"
                       />
                       <Label 
-                        :text="item.descripcion.substr(0, 70)" 
+                        :text="item.name.substr(0, 70)" 
                         fontWeight="900"
                         fontSize="16"
                         padding="0"
@@ -63,8 +62,8 @@
                         textWrap="2"
                       />
                       <Label 
-                        v-if="item.precio" 
-                        :text="`Precio uni. desde ${$options.filters.moneda(item.precio)}`" 
+                        v-if="item.price" 
+                        :text="`Precio uni. desde ${$options.filters.moneda(item.price)}`" 
                         fontWeight="200"
                         fontSize="12"
                         padding="0" 
@@ -74,7 +73,7 @@
                 </StackLayout>
               </StackLayout>
 
-              <GridLayout columns="*, auto">
+             <GridLayout columns="*, auto">
                 <StackLayout
                   orientation="horizontal"
                   padding="0"
@@ -84,7 +83,7 @@
                   background=""
                 >
                   <label padding="0" margin="0 8 0 0" fontSize="12" 
-                    :text="textoCombinacionProducto(item.combinacion)" 
+                    :text="`Cant. ${item.cantidad_add}`" 
                     verticalAlignment="bottom"
                   />
                   <label 
@@ -92,7 +91,7 @@
                     padding="0" 
                     margin="0" 
                     fontWeight="500" 
-                    fontSize="16" :text="totalCombinacionProducto(item) | moneda" />
+                    fontSize="16" :text="item.total_add | moneda" />
                 </StackLayout>
                 <FlexboxLayout
                   alignItems="center"
@@ -112,16 +111,13 @@
                 </FlexboxLayout>
               </GridLayout>
              
-            </StackLayout>
+            </StackLayout> 
           </StackLayout>
         </v-template>
-        
       </RadListView>
     
-      <WrapLayout row="0" v-if="isLoading" marginTop="16" padding="0 16">
-
+       <WrapLayout row="0" v-if="isLoading" marginTop="16" padding="0 16">
         <StackLayout horizontalAlignment="left" width="100" height="25" borderRadius="4" class="label_skeleton" marginBottom="16" />
-
         <StackLayout 
           v-for="i in 4"
           :key="`eskeleton-${i}`"
@@ -140,8 +136,6 @@
           </StackLayout>
 
           <StackLayout horizontalAlignment="left" width="100%" height="25" borderRadius="4" class="item" marginTop="20"/>
-          <!-- <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/>
-          <StackLayout horizontalAlignment="left" width="90%" height="25" borderRadius="4" class="item" marginTop="16"/> -->
         </StackLayout>
       </WrapLayout>
 
@@ -165,11 +159,11 @@
         />
       </StackLayout>
 
-      <StackLayout v-if="products.length && !isLoading" padding="0" margin="0" row="1" class="shadow-n1 card secondary" >
+     <StackLayout v-if="products.length && !isLoading" padding="0" margin="0" row="1" class="shadow-n1 card secondary" >
 
         <label
-          v-show="!isOrderMinStatus"
-          :text="textMinOrden"
+          v-show="!isOrderMinStatusComputed"
+          :text="textMinOrdenComputed"
           fontSize="12"
           fontWeight="600"
           color="red"
@@ -178,7 +172,7 @@
         />
         <StackLayout padding="8">
           
-          <StackLayout :opacity="!isOrderMinStatus ? '1' : '1'" orientation="horizontal">
+          <StackLayout  orientation="horizontal">
             <image src="~/assets/icons/icon_menu_3.png" stretch="aspectFit" width="20" margin="0 8 0 8" />
             
             <label textWrap="true" @tap="onMetodoPagos">
@@ -191,14 +185,13 @@
           </StackLayout>
           
         </StackLayout>
-
+<!--  -->
         <FlexboxLayout 
           justifyContent="space-between" 
           alignItems="center" 
           @tap="onProcessCheckout" 
           padding="16" 
-          :backgroundColor="!isOrderMinStatus ? '#CECECE':'#E9418A'"
-          :opacity="!isOrderMinStatus ? '1' : '1'"
+          :backgroundColor="background"
           height="80"
         >
           <StackLayout>
@@ -207,7 +200,7 @@
               fontSize="14"
               fontWeight="300"
               color="white"
-              :text="textPrendasLabel"
+              :text="textPrendasLabelComputed"
             /> 
 
             <StackLayout orientation="horizontal">
@@ -218,7 +211,7 @@
               color="white"
               margin="0"
               padding="0"
-              :text="textCarMonto"
+              :text="textCarMontoComputed"
             /> 
             <label
               fontSize="12"
@@ -251,6 +244,7 @@
       
 
     </GridLayout>
+  </GridLayout>
   
   </Page>
 </template>
@@ -269,6 +263,10 @@
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { firebase } from '@nativescript/firebase';
   import { Dialogs } from '@nativescript/core'
+  import HeaderNoActionBar from '~/components/Components/ActionBar/HeaderNoActionBar.vue'
+
+
+
   export default {
     mixins: [carMixin, storeMixin, productMixin],
     props: {
@@ -282,7 +280,7 @@
       }
     },
     components: {
-      HeaderCustom, CombinacionesProduct, SwipeCombinacion, HeaderStore
+      HeaderCustom, CombinacionesProduct, SwipeCombinacion, HeaderStore, HeaderNoActionBar
     },
     filters: {
     },
@@ -299,18 +297,40 @@
         buttomLoading: false
       };
     },
-    watch:{
-   
-    },
+    watch:{},
     computed:{
-
+      textPrendasLabelComputed() {
+        let numero = this.carro.cantidadModelos
+        var txt = numero + ' prenda'
+        if (numero > 1) {
+            txt += 's'
+        }
+        txt += ' en el carrito'
+        return txt
+      },
+      textCarMontoComputed() {
+        if (!this.carro) {
+          return ''
+        }
+        return this.monedaMethod(this.carro.total)
+      },
+      isOrderMinStatusComputed(){
+        return this.carro.total >= this.store.min
+      },
+      background(){
+        return !this.isOrderMinStatusComputed  ? '#CECECE':'#E9418A'
+      },
+      calculoRestanteOrderMinComputed() {
+            return this.store.min - this.carro.total
+        },
+      textMinOrdenComputed() {
+          return `Restan ${ this.monedaMethod(this.calculoRestanteOrderMinComputed) } para completar el mínimo de compra`
+      }
     },
     mounted(){
       firebase.analytics.setScreenName({
         screenName: `Cart: ${this.store.name}`
       });
-      // console.log('this.store', this.store)
-
       this.isLoading = true
       this.loadCart()
     },
@@ -320,47 +340,11 @@
       ...mapMutations(['changeToast']),
       ...mapActions('car',['deleteProduct','processCart','getProductsCart','deleteCarts','deleteModelo','getCart','updatedCar','getCar']),
       async loadCart(config = { type: 'create' }){
-        if(this.car_id == null){
-          alert('ERROR')
-          return
-        }
         await this.getCart(this.car_id).then((response)=>{
-          if(response.length == 0){
-            this.getCar()
-            return 
-          }
-          this.carro = response
-        })
-        // console.log('pasa por aqui')
-
-        await this.getProductsCart(this.car_id).then((response)=>{
-          // console.log('response..', response)
-          if(response.products.length == 0){
-            this.getCar()
-            return 
-          }
-
-          if(config.type == 'create'){
-            this.products = new ObservableArray(response.products) 
-            this.products._array.forEach((e)=>{
-              e.isEnabledCombinaciones = true
-            })
-          }else if(config.type == 'update'){
-            response.products.map((product)=>{
-              let index = this.products.findIndex( (e) => e.id == product.id ) 
-              if(index != -1){
-                this.products._array[index].combinacion = product.combinacion
-              }else{
-                this.products._array.push(product)
-              }
-            })
-          }
-
-          // console.log('products car',this.products)
           this.isLoading = false
-          if(this.$refs.productsCar!=undefined){
-            this.$refs.productsCar.refresh()
-          }
+          this.carro = response
+          console.log('response.productos',response.productos)
+          this.products = response.productos
         })
       },
       loaded(){
@@ -370,47 +354,20 @@
           }
         },1)
       },
-      totalCombinacionProducto(product){
-        let precio = 0
-        // console.log('product', product)
-        if(product.combinacion.length){
-          product.combinacion.forEach((e)=>{
-            try {
-              let p = product.models.find((i)=> i.size == e.talleActive)
-              // .properties.find((x)=> x.color_id ==  e.colors.find((w)=> w.code == e.colorActive).id)
-              .price
-              if(p == '0' || p == 0 || p == null || p == '' || p == undefined ){
-                p = product.precio
-              }
-              p = p * e.cantidad
-              precio += parseInt(p)
-            } catch (error) {
-              // alert(error)
-            }
-          })
-        }
-        return precio
-
-      },
-      textoCombinacionProducto(combinaciones){
-        let p = ''
-        // console.log('products', this.products)
-        if(combinaciones.length){
-          let numero = 0
-          combinaciones.forEach((combinacion)=>{
-            numero+= combinacion.cantidad
-          })
-
-          if(numero > 1 || numero == 0){
-            p = 's'
-          }
-          return `Cant. ${numero}`
-        }
-      },
+     
       onTapProduct(product){
-        product.name = product.descripcion
-        product.price = product.precio
-        this.onViewProduct(product)
+            this.$navigator.navigate('/product', {
+                transition: {
+                    name: 'slideBottom',
+                    duration: 300,
+                    curve: 'easeIn'
+                },
+                props :{
+                  product: product,
+                },
+                backstackVisible: false,
+            })
+        // this.onViewProduct(product)
       },
       ondeleteProduct(product_id){
         Dialogs.confirm({
@@ -419,32 +376,30 @@
           okButtonText: 'Si',
           cancelButtonText: 'No',
           neutralButtonText: 'Cancelar',
-        }).then((result) => {
-          console.log(result)
+        }).then( async (result) => {
+          // console.log(result, product_id)
           if(result){
-            let index = this.products._array.findIndex((e)=> e.id == product_id)
+            let index = this.products.findIndex((e)=> e.id == product_id)
           
             if(index != -1){
-              this.products._array.splice(index, 1)
+              this.products.splice(index, 1)
             }
             if(this.products.length > 0){
               this.$refs.productsCar.refresh()
               // this.isLoading = true
             }
             // console.log('products', product_id, index, this.products.length)
-            this.deleteProduct(product_id)
-            this.loadCart()
+            await this.deleteProduct({ product_id: product_id, store_id: this.car_id })
+            await this.loadCart()
           }
         })
 
       },
-
       onProcessCheckout(){
 
-        
-        if(!this.isOrderMinStatus){
+        if(!this.isOrderMinStatusComputed){
           this.changeToast({
-              title: this.textMinOrden,
+              title: this.textMinOrdenComputed,
               status: true,
               type: 'danger',
               message: ''
@@ -454,17 +409,16 @@
 
         this.buttomLoading = true
         this.setcarCheckout({
-          logo:        this.carro.logo,
-          name:        this.carro.name,
-          min:         this.carro.limit_price,
-          total:       this.precioCar,
-          prendas:     this.textPrendasLabel,
+          logo:        this.store.logo,
+          name:        this.store.name,
+          min:         this.store.min,
+          total:       this.carro.total,
+          prendas:     this.textPrendasLabelComputed,
           products:    this.products
         })
 
-        // console.log('pasa')
         this.processCart(this.car_id).then((response)=>{
-          console.log('responseeeee',response)
+
           firebase.analytics.logEvent({
             key: "process_cart",
             parameters: [ // optional

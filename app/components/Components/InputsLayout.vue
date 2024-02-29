@@ -1,5 +1,5 @@
 <template lang="html">
-  <StackLayout>
+ 
     <ScrollView >
       <StackLayout padding="8 16 16 16" >
           
@@ -12,7 +12,7 @@
         >
           <WrapLayout>
             <StackLayout
-              v-for="(e,i) in inputs"
+              v-for="(e,i) in inputsData"
               :key="`inputs-${i}`"
               class="input-group"
               :width="e.width ? e.width :'100%'"
@@ -50,10 +50,10 @@
               <StackLayout  v-if="e.typeInput == 'select'" margin="0" padding="0">
                 <StackLayout
                   class="selectForm"
-                  @tap="e.onTap(e)"
+                  @tap="openModalSelect(e)"
                 >
                   <GridLayout columns="*, auto">
-                      <Label col="0" class="selectInput" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="e.title" />
+                      <Label col="0" class="selectInput" :class="e.model != '' ? 'active':''" margin="0" padding="0" verticalAlignment="center" textWrap :text="titleSelect(e)" />
                       <button 
                         col="1"
                         class="btn btn-text btn-sm"
@@ -63,6 +63,7 @@
                         color="#E9418A"
                       />
                   </GridLayout>
+                  
                 </StackLayout>
                 <Label textWrap v-if="e.footerLabel" :text="e.footerLabel" fontSize="13" fontWeight="300" />
               </StackLayout>
@@ -95,7 +96,7 @@
 
       </StackLayout>
     </ScrollView>
-  </StackLayout>
+
 </template>
 
 <script>
@@ -104,6 +105,10 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   export default {
     mixins:[  ],
+    model: {
+      prop: 'inputs',
+      event: 'change'
+    },
     props:{
       clases:{
         type: String,
@@ -129,44 +134,48 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
     watch:{
       
     },
-    computed:{
-      ...mapState(['drawerSelect']),
-      titleOptions(){
-        return this.inputSelect.title
-      }
-    },
+    computed:{},
     data() {
       return {
-        drawerInput: false, 
-        inputSelect: null,
-        selectOptions: null
+        inputsData: this.inputs
       };
     },
     mounted(){
-      // console.log(this.$refs.drawerInput)
+
     },
     methods:{
-      ...mapMutations(['changeDrawerSelect', 'setItemsSelect']),
-      openDrawer(e) {
-       
-        this.inputSelect = e
-        this.changeDrawerSelect(!this.drawerSelect)
-        this.setItemsSelect(e.values)
-        // let values = JSON.parse(JSON.stringify(e.values))
-        // values.forEach((item)=>{
-        //   item.active = false
-        //   if(this.inputSelect.model != ''){
-        //     if(item.id == this.inputSelect.model){
-        //       item.active = true
-        //     }
-        //   }
-          
-        // })
-        
-        // this.selectOptions = new ObservableArray(values)
-
-
-        // this.$refs.drawerInput.open('bottom')
+      async openModalSelect(e){
+        // console.log('e.values',e)
+        if(e.beforeOpen!=undefined){
+          const beforeStatus = e.beforeOpen(e)
+          if(!beforeStatus){
+            return false
+          }
+        }
+        const modal = await this.$navigator.modal('/selectListPicker',{
+          fullscreen: true, 
+          id: 'seledyd',
+          props:{
+            options: e.values,
+            selected: e.model,
+            campos: e.campos
+          }
+        })
+        // console.log('modal',modal)
+        if(modal!=undefined){
+          this.inputsData.find((i)=>i.name == e.name).model = modal.selected
+        }
+        this.$emit('changeSelect', e)
+        this.$emit('change', this.inputsData)
+      },
+      titleSelect(e){
+        if(e.model && e.values){
+          const element = e.values.find((i)=> i[e.campos.id] == e.model)
+          if(element){
+            return element[e.campos.name]
+          }
+        }
+        return e.title
       },
       checkedChange({value}){
         // console.log(value)
