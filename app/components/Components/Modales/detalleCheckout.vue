@@ -111,7 +111,7 @@
                   :product="item"
                   :isProduct="false"
                   :isEnabled="true"
-                  : ="false"
+                  :isButtom="false"
                   :buttonDisabled="true"
                 />
 

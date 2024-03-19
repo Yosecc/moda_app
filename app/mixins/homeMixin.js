@@ -5,6 +5,7 @@ import { Http, ImageSource } from '@nativescript/core'
 import { messaging } from '@nativescript/firebase/messaging'
 import { firebase } from '@nativescript/firebase';
 import { LocalNotifications } from '@nativescript/local-notifications'
+import { ImageCache } from '@nativescript/core'
 
 export default {
     computed: {
@@ -20,11 +21,42 @@ export default {
         ...mapActions(['getHome', 'getSliders', 'menuList']),
         ...mapActions('categories', ['getCategories']),
         ...mapActions('stores', ['getStores', 'getStoreRosa']),
-        ...mapActions('products', ['getProductVisits']),
+        ...mapActions('products', ['getProductVisits','getBloques']),
         ...mapActions('car', ['getCar']),
+        cargaImagenesCache(imagen){
+            const imageCache = new ImageCache()
+           
+            imageCache.push({
+                url: imagen,
+                key: imagen,
+                  completed(image, key) {
+                  console.log('Successfully retrived and cached the cat image')
+                  // element.images[0] =  image
+                  console.log('imageCache.get(imagen)',imageCache.get(imagen))
+                },
+                error(key) {
+                  console.log('cache error')
+                },
+              })
+          },
         async defineHome(params) {
             Api.defaults.headers.common['x-api-key'] = this.token
+            // console.log('define',cache.get('bloques'))
+            // if(!cache.get('bloques')){
+                this.getBloques().then((response)=>{
+                    // this.bloques = response
+                    console.log('response',response)
+                    cache.set('bloques',JSON.stringify(response) )
+                    if(response.imagenes && response.imagenes.length){
+                        response.imagenes.forEach( element => {
+                            this.cargaImagenesCache(element)
+                        })
+                    }
+                })
+            // }else{
 
+            // }
+            
             this.getProductVisits()
             this.getCar()
             this.menuList().then((response) => {

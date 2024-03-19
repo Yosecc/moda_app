@@ -2,7 +2,6 @@
     <StackLayout
         :padding="container.padding"
         :margin="container.margin"
-        
     >
         <WrapLayout v-if="!bloque.products" width="100%">
             <StackLayout width="100%" padding="8">
@@ -80,26 +79,6 @@
 
             </WrapLayout>
 
-            <!-- <CollectionView
-                v-if="isSlider"
-                :items="productos"
-                colWidth="50%"
-                rowHeight=""
-                :height="alturaCollectionView"
-                row="1"
-                col="0" 
-                colSpan="2"
-                :itemTemplateSelector="itemTemplateSelector"
-            >
-                <v-template name="product" >
-                    <ProductBox
-                        :paddingLeft="productConfig.paddingLeft"
-                        :product="item"
-                        :isBorders="false"
-                    ></ProductBox>
-                </v-template>
-            </CollectionView> -->
-           
             <Label @tap="onTapVerMas(bloque)" col="0" row="2" text="Ver más" fontSize="12" fontWeight="200" padding="16" />
             <image @tap="onTapVerMas(bloque)" col="1" row="2" src="res://arrow_right" height="13" opacity=".5" background="" stretch="aspectFit" margin="8 16" />
         
@@ -129,7 +108,7 @@
         computed:{
             productos(){
                 if(this.bloque && this.bloque.products && this.bloque.products!=undefined && this.bloque.products!=null){
-                    return this.bloque.products
+                    return this.isProducts ? this.bloque.products : []
                 }
                 return []
             },
@@ -157,6 +136,9 @@
             },
             isSlider(){
                 return ( this.bloque.config && !this.bloque.config.slider ) || !this.bloque.config  ? true : false
+            },
+            isProducts(){
+                return Array.isArray(this.bloque.products)
             },
             layout(){
                 return {

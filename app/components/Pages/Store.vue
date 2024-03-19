@@ -1,8 +1,65 @@
 <template lang="html">
   <Page background="" >
-    <ActionBar>
-    <HeaderStore borderWidth="0" row="0" background="" :isRedirectStore="false" :store="store" :back="true" :carro="carro" @onBack="onCloseDrawer" :isFavorite="store.favorite != undefined ? store.favorite : false " :isBackEvent="isBackEvent" />
-  </ActionBar>
+    <ActionBar padding="0">
+      <HeaderStore 
+        height="110" 
+        padding="0" 
+        borderWidth="0" 
+        row="0" 
+        background="" 
+        :isMarginNegativo="true" 
+        :isRedirectStore="false" 
+        :store="store" 
+        :back="true" 
+        :carro_count="responseCarro ? responseCarro.cantidadModelos : 0"
+        @onBack="onCloseDrawer" 
+        :isFavorite="true" 
+        :isBackEvent="isBackEvent"
+      >
+        <GridLayout col="0" colSpan="3" row="1" columns="*,auto" background="">
+          <GridLayout col="0"  columns="*, auto" rows="*" class="" height="" background="">
+            <ScrollView v-if="categoriesComputed.data.length" col="0" row="0" orientation="horizontal" padding="0" :scrollBarIndicatorVisible="false">
+              <StackLayout orientation="horizontal"  padding="4 0 8 1" background="" >
+                <StackLayout 
+                  background="white"
+                  borderRadius="8" 
+                  :borderWidth="item.id == storeCategorieActive ? 2 : 1" 
+                  :borderColor="item.id == storeCategorieActive ? '#E9418A' : '#4D4D4D'" 
+                  padding="4 8"
+                  marginRight="8"
+                  v-for="(item, key) in categoriesComputed.data" 
+                  :key="`categorie-store-${key}`"
+                  orientation="horizontal"
+                  @tap="onChangeCategorieStore(item)"
+                >
+                  <Image width="15" background="" margin="0" padding="0" :src="item.icon" marginRight="4" verticalAlignment="middle" stretch="aspectFit" />
+                  <label :text="item.name" background="" margin="0" padding="0" verticalAlignment="middle" fontSize="12" fontWeight="300" />
+                </StackLayout>  
+              </StackLayout>
+            </ScrollView>
+            <StackLayout
+              col="0"
+              row="0"
+              orientation="horizontal"
+              paddingLeft="16"
+              v-show="!categoriaterminado && !categoriesComputed.data.length"
+            >
+              <StackLayout 
+                v-for="i in 3"
+                class="label_skeleton"
+                :key="`skeleto-cateori-${i}}`" 
+                height="36" 
+                width="70"
+                marginRight="8"
+              />
+            </StackLayout>
+            <StackLayout @tap="openFilter" col="1" row="0" width="40" height="40" background="" marginRight="4" padding="5">
+              <Image  width="30" height="30" background=""  :src="categoriesComputed.iconFilter" verticalAlignment="middle" stretch="aspectFit" />
+            </StackLayout>
+          </GridLayout>
+        </GridLayout>
+      </HeaderStore>
+    </ActionBar>
     <RadSideDrawer 
       :gesturesEnabled="false"
       drawerContentSize="auto" 
@@ -26,266 +83,82 @@
           @onSearch="onSearch"
         />
       
-      <GridLayout ~mainContent  row="1" rows="*,auto" >
-        <AbsoluteLayout row="0" >
-          
-          <RadListView 
-            ref="MainScroll"
-            :items="arrayEstructuraStorePage"
-            loadOnDemandMode="Auto"
-            :loadOnDemandBufferSize="4"
-            @loadMoreDataRequested="onLoadCargar"
-            pullToRefresh="true"
-            @pullToRefreshInitiated="onPullToRefreshInitiated"
-            @scrolled="onScroll"
-            @scrollEnded="scrollEnded"
-            row="0"
+      <GridLayout ~mainContent  row="1" rows="auto,*,auto" >
+        
+        <RadListView 
+          ref="MainScroll"
+          layout="grid"
+          pullToRefresh="true"
+          loadOnDemandMode=""
+          :loadOnDemandBufferSize="28"
+          @loadMoreDataRequested="onLoadCargar"
+          @pullToRefreshInitiated="onPullToRefreshInitiated"
+          @scrolled="onScroll"
+          :itemTemplateSelector="itemTemplateSelector"
+          :items="productos"
+          row="1"
+          itemHeight=""
+          v-show="productos.length"
+        >
+          <v-template name="product">
+              <ProductBox
+                height=""
+                :product="item"
+              ></ProductBox>
+          </v-template>
+          <v-template name="footer">
+            <Label 
+              row="1"
+              fontSize="20" 
+              fontWeight="100" 
+              textAlignment="center" 
+              text="No te cuesta estar a la moda."
+              padding="16"
+              background="#FDFDFD"
+            />
+          </v-template>
+        </RadListView>
+
+        <StackLayout 
+          top="0"
+          left="0"
+          width="100%"  
+          v-show="!productos.length && cargado" 
+          padding="24"
+        >
+          <Label text="No hay productos disponibles por el momento." textAlignment="center" fontWeight="100" fontSize="24" textWrap />
+        </StackLayout>
+
+
+        <StackLayout
+          row="1"
+          top="0"
+          left="0" 
+          width="100%"
+          height="100%"
+          v-show="!productos.length && !cargado"
+          padding="8 16"
+        >
+          <WrapLayout
             top="0"
-            left="0"
+            left="0" 
+            width="100%"
+            height="100%"
           >
-            <v-template if="item.name == 'buscador'">
-              <StackLayout
-                padding="16 16 8 16"
-                background="#EEEEEE"
-              >
-                <FlexboxLayout 
-                  alignItems="center"
-                  width="100%"
-                  height="40"
-                  class="inputForm"
-                  :class="item.text != 'Buscar productos' ? 'active' : ''"
-                  padding="0"
-                  margin="0"
-                  @tap="openFilter"
-                >
-                  <Image 
-                    verticalAlignment="center"
-                    horizontalAlignment="center"
-                    src="~/assets/icons/search.png" 
-                    width="20" 
-                    height="20"
-                    margin="2 6 0 8"
-                  />
-                  <label 
-                    :text="item.text" 
-                    class="" 
-                    horizontalAlignment="left"
-                    fontWeight="200"
-                    fontSize="16"
-                    margin="0"
-                    padding="0"
-                  />
-                </FlexboxLayout >
-              </StackLayout>
-            </v-template>
-            <v-template if="item.name == 'pastillas'">
-              <AbsoluteLayout v-show="false">
-              </AbsoluteLayout>
-            </v-template>
-            <v-template if="item.name == 'ofertas'">
-              <StackLayout 
-                top="0"
-                left="0"
-                width="100%"
-                padding="8 0"
-                margin="0"
-                v-show="item.data.length"
-                background="#EEEEEE"
-              >
-                <Label 
-                  text="Rebajas" 
-                  marginBottom="0" 
-                  marginLeft="8" 
-                  fontWeight="900"
-                  row="0"
-                />
-                <RadListView 
-                  ref="productsSscrollOfertas"
-                  :items="item.data"
-                  orientation="horizontal"
-                  margin="8 0 16 0"
-                >
-                  <v-template key="productProferta"  >
-                    <ProductBox 
-                      width="150"
-                      :imageHeight="160"
-                      :product="item"
-                      :marginLeft="$index == 0 ? 8: 0"
-                      :fontSizePrice="16"
-                      :isStore="true"
-                      :isBorders="false"
-                      background="white"
-                      marginRight="8"
-                      borderRadius="4"
-                    ></ProductBox>
-                  </v-template>
-                </RadListView>
-                <FlexboxLayout 
-                  borderBottomWidth=".2"
-                  borderColor="#DFDFDF"
-                  padding="0 8 8 8"
-                  margin="0 16"
-                  justifyContent="space-between"
-                  @tap="onViewOfertas"
-                 
-                >
-                    <Label padding="0" text="Ver todas las rebajas" fontSize="12"  fontWeight="200" />
-                    <FlexboxLayout justifyContent="center" alignItems="center" padding="0" margin="0" height="20" width="20" >
-                      <image v-if="!item.loadRebajas" src="res://arrow_right" height="12"  opacity=".5" stretch="aspectFit" />
-                      <ActivityIndicator 
-                        v-if="item.loadRebajas" 
-                        busy="true" 
-                        margin="0"
-                        padding="-"
-                        height="20" width="20"
-                        color="#E9418A" 
-                        horizontalAlignment="center" 
-                        verticalAlignment="center"
-                      />
-                    </FlexboxLayout>
-                  </FlexboxLayout>
-              </StackLayout>
-            </v-template>
-            <v-template if="item.name == 'categories'">
-              <GridLayout columns="*, auto" rows="*" class="degrade2" height="70">
-                <ScrollView v-if="item.data.length" col="0" row="0" orientation="horizontal" padding="0" :scrollBarIndicatorVisible="false">
-                  <StackLayout orientation="horizontal"  padding="16 0 16 16" background="" >
-                    <StackLayout 
-                      background="white"
-                      borderRadius="8" 
-                      :borderWidth="item.id == storeCategorieActive ? 2 : 1" 
-                      :borderColor="item.id == storeCategorieActive ? '#E9418A' : '#4D4D4D'" 
-                      padding="4 8"
-                      marginRight="8"
-                      v-for="(item, key) in item.data" 
-                      :key="`categorie-store-${key}`"
-                      orientation="horizontal"
-                      @tap="onChangeCategorieStore(item)"
-                    >
-                      <Image width="15" background="" margin="0" padding="0" :src="item.icon" marginRight="4" verticalAlignment="middle" stretch="aspectFit" />
-                      <label :text="item.name" background="" margin="0" padding="0" verticalAlignment="middle" fontSize="12" fontWeight="300" />
-                    </StackLayout>  
-                  </StackLayout>
-                </ScrollView>
-                <StackLayout
-                  col="0"
-                  row="0"
-                  orientation="horizontal"
-                  paddingLeft="16"
-                  v-else
-                >
-                  <StackLayout 
-                    v-for="i in 3"
-                    class="label_skeleton"
-                    :key="`skeleto-cateori-${i}}`" 
-                    height="36" 
-                    width="70"
-                    marginRight="8"
-                  />
-                </StackLayout>
-                <StackLayout @tap="openFilter" col="1" row="0" width="40" height="40" background="" margin="10">
-                  <Image  width="35" height="35" background=""  :src="item.iconFilter" verticalAlignment="middle" stretch="aspectFit" />
-                </StackLayout>
-              </GridLayout>
-            </v-template>
-            <v-template if="item.name == 'products'">
-              <StackLayout background="white" padding="0">
-                <!-- <StackLayout width="100%" height="30"  class="degrade2"></StackLayout> -->
-                <!-- <StackLayout padding="8 0 8 16" orientation="horizontal">
-                  <Image width="20" :src="item.icon" marginRight="0" verticalAlignment="middle" stretch="aspectFit" />
-                  <Label 
-                    :text="item.category" 
-                    margin="0"
-                    fontWeight="900"
-                    row="0"
-                  />
-                </StackLayout> -->
-                <!-- <Label :text="namesSubcategoriesActives.toString()" fontSize="10" fontWeight="100" textWrap /> -->
-                <AbsoluteLayout  padding="0" background="white" margin="0" width="100%">
-                  <StackLayout 
-                    top="0"
-                    left="0"
-                    width="100%"
-                    padding="0"
-                    v-show="item.data.length"
-                  >
-                    <RadListView 
-                      ref="productsSscroll"
-                      layout="grid"
-                      :items="item.data"
-                      orientation="vertical"
-                    >
-                      <v-template key="product" >
-                        <ProductBox
-                            :product="item"
-                            :isStore="true"
-                        ></ProductBox>
-                      </v-template>
-                    </RadListView>
-                  </StackLayout>
+            <StackLayout 
+              v-for="i in 6"
+              class="label_skeleton"
+              :key="`skeleto-buscador-${i}}`" 
+              height="300" 
+              width="50%"
+              stretch="aspectFill" 
+            />
+          </WrapLayout >
+        </StackLayout>
 
-                  <StackLayout
-                    top="0"
-                    left="0" 
-                    width="100%"
-                    height="100%"
-                    v-show="!item.data.length && !cargado"
-                    padding="8 16"
-                  >
-                    <WrapLayout
-                      top="0"
-                      left="0" 
-                      width="100%"
-                      height="100%"
-                    >
-                      <StackLayout 
-                        v-for="i in 6"
-                        class="label_skeleton"
-                        :key="`skeleto-buscador-${i}}`" 
-                        height="300" 
-                        width="50%"
-                        stretch="aspectFill" 
-                      />
-                    </WrapLayout >
-                  </StackLayout>
-
-                  <StackLayout 
-                    top="0"
-                    left="0"
-                    width="100%"  
-                    v-if="!item.data.length && cargado" 
-                    padding="24"
-                  >
-                    <Label text="No se encontraron resultados" textAlignment="center" fontWeight="100" fontSize="24" flexWrap />
-                  </StackLayout>
-
-
-                </AbsoluteLayout>
-              </StackLayout>
-            </v-template>
-            <v-template name="foote" if="item.name == 'footer'" >
-              <StackLayout v-show="item.data" padding="24" row="1" >
-                <Label v-if="item.data" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
-              </StackLayout>
-            </v-template>
-            <v-template name="loadondemand">
-              <Label text=""/>
-            </v-template>
-
-          </RadListView>
-          <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
-            <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
-          </FlexboxLayout>
-          <Loading
-            v-if="isLoading"
-            :top="h"
-            left="0"
-            dock="bottom"
-          />
-        </AbsoluteLayout>
         <StackLayout
           class="shadow-n1"
-          row="1"
+          row="2"
           padding="0"
           background="#EEEEEE"
           ref="contPastillas"
@@ -382,6 +255,8 @@ import Filters from "../Components/Filters.vue";
 import HeaderDefault from '../Components/ActionBar/HeaderDefault.vue'
 import ProductBox from '~/components/Components/Boxes/ProductBox.vue'
 import HeaderStore from '~/components/Components/ActionBar/HeaderStore.vue'
+import HeaderCustom from '~/components/Components/ActionBar/HeaderCustom.vue'
+
 import Loading from '~/components/Components/Loading.vue'
 
 import SlideCategories from "../Components/SlideCategories.vue";
@@ -393,9 +268,16 @@ import * as utils from "@nativescript/core/utils";
 import { screen } from "@nativescript/core/platform";
 import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
 import * as RadListViewModule from "nativescript-ui-listview";
-
+import { ImageCache } from '@nativescript/core'
+import storeMixin from '~/mixins/storeMixin.js'
+      
+import modelosMixin from '~/mixins/modelosMixin.js'
 import filterCategorias from '~/components/Components/Modales/filterCategorias.vue'
 export default {
+  mixins: [
+  modelosMixin,
+      
+    ],
   props: {
     store:{
       type: Object
@@ -422,7 +304,8 @@ export default {
     Products,
     ProductBox,
     Loading,
-    filterCategorias
+    filterCategorias,
+    HeaderCustom
   },
   data() {
     return {
@@ -475,6 +358,8 @@ export default {
       conteo: 0,
       isBackEvent:false,
       count: 0,
+      categoriaterminado: false,
+      responseCarro: undefined
     };
   },
   watch:{
@@ -483,7 +368,8 @@ export default {
         no_product_id: null
       })
       this.getCart( this.idStore).then((response)=>{
-        this.setCarro(response)
+        this.responseCarro =  response
+        // this.setCarro(response)
       })
     },
     productsComputed(to){
@@ -551,6 +437,7 @@ export default {
       return this.categoriesBase.find((e) => e.id == this.storeCategorieActive).name
     },
     section(){
+      console.log('=========',this.categoriesStoreGetters,this.storeCategorieActive)
       if(this.categoriesStoreGetters.length){
         let v = this.categoriesStoreGetters.find((e)=> e.id == this.storeCategorieActive)
         if(v!=undefined){
@@ -570,7 +457,7 @@ export default {
     },
     categoriesComputeds(){
       let data = []
-      
+      console.log('this.categoriesStoreGetters',this.categoriesStoreGetters)
       if(this.categoriesStoreGetters.length) {
         this.categoriesStoreGetters.forEach((e)=> {
           let d = this.categoriesBase.find((i)=> i.id == e.id)
@@ -591,7 +478,17 @@ export default {
     },
     dataPastillas(){
       return this.arrayEstructuraStorePage.find((e)=> e.name == 'pastillas').data
-    }
+    },
+    ////////
+    categoriesComputed(){
+      return this.arrayEstructuraStorePage.find((e)=> e.name == 'categories')
+    },
+    productos(){
+      return this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data
+    },
+    ofertas(){
+      return this.arrayEstructuraStorePage.find((e)=> e.name == 'ofertas') 
+    },
   },
   created(){
     utils.ad.dismissSoftInput();
@@ -599,21 +496,28 @@ export default {
     this.onGetCategoriesStore()
   },
   mounted(){
-    this.alturaDispositivo = screen.mainScreen.heightDIPs
+    this.alturaDispositivo = screen.mainScreen.heightDIPst
+    
+    this.setStoreCategorieActive(this.store.category_default)
+
+    this.onGetCar()
 
     this.limpiarBuscador()
+
+    this.onGetProducts()
 
     this.onGetPromociones()
 
     this.onGetOfertas()
-
-    this.setStoreCategorieActive(this.store.category_default)
 
     firebase.analytics.setScreenName({
 			screenName: `Store: ${this.store.name}`
 		});
   },
   methods:{
+      itemTemplateSelector(item,index,items) {
+        return 'product'
+      },
     /**
      * GET PRODUCTS
      * CHANGE PARAMS SEARCH 
@@ -651,16 +555,23 @@ export default {
       })
     },
     async onGetCategoriesStore(){
+      this.categoriaterminado = false
+
       await this.getCategoriesStore(this.idStore).then((response)=>{
         this.setCategoriesStore(response)
         this.arrayEstructuraStorePage.find((e)=> e.name == 'categories').data = this.categoriesComputeds
-        this.refreshList()
+        this.categoriaterminado = true
+        // this.refreshList()
       })
     },
     async onGetCar(){
-      await this.getCart(this.idStore).then((response)=>{
-              this.setCarro(response)
-            })
+      // await this.getCart(this.idStore).then((response)=>{
+      //         this.setCarro(response)
+      //       })
+
+        this.responseCarro = await this.getCart(this.idStore)
+        
+        
     },
 
     /** LOAD PRODUCTS */
@@ -686,6 +597,7 @@ export default {
     },
     async onLoadCargar (args) {
       
+      console.log('SSS')
       this.page = this.page + 1
       this.isLoading = true
       this.cargado = false
@@ -717,17 +629,39 @@ export default {
           this.refreshList()
           return
         }
-        response.forEach((e)=>{
-          this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(e)
+        response.forEach( async (element) => {
+          const image = await this.cargaImagenesCache(element.images[0])
+          element.imagesCache = image.image
+          // console.log('image',image)  
+          this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(element)
         })
+        // this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(...response)
         if(this.conteo > 2) {
-          this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Manual'
+          // this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Manual'
         }
         this.refreshList()
         args.returnValue = true;
 				args.object.notifyAppendItemsOnDemandFinished(0, false);
       })
     },
+    cargaImagenesCache(imagen){
+      return new Promise((resolve, reject) => {
+        const imageCache = new ImageCache();
+        
+          imageCache.enqueue({
+            url: imagen,
+            key: imagen,
+            completed(image, key) {
+              console.log('Successfully retrived and cached the cat image');
+              resolve({image,key}); // Resuelve la promesa con la imagen en caso de éxito
+            },
+            error(key) {
+                console.log('cache error');
+                reject(new Error('Cache error')); // Rechaza la promesa en caso de error
+            },
+          });
+        });
+      },
     async onGetProducts(){
       this.page = 0
       this.isLoading = true
@@ -737,9 +671,14 @@ export default {
       await this.getProductsStoreRosa().then((response)=>{
         this.isLoading = false
         this.cargado = true
-        response.forEach((e)=>{
-          this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(e)
+        
+        response.forEach( async (element) => {
+          const image = await this.cargaImagenesCache(element.images[0])
+          // this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(element)
         })
+        // responseonsole.log('response',response)
+          this.arrayEstructuraStorePage.find((e)=> e.name == 'products').data.push(...response)
+        this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Auto'
         this.count = 0
         this.refreshList()
       })
@@ -833,12 +772,12 @@ export default {
       })
     },
     scrollEnded(args){
-      if(this.$refs.MainScroll != undefined ){
-        this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Auto'
-      }
-      if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.MainScroll != undefined){
-        this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Manual'
-      }
+      // if(this.$refs.MainScroll != undefined ){
+      //   this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Auto'
+      // }
+      // if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.MainScroll != undefined){
+      //   this.$refs.MainScroll.nativeView.loadOnDemandMode = 'Manual'
+      // }
     },
     arrowTop(){
       let scrollv = this.$refs.MainScroll.nativeView;
@@ -909,7 +848,7 @@ export default {
         categories: '', 
         sections: this.section, 
         start: 0, 
-        length: 15,
+        length: 28,
         search: "",
         no_product_id: null,
         categorie: "",

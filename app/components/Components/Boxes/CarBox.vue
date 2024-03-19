@@ -78,12 +78,12 @@
 				textAlignment="center"
 			/>
 
-			<GridLayout 
+			<!-- <GridLayout 
 				borderColor="#666666" 
 				borderTopWidth="0.5" 
 				columns="*, auto" 
 				rows="*"
-			>
+			> -->
 			  <label 
 			  	@tap="onRedirectCart" 
 					text="Ver Carrito" 
@@ -91,10 +91,11 @@
 					fontSize="14" 
 					textTransform="uppercase"
 					fontWeight="600" 
+					textAlignment="center"
 					row="0" 
 					col="0"  
 				/>
-			  <FlexboxLayout  
+			  <!-- <FlexboxLayout  
 					col="1"
 					row="0"
 					padding="0" 
@@ -125,9 +126,9 @@
 						v-else
 						color="#E9418A"
 					/>
-				</FlexboxLayout>
+				</FlexboxLayout> -->
 
-			</GridLayout>
+			<!-- </GridLayout> -->
 
 
 	</StackLayout>

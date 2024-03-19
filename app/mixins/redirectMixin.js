@@ -3,6 +3,7 @@
 import * as utils from "@nativescript/core/utils";
 import productMixin from '~/mixins/productMixin'
 import Api from '~/services'
+import { Dialogs } from '@nativescript/core'
 
 export default {
     mixins: [productMixin],
@@ -15,7 +16,7 @@ export default {
         // ...mapActions('products', ['getProduct']),
 
         redirect(redirect) {
-            // console.log('redirectsss', redirect.route, redirect)
+            console.log('redirectsss',  redirect)
             if (redirect.route == undefined) {
                 return
             }
@@ -140,7 +141,8 @@ export default {
                                 categorie_default: undefined,
                                 section: [this.getCategorie(redirect.params.categoria).id],
                                 search: redirect.params.value,
-                                redirect: true
+                                redirect: true,
+                                oferta: redirect.params.oferta
                             }
                         }
 
@@ -212,6 +214,26 @@ export default {
                         })
                         break;
                     case 'link':
+
+                        if(redirect.beforeConfirm!=undefined && redirect.beforeConfirm == true ){
+
+                            
+                            Dialogs.confirm({
+                                title: 'Atención',
+                                message: redirect.beforeConfirmMessage || 'Está siendo redirigido a una web segura. Confirme para continuar',
+                                okButtonText: 'Confirmar',
+                                cancelButtonText: 'No',
+                            }).then((result) => {
+                                // console.log(result)
+                                if(result){
+                                    utils.openUrl(redirect.params);
+                                }
+                            })
+
+                            return
+
+                        }
+
                         utils.openUrl(redirect.params);
                         return
                         break;

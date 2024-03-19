@@ -2,6 +2,7 @@
 
   <Page >
     <HeaderFullLogo/>
+    <ScrollView>
     <GridLayout rows="*,auto" padding="16"  >
       <StackLayout row="0" >
         <label 
@@ -154,6 +155,7 @@
         />
       </StackLayout>
     </GridLayout>
+  </ScrollView>
 
   </Page>
    
@@ -189,26 +191,27 @@
     },
     methods:{
       ...mapActions('authentication',['Register']),
+      ...mapMutations('authentication',['setclienteData']),
       ...mapMutations(['changeisLoading','changeToast']),
       focusInputInline(event){
         // console.log('f',event.object)
       },
        sendRegister(){
+        cache.clear()
         this.changeisLoading(true)
         if(this.dataRegister.termsAndConditions){
           if(this.dataRegister.password == this.dataRegister.recoverPassword){
             console.log('this.dataRegister', this.dataRegister)
              this.Register(this.dataRegister)
             .then((response)=>{
-              console.log('register.vue', response)
-              if (response.status) {
-                cache.set('client', JSON.stringify(response.client))
-              }
-              this.$navigator.navigate('/code_validation')
+                const cliente = response.client
+                cache.set('client', JSON.stringify(cliente))
+                this.setclienteData(cliente)
+                this.$navigator.navigate('/code_validation', { props: { clientprops: cliente } })
               this.changeisLoading(false)
             }).catch((error)=>{
-              console.log(error)
               this.changeisLoading(false)
+              console.log(error)
               error = JSON.parse(error)
               console.log('error', error)
                 for (var i in error) {
@@ -220,6 +223,7 @@
                               type: 'danger',
                               message: ''
                           })
+                          return
                         }else if(typeof e == 'object'){
                           console.log(e)
                         }

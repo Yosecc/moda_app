@@ -18,11 +18,11 @@
           padding="0"
           margin="0"
           @tap="onRedirect(item.redirect)"
-          background="" 
+          background=""
+        
         >
         
           <StackLayout background="" v-if="item.type == 'enlace'" textAlignment="center"  padding="4 8">
-            <!-- <WebView  background="green" :src="html(item.textoHtml)"  /> -->
             <label color="#0080DA" textWrap :text="item.textoT" />
           </StackLayout>
           <FlexboxLayout 
@@ -32,7 +32,7 @@
             class="btn btn-primary" 
             padding="10" 
             textAlignment="center"  
-            margin="0 4"
+            margin="4"
           >
             <label textWrap :text="item.textoT" />
             <!-- <label textWrap :text="JSON.stringify(block.tunes)" /> -->

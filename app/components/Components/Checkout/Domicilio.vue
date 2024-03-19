@@ -15,6 +15,8 @@
       <StackLayout width="100%" class="label_skeleton" marginBottom="16" height="200"></StackLayout>
     </StackLayout> 
 
+    
+
     <RadListView 
       ref="dataDirecciones"
       class="dataDirecciones"
@@ -25,6 +27,12 @@
       v-show="dataDirecciones.length && !loading && !dataDelivery.length && !isTransportes"
       @itemTap="onItemSelected"
     >
+    <v-template name="header">
+      <StackLayout padding="0 16 0 16">
+
+        <Label row="0"  fontSize="18" fontWeight="800" textWrap :text="'Direcciones'" />
+      </StackLayout>
+      </v-template>
       <v-template>
         <StackLayout padding="8 16 8 16">
 
@@ -111,6 +119,12 @@
       v-show="dataDelivery.length && !loading"
       @itemTap="onItemSelectedDelivery"
     >
+    <v-template name="header">
+      <StackLayout padding="16">
+
+        <Label row="0"  fontSize="18" fontWeight="800" textWrap :text="'Direcciones'" />
+      </StackLayout>
+      </v-template>
       <v-template if="item.status == true">
         <StackLayout padding="8 16 8 16">
 

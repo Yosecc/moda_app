@@ -77,9 +77,6 @@
           v-show="productos.length"
         >
           <v-template name="product">
-            <!-- <StackLayout>
-              <Label :text="JSON.stringify(item)" />
-            </StackLayout> -->
               <ProductBox
               height=""
                 :product="item"
@@ -94,10 +91,9 @@
               text="No te cuesta estar a la moda."
               padding="16"
               background="#FDFDFD"
+              textWrap
             />
           </v-template>
-          
-          
         </RadListView>
 
         <RadListView row="0" layout="grid" v-if="!productos.length && !cargado" :items="[{},{},{},{},{},{}]">
@@ -122,6 +118,7 @@
           marginTop="16"
           text="No hay productos disponibles por el momento." 
           row="0"
+          textWrap
         />
 
     </GridLayout>
@@ -143,6 +140,7 @@
   import { screen } from "@nativescript/core/platform";
   import Loading from '~/components/Components/Loading.vue'
   import helpersMixin from '~/mixins/helpersMixin'
+  import { ImageCache } from '@nativescript/core'
 
 	export default {
     mixins: [storeMixin, helpersMixin],
@@ -160,7 +158,8 @@
             section: 0,
             search: '',
             betweenDates: '',
-            order: 'date DESC'
+            order: 'date DESC',
+            oferta: false
           }
         }
       },
@@ -217,7 +216,8 @@
         categoriaDefault: this.params.section,
         betweenDates: this.params.betweenDates ? this.params.betweenDates : '',
         order: this.params.order ? this.params.order  : 'date DESC',
-        productsparamsData: this.productsparams
+        productsparamsData: this.productsparams,
+        oferta: this.params.oferta
       };
     },
     watch:{
@@ -303,7 +303,7 @@
     },
     
     mounted(){
-
+// console.log('this.oferta',this.params)
       // this.arrowTop()
 
       if(this.productsparamsData){
@@ -321,7 +321,8 @@
         order: this.order,
         sections: this.categoriasIds,
         cacheTime: 1200,
-        betweenDates: this.betweenDates
+        betweenDates: this.betweenDates,
+        oferta: this.oferta
       })
 
       this.alturaDispositivo = screen.mainScreen.heightDIPs
@@ -367,24 +368,47 @@
           search: this.filter,
           start: this.arraySearch.find((e)=> e.name == 'products').data.length,
           length: this.cantidad_productos,
-          sections: this.categoriasIds
+          sections: this.categoriasIds,
+          oferta: this.oferta
         })
 
-        await this.getSearch().then((response)=>{
+        await this.getSearch().then( (response)=>{
           if(!response.length){
             this.arraySearch.find((e)=> e.name =='footer').data = true
           }else{
             this.arraySearch.find((e)=> e.name =='footer').data = false
           }
+          // response = this.cargaImagenes(response)
+          console.log('response',response)
           this.isLoadingProducts = false
           this.cargado = true
           this.arraySearch.find((e)=> e.name == 'products').data = new ObservableArray(response)
+          this.arraySearch.find((e)=> e.name == 'products').data.forEach( element => {
+           this.cargaImagenesCache(element.images[0])
+          })
           this.$refs.producsScroll.nativeView.loadOnDemandMode = 'Auto'
           this.$refs.producsScroll.refresh()
         }).catch((error)=>{
 
           console.log('error', error)
         })
+      },
+
+
+       cargaImagenesCache(imagen){
+        // const imageCache = new ImageCache()
+            
+        //     imageCache.enqueue({
+        //       url: imagen,
+        //       key: imagen,
+        //        completed(image, key) {
+        //         console.log('Successfully retrived and cached the cat image')
+        //         // element.images[0] =  image
+        //       },
+        //       error(key) {
+        //         console.log('cache error')
+        //       },
+        //     })
       },
       
       // async onSubmitBusqueda() //SUBMIT TEXT FILTER
@@ -413,7 +437,8 @@
           order: this.order,
           sections: this.categoriasIds,
           cacheTime: 1200,
-          betweenDates: this.betweenDates
+          betweenDates: this.betweenDates,
+          oferta: this.oferta
         })
 
         // this.conte = 0
@@ -435,6 +460,7 @@
           length: this.cantidad_productos,
           sections: this.categoriasIds,
           search: this.filter,
+          oferta: this.oferta
         })
         
         this.cargado = false
@@ -453,6 +479,9 @@
             this.arraySearch.find((e)=> e.name =='footer').data = false
           }
           response.forEach((e)=>{
+            if(e && e.images.length){
+              this.cargaImagenesCache(e.images[0])
+            }
             this.arraySearch.find((e)=> e.name == 'products').data.push(e)
           })
           // if(this.conteo > 2) {

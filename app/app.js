@@ -20,7 +20,24 @@ Vue.use(Navigator, { routes })
 
 Vue.config.silent = false
 
+// var imageCache = require("@ticnat/nativescript-image-cache");
+// var cacheLimitInDays = 7;
+// import * as application from '@nativescript/core/application';
+// if (application.android) {
+//     application.onLaunch = function (intent) {
+//         imageCache.initialize();
+//         imageCache.setCacheLimit(cacheLimitInDays);
+//     };
+// }
+import { ImageCacheIt } from '@triniwiz/nativescript-image-cache-it';
+// add to the app.ts/ main.ts/ app.js to enable image-cache to hook into the device's lowmemory events
+ImageCacheIt.enableAutoMM();
+// ImageCacheIt.maxDiskCacheSize(100)
+Vue.registerElement('ImageCacheIt', () => require('@triniwiz/nativescript-image-cache-it').ImageCacheIt);
+
+
 Vue.registerElement('ImageCache', () => require('@ticnat/nativescript-image-cache').ImageCache); // now add this
+
 Vue.registerElement('ImageZoom', () => require('@triniwiz/nativescript-image-zoom').ImageZoom); // now add this
 
 Vue.registerElement('Carousel', () => require('@nstudio/nativescript-carousel').Carousel);
@@ -49,6 +66,10 @@ Vue.use(CollectionView);
 
 // import { LoginManager, AccessToken } from '@nativescript/facebook';
 // LoginManager.init()
+
+import LottieView from '@nativescript-community/ui-lottie/vue';
+
+Vue.use(LottieView);
 
 import Theme from "@nativescript/theme";
 Theme.setMode(Theme.Light);
@@ -94,6 +115,7 @@ firebase.init({
                 }]).then(
                     scheduledIds => {
                         console.log('Notification id(s) ssssscheduled: ' + JSON.stringify(scheduledIds))
+
                     },
                     error => {
                         console.log('scheduling error: ' + error)

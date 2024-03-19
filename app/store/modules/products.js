@@ -34,6 +34,7 @@ const state = {
         order: 'date DESC',
         sections: [],
         cacheTime: 15,
+        oferta: false
     },
     categories: [
         { name: 'woman', id: 1 },
@@ -43,6 +44,8 @@ const state = {
         { name: 'kids', id: 4 },
         { name: 'xl', id: 6 },
     ],
+    bloquesVuex: [],
+  
 };
 
 const getters = {
@@ -55,6 +58,10 @@ const getters = {
 };
 
 const mutations = {
+    
+    setbloquesVuex(state,val){
+        state.bloquesVuex = new ObservableArray(val)
+    },
     removeProductLike(state, val) {
         let index = state.products.findIndex((element) => element.id == val)
         state.products[index].isFavorite = val
@@ -184,6 +191,11 @@ const actions = {
 
         context.state.parametrosSearch.sections = d
 
+        if(context.state.parametrosSearch.oferta){
+            context.state.parametrosSearch.sections = 'ofertas'
+
+        }
+
         const qs = Object.keys(context.state.parametrosSearch)
             .map(key => `${key}=${context.state.parametrosSearch[key]}`)
             .join('&');
@@ -203,6 +215,12 @@ const actions = {
     },
     async getBloques(context) {
         const response = await Api.get(`getBloques`)
+
+        // response.imagenes.forEach( element => {
+        //     // this.cargaImagenesCache(element)
+        //   })
+
+        context.commit('setbloquesVuex',response.bloques || response)
         return response
     },
 };

@@ -1,13 +1,13 @@
 <template lang="html">
-  <Page background="#FDFDFD" @loaded="onload">
+  <Page background="#FDFDFD" >
     <HeaderDefault :back="false" />
    
     <GridLayout  rows="*,auto">
       
       <!-- <AbsoluteLayout background="#F8F8F8" padding="0" margin="0"  row="0">  -->
-        <RadListView 
-        row="0"
-        itemHeight="330"
+        <RadListView  
+          row="0"
+          itemHeight="330"
           ref="arrayHome"
           :items="arrayHome"
           scrollBarIndicatorVisible=""
@@ -15,17 +15,20 @@
           scrollPositionProperty=""
           orientation="vertical"
           loadOnDemandMode=""
-          loadOnDemandBufferSize="80"
+          loadOnDemandBufferSize="2"
           :itemTemplateSelector="itemTemplateSelector"
+          @loaded="onload"
           @pullToRefreshInitiated="onPullToRefreshInitiated"
-          @loadMoreDataRequested=""
+          @loadMoreDataRequested="loadMoreDataRequested"
           @scrollStarted=""
           @scrolled=""
+          @scroll=""
+          @loadMoreItems=""
           @scrollEnded=""
           top="0"
           left="0"
         >
-          <v-template if="item.name == 'buscador'" name="buscador" > 
+          <v-template name="buscador" > 
             <StackLayout
               padding="16 16 8 16"
             >
@@ -61,28 +64,35 @@
               </GridLayout >
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'slider'" name="slider" > 
+          <v-template  name="slider" > 
             <SliderComponent :sliders="item.data" :categoriesBase="categoriesBase" :cargado="item.cargado" />              
           </v-template>
-          <v-template if="item.name == 'categories'" name="categories" > 
+          <v-template  name="categories" > 
             <StackLayout padding="16 0 0 0" >
               <SlideCategories :categories="item.data" />
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'promociones'" name="promociones" > 
+          <v-template  name="promociones" > 
             <PromotionsComponent :data="item.data" />
           </v-template>
-          <v-template if="item.name == 'marcas'" name="marcas" > 
+          <v-template  name="marcas" > 
             <StackLayout padding="16 0 20 0" >
               <Marcas :data="item.data" />
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'gridproduct'" name="gridproduct">
-            
-
+          <v-template  name="gridproduct">
             <GridProduct  :bloque="item.data"  />
           </v-template>
-          <v-template if="item.name == 'box_categories'" name="box_categories">
+          <v-template  name="groupGridproduct">
+            <StackLayout v-show="item">
+              <!-- <Label :text="JSON.stringify(i)" v-for="(i, k) in item.data" :key="`gridproduct-${k}`" /> -->
+              <GridProduct v-for="(i, k) in item.data" :key="`gridproduct-${k}`" :bloque="i"  />
+              <!-- <StackLayout v-for="(i, k) in item.data" :key="`gridproduct-${k}`">
+                
+              </StackLayout> -->
+            </StackLayout>
+          </v-template>
+          <v-template  name="box_categories">
             <StackLayout padding="16" >
                 <StackLayout class="card" padding="0">
                     <StackLayout
@@ -123,7 +133,7 @@
                 </StackLayout>
             </StackLayout>
           </v-template>
-          <v-template if="item.name == 'card_list_redirect'" name="card_list_redirect">
+          <v-template name="card_list_redirect">
             <StackLayout padding="16" >
                 <StackLayout  class="card" padding="0">
                     <StackLayout
@@ -155,7 +165,7 @@
           <v-template name="footer"   >
             <Label margin="32 16" background="" padding="16" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="No te cuesta estar a la moda" />
           </v-template>
-        </RadListView>
+        </RadListView >
         <!-- <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
           <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
         </FlexboxLayout> -->
@@ -192,6 +202,7 @@
   import moment from 'moment'
   import { Dialogs } from '@nativescript/core'
   import cache from '@/plugins/cache'
+  import { ImageCache } from '@nativescript/core'
 
   export default {
     mixins:[ homeMixin, productMixin ],
@@ -240,10 +251,394 @@
           //   name: 'bloques',
           //   data: new ObservableArray([])
           // },
+          // {
+          //   name: 'gridproduct',
+          //   data: new ObservableArray([])
+          // },
           {
-            name: 'gridproduct',
-            data: new ObservableArray([])
+            name: 'groupGridproduct',
+            data: new ObservableArray([
+                    {
+                        "name": "",
+                        "type": "",
+                        "value": "",
+                        "config": {},
+                        "products":   [
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          }, 
+                          {
+                              "id": "",
+                              "code": "",
+                              "local_cd": "",
+                              "company": "",
+                              "name": "",
+                              "category": "",
+                              "category_id": "",
+                              "price": 0,
+                              "prev_price": 0,
+                              "images": [
+                                'res://eskeleton'
+                              ],
+                              "sizes": [],
+                              "colors": [],
+                              "is_desc": "",
+                              "isCart": false,
+                              "has_stock": true,
+                              "models": [],
+                              "store": {
+                                  "logo": "",
+                                  "name": "",
+                                  "id": "",
+                                  "local_cd": "",
+                                  "company_id": "",
+                                  "company": "",
+                                  "min": "",
+                                  "rep": "",
+                                  "vc": "",
+                                  "categorie": "",
+                                  "category_default": 1,
+                                  "categories_store": [],
+                                  "paquete": "",
+                                  "cleaned": "",
+                                  "favorite": ""
+                              }
+                          },      
+                        ]
+                    },
+            ])
           },
+          
           // {
           //   name: 'box_categories',
           //   data: new ObservableArray([])
@@ -269,7 +664,7 @@
         dates: moment().format('YYYY-MM-DD')+','+moment().add(1, 'd').format('YYYY-MM-DD'),
         nameFilter: 'Hoy',
         bloques: [],
-        
+        conteoso: 2
         
       };
     },
@@ -277,6 +672,7 @@
     },
     computed:{
       ...mapState('categories',['categoriesBase']),
+      ...mapState('products',['bloquesVuex']),
       /**
        * CALCULOS
        */
@@ -285,6 +681,14 @@
       },
       
     },
+    // created(){
+    //   this.getBloques().then((response)=>{
+    //       this.bloques = response.bloques
+    //       response.imagenes.forEach( element => {
+    //         this.cargaImagenesCache(element)
+    //       })
+    //   })
+    // },
     beforeMount(){
       console.log('beforeMount')
     },
@@ -305,10 +709,46 @@
         screenName: "Home"
       });
       this.alturaDispositivo = screen.mainScreen.heightDIPs
-
+  
+      // this.onSearchBloques()
       this.cargaHome()
     },
     methods:{
+      itemsLoading(){
+        console.log('itemsLoading')
+      },
+      loadMoreDataRequested(args){
+        
+        const filteredElements = this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type));
+        console.log('peticion', this.conteoso,filteredElements)
+
+        const index = this.arrayHome.findIndex( e => e.name == 'groupGridproduct' )
+
+        // this.arrayHome._array[index].data.push(...filteredElements.slice(2,4))
+          // this.arrayHome.setItem(index,{
+          //   name: 'groupGridproduct',
+          //   data: filteredElements.slice(0,2)
+          // })
+        
+        if(this.conteoso > 2){
+          args.returnValue = false;
+          args.object.notifyAppendItemsOnDemandFinished(0, true);
+        }else{
+          this.arrayHome._array[index].data.push(...filteredElements.slice(this.conteoso,this.conteoso+2))
+          //   this.arrayHome.push({
+          //   name: 'groupGridproduct',
+          //   data: filteredElements.slice(this.conteoso,this.conteoso+2)
+          // });
+          this.conteoso += 2
+          args.returnValue = true;
+          args.object.notifyAppendItemsOnDemandFinished(0, false);
+        }
+        
+
+
+        // args.returnValue = true;
+        // args.object.notifyAppendItemsOnDemandFinished(0, false);
+      },
       itemTemplateSelector(item,index,items) {
         return item.name
       },
@@ -316,7 +756,11 @@
                 return (length/2) * 330
             },
       onload(args){
-        // const page = args.object;
+        // const listview = args.object;
+        // console.log('sjshjshj',listview)
+        // listview.on('scroll',(event)=>{
+        //   console.log('ji',event)
+        // })
         // page.bindingContext = { purbea: 'HOLA' }
         // console.log('page',page)
       },
@@ -497,10 +941,34 @@
           this.$refs.arrayHome.refresh()
         })
       },
-      async onSearchBloques(){
-        await this.getBloques().then((response)=>{
-          this.bloques = response
+      cargaImagenesCache(imagen){
+        const imageCache = new ImageCache()
+            
+          imageCache.enqueue({
+            url: imagen,
+            key: imagen,
+              completed(image, key) {
+              console.log('Successfully retrived and cached the cat image')
+              // element.images[0] =  image
+            },
+            error(key) {
+              console.log('cache error')
+            },
+          })
+      },
+       onSearchBloques(){
+        // await this.getBloques().then((response)=>{
+          // this.bloques = response.bloques
+          // console.log("cache.get('bloques')", JSON.parse(cache.get('bloques')), this.bloquesVuex)
+          this.bloques = JSON.parse(cache.get('bloques'))
+          // 
+          // this.bloquesVuex
 
+          // console.log('bloques',response.imagenes)
+
+          // response.imagenes.forEach( element => {
+          //   this.cargaImagenesCache(element)
+          // })
           // console.log('this.bloques',this.bloques)
           const filteredElements = this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type));
 
@@ -510,7 +978,56 @@
             this.arrayHome.splice(i,1)
           }
 
-          this.arrayHome.push(...filteredElements.map(element => ({ name: 'gridproduct', data: element })));
+          // console.log('filteredElements',filteredElements)
+
+          // 
+
+          // console.log('filteredElements', filteredElements.length)
+          // // groupGridproduct
+          
+          const index = this.arrayHome.findIndex( e => e.name == 'groupGridproduct' )
+          console.log('AJA')
+          this.arrayHome.setItem(index,{
+            name: 'groupGridproduct',
+            data: filteredElements.slice(0,this.conteoso)
+          })
+
+          this.arrayHome.push(...filteredElements.map(element => ({ name: 'gridproduct', data: element })).slice(this.conteoso) );
+          // this.arrayHome.push({
+          //   name: 'groupGridproduct',
+          //   data: filteredElements.slice(2)
+          // });
+
+          // for (let i = 2; i < filteredElements.length; i += 2) {
+          //   // Usa slice para obtener dos elementos a la vez, co menzando desde la posición i
+          //   const elementos = filteredElements.slice(i, i + 2);
+            
+          //   // Agrega un nuevo objeto a arrayHome con esos elementos
+          //   this.arrayHome.push({
+          //     name: 'groupGridproduct',
+          //     data: elementos
+          //   });
+          // }
+         
+
+
+          // let primerCiclo = true;
+
+          //   for (let i = 0; i < filteredElements.length; primerCiclo ? i += 3 : i++) {
+          //     // Determina cuántos elementos tomar basado en si es el primer ciclo o no
+          //     const numElementos = primerCiclo ? 3 : 1;
+          //     const elementos = filteredElements.slice(i, i + numElementos);
+
+          //     // Agrega un nuevo objeto a arrayHome con esos elementos
+          //     this.arrayHome.push({
+          //       name: 'groupGridproduct',
+          //       data: elementos
+          //     });
+
+          //     // Después del primer ciclo, asegura que el incremento sea de uno en uno
+          //     primerCiclo = false;
+          // }
+          
 
           const filteredElementsbox_categories = this.bloques.filter(element => ['box_categories'].includes(element.type));
           this.arrayHome.push(...filteredElementsbox_categories.map(element => ({ name: 'box_categories', data: element })));
@@ -545,7 +1062,7 @@
         // response.filter(e=> e.name != 'Ingresos de Hoy'))
         // this.bloqueextra = response.find(e=> e.name == 'Ingresos de Hoy')
           
-        })
+        // })
       },
       async onGetPromociones(){
         await this.getPromociones().then((response)=>{
@@ -650,12 +1167,24 @@
         scrollv.scrollToIndex(0,true)
       },
       scrollEnded(args){
-        if(this.$refs.arrayHome != undefined ){
-          // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
+    
+
+        console.log('scrollEnded',args.object, args.scrollOffset, args.object.scrollableHeight)
+        if(args.scrollOffset > 1000){
+          const filteredElements = this.bloques.filter(element => ['categorie', 'filter', 'search'].includes(element.type));
+        console.log('peticion', this.conteoso,filteredElements)
+
+        const index = this.arrayHome.findIndex( e => e.name == 'groupGridproduct' )
+          this.arrayHome._array[index].data.push(...filteredElements.slice(this.conteoso,this.conteoso+1))
+          this.conteoso+=1
+          this.$refs.arrayHome.refresh()
         }
-        if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.arrayHome != undefined){
-          // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
-        }
+        // if(this.$refs.arrayHome != undefined ){
+        //   // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Auto'
+        // }
+        // if(args.scrollOffset >= 0 && args.scrollOffset <= 3 && this.$refs.arrayHome != undefined){
+        //   // this.$refs.arrayHome.nativeView.loadOnDemandMode = 'Manual'
+        // }
       },
       onScroll({ scrollOffset }){
         let scrollv = this.$refs.arrayHome.nativeView;
@@ -678,6 +1207,12 @@
         }
       },
       onScrolled (args) {
+
+        // let scrollv = args.object;
+        const scrollView = args.object;
+        console.log('scrollView',scrollView)
+        const verticalOffset = scrollView.verticalOffset;
+        console.log('scrollv',verticalOffset)
         // this.page = this.page + 1
         // this.onGetProducts()
       

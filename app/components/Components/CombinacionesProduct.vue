@@ -388,11 +388,11 @@
       };
     },
     mounted(){
-      console.log('combination', this.modelos)
+      // console.log('combination', this.modelos)
     },
     destroyed(){
       this.modelos = null
-      console.log('destroyed combinacion')
+      // console.log('destroyed combinacion')
     },
     methods:{
       // ...mapMutations('car',['setCombinacion']),

@@ -6,11 +6,10 @@
       borderColor="#F5F5F5"
       v-if="product && product.id != undefined"
       paddingBottom="8"
-      
     >
       <AbsoluteLayout >
 
-        <ImageCache 
+        <!-- <ImageCache 
           @tap="onTap()"
           top="0"
           left="0"
@@ -26,7 +25,23 @@
           placeholder="res://eskeleton"
           :src="`${product.images[0]}`" 
           :opacity="stock.opacity"
-        />
+        /> -->
+
+        <ImageCacheIt  
+          @tap="onTap()"
+          horizontalAlignment="center"
+          verticalAlignment="top"
+          v-show="product.images && product.images.length"
+          loadMode="async" 
+          :src="`${product.images[0]}`"
+          width="100%"  
+          stretch="aspectFill" 
+          :height="imageHeight" 
+          top="0"
+          left="0"  
+          placeHolder="res://eskeleton"  
+          :opacity="stock.opacity"
+          />
 
         <StoreBox
           top="8"
@@ -41,31 +56,10 @@
           <Label text="Sin stock" fontWeight="800" horizontalAlignment="center" />
         </GridLayout>
            
-        <!-- <StackLayout
-          top="170"
-          left="0"
-          width="92%"
-          margin="8"
-          padding="8"
-          background="rgba(218,0,128,0.7)" 
-          orientation="horizontal"
-          borderRadius="4"
-          v-if="product.isCart && !isSmall"
-        >
-          <image marginRight="8" src="~/assets/icons/check_white.png" width="12"  stretch="aspectFit" />
-          <Label 
-            text="Agregado al carrito" 
-            color="white" 
-            fontSize="12"
-            padding="0"
-            margin="0"
-            fontWeight="600"
-          />
-        </StackLayout>  -->
-         
+       
       </AbsoluteLayout>
 
-      <StackLayout  :opacity="stock.opacity" paddingTop="0" v-if="!isSmall"  @tap="onTap()" class="product_text" >
+      <StackLayout  :opacity="stock.opacity" paddingTop="0"  @tap="onTap()" class="product_text" >
         <label 
           marginTop="8"
           v-show="product.code && product.code != ''"
@@ -79,9 +73,20 @@
         <label 
           :marginTop="title.marginTop"
           textWrap
-          v-if="product.name"
+          v-show="product.name"
           :text="product.name"
           class="title_product"
+          fontSize="11"
+          fontWeight="300"
+          lineHeight="0"
+          padding="0"
+        />
+        <label 
+          :marginTop="title.marginTop"
+          textWrap
+          v-show="product.name == ''"
+          :text="product.name"
+          class="label_skeleton"
           fontSize="11"
           fontWeight="300"
           lineHeight="0"
@@ -113,6 +118,7 @@
   import { URL_IMAGE } from '~/services'
   import colorsCircle from '~/components/Components/modules/colors_circle'
   import tallesCircle from '~/components/Components/modules/talles_circle'
+  import { ImageCache } from '@nativescript/core'
 
   export default {
     mixins: [productMixin],
@@ -170,7 +176,8 @@
       // console.log(this.$refs.titulo.nativeView.android)
     },
     computed:{
-      ...mapState(['isLoadPage']),
+      ...mapState(['isLoadPage','cacheGlobal']),
+
       ispriceOffert(){
         return this.product.is_desc ? this.product.is_desc:false
       },
@@ -204,6 +211,39 @@
       },
     },
     methods:{
+      async cargaImagen(imagen)
+      {
+        console.log('carga',this.cacheGlobal)
+        return this.cacheGlobal.get(imagen)
+        // console.log('this.cacheGlobal.get(imagen)',)
+        // return imagen
+        // const imageCache = new ImageCache()
+       
+        // let i = imagen
+        // await imageCache.enqueue({
+        //     url: imagen,
+        //     key: imagen,
+        //       async completed(image, key) {
+        //       console.log('Successfully retrived and cached the cat image',image, key)
+        //       i = await key
+        //       return i
+        //     },
+        //     error(key) {
+        //       console.log('cache error')
+        //     },
+        //   })
+        //   console.log('SI',imagen)
+        //   return i
+        // console.log('imagen',imagen)
+        
+        // const cachedImage = imageCache.get(imagen)
+        // console.log('cachedImage',cachedImage)
+
+        // if(cachedImage == undefined){
+        //   return imagen
+        // }
+        // return cachedImage
+      },
       loaded({object}){
         // console.log(object.getActualSize())
       },

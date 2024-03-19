@@ -72,7 +72,7 @@
 
     },
     mounted(){
-      // console.log('client', this.client)
+      console.log('client', this.client)
     }
   };
 </script>

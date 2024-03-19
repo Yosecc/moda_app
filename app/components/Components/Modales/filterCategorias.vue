@@ -127,7 +127,7 @@
         default: []
       },
       categorieid:{
-        type: Number,
+        type: Number|String,
         default: 1
       }
     },

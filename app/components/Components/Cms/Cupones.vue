@@ -6,6 +6,7 @@
         :background="block.tunes.configTune.backgroundColor != undefined ? block.tunes.configTune.backgroundColor : ''"
         :padding="configTuneExapandir(block.tunes) ? '0' : '0'"
     >
+    
         <StackLayout
             v-for="(item, key) in cupones"
             :key="`cupon-${key}`"
@@ -16,7 +17,7 @@
             <Label text="OBTENER" v-if="isLoadingCanje != item.code" @tap="inonCanjearCupon(item.code)" textWrap class="btn btn-primary  outline" textAlignment="center" padding="4" />
             <ActivityIndicator  v-if="isLoadingCanje == item.code" busy="true" color="#E9418A" marginTop="8" />
 
-            <Label :text="item.price"  textWrap  textAlignment="center" />
+            <Label :text="moneda(item.price)"  textWrap  textAlignment="center" />
             <!-- <Label :text="JSON.stringify(item.col)" textWrap /> -->
         </StackLayout>
     </FlexboxLayout>
@@ -68,6 +69,17 @@
         console.log('cupones', this.block.cupones )
       },
       methods:{
+        moneda(value){
+          value += '';
+          var x = value.split('.');
+          var x1 = x[0];
+          var x2 = x.length > 1 ? '.' + x[1] : '';
+          var rgx = /(\d+)(\d{3})/;
+          while (rgx.test(x1)) {
+              x1 = x1.replace(rgx, '$1' + '.' + '$2');
+          }
+          return '$' + x1;
+        },
         inonCanjearCupon(code){
           this.isLoadingCanje = code
 

@@ -11,6 +11,7 @@ const state = {
         password: "",
         first_name: '',
     },
+    clienteData: { email: '', first_name: '', last_name: '' },
     code: 6754,
     token: cache.get('token')
 };
@@ -31,9 +32,10 @@ const getters = {
         state.code = val
     },
     client(state) {
-        // console.log('cuando pasa por aqui?')
+        if (state.clienteData.email != '') {
+            return state.clienteData
+        }
         if (cache.get('client')) {
-            // state.user = JSON.parse(cache.get('client'))
             return JSON.parse(cache.get('client'))
         } else {
             return state.user
@@ -42,6 +44,9 @@ const getters = {
 };
 
 const mutations = {
+    setclienteData(state, val) {
+        state.clienteData = val;
+    },
     SetUser(state, val) {
         cache.set('token', response.api_token)
         state.user = val
@@ -61,7 +66,7 @@ const actions = {
         cache.clear()
         const response = await Api.post('auth/login', context.state.user)
             // console.log('response', response)
-        if (response.status) {
+        if (response.status == true) {
             context.state.user = response.client
                 // console.log('token', response.client.api_token)
             cache.set('token', response.client.api_token)
@@ -69,10 +74,9 @@ const actions = {
             context.state.token = response.client.api_token
                 // context.commit('setToken', response.client.api_token)
         }
-        // return response    
+        return response
     },
     Register(context, values) {
-        console.log('llega hasta aqui')
         const response = Api.post('auth/register', values)
         return response
     },
@@ -113,6 +117,10 @@ const actions = {
         } else {
             alert('Ha ocurrido un error. Estamos trabajando en ello.')
         }
+    },
+    async reenviarCodigo(context, val) {
+        const response = await Api.get(`auth/resend_code/${val.client.email}`)
+        return response
     },
     getClient(context, email) {},
     sendMail(context, type) {

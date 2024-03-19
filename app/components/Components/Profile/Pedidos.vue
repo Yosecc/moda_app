@@ -10,6 +10,7 @@
         @loadMoreDataRequested="onLoadCargar"
         @scrollEnded="scrollEnded"
         :items="pedidosData" 
+        v-show="pedidosData.length"
       >
         <v-template   >
           <StackLayout>
@@ -18,6 +19,9 @@
           </StackLayout>
         </v-template>
       </RadListView>
+
+      <Label v-if="!pedidosData.length && !loading" margin="32 16" background="" padding="16" textAlignment="center" fontWeight="100" fontSize="24" flexWrap text="Aún no tenés pedidos" />
+
 
   </StackLayout>
 </template>

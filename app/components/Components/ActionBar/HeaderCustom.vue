@@ -61,13 +61,9 @@
           
 
           <BtnPromotions  v-if="isBtnPromotions"></BtnPromotions>
-          <!-- <Image 
-            src="~/assets/icons/bell.png" 
-            padding="0"
-            width="32"
-            height="32"
-            opacity=".05"
-          /> -->
+          <BtnSearch @onAction="$emit('onActionSearch')" v-if="isSearch"></BtnSearch>
+          
+          
         </StackLayout>
       </GridLayout>
      
@@ -83,6 +79,7 @@ import BtnMenu from './BtnMenu.vue'
 import BtnCar from './BtnCar.vue'
 import BtnNotification from '~/components/Components/ActionBar/BtnNotification.vue'
 import BtnPromotions from '~/components/Components/ActionBar/BtnPromotions.vue'
+import BtnSearch from '~/components/Components/ActionBar/BtnSearch.vue'
 
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
@@ -116,13 +113,19 @@ import { mapMutations, mapState, mapGetters } from 'vuex'
         type: Boolean,
         default: false
       },
+      isSearch:{
+        type: Boolean,
+        default: false
+      },
+
     },
     components:{
       BtnMenu,
       BtnBack,
       BtnCar,
       BtnNotification,
-      BtnPromotions
+      BtnPromotions,
+      BtnSearch
     },
     data() {
       return {

@@ -3,7 +3,7 @@
 
     <GridLayout rows="auto,*">
   
-      <HeaderStore row="0" :store="producto.store" :carro_count="calculoPrendasProductMixin" :back="true" class="shadow" @updateLike="updateLike" />
+      <HeaderStore row="0" :store="producto.store" :carro_count="calculoPrendasProductMixin" :back="true" class="shadow" :isFavorite="false" @updateLike="updateLike" />
   
       <GridLayout row="1">
         <RadSideDrawer  
@@ -511,9 +511,19 @@
     },
     computed:{
       talles(){
+        if(!this.producto?.sizes){
+          return []
+        }
         return this.producto?.sizes
       },
       colores(){
+        console.log('this.producto',this.producto)
+        if(this.producto.colors == null){
+          return []
+        }
+        if(!this.producto?.colors.length){
+          return []
+        }
         return this.producto?.colors.map(element =>{
           element.disabled = false
           const modelo = this.producto.models.find(e => e.size == this.talleActive)
@@ -777,6 +787,9 @@
             this.setGroupId(response.cart.data.group_id)
             if(response.is_missing_data.status == 'missing_data'){
               this.$navigator.navigate('/datos',{
+                props:{
+									local_cd: this.producto.store.id
+								},
                 transition: {
                     name: 'slideLeft',
                     duration: 300,

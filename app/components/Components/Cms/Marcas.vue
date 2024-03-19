@@ -6,18 +6,35 @@
         :background="block.tunes.configTune.backgroundColor != undefined ? block.tunes.configTune.backgroundColor : ''"
         :padding="configTuneExapandir(block.tunes) ? '0' : '0'"
     >
-        <StackLayout
+    
+    <CollectionView
+               
+                :items="marcas"
+                colWidth="33.33%"
+                rowHeight=""
+               
+                row="1"
+                col="0" 
+                colSpan="2"
+              
+            >
+                <v-template  >
+                  <FlexboxLayout backgroundRepeat="no-repeat" backgroundSize="cover"  justifyContent="center" alignItems="center" padding="0">
+                    <ActivityIndicator v-if="item.load" horizontalAlignment="center" verticalAlignment="center" busy="true" color="#E9418A" />
+                    <Image  v-else @tap="onRedirect(item)" :src="item.logo" stretch="aspectFit" width="100%"  />
+                  </FlexboxLayout>
+                </v-template>
+            </CollectionView>
+        <!-- <StackLayout
             v-for="(item, key) in marcas"
             :key="`marca-${key}`"
             :class="`col-4 offset-${item.offset}`"
-            @tap="onRedirect(item)"
+            @tap="onRedirect(item,key)"
         >
-            <Image  :src="item.logo" stretch="aspectFit" width="100%"  />
-            <!-- <WebView :loaded="onWebViewLoaded" :canGoForward="false" :canGoBack="false" :disableZoom="true" :src="html(item.captionHtml)" v-if="!item.ocultarTitulo" /> -->
-            <!-- <Label text="OBTENER" textWrap class="btn btn-primary  outline" textAlignment="center" padding="4" /> -->
-            <!-- <Label :text="item.price"  textWrap  textAlignment="center" /> -->
-            <!-- <Label :text="JSON.stringify(item)" textWrap /> -->
-        </StackLayout>
+        <Image  :src="item.logo" stretch="aspectFit" width="100%"  />
+        <ActivityIndicator v-show="item.load" horizontalAlignment="center" verticalAlignment="center" busy="true" color="#E9418A" />
+            
+        </StackLayout> -->
     </FlexboxLayout>
    
   </template>
@@ -38,17 +55,27 @@
       },
       data() {
         return {     
-  
+          bloque: this.block
         };
       },
       watch:{  
-  
+        ruta(to){
+          this.bloque.data.marcas = this.bloque.data.marcas.map( element => {
+                  element.load = false
+                  return element
+                })
+        }
       },
       computed:{
-        
+        ruta(){
+        return this.$navigator.path
+      },
         marcas(){
-            if(this.block.data.marcas!=undefined){
-                return this.block.data.marcas
+            if(this.bloque.data.marcas!=undefined){
+                return this.bloque.data.marcas.map( element => {
+                  element.load = false
+                  return element
+                })
             }
             return []
         },
@@ -62,12 +89,16 @@
         // }
       },
       mounted(){
-        console.log('cupones', this.block.marcas )
+        console.log('cupones', this.bloque.marcas )
       },
       methods:{
         onRedirect(item){
+          // console.log('this.bloque.marcas[key]',this.bloque)
+          // this.bloque.data.marcas[key].load = true
+          const index = this.bloque.data.marcas.findIndex( element => element.id == item.id)
+          this.bloque.data.marcas[index].load = true
           
-        console.log(item)
+          console.log(item)
           this.redirect({
             route: 'store',
             params: item

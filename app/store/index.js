@@ -77,7 +77,9 @@ export default new Vuex.Store({
         isNewPromotions: false,
         pageCMSPromotion: {},
         notification: null,
-        menuList: []
+        menuList: [],
+        cacheGlobal: null
+        
     },
     getters: {
         componentActive(state) {
@@ -85,6 +87,9 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setCacheGlobal(state, val){
+            state.cacheGlobal = val
+        },
         setPageCMSPromotion(state, val) {
             state.pageCMSPromotion = val
         },

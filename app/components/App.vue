@@ -11,11 +11,24 @@
      
       <GridLayout ~mainContent>
         <AbsoluteLayout height="100%" width="100%">
-          <GridLayout  height="100%" width="100%"  top="0" left="0">
+          <GridLayout  v-show="!lo" height="100%" width="100%"  top="0" left="0">
             <Navigator :defaultRoute="isLogged ? '/home':'/login'"  />
           </GridLayout >
           
           <Toast /> 
+
+          <FlexboxLayout
+            width="100%"
+            height="100%"
+            top="0"
+            left="0"
+            justifyContent="center"
+            alignItems="center"
+            background="#e9418a"
+           v-if="lo"
+          >
+            <LottieView top="0" left="0" height=""  width="100%" src="lofolotttie.json" :loop="false" :autoPlay="true" @loaded="lottieViewLoaded"></LottieView>
+          </FlexboxLayout>
         </AbsoluteLayout>
         
       </GridLayout>
@@ -36,6 +49,7 @@
   import moment from 'moment'
   import Toast from '~/components/Components/Toast'
   import { LocalNotifications } from '@nativescript/local-notifications'
+  import { ImageCache } from '@nativescript/core'
 
   export default {
     mixins:[ homeMixin, redirectMixin],
@@ -59,18 +73,21 @@
         if(!to.foreground && to.data!=undefined && to.data.redirect!=undefined){
           this.redirect(JSON.parse(to.data.redirect))
         }
-      }
+      },
+      
     },
     data(){
       return{
         isLoadd: true,
+        _lottieView: null,
+        lo: true
       }
     },
     computed:{
       ...mapState(['drawer','directionDrawer','isLoadPage','viewNotification','notifications']),
       ...mapGetters('authentication',['isLogged']),
       ...mapState('categories',['openFilter','categoriesBase']),
-      ...mapState(['notification']),
+      ...mapState(['notification','cacheGlobal']),
       notificationActive(){
         if(this.viewNotification){
           return this.notifications._array[0]
@@ -78,33 +95,42 @@
         return null
       }
     },
+    
 		created(){
       this.changeisLoadPage(false)
       if(this.isLogged){
+        
+      
         this.defineHome()
       }
 		},
     mounted(){
-      //console.log(android.os.Build.VERSION.SDK_INT)
-
       LocalNotifications.addOnMessageReceivedCallback((notification) => {
+        console.log('notification',notification)
           if (notification.foreground) {
             if(notification.data != undefined){
               this.redirect(JSON.parse(notification.data.redirect))
             }
           }
       });
-      
-      // setTimeout(()=>{
-      //   if(this.isLogged){
-
-      
-      //   }
-      // },100)
     },
 		methods:{
-      ...mapMutations(['changeisLoadPage','changeDrawer','changeviewNotification','changeToast']),
+      ...mapMutations(['changeisLoadPage','changeDrawer','changeviewNotification','changeToast','setCacheGlobal']),
       ...mapMutations('car',['setCarsProducts']),
+      ...mapActions('products',['getBloques']),
+      
+      completionBlock(value){
+        alert(value)
+      },
+      lottieViewLoaded(args) {
+        this._lottieView = args.object;
+        this._lottieView.speed = 1.5
+
+        setTimeout(() => {
+          this.lo = false
+        }, 2500);
+          
+      },
       onDrawerClosed(){
         this.changeDrawer('close')
       },

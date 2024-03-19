@@ -1,7 +1,7 @@
 <template lang="html">
-      <ImageCache 
-        placeholderStretch="aspectFill"
-        placeholder="res://eskeleton"
+      <ImageCacheIt 
+        placeHolderStretch="aspectFill"
+        placeHolder="res://eskeleton" 
         :src="store.logo"
         width="100"
         height="100"

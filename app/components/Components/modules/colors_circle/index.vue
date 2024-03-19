@@ -36,7 +36,9 @@
     props:{
         colors:{
             type: Array,
-            default: []
+            default(){
+                return []
+            }
         },
         product_id:{
             type: String,

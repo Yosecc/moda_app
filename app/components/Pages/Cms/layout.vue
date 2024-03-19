@@ -74,6 +74,9 @@
             :block="item"
            />
           </v-template>
+          <v-template if="item.type == 'Espaciado'" >
+            <StackLayout padding="0" :height="item.data.height" width="100%"></StackLayout>
+          </v-template>
           <v-template if="item.type == 'CanjeCupon'" >
             <formCanjeCupon :placeholder="item.data.form.placeholder" :button="item.data.form.button" />
           </v-template>

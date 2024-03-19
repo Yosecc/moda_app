@@ -116,7 +116,9 @@
 					this.setCarCheckout(this.car)
 					this.changeDrawer('')
 					this.changeDrawerCar('')
-					this.$navigator.navigate('/datos')
+					this.$navigator.navigate('/datos',{props: {
+                                local_cd: this.car.id
+                            },})
 					// this.$navigator.navigate('/coupons')
 				}
 			}

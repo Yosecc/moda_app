@@ -211,7 +211,7 @@
 					products:    products,
 					local_cd: data.carro.id
 				})
-						
+				
 				await this.processCart(data.carro.id).then((response)=>{
 					if(response.cart.status == 'success'){
 						this.setGroupId(response.cart.data.group_id)
@@ -219,6 +219,9 @@
 							this.$refs.carrosabiertos.refresh()
 						if(response.is_missing_data.status == 'missing_data'){
 						this.$navigator.navigate('/datos',{
+							props:{
+									local_cd: data.carro.id
+								},
 							transition: {
 								name: 'slideLeft',
 								duration: 300,
@@ -235,7 +238,7 @@
 								curve: 'easeIn'
 								},
 								props:{
-								local_cd: data.carro.id
+									local_cd: data.carro.id
 								}
 							})
 						}else{

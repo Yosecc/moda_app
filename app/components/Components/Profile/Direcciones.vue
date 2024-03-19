@@ -14,16 +14,16 @@
         textAlignment="center"
       />
 
-      <Button 
+      <!-- <Button 
         class="btn btn-info btn-sm" 
         text="Agregar dirección"
         @tap="onAddDirection"
         marginTop="24"
-      />
+      /> -->
     </StackLayout>
     
 
-      <RadListView v-else ref="listDirecciones" :items="direcciones" >
+      <RadListView v-show="direcciones.length && !loading" ref="listDirecciones" :items="direcciones" >
 
         <v-template if="item.default == true">
           <StackLayout
@@ -42,7 +42,11 @@
               <Label :text="item.direccion" fontSize="16" class="title" />
               <Label :text="item.localidad" fontSize="16" class="" />
               <Label :text="item.codigo_postal" fontSize="16" class="" />
-              <button text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" />
+              <GridLayout columns="*,*">
+                <StackLayout col="0"><button col="0" margin="8" text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" /></StackLayout>
+                <StackLayout col="1"><button col="1" margin="8" text="BORRAR" @tap="onTapBorrar(item)" marginTop="16" class="btn btn-simple btn-sm" /></StackLayout>
+              </GridLayout>
+              <!-- <button text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" /> -->
             </StackLayout>
           </StackLayout>
         </v-template>
@@ -58,7 +62,16 @@
                 <Label :text="item.localidad" fontSize="16" class="" />
                 <Label :text="item.provincia" fontSize="16" class="" />
                 <Label :text="item.codigo_postal" fontSize="16" class="" />
-                <button text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" />
+                <!-- <StackLayout orientation="horizontal">
+                  <button text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" />
+                  <button text="BORRAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" />
+
+                </StackLayout> -->
+                <GridLayout columns="*,*">
+                  <StackLayout col="0"><button col="0" margin="8" text="EDITAR" @tap="onTapEditar(item)" marginTop="16" class="btn btn-simple btn-sm" /></StackLayout>
+                  <StackLayout col="1"><button col="1" margin="8" text="BORRAR" @tap="onTapBorrar(item)" marginTop="16" class="btn btn-simple btn-sm" /></StackLayout>
+                </GridLayout>
+                
                 <FlexboxLayout 
                   class="switchFrom"
                   justifyContent="space-between"
@@ -90,6 +103,7 @@
    import CardEnvio from '~/components/Components/Checkout/CardEnvio.vue'
   import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
   import InputsLayout from '~/components/Components/InputsLayout.vue'
+  import { Dialogs } from '@nativescript/core'
   export default {
     mixins: [profileMixin],
     props: {
@@ -130,10 +144,11 @@
       };
     },
     watch:{
-      async direcciones (val){
+       direcciones (val){
+        console.log('to', val)
         // alert('cambio')
-        await this.$nextTick()
-        this.$refs.listDirecciones.nativeView.refresh();
+        // await this.$nextTick()
+        this.$refs.listDirecciones.refresh();
       },
       id(){
         this.limit = 0
@@ -152,8 +167,32 @@
       // console.log(this.carCheckout)
     },
     methods:{
-      ...mapActions('profile',['setDireccionDefault','getDirecciones','changePrincipalAddress']),
+      ...mapActions('profile',['setDireccionDefault','getDirecciones','changePrincipalAddress','deleteDirecciones']),
       ...mapMutations(['changeToast']),
+      onTapBorrar(item){
+        console.log('ssjd',item)
+        Dialogs.confirm({
+          title: '',
+          message: 'Estas seguro que deseas borrar la Dirección?',
+          okButtonText: 'Yes',
+          cancelButtonText: 'No',
+          neutralButtonText: 'Cancel',
+        }).then((result) => {
+          console.log(result)
+       if(result){
+            this.deleteDirecciones({num: item.id}).then((response)=>{
+              console.log('borrar', response)
+              // this.getDirecciones().then((response)=>{
+                
+              // })
+            }).catch((error)=>{
+              
+              console.log('error',JSON.parse(error))
+            })
+          }
+          })
+        
+      },
       onTapEditar(item){
         this.$navigator.navigate('/direcciones_form',{
           transition: {

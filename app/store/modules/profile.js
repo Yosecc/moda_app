@@ -43,21 +43,32 @@ const state = {
             hint: 'Documento',
             required: true,
         },
+        // {
+        //     typeInput: 'email',
+        //     name: 'email',
+        //     model: '',
+        //     disabled: true,
+        //     label: 'Email',
+        //     hint: 'Email',
+        //     required: true,
+        //     editable: false
+        // },
         {
-            typeInput: 'email',
-            name: 'email',
+            typeInput: 'select',
+            name: 'sex',
             model: '',
-            disabled: true,
-            label: 'Email',
-            hint: 'Email',
+            values: [{ id: 'W', name: 'Mujer' }, { id: 'M', name: 'Hombre' }],
+            campos: { id: 'id', name: 'name' },
+            label: 'Sexo',
+            hint: 'Sexo',
             required: true,
         },
         {
-            typeInput: undefined,
-            name: 'sex',
+            typeInput: 'number',
+            name: 'mobile_area',
             model: '',
-            label: 'Sexo',
-            hint: 'Sexo',
+            label: 'Código de área',
+            hint: 'Código de área',
             required: true,
         },
         {
@@ -66,14 +77,6 @@ const state = {
             model: '',
             label: 'Celular',
             hint: 'Celular',
-            required: true,
-        },
-        {
-            typeInput: 'number',
-            name: 'phone_company',
-            model: '',
-            label: 'Teléfono',
-            hint: 'Teléfono',
             required: true,
         },
     ],
@@ -123,10 +126,20 @@ const getters = {
         // console.log('pedidos',state.pedidos)
         // console.log('pedidosRosa',state.pedidosRosa)
         return new ObservableArray(state.pedidos)
-    }
+    },
+    cliente(state) {
+        let cliente = {}
+        state.infoPersonal.forEach(input => {
+            cliente[input.name] = input.model
+        })
+        return cliente;
+    },
 };
 
 const mutations = {
+    deleteDireccion(state, val) {
+        return
+    },
     setPedidos(state, val) {
         state.pedidos = val
     },
@@ -197,7 +210,9 @@ const actions = {
     async updateDireccion(context, val) {
         const response = await Api.post(`profile/direcciones/update/${val.id}`, val.data)
             //  console.log('response', response)
-        context.commit('updateDireccion', response)
+            // context.commit('updateDireccion', response)
+        context.commit('setDirecciones', response)
+
         return response
     },
     async addDireccion(context, val) {
@@ -205,6 +220,13 @@ const actions = {
         context.commit('addDireccion', response)
         return response
             // 
+    },
+    async deleteDirecciones(context, val) {
+        console.log('llega')
+        const response = await Api.post(`profile/direcciones/deleteDireccion`, val)
+        context.commit('setDirecciones', response)
+            // context.commit('deleteDireccion', val.num)
+        return response
     },
     async getCoupons(context) {
         const response = await Api.get('profile/coupons')
@@ -216,6 +238,14 @@ const actions = {
         const response = await Api.get('profile/client')
             // console.log('response',response)
         context.commit('setInfoPersonal', response)
+        return response
+    },
+    async updateClient(context, val) {
+        const response = await Api.post('profile/client/update', val)
+        console.log('response', response)
+        if (response.status == 'success') {
+            context.commit('setInfoPersonal', response.data)
+        }
         return response
     },
     async changePrincipalAddress(context, id) {

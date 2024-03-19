@@ -5,7 +5,15 @@
       <!-- <HeaderNoActionBar row="0" margin="0" padding="8" :logoCenter="false" :back="true" :car="false" :isModal="true" >
         <Label col="1" marginTop="6" fontWeight="900" fontSize="16" text="Resumen de compra" />
       </HeaderNoActionBar> -->
-      <HeaderDefault row="0" :logoCenter="false" :back="true" :car="false" :isModal="true" >
+      <HeaderDefault row="0" :logoCenter="false" :back="true" :car="false" :isModal="false" :isEvent="true" @onBack="$navigator.navigate('/profile', {
+            options: {
+                transition: {
+                    name: 'slideLeft',
+                    duration: 300,
+                    curve: 'easeIn'
+                },
+            },
+        })" >
         <Label col="1" padding="0" horizontalAlignment="left" fontWeight="900" fontSize="16" text="Resumen de compra" />
       </HeaderDefault>
 
@@ -55,7 +63,8 @@
                     :fontSize="i.fontSize != undefined ? i.fontSize : 16" 
                     textWrap
                     marginTop="10"
-                    class="btn btn-primary"
+                    width="50%"
+                    class="btn btn-md btn-info label_enlace"
                     @tap="onRedirect(i.redirect)"
                   />
 

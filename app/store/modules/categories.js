@@ -157,6 +157,19 @@ const state = {
             left: 35,
             top: 20
         },
+
+        {
+            id: 'ofertas',
+            name: 'Ofertas',
+            key: 'ofertas',
+            icon: 'res://ofertas',
+            color: "",
+            colSpan: 2,
+            col: 4,
+            row: 1,
+            left: 35,
+            top: 20
+        },
     ],
     orderedCategories: [],
     isLoadCategories: false,

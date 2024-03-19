@@ -6,7 +6,10 @@
       @changeSelect="changeSelect"
       v-if="!dataDirecciones.length && !loading"
     >
-      
+    <template slot="top">
+
+      <Label textWrap marginBottom="16" text="A continución podés llenar los datos de la persona que recibirá el paquete." />
+    </template>
     </InputsLayout>
 
     <StackLayout row="0" v-if="loading" padding="16" width="100%" >
@@ -26,6 +29,12 @@
       v-show="dataDirecciones.length && !loading"
       @itemTap="onItemSelected"
     >
+      <v-template name="header">
+      <StackLayout padding="0 16 0 16">
+
+        <Label row="0"  fontSize="18" fontWeight="800" textWrap :text="'Sucursales'" />
+      </StackLayout>
+      </v-template>
       <v-template>
         <StackLayout padding="8 16 8 16">
 
@@ -93,7 +102,16 @@
 
         </StackLayout>
       </v-template>
+      <v-template name="footer">
+      <StackLayout padding="0 16 0 16">
+
+        <!-- <Label row="0"  fontSize="18" fontWeight="800" textWrap :text="'Sucursales'" /> -->
+        <Label  @tap="onAgregarSucursal" text="Agregar Sucursal" fontWeight="600" class="label_enlace" textAlignment="center" row="1" padding="16" />
+      </StackLayout>
+      </v-template>
     </RadListView>
+    
+
 
        
   </StackLayout>
@@ -239,6 +257,9 @@
     },
     methods:{
       ...mapActions('checkout',['getComboDirecciones','datosEnvio','deleteShipping']),
+      onAgregarSucursal(){
+        this.dataDirecciones = []
+      },
       mountedData(){
         this.loading = true
         this.datosEnvio({
@@ -297,11 +318,12 @@
         this.setModelsInputs(this.direccionInput, item)
       },
       changeSelect(to){
-        if(this.direccionInput.find((e)=> e.name == 'location').model != ''){
-          this.direccionInput.find((e)=> e.name == 'location').model = ''
-          this.direccionInput.find((e)=> e.name == 'location').title = 'Seleccione su Localidad'
-        }
-        let values = this.locationsIntegral.filter((e)=> e.provincia_id == to)
+        console.log('to',to, )
+        // if(this.direccionInput.find((e)=> e.name == 'location').model != ''){
+          // this.direccionInput.find((e)=> e.name == 'location').model = ''
+          // this.direccionInput.find((e)=> e.name == 'location').title = 'Seleccione su Localidad'
+        // }
+        let values = this.locationsIntegral.filter((e)=> e.provincia_id == this.direccionInput.find((e)=> e.name == 'state').model )
         this.direccionInput.find((e)=> e.name == 'location').values = values
       },
       opendDrwer(item){

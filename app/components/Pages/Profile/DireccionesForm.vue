@@ -79,8 +79,8 @@
             typeInput: undefined,
             name: 'ADDRESS_NAME',
             model: '',
-            label: 'Nombre',
-            hint:'Nombre',
+            label: 'Alias',
+            hint:'(ej: casa, trabajo, etc.)',
             required: true,
           },
           {
@@ -97,7 +97,7 @@
             model: '',
             label: 'Altura',
             hint:'Altura',
-            required: false,
+            required: true,
           },
           {
             typeInput: undefined,
@@ -128,6 +128,14 @@
             onTap: (input)=>{
               this.opendDrwer(input)
             }
+          },
+          {
+            typeInput: undefined,
+            name: 'CITY',
+            model: '',
+            label: 'Localidad',
+            hint:'Localidad',
+            required: true,
           },
           {
             typeInput: 'number',
@@ -225,15 +233,28 @@
       },
       async onTapSave(){
         const data = this.prepareData(this.inputs)
-        if(!this.errors.length){
+        console.log('w', this.validadores(this.inputs ),this.errors,)
+        const e = this.getErrores()
+        if(this.validadores(this.inputs)){
           this.loading = true
           let title = ''
           if(this.type == "edit"){
             title = 'Registro actualizado'
+            console.log({ data: data, id: this.item.id })
             await this.updateDireccion({ data: data, id: this.item.id })
+            .then((response)=>{
+              this.loading = false
+              console.log('response', response)
+            }).catch((error)=>{
+              this.loading = false
+              console.log(JSON.parse(error))
+              return
+            })
           }else{
             title = 'Registro creado'
-            await this.addDireccion(data)
+            await this.addDireccion(data).then((response)=>{}).catch((error)=>{
+              console.log(JSON.parse(error))
+            })
           }
           this.changeToast({
               title: title,

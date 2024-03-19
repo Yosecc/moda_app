@@ -192,6 +192,9 @@ export default {
                     this.setGroupId(response.cart.data.group_id)
                     if (response.is_missing_data.status == 'missing_data') {
                         this.$navigator.navigate('/datos', {
+                            props: {
+                                local_cd: id
+                            },
                             transition: {
                                 name: 'slideLeft',
                                 duration: 300,

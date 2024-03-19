@@ -5,11 +5,10 @@
       subTitle="Nos faltan algunos datos. A continuación podés llenarlos."
       nextPage="/coupons"
       :nextStatus="true"
+      :loading="buttonLoading"
       @onAction="oneditClient"
     >
-      <StackLayout  class="" paddingBottom="16" marginTop="0">
-        
-        
+      <StackLayout  class="" paddingBottom="16P" marginTop="0">
         <InputsLayout
           :clases="'shadow-none'"
           :inputs="infoPersonal"
@@ -33,7 +32,7 @@
   export default {
     mixins: [helpersMixin],
     props: {
-
+      local_cd:{}
     },
     components: {
       HeaderDefault,
@@ -180,7 +179,9 @@
             hint:'Localidad',
             required: false,
           },
-        ]
+        ],
+        buttonLoading: false,
+
       };
     },
     watch:{
@@ -224,14 +225,18 @@
         screenName: `Checkout Datos`
       });
 
-      const quitar_campos = ['email','sex','mobile','phone_company'];
+      // const quitar_campos = ['email','sex','mobile','phone_company'];
+      console.log('mounted this.local_cd',this.local_cd)
 
-      quitar_campos.forEach((c)=>{
-        let index = this.infoPersonal.findIndex((e)=> e.name == c)
-        this.infoPersonal.splice(index, 1)
-      })
+      // quitar_campos.forEach((c)=>{
+      //   let index = this.infoPersonal.findIndex((e)=> e.name == c)
+      //   this.infoPersonal.splice(index, 1)
+      // })
       
-      this.getClient()
+      // console.log('this.infoPersonal',this.infoPersonal)
+      this.getClient().then((response)=>{}).catch((error)=>{
+        console.log('error', JSON.parse(error))
+      })
     },
     methods:{
       // ...mapMutations(['changeDrawerCar']),
@@ -268,24 +273,29 @@
         return errors.length > 0 ? false:true
       },
       async oneditClient(){
+        this.buttonLoading = true
+
         const obj = this.prepareData(this.infoPersonal)
+        console.log('this.carCheckout',this.carCheckout)
         await this.editClient(obj).then((response)=>{
 
-          firebase.analytics.logEvent({
-            key: "checkout_edit_client",
-            parameters: [ // optional
-              {
-                key: "group_id",
-                value: this.group_id
-              }
-            ]
-          })
+          // firebase.analytics.logEvent({
+          //   key: "checkout_edit_client",
+          //   parameters: [ // optional
+          //     {
+          //       key: "group_id",
+          //       value: this.group_id
+          //     }
+          //   ]
+          // })\
+        this.buttonLoading = false
+          console.log('this.local_cd',this.local_cd)
           this.$navigator.navigate('/envios',{
-                    // props: {
-                    //     store: {
-                    //         id: this.local_cd
-                    //     }
-                    // },
+                    props: {
+                        store: {
+                            id: this.local_cd
+                        }
+                    },
                   transition: {
                     name: 'slideLeft',
                     duration: 300,
@@ -295,7 +305,9 @@
                 })
 
         }).catch((error) => {
-          console.log(error.response)
+        this.buttonLoading = false
+
+          console.log(error, JSON.parse(error))
         })
           
       }

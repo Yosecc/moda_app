@@ -5,10 +5,11 @@
       <GridLayout
         class=""
         columns="auto,*,auto" 
-        rows="*" 
+        rows="*,auto" 
         marginTop="0"
+        padding="8 0"
         paddingLeft="0"
-        height="60"
+        height="70"
         background=""
         borderBottomWidth=".1"
         borderColor="rgba(0, 0, 0, .2)"
@@ -16,23 +17,31 @@
         <BtnMenu
           v-show="!back" 
           col="0"
+          row="0"
           horizontalAlignment="left" 
         ></BtnMenu>
         
         <BtnBack
           v-show="back"
           col="0"
+          row="0"
+          :marginLeft="isMarginNegativo ? -10 : ''"
+          background=""
           horizontalAlignment="left" 
           :isEvent="isBackEvent"
           @onBack="onBack"
         ></BtnBack>
 
 
-        <FlexboxLayout 
+        <GridLayout 
           col="1"
+          row="0"
+          columns="auto,*"
           alignItems="center"
           @tap="OnViewStore(storeData)"
-          
+          background=""
+          padding="0"
+          height="60"
         >
 
           <ImageCache 
@@ -41,14 +50,15 @@
             :src="store.logo"
             width="40"
             height="40"
+            col="0"
             stretch="aspectFill"
             marginRight="8"
             class="storeBox"
           /> 
 
-          <StackLayout >
+          <StackLayout col="1" marginTop="8" background=""  padding="0">
 
-            <StackLayout  margin="0" padding="0" orientation="horizontal">
+            <StackLayout  margin="0" padding="0" background=""  orientation="horizontal">
 
               <Label   horizontalAlignment="left" margin="0 8 0 0" textWrap padding="0" :text="`${store.name}`" textTransform="capitalize" fontWeight="900" fontSize="18" />
               
@@ -77,6 +87,7 @@
               horizontalAlignment="left" 
               fontWeight="300"
               fontSize="10"
+              background=""
             >
                 <FormattedString>
                   <span  text="Compra mínima: "></span>
@@ -86,11 +97,13 @@
               <!-- <label fontSize="10" :text="JSON.stringify(carro)" textWrap="true" /> -->
           </StackLayout>
 
-        </FlexboxLayout >
+        </GridLayout >
         
         <StackLayout
           orientation="horizontal"
           col="2" 
+          row="0"
+
         >
               <Image 
                 top="0"
@@ -182,6 +195,9 @@
           
 
         </StackLayout>
+
+        <slot />
+
       </GridLayout>
      
     <!-- </ActionBar> -->
@@ -215,6 +231,7 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       //   type: Object|Array,
       //   default: {}
       // },
+
       iscarro:{
         type: Boolean, 
         default: true
@@ -238,7 +255,11 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
       carro_count:{
         type: Number,
         default: 0
-      }
+      },
+      isMarginNegativo:{
+        type: Boolean,
+        default: false
+      },
     },
     components:{
       BtnMenu,
@@ -308,11 +329,11 @@ import { mapMutations, mapState, mapGetters, mapActions } from 'vuex'
         // }, 200)
       },
       redirect(){
-        // console.log(this.store)
+       
         if(this.carro_count){
           this.$navigator.navigate('/detail_car', {
               props: {
-                  car_id: this.storeData.id,
+                  car_id: this.storeData.id ? this.storeData.id : this.storeData.local_cd,
                   store: this.storeData
               },
               transition: {

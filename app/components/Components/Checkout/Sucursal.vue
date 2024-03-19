@@ -78,6 +78,7 @@
 
       <StackLayout padding="0" v-show="dataSucursales.length && !loading">
           <Label  margin="0 16" textWrap :text="'Acá podrás ver el listado de todas tus direcciones para este tipo de envío.'" />
+          <Label  margin="0 16" fontSize="18" fontWeight="800" textWrap :text="'Sucursales'" />
         <RadListView 
           ref="dataSucursales"
           class="dataSucursales"
@@ -85,9 +86,9 @@
           row="0" 
           padding="0"
           margin="0"
-          
           @itemTap="onItemSelected"
         >
+
           <v-template>
             <StackLayout padding="8 16 8 16">
 

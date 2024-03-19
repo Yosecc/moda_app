@@ -39,11 +39,11 @@
         paddingBottom="0"
         @tap="onTap(i)"
       >
-        <ImageCache 
+        <ImageCacheIt 
           stretch="aspectFill"
           placeholderStretch="aspectFit"
-          borderRadius="10"
-          placeholder=""
+          borderRadius="0"
+          placeHolder="res://eskeleton" 
           :src="i.img"
           height="100%"
           class="imageCache"

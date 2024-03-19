@@ -345,6 +345,7 @@
 
           <StackLayout padding="8 16" v-if="!loading && resumen">
             <Label text="Prendas" marginBottom="8" fontSize="18" fontWeight="700" />
+            <!-- <Label :text="JSON.stringify(products)" marginBottom="8" fontSize="18" fontWeight="700" /> -->
             
               <StackLayout
                 v-for="(item, key) in products"
@@ -366,7 +367,7 @@
                   <StackLayout marginLeft="8" width="100%" padding="0">
                     <StackLayout paddingTop="0">
                       <Label 
-                        :text="item.descripcion" 
+                        :text="item.name" 
                         fontWeight="900"
                         fontSize="18"
                         padding="0"
@@ -374,8 +375,8 @@
                         textWrap
                       />
                       <Label 
-                        v-if="item.precio" 
-                        :text="`Precio uni. desde ${item.precio} (${calculoPrendas(item.combinacion)})`" 
+                        v-if="item.price" 
+                        :text="`Precio uni. desde ${item.price} (x ${item.cantidad_add})`" 
                         fontWeight="200"
                         fontSize="16"
                         padding="0" 
@@ -385,14 +386,14 @@
                   </StackLayout>
                 </StackLayout>
 
-                <CombinacionesProduct
+                <!-- <CombinacionesProduct
                   v-if="item.combinacion && (item.precio != null)"
                   v-model="item.combinacion"
                   :product="item"
                   :isProduct="false"
                   :isEnabled="true"
                   :isButtom="false"
-                />
+                /> -->
 
               </StackLayout>
             
@@ -527,7 +528,8 @@
         return this.metodospagos._array.find((e)=> e.method == this.resumen.payment_method)
       },
       products(){
-        return this.carCheckout.products._array
+       
+        return this.carCheckout.products
       },
       total(){
         let suma = 0

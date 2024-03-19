@@ -263,6 +263,7 @@ Switch.switch[checked=false] {
     }
     &.inputNumberMax {
         height: 120;
+        min-height: 120;
         font-weight: 900;
         text-alignment: center;
         margin-top: 24;

@@ -54,7 +54,7 @@
           <Pedidos        v-show="menuActive == 'Pedidos'"/>
           <Direcciones    v-show="menuActive == 'Direcciones'"/>
           <Coupons        v-show="menuActive == 'Coupons'"/>
-          <infoPersonal   v-show="menuActive == 'infoPersonal'"/> 
+          <InfoPersonal   v-show="menuActive == 'infoPersonal'"/> 
           <changePassword v-show="menuActive == 'changePassword'"/> 
         </StackLayout>
         
@@ -69,7 +69,7 @@
   import Pedidos             from '~/components/Components/Profile/Pedidos.vue'
   import Coupons             from '~/components/Components/Profile/Coupons.vue'
   import Direcciones         from '~/components/Components/Profile/Direcciones.vue'
-  import infoPersonal        from '~/components/Components/Profile/infoPersonal.vue'
+  import InfoPersonal        from '~/components/Components/Profile/InfoPersonal.vue'
   import changePassword        from '~/components/Components/Profile/changePassword.vue'
   import { ObservableArray } from '@nativescript/core/data/observable-array';
   import { firebase } from '@nativescript/firebase';
@@ -85,7 +85,7 @@
       Pedidos,
       Direcciones,
       Coupons,
-      infoPersonal,
+      InfoPersonal,
       changePassword
     },
     filters: {

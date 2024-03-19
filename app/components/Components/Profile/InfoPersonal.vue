@@ -1,4 +1,4 @@
-<template lang="html">
+ <template lang="html">
   <GridLayout rows="*">
         
         <InputsLayout
@@ -6,28 +6,21 @@
           :clases="'shadow-none'"
           :inputs="infoPersonal"
         >
-          <!-- <template slot="top">
-             <Label marginBottom="8" text="Datos personales" class="title" />
-          </template> --> 
+
           <template slot="bottom">
+            <!-- <Label :text="JSON.stringify(cliente)"/> -->
             <Button 
                 class="btn btn-sm btn-info" 
                 text="Guardar"
                 marginTop="16"
+                @tap="onUpdateProfile"
               />
           </template> 
         </InputsLayout> 
-        <!-- <Label row="1" marginBottom="8" text="Cambiar contraseña" class="title" /> -->
+
         
 
-    <!-- <InputsLayout
-      :clases="'shadow-none'"
-      :inputs="infoPersonal"
-    >
-      <template slot="top">
-         <Label marginBottom="8" text="Cambiar contraseña" class="title" />
-      </template> 
-    </InputsLayout> --> 
+
   </GridLayout>      
 </template>
 
@@ -57,12 +50,15 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
     },
     computed:{
       ...mapState('profile',['infoPersonal']),
+      ...mapGetters('profile', ['cliente'] ),
     },
     mounted(){
       this.getClient()
     },
     methods:{
-      ...mapActions('profile',['getClient']),
+      ...mapActions('profile',['getClient','updateClient']),
+      ...mapMutations(['changeToast']),
+
       onTapSave(){
 
       },
@@ -76,6 +72,51 @@ import { ObservableArray } from '@nativescript/core/data/observable-array';
           }
         })
         // console.log(this.coupons)
+      },
+      validaInfoPersonal(){
+        let errors = []
+        this.infoPersonal.forEach( input => {
+          if(input.required){
+            if(input.model === '' || input.model === undefined || input.model === null){
+              const text = 'Ingrese su '+input.label
+              errors.push(text);
+              this.changeToast({
+                    title: text,
+                    status: true,
+                    type: 'danger',
+                    message: ''
+                })
+            }
+          }
+        })
+        
+        return errors
+      },
+      onUpdateProfile(){
+        const errors = this.validaInfoPersonal()
+
+        if(errors.length){
+          return
+        }
+        
+        this.updateClient({
+          firstName: this.cliente.first_name,
+          lastName: this.cliente.last_name,
+          dni: this.cliente.cuit_dni,
+          gender: this.cliente.sex,
+          areaCode: this.cliente.mobile_area,
+          mobilePhone: this.cliente.mobile,
+        }).then((response)=>{
+          this.changeToast({
+                    title: 'Actualizado',
+                    status: true,
+                    type: 'success',
+                    message: ''
+                })
+        }).catch((error)=>{
+          console.log('eror', error)
+        })
+        
       }
     }
     

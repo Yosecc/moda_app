@@ -26,11 +26,11 @@
           paddingRight="0"
           @tap="onTapPromotion(i)"
         >
-          <ImageCache 
+          <ImageCacheIt 
               stretch="aspectFill"
-              placeholderStretch="aspectFit"
-              borderRadius="10"
-              placeholder=""
+              placeHlderStretch="aspectFit"
+              borderRadius=""
+              placeHolder="res://eskeleton" 
               :src="i.url"
               height="100"
               width="220"

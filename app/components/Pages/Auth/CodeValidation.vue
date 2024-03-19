@@ -1,8 +1,9 @@
 <template lang="html">
   <Page>
     <HeaderFullLogo/>
-    <GridLayout rows="*,auto" padding="16" >
-      <StackLayout row="0" >
+    <ScrollView>
+    <GridLayout rows="auto,*,auto" background="" padding="16" >
+      <StackLayout row="0">
         <label 
           text="Código de validación" 
           fontSize="24"
@@ -11,23 +12,24 @@
           marginBottom="24"
           horizontalAlignment="center"
         />
-
-
-       <!--  <label 
-          :text="`Ingresa el código que ha sido enviado a su email: ${client.email} `" 
-          fontSize="16"
-          fontWeight="400"
-          color="#4D4D4D"
-          marginBottom="24"
-          horizontalAlignment="center"
-          width="70%"
-          textWrap="true"
-          textAlignment="center"
-        /> -->
-
         <label 
           fontSize="16"
           fontWeight="400"
+          color="#4D4D4D"
+          marginBottom="0"
+          horizontalAlignment="center"
+          width="70%"
+          textWrap="true"
+          textAlignment="center" 
+        >
+          <FormattedString>
+            <span text="Ingresa el código que ha sido enviado a su email: " />
+            <!-- <span :text="clientprops.email" fontWeight="bold" /> -->
+          </FormattedString>
+        </label>
+        <label 
+          fontSize="16"
+          fontWeight="900"
           color="#4D4D4D"
           marginBottom="24"
           horizontalAlignment="center"
@@ -36,12 +38,11 @@
           textAlignment="center" 
         >
           <FormattedString>
-            <span text="Ingresa el código que ha sido enviado a su email:" />
           
-            <span v-if="client" :text="client.email" fontWeight="bold" />
+          
+            <span :text="clientprops.email" fontWeight="bold" />
           </FormattedString>
         </label>
-
         <label 
           text="No olvide verificar su span o bandeja de correos no deseados." 
           fontSize="14"
@@ -53,20 +54,20 @@
           textWrap="true"
           textAlignment="center"
         />
+      </StackLayout>
+
+        <GridLayout 
+          columns="*,*,*,*" 
+          rows="*,*"
+          row="1"
         
-        
-          <GridLayout 
-            columns="*,*,*,*" 
-            rows="*,*"
-            
-          >
+        >
             <TextField 
               keyboardType="number"
               col="0"
               row="0"
               ref="num_cero"
               name="num_cero"
-              
               maxLength="1"
               @textChange="pressText"
               class="inputForm inputNumberMax"
@@ -105,24 +106,30 @@
               @textChange="pressText"
               class="inputForm inputNumberMax"
             />
-            <!-- <Label
-              col="0"
-              colSpan="4"
-              row="1"
-              text="Reenviar código"
-              class="label_enlace"
-              fontSize="14"
-              fontWeight="bold"
-              marginTop="16"
-              horizontalAlignment="center"
-              :marginTop="-20"
-            /> -->
-        </GridLayout>
 
-      </StackLayout>
-      <StackLayout row="1" >
+            <Label col="0" colSpan="4" row="1" class="" fontSize="12" marginTop="16" horizontalAlignment="center" textAlignment="center" v-if="conteo > 0" fontWeight="400" textWrap="true">
+              <FormattedString>
+                <Span :text="`Reenviar código en: `" />
+                <Span :text="conteo" style="color: #E9418A" />
+                <Span :text="`s`" style="color: #E9418A" />
+
+              </FormattedString>
+            </Label>
+
+            <Label  col="0" colSpan="4" row="1" class="label_enlace" v-else   marginTop="16" horizontalAlignment="center" textAlignment="center" fontWeight="800" textWrap="true" textDecoration="underline" @tap="reenviarCode">
+              <FormattedString>
+                <Span :text="`Reenviar código`" />
+              </FormattedString>
+            </Label>
+
+        </GridLayout>
+       
+
+      
+      <StackLayout row="2" >
         <ActivityIndicator 
           :busy="isLoading" 
+          color="#E9418A"
         />
 
         <button 
@@ -144,6 +151,7 @@
         />
       </StackLayout>
     </GridLayout>
+  </ScrollView>
 
   </Page>
    
@@ -153,7 +161,22 @@
   import { mapActions, mapState, mapMutations, mapGetters } from 'vuex'
   import HeaderFullLogo from '../../Components/ActionBar/HeaderFullLogo'
   import { Utils, Device } from '@nativescript/core'
+  import { firebase } from '@nativescript/firebase';
+  import homeMixin from '~/mixins/homeMixin.js'
+    
+
   export default {
+    mixins:[ homeMixin ],
+    props:{
+      clientprops:{
+        type: Object,
+        default(){
+          return {
+            email: ''
+          }
+        }
+      }
+    },
     components:{
       HeaderFullLogo
     },
@@ -163,7 +186,8 @@
         num_uno: null,
         num_dos: null,
         num_tres: null,
-        num_cero: null
+        num_cero: null,
+        conteo: 60,
       };
     },
     computed:{
@@ -174,9 +198,60 @@
         return this.num_cero + '' +  this.num_uno + '' + this.num_dos + '' + this.num_tres
       }
     },
+    mounted(){
+      console.log('code', this.clientprops)
+      this.contador()
+    },
     methods:{
-      ...mapActions('authentication',['CodeValidation']),
-      ...mapMutations(['changeisLoading']),
+      ...mapActions('authentication',['CodeValidation','reenviarCodigo']),
+      ...mapMutations(['changeisLoading','changeToast']),
+      contador(){
+          const intervalo = setInterval(() => {
+            if (this.conteo > 0) {
+              this.conteo = this.conteo - 1;
+            } else {
+              clearInterval(intervalo);
+            }
+          }, 1000);
+        },
+      reenviarCode(){
+        this.changeisLoading(true)
+
+        this.reenviarCodigo({client: this.clientprops }).then((response)=>{
+          console.log('response',response)
+          this.changeisLoading(false)
+          this.conteo = 60
+          this.contador()
+          this.changeToast({
+                              title: response.message,
+                              status: true,
+                              type: 'success',
+                              message: ''
+                          })
+        }).catch((e)=> {
+          this.changeisLoading(false)
+          if(e){
+            e = JSON.parse(e)
+            if(typeof e == 'object'){
+              // console.log('pe',e)
+              // console.log('mmm')
+              for(var i in e){
+                // console.log(typeof e, typeof i,  i, typeof e[i] ,e[i])
+                if(typeof e[i] == 'object'){
+                  e[i].forEach((i)=>{
+                    alert(`${i}`)
+                  })
+                }
+
+                if(typeof e[i] == 'string'){
+                  alert(e[i])
+                }
+              }
+            } 
+            
+          }
+        })
+      },
       text(args){
         this.$refs.num_cero.nativeView.focus()
       },
@@ -233,21 +308,31 @@
             this.CodeValidation(this.codeInsert)
               .then((response) => {
                 // console.log('response', response)
-                this.$navigator.navigate('/home',{
-                  transition: {
-                    name: 'slideLeft',
-                    duration: 300,
-                    curve: 'easeIn'
-                  },
-                  clearHistory: true
+                this.defineHome().then((response)=>{
+                  firebase.analytics.logEvent({ key: "codevalidaction", parameters: []})
+                  this.configNofitificationPush()
+                  this.$navigator.navigate('/home',{
+                    transition: {
+                      name: 'slideLeft',
+                      duration: 300,
+                      curve: 'easeIn'
+                    },
+                    clearHistory: true
+                  })
+                  this.changeisLoading(false)
                 })
-                this.changeisLoading(false)
+
+
+                
               }).catch((error)=>{
+                console.log('weeoe', error, JSON.parse(error))
                 this.changeisLoading(false)
               });
             
           
             
+        }else{
+          this.changeisLoading(false)
         }
 
       }

@@ -6,7 +6,10 @@
       :inputs="direccionInput"
       v-if="!dataDirecciones.length && !loading"
     >
-      
+    <template slot="top">
+
+<Label textWrap marginBottom="16" text="A continución podés llenar los datos de la persona que retirará el paquete." />
+</template>
     </InputsLayout>
 
     <StackLayout row="0" v-if="loading" padding="16" width="100%" >
@@ -26,6 +29,12 @@
       v-show="dataDirecciones.length && !loading"
       @itemTap="onItemSelected"
     >
+    <v-template name="header">
+      <StackLayout padding="0 16 0 16">
+
+        <Label row="0"  fontSize="18" fontWeight="800" textWrap :text="'Destinatarios'" />
+      </StackLayout>
+      </v-template>
       <v-template>
         <StackLayout padding="8 16 8 16">
 

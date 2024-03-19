@@ -17,12 +17,12 @@
            >
             <GridLayout>
 
-              <ImageCache 
+              <ImageCacheIt 
                 stretch="aspectFit" 
                 height="100%"
                 width="100%"
-                placeholderStretch="aspectFill"
-                placeholder="res://eskeleton"
+                placeHolderStretch="aspectFill"
+                placeHolder="res://eskeleton" 
                 :src="`${image}`"
                 @tap="onFullScreenImage(image, i)"
               />

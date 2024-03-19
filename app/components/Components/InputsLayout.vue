@@ -40,6 +40,9 @@
                   :maxLength="e.maxLength"
                   :borderWidth="e.error != undefined ? (e.error == true ? 1 : 0) : 0"
                   :borderColor="e.error != undefined ? (e.error == true ? 'red' : '') : ''"
+                  :editable="e.editable ? e.editable : true"
+
+                  
                 />
           
 
@@ -145,7 +148,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
     },
     methods:{
       async openModalSelect(e){
-        // console.log('e.values',e)
+        console.log('openModalSelect',e)
         if(e.beforeOpen!=undefined){
           const beforeStatus = e.beforeOpen(e)
           if(!beforeStatus){
@@ -161,7 +164,7 @@ import { SideDrawerLocation } from 'nativescript-ui-sidedrawer';
             campos: e.campos
           }
         })
-        // console.log('modal',modal)
+        console.log('modal',modal)
         if(modal!=undefined){
           this.inputsData.find((i)=>i.name == e.name).model = modal.selected
         }

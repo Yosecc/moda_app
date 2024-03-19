@@ -1,6 +1,6 @@
 <template lang="html">
   <Page  >
-    <HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" :isBtnPromotions="true" >
+      <HeaderCustom :logoCenter="false" row="0" :back="true" :isCar="false" :isBtnPromotions="true" :isSearch="true" @onActionSearch="onNavigateSearch"  >
 				<StackLayout  col="1" orientation="horizontal" padding="0 0 0 0" >
 					<Label  horizontalAlignment="left" margin="0" padding="0" text="Categoría: " textTransform="uppercase" fontWeight="900" fontSize="16" />
 					<Label  horizontalAlignment="left" margin="0" padding="0" :text="categorieActiveGetters.name" textTransform="uppercase" fontWeight="900" fontSize="16" />
@@ -8,20 +8,20 @@
 			</HeaderCustom>
 		
 		
-			<GridLayout  row="1" rows="auto, *">
-				
-        <AbsoluteLayout padding="0" margin="0" row="1">
+			<GridLayout  row="1" rows="*">
+<!-- <AbsoluteLayout padding="0" margin="0" row="1"> -->
           <RadListView 
             v-show="productsCategorie.length"
             ref="categoriScroll"
-            row="1"
+            row="0"
             layout="grid"
             :items="productsCategorie"
-            loadOnDemandMode="Auto"
+            loadOnDemandMode=""
             loadOnDemandBufferSize="15"
             scrollBarIndicatorVisible="true"
             pullToRefresh="true"
             scrollPositionProperty="right"
+            :itemTemplateSelector="itemTemplateSelector"
             @pullToRefreshInitiated="onPullToRefreshInitiated"
             @loadMoreDataRequested="onLoadCargar"
             orientation="vertical"
@@ -29,63 +29,26 @@
             top="0"
             left="0"
           >
-            <v-template name="header">
-              <!-- <StackLayout marginTop="16" padding="0" marginLeft="16" marginRight="16">
-                <label 
-                  @tap="onNavigateSearch"
-                  text="Buscar productos" 
-                  class="inputForm false" 
-                  horizontalAlignment="left"
-                  width="100%"
-                  height="40"
-                  paddingTop="8"
-                  fontWeight="200"
-                  borderRadius="0" 
-                />
-              </StackLayout> -->
-              <StackLayout
-                padding="16 16 8 16"
-              >
-                <GridLayout 
-                  columns="auto,*"
-                  alignItems="center"
-                  width="100%"
-                  height="50"
-                  borderRadius="28"
-                  borderWidth="1"
-                  background="white"
-                  paddingLeft="16"
-                  borderColor="#F2F3F4"
-                  @tap="onNavigateSearch"
-                >
-                  <Image 
-                    verticalAlignment="center"
-                    horizontalAlignment="center"
-                    src="~/assets/icons/search.png" 
-                    width="25" 
-                    height="25"
-                    opacity=".5"
-                    col="0"
-                  />
-                  <label 
-                    col="1"
-                    text="Buscar productos"
-                    width="100%"
-                    margin="0"
-                    fontWeight="300" 
-                    fontSize="16"                
-                  />
-                </GridLayout >
-              </StackLayout>
-            </v-template>
-            <v-template key="product" >
+            <v-template name="product" >
               <ProductBox
                   :product="item"
               ></ProductBox>
             </v-template>
+            <v-template name="footer">
+            <Label 
+              row="1"
+              fontSize="20" 
+              fontWeight="100" 
+              textAlignment="center" 
+              text="No te cuesta estar a la moda."
+              padding="16"
+              background="#FDFDFD"
+              textWrap
+            />
+          </v-template>
           </RadListView>
 
-          <RadListView top="0" left="0" row="0" layout="grid" v-if="!productsCategorie.length" :items="[{},{},{},{},{},{}]">
+          <RadListView top="0" left="0" row="0" layout="grid" v-show="!productsCategorie.length" :items="[{},{},{},{},{},{}]">
             <v-template>
               <StackLayout padding="8">
                 <StackLayout 
@@ -98,7 +61,7 @@
             </v-template>
           </RadListView>  
 
-          <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
+          <!-- <FlexboxLayout v-if="viewArrowTop" justifyContent="center" width="100%"  top="0" left="0">
             <image src="res://arrowbackfront" @tap="arrowTop" stretch="aspectFill" margin="0 auto" width="56" marginTop="8" opacity=".4"  />
           </FlexboxLayout>
 
@@ -109,7 +72,7 @@
           />
 
 
-        </AbsoluteLayout>
+        </AbsoluteLayout> -->
 			</GridLayout>        
 	    
   </Page>
@@ -155,7 +118,8 @@
       ...mapGetters('categories',['categorieActiveGetters']),
     },
     mounted(){
-    this.alturaDispositivo = screen.mainScreen.heightDIPs
+      
+      this.alturaDispositivo = screen.mainScreen.heightDIPs
 
       firebase.analytics.setScreenName({
         screenName: "Filtro Categorias"
@@ -164,12 +128,34 @@
 			this.setCategorieActive(this.params.section) //#id categoria ref. store.categories.categoriesBase
       
 			this.isLoadingProducts = true 
-			this.ongetCategorieSearch(this.params.section)
+			// this.ongetCategorieSearch(this.params.section)
+
+      console.log('this.params.section',this.params.section)
+
+      this.changeParamsProductsSearch({
+        start: 0,
+        length: 28,
+        storeData: 1,
+        inStock: 1,
+        daysExpir: 365,
+        search: '',
+        store: '',
+        order:'date DESC',
+        sections: [this.params.section],
+        cacheTime: 1200,
+        betweenDates: '',
+        oferta: false
+      })
+
+      this.onLoadCargar()
+      this.$refs.categoriScroll.nativeView.loadOnDemandMode = 'Auto';
       
     },
     methods:{
-      ...mapActions('products',['getCategorieSearch']),
+      ...mapActions('products',['getCategorieSearch','getSearch']),
       ...mapMutations('categories',['setCategorieActive']),
+      ...mapMutations('products',['changeParamsProductsSearch']),
+
       onNavigateSearch(){
         this.$navigator.navigate('/modal_filter',{
           fullscreen: true,
@@ -208,14 +194,14 @@
         scrollv.scrollToIndex(0,true)
       },
       onScroll({ scrollOffset }){
-        let scrollv = this.$refs.categoriScroll?.nativeView;
-        if(scrollv){
-          if((scrollv.getActualSize().height*2) < scrollOffset ){
-            this.viewArrowTop = true
-          }else{
-            this.viewArrowTop = false
-          }
-        }
+        // let scrollv = this.$refs.categoriScroll?.nativeView;
+        // if(scrollv){
+        //   if((scrollv.getActualSize().height*2) < scrollOffset ){
+        //     this.viewArrowTop = true
+        //   }else{
+        //     this.viewArrowTop = false
+        //   }
+        // }
       },
 			async onPullToRefreshInitiated ({ object }) {
          await this.$nextTick( async () => {
@@ -230,21 +216,39 @@
 					args.object.notifyAppendItemsOnDemandFinished(0, true);
 					return
 				}
+
+        
 				await this.ongetCategorieSearch(this.params.section)
 					args.returnValue = true;
 					args.object.notifyAppendItemsOnDemandFinished(0, false);
       },
+      itemTemplateSelector(item,index,items) {
+        return 'product'
+      },
       async ongetCategorieSearch(categorie_id){      
-        // console.log('pasa 1.5', {val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3})
-        await this.getCategorieSearch({val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3}).then((response)=>{
-          // console.log('pasa fin', response)
-          this.last_page = response.products.last_page
-          this.productsCategorie = this.productsCategorie.concat(Object.values(response.products.data))
-          this.isLoadingProducts = false
-          return true
-        }).catch((error)=>{
-          // console.log('erorr', error)
+
+        this.changeParamsProductsSearch({
+          start: this.productsCategorie.length,
+          sections: [categorie_id],
         })
+
+        const response = await this.getSearch()
+        this.productsCategorie.push(...response)
+        // console.log('response',response, this.productsCategorie )
+          this.isLoadingProducts = false
+
+          // this.$refs.categoriScroll.refresh()
+        
+        // console.log('pasa 1.5', {val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3})
+        // await this.getCategorieSearch({val: categorie_id, page: this.page,  product_paginate: 16, product_for_store: 3}).then((response)=>{
+        //   console.log('pasa fin', response)
+        //   this.last_page = response.products.last_page
+        //   this.productsCategorie = this.productsCategorie.concat(Object.values(response.products.data))
+        //   this.isLoadingProducts = false
+        //   return true
+        // }).catch((error)=>{
+        //   // console.log('erorr', error)
+        // })
       },      
     }
   };

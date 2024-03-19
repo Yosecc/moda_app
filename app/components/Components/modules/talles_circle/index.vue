@@ -42,7 +42,9 @@
         props:{
             talles:{
                 type: Array,
-                default: []
+                default(){
+                    return []
+                }
             },
             product_id:{
                 type: String,

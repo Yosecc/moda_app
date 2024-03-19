@@ -65,7 +65,7 @@
 
           <StackLayout>
 
-            <Label text="O" opacity=".2" fontWeight="800" textAlignment="center" margin="16" />
+            <!-- <Label text="O" opacity=".2" fontWeight="800" textAlignment="center" margin="16" /> -->
 
             <ActivityIndicator 
               :busy="isLoading"
@@ -112,6 +112,7 @@
   import homeMixin from '~/mixins/homeMixin.js'
   // import { Observable } from 'data/observable';
   import { firebase } from '@nativescript/firebase';
+  import cache from '@/plugins/cache'
 
   import { LoginManager, AccessToken } from '@nativescript/facebook';
   // import { login as fbLogin } from "nativescript-facebook";
@@ -142,9 +143,20 @@
     methods:{
       ...mapActions('authentication',['Login','apiAuthUserinfo','LoginSocial']),
       ...mapMutations(['changeisLoading']),
+      ...mapMutations('authentication',['setclienteData']),
+
       onLogin(){
         this.changeisLoading(true)
         this.Login().then((response)=>{
+          // console.log('login', response )
+          if(response.status == 'code_validation'){
+              const cliente = response.client
+              this.changeisLoading(false)
+              cache.set('client', JSON.stringify(cliente))
+              this.setclienteData(cliente)
+              this.$navigator.navigate('/code_validation', { props: { clientprops: cliente } })
+            return
+          }
 
           this.defineHome().then((response)=>{
             firebase.analytics.logEvent({ key: "login", parameters: []})

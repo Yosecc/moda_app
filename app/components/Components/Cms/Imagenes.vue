@@ -19,7 +19,8 @@
     >
       <Image  :src="item.image" stretch="aspectFit"  />
       <!-- <WebView :loaded="onWebViewLoaded" :canGoForward="false" :canGoBack="false" :disableZoom="true" :src="html(item.captionHtml)" v-if="!item.ocultarTitulo" />-->
-      <Label :text="item.captionHtmlw" textAlignment="center" color="#0080DA" textWrap v-if="!item.ocultarTitulo"  /> 
+      
+      <Label :text="item.captionHtmlw" textAlignment="center" color="#0080DA" textWrap v-if="!item.ocultarTitulo && !item.captionHtmlw=='<span></span>'"  /> 
     </StackLayout>
   </FlexboxLayout>
   <RadListView 
